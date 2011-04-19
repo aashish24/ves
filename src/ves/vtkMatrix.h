@@ -68,7 +68,7 @@ public:
 	T& operator()(int i) { return this->Data[i]; }
 	const T& operator()(int i) const { return this->Data[i]; }
 
-protected:
+public:
 	// Description:
 	// The only thing stored in memory!
 	T Data[Size];

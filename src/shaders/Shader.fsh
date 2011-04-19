@@ -13,9 +13,9 @@
 
  =========================================================================*/
 
-varying lowp vec4 colorVarying;
+varying lowp vec4 v_texcoord;
 
 void main()
 {
-    gl_FragColor = colorVarying;
+    gl_FragColor = v_texcoord;
 }

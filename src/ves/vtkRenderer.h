@@ -99,6 +99,7 @@ private:
 
   GLint  m_mvp_matrix_loc;
   GLint  m_normal_matrix_loc;
+  GLint m_ecLightDir_loc;
 
   // Configuration
   vtkScreenConfig _display;

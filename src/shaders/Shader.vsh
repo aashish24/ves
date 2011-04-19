@@ -13,33 +13,36 @@
 
  =========================================================================*/
 
-uniform mat4   u_mvp_matrix;
-uniform mat3   u_normal_matrix;
+uniform mat4   u_mvpMatrix;     // model-view-projection matrix
+uniform mat3   u_normalMatrix;  // normal matrix
+uniform vec3   u_ecLightDir;     // light direction in eye coordinates
 
-attribute vec4 a_color;
+attribute vec4 a_vertex;         // vertex position
+attribute vec3 a_normal;         // vertex normal
+attribute vec4 a_texcoord;       // texture coordinates
 
-attribute vec4 position;
-attribute vec3 normal;
-attribute vec4 color;
-
-varying vec4 colorVarying;
-
-uniform float translate;
+varying float v_diffuse;
+varying vec4  v_texcoord;
 
 void main()
 {
-  gl_Position = u_mvp_matrix * position;
+  // put vertex normal into eye coords
+  vec3 ec_normal = normalize(u_normalMatrix * a_normal);
+  
+  // emit diffuse scale factor, texcoord and position
+  v_diffuse  = max(dot(u_ecLightDir,ec_normal),0.0);
+  
+  //vec3 light = normalize(vec3(0.0, 0.0, -1.0));
+  //vec3 eye = vec3(0, 0, 1);
+  //vec3 EL = normalize(light + eye);
 
-  vec3 norm = u_normal_matrix * normal;
-  vec3 light = normalize(vec3(0.0, 0.4, 1.0));
-  vec3 eye = vec3(0, 0, 1);
-  vec3 EL = normalize(light + eye);
-
-  float df = max(0.0, dot(norm, light));
-  //float sf = max(0.01, dot(norm, EL));
+  //float df = max(0.0, dot(ec_normal, light));
+  //float sf = max(0.01, dot(ec_normal, EL));
   //sf = pow(sf, 5.0)
 
-  vec3 outColor = vec3(0.01, 0.01, 0.01) + df * a_color.xyz;// + sf * vec3(0.9, 0.9, 0.9);
+  vec3 outColor = vec3(0.01, 0.01, 0.01) + v_diffuse * a_texcoord.xyz;// + sf * vec3(0.9, 0.9, 0.9);
 
-  colorVarying = vec4(outColor, 1.0);
+  v_texcoord = vec4(outColor, 1.0);
+  //v_texcoord = a_texcoord;
+  gl_Position = u_mvpMatrix * a_vertex;
 }

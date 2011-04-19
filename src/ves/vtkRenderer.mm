@@ -347,11 +347,12 @@ void vtkRenderer::Render()
 {
 	//if(!newFile) return;
 
-  GLuint color = glGetAttribLocation(m_program, "a_color");
+  GLuint color = glGetAttribLocation(m_program, "a_texcoord");
   if (!m_initialized) {
     // Get uniform locations
-    m_mvp_matrix_loc = glGetUniformLocation(m_program, "u_mvp_matrix");
-    m_normal_matrix_loc = glGetUniformLocation(m_program, "u_normal_matrix");
+    m_mvp_matrix_loc = glGetUniformLocation(m_program, "u_mvpMatrix");
+    m_normal_matrix_loc = glGetUniformLocation(m_program, "u_normalMatrix");
+	m_ecLightDir_loc = glGetUniformLocation(m_program, "u_ecLightDir");
     if (m_renderNumber == 2000000000) {
 		  readFiles(0);
 		  glGenBuffers(2, m_sphere_vbo);
@@ -389,10 +390,13 @@ void vtkRenderer::Render()
   // Work out the appropriate matrices
   vtkMatrix4f mvp;
   vtkMatrix3f normal_matrix(mvp);
+  vtkVector4f lightDir;
   mvp = _proj * _view * _model;
+	lightDir = _model.transpose()*vtkMatrix4f()*vtkVector4f(0.0,0.0,.50,1.0);
+  vtkVector3f light(lightDir.X(),lightDir.Y(),lightDir.Z());
   glUniformMatrix4fv(m_mvp_matrix_loc, 1, GL_FALSE, mvp.Data);
   glUniformMatrix3fv(m_normal_matrix_loc, 1, GL_FALSE, normal_matrix.Data);
-
+  glUniform3fv(m_ecLightDir_loc, 1, light.Data);
   // Clear the buffers
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glEnable(GL_DEPTH_TEST);
