@@ -392,7 +392,10 @@ void vtkRenderer::Render()
   vtkMatrix3f normal_matrix(mvp);
   vtkVector4f lightDir;
   mvp = _proj * _view * _model;
-	lightDir = _model.transpose()*vtkMatrix4f()*vtkVector4f(0.0,0.0,.50,1.0);
+	vtkMatrix4f temp = _model.transpose();
+	temp.normalized();
+	lightDir = temp*vtkMatrix4f()*vtkVector4f(0.0,0.0,1.0,0.0);
+	
   vtkVector3f light(lightDir.X(),lightDir.Y(),lightDir.Z());
   glUniformMatrix4fv(m_mvp_matrix_loc, 1, GL_FALSE, mvp.Data);
   glUniformMatrix3fv(m_normal_matrix_loc, 1, GL_FALSE, normal_matrix.Data);

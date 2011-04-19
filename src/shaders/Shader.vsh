@@ -40,7 +40,7 @@ void main()
   //float sf = max(0.01, dot(ec_normal, EL));
   //sf = pow(sf, 5.0)
 
-  vec3 outColor = vec3(0.01, 0.01, 0.01) + v_diffuse * a_texcoord.xyz;// + sf * vec3(0.9, 0.9, 0.9);
+  vec3 outColor = v_diffuse * a_texcoord.xyz;// + sf * vec3(0.9, 0.9, 0.9);
 
   v_texcoord = vec4(outColor, 1.0);
   //v_texcoord = a_texcoord;
