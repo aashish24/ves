@@ -53,8 +53,7 @@ public:
   void setViewpoint(int view) { m_view = view; }
 
   void resetView();
-  void resetWidget();
-
+  
   void release();
 	void resize(int widht,int height, float scale);
 
