@@ -62,17 +62,6 @@ void vtkRenderer::readFiles(int files)
   resize(_width,_height,m_sphere->radius);
 }
 
-void vtkRenderer::translate(float x, float y)
-{
-  m_mv_matrix = m_mv_matrix * m_mv_matrix.translate(x * 0.15, -y * 0.15, 0);
-}
-
-void vtkRenderer::zoom(float factor)
-{
-  _model=_model.scale(factor);
-  m_mv_matrix = m_mv_matrix * m_mv_matrix.translate(0, 0, factor * 0.001);
-}
-
 void vtkRenderer::resize(int width, int height, float scale)
 {
   if(width > 0 && height >0){

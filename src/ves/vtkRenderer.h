@@ -44,9 +44,6 @@ public:
   }
 
   void readFiles(int file = 0);
-
-  void zoom(float factor);
-  void translate(float x, float y);
   void setViewpoint(int view) { m_view = view; }
 
   void resetView();
@@ -54,7 +51,6 @@ public:
   void release();
 	void resize(int widht,int height, float scale);
 
-  double getRotation() { return m_rotation; }
   void setFilePath(const std::string &path)
   {
     filePath = path;
