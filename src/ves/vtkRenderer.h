@@ -38,7 +38,7 @@ public:
 
   void Render(float xrot, float yrot, float scale, float xtrans, float ytrans);
 
-  void setProgram(GLuint program)
+  void SetProgram(GLuint program)
   {
     m_program = program;
   }

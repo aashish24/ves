@@ -12,7 +12,9 @@
  PURPOSE.  See the above copyright notice for more information.
 
  =========================================================================*/
+//precision mediump float;
 
+//varying float v_diffuse;
 varying lowp vec4 v_texcoord;
 
 void main()

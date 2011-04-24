@@ -21,7 +21,7 @@ attribute vec4 a_vertex;         // vertex position
 attribute vec3 a_normal;         // vertex normal
 attribute vec4 a_texcoord;       // texture coordinates
 
-varying float v_diffuse;
+//varying float v_diffuse;
 varying vec4  v_texcoord;
 
 void main()
@@ -30,7 +30,7 @@ void main()
   vec3 ec_normal = normalize(u_normalMatrix * a_normal);
   
   // emit diffuse scale factor, texcoord and position
-  v_diffuse  = max(dot(u_ecLightDir,ec_normal),0.0);
+  float v_diffuse  = max(dot(u_ecLightDir,ec_normal),0.0);
   
   //vec3 light = normalize(vec3(0.0, 0.0, -1.0));
   //vec3 eye = vec3(0, 0, 1);
