@@ -19,8 +19,7 @@
 
 #include <iostream>
 
-vtkRenderer::vtkRenderer() : m_program(0), m_vertexAttrib(0), m_normalAttrib(0), m_colorAttrib(0),
-  m_mvp_matrix_loc(0), m_normal_matrix_loc(0), m_sphere(0), m_view(0),
+vtkRenderer::vtkRenderer() : m_program(0), m_sphere(0), m_view(0),
   m_initialized(false), m_renderNumber(0),newFile(0)
 {
   m_sphere_vbo[0] = m_sphere_vbo[1] = 0;
@@ -346,14 +345,8 @@ void vtkRenderer::Render(float xRotation, float yRotation, float scaleFactor, fl
 void vtkRenderer::Render()
 {
 	//if(!newFile) return;
-
-  GLuint color = glGetAttribLocation(m_program, "a_texcoord");
   if (!m_initialized) {
-    // Get uniform locations
-    m_mvp_matrix_loc = glGetUniformLocation(m_program, "u_mvpMatrix");
-    m_normal_matrix_loc = glGetUniformLocation(m_program, "u_normalMatrix");
-	m_ecLightDir_loc = glGetUniformLocation(m_program, "u_ecLightDir");
-    if (m_renderNumber == 2000000000) {
+      if (m_renderNumber == 2000000000) {
 		  readFiles(0);
 		  glGenBuffers(2, m_sphere_vbo);
 		  glBindBuffer(GL_ARRAY_BUFFER, m_sphere_vbo[0]);
@@ -397,27 +390,27 @@ void vtkRenderer::Render()
 	lightDir = temp*vtkMatrix4f()*vtkVector4f(0.0,0.0,.650,0.0);
 	
   vtkVector3f light(lightDir.X(),lightDir.Y(),lightDir.Z());
-  glUniformMatrix4fv(m_mvp_matrix_loc, 1, GL_FALSE, mvp.Data);
-  glUniformMatrix3fv(m_normal_matrix_loc, 1, GL_FALSE, normal_matrix.Data);
-  glUniform3fv(m_ecLightDir_loc, 1, light.Data);
+  glUniformMatrix4fv(glGetUniformLocation(m_program, "u_mvpMatrix"), 1, GL_FALSE, mvp.Data);
+  glUniformMatrix3fv(glGetUniformLocation(m_program, "u_normalMatrix"), 1, GL_FALSE, normal_matrix.Data);
+  glUniform3fv      (glGetUniformLocation(m_program, "u_ecLightDir"), 1, light.Data);
   // Clear the buffers
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glEnable(GL_DEPTH_TEST);
 
   // Enable our attribute arrays
-  glEnableVertexAttribArray(m_vertexAttrib);
-  glEnableVertexAttribArray(m_normalAttrib);
-
+  glEnableVertexAttribArray(glGetAttribLocation(m_program, "a_vertex"));
+  glEnableVertexAttribArray(glGetAttribLocation(m_program, "a_normal"));
+  
   if (m_sphere) {
-    glVertexAttrib4f(color, 0.8, 0.8, 0.8, 1.0);
-    glVertexAttribPointer(m_vertexAttrib, 3, GL_FLOAT, 0, 6 * sizeof(float), m_sphere->m_points);
-    glVertexAttribPointer(m_normalAttrib, 3, GL_FLOAT, 0, 6 * sizeof(float), m_sphere->m_points[0].normal.GetData());
+    glVertexAttrib4f(glGetAttribLocation(m_program, "a_texcoord"), 0.8, 0.8, 0.8, 1.0);
+    glVertexAttribPointer(glGetAttribLocation(m_program, "a_vertex"), 3, GL_FLOAT, 0, 6 * sizeof(float), m_sphere->m_points);
+    glVertexAttribPointer(glGetAttribLocation(m_program, "a_normal"), 3, GL_FLOAT, 0, 6 * sizeof(float), m_sphere->m_points[0].normal.GetData());
     // Draw
     glDrawElements(GL_TRIANGLES, m_sphere->m_numTriangles * 3, GL_UNSIGNED_SHORT, m_sphere->m_triangles);
   }
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-  glDisableVertexAttribArray(m_vertexAttrib);
-  glDisableVertexAttribArray(m_normalAttrib);
+  glDisableVertexAttribArray(glGetAttribLocation(m_program, "a_vertex"));
+  glDisableVertexAttribArray(glGetAttribLocation(m_program, "a_normal"));
 }

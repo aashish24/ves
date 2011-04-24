@@ -38,12 +38,9 @@ public:
 
   void Render(float xrot, float yrot, float scale, float xtrans, float ytrans);
 
-  void setProgram(GLuint program, GLuint vertexAttrib, GLuint normalAttrib, GLuint colorAttrib)
+  void setProgram(GLuint program)
   {
     m_program = program;
-    m_vertexAttrib = vertexAttrib;
-    m_normalAttrib = normalAttrib;
-    m_colorAttrib = colorAttrib;
   }
 
   void readFiles(int file = 0);
@@ -92,14 +89,7 @@ public:
 
 private:
   GLuint m_program;
-  GLuint m_vertexAttrib;
-  GLuint m_normalAttrib;
-  GLuint m_colorAttrib;
-
-  GLint  m_mvp_matrix_loc;
-  GLint  m_normal_matrix_loc;
-  GLint m_ecLightDir_loc;
-
+  
   // Configuration
   vtkScreenConfig _display;
   vtkMatrix4f _surfaceRotMatrix;
