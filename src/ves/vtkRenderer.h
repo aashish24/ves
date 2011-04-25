@@ -21,7 +21,9 @@
 #import <QuartzCore/QuartzCore.h>
 #include "vtkMatrix.h"
 #include <string>
+
 class vtkFileReader;
+class vtkShaderProgram;
 
 struct vtkScreenConfig{
   vtkVector4f o;
@@ -38,9 +40,9 @@ public:
 
   void Render(float xrot, float yrot, float scale, float xtrans, float ytrans);
 
-  void SetProgram(GLuint program)
+  void SetProgram(vtkShaderProgram* program)
   {
-    m_program = program;
+    this->Program = program;
   }
 
   void readFiles(int file = 0);
@@ -84,8 +86,7 @@ public:
   }
 
 private:
-  GLuint m_program;
-  
+  vtkShaderProgram* Program;
   // Configuration
   vtkScreenConfig _display;
   vtkMatrix4f _surfaceRotMatrix;
