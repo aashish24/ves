@@ -16,7 +16,7 @@
 #include "vtkFileReader.h"
 
 vtkFileReader::vtkFileReader()
-  : m_numPoints(0), m_points(0), m_numTriangles(0), m_triangles(0)
+  : m_numPoints(0), m_points(0)
 {
 }
 
@@ -41,9 +41,7 @@ void vtkFileReader::readFile(const std::string &fileName)
     else if (str == "POLYGONS") {
       unsigned int n = 0, e = 0;
       fileStream >> n >> e;
-      m_triangles = new vtkVector3us[n];
-      m_numTriangles = n;
-      readTriangles(fileStream, m_triangles, n);
+      readPolygons(fileStream, m_triangles, n);
     }
     else if (str == "POINT_DATA") {
       unsigned short n = 0;
@@ -60,7 +58,6 @@ void vtkFileReader::readFile(const std::string &fileName)
 vtkFileReader::~vtkFileReader()
 {
   delete[] m_points;
-  delete[] m_triangles;
 }
 
 void vtkFileReader::readPoints(std::ifstream &file, Vertex3f *v, int n)
@@ -95,14 +92,28 @@ void vtkFileReader::readNormals(std::ifstream &file, Vertex3f *v, int n)
     file >> v->normal[0] >> v->normal[1] >> v->normal[2];
 }
 
-void vtkFileReader::readTriangles(std::ifstream &file, vtkVector3us *indices, int n)
+void vtkFileReader::readPolygons(std::ifstream &file, std::vector<vtkVector3us>& triangleCells, int numPolygons)
 {
-  unsigned short tri = 0;
-  for (int i = 0; i < n; ++i) {
-    file >> tri;
-    if (tri == 3) {
-      file >> (*indices)[0] >> (*indices)[1] >> (*indices)[2];
-      ++indices;
+  unsigned short numVertices = 0;
+  for (int i = 0; i < numPolygons; ++i) 
+  {
+    file >> numVertices;
+    if (numVertices == 3) 
+    {
+      vtkVector3us indices;
+      file >> indices[0] >> indices[1] >> indices[2];
+      triangleCells.push_back(indices);
+    }
+    else if (numVertices == 4)
+    {
+      vtkVector3us indices1;
+      vtkVector3us indices2;
+      file >> indices1[0] >> indices1[1] >> indices1[2] >> indices2[0];
+      indices2[1] = indices1[0];
+      indices2[2] = indices1[2];
+      triangleCells.push_back(indices1);
+      triangleCells.push_back(indices2);
     }
   }
 }
+

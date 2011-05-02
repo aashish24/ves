@@ -342,8 +342,8 @@ void vtkRenderer::Render()
 		  glBufferData(GL_ARRAY_BUFFER, m_sphere->m_numPoints * 6 * sizeof(float),
 					   m_sphere->m_points, GL_STATIC_DRAW);
 		  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_sphere_vbo[1]);
-		  glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_sphere->m_numTriangles * 3 * sizeof(unsigned short),
-					   m_sphere->m_triangles, GL_STATIC_DRAW);
+		  glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_sphere->m_triangles.size() * 3 * sizeof(unsigned short),
+					   &m_sphere->m_triangles[0], GL_STATIC_DRAW);
 
 		  glBindBuffer(GL_ARRAY_BUFFER, 0);
 		  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -360,8 +360,8 @@ void vtkRenderer::Render()
 		glBufferData(GL_ARRAY_BUFFER, m_sphere->m_numPoints * 6 * sizeof(float),
 					 m_sphere->m_points, GL_STATIC_DRAW);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_sphere_vbo[1]);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_sphere->m_numTriangles * 3 * sizeof(unsigned short),
-					 m_sphere->m_triangles, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_sphere->m_triangles.size() * 3 * sizeof(unsigned short),
+					 &m_sphere->m_triangles[0], GL_STATIC_DRAW);
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -397,7 +397,7 @@ void vtkRenderer::Render()
     glVertexAttribPointer(this->Program->GetAttribute("a_normal"), 3, GL_FLOAT, 0, 6 * sizeof(float), m_sphere->m_points[0].normal.GetData());
 
     // Draw
-    glDrawElements(GL_TRIANGLES, m_sphere->m_numTriangles * 3, GL_UNSIGNED_SHORT, m_sphere->m_triangles);
+    glDrawElements(GL_TRIANGLES, m_sphere->m_triangles.size() * 3, GL_UNSIGNED_SHORT, &m_sphere->m_triangles[0]);
   }
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
