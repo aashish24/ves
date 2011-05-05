@@ -88,141 +88,6 @@ void vtkRenderer::resize(int width, int height, float scale)
   glViewport(0, 0, width, height);
 
   glClearColor(63/255.0f, 96/255.0f, 144/255.0, 1.0f);
-
-  // Reconfigure the display params
-  SetDisplay(width,height);
-  SetSurfaceRotMatrix();
-  SetO2ScreenLeftRightTopBottom();
-  SetSurface2Base();
-  SetScale(1.0);
-  //CalculateProjAndView();
-}
-
-//-----------------------------------------------------------------------------
-// Static Display (screen) coordinated for mobile devices.
-// The z value is -0.4 meters which is the approximate distance a person holds
-// the device away from the head.
-void vtkRenderer::SetDisplay(int width, int height)
-{
-  float w = width/2;
-  float h = height/2;
-
-  _display.o[0] = -w;   _display.o[1] = -h;
-  _display.x[0] =  w;   _display.x[1] = -h;
-  _display.y[0] =  w;   _display.y[1] =  h;
-
-  _display.o[2] = _display.x[2] = _display.y[2]= -0.4;
-}
-
-//-----------------------------------------------------------------------------
-void vtkRenderer::SetSurfaceRotMatrix()
-{
-  // Base coordinates of the screen
-  float xBase[3], yBase[3], zBase[3];
-
-  xBase[0] = _display.x.X()-_display.o.X();
-  xBase[1] = _display.x.Y()-_display.o.Y();
-  xBase[2] = _display.x.Z()-_display.o.Z();
-
-  yBase[0] = _display.y.X()-_display.x.X();
-  yBase[1] = _display.y.Y()-_display.x.Y();
-  yBase[2] = _display.y.Z()-_display.x.Z();
-
-  Cross( xBase, yBase, zBase );
-
-  Normalize( xBase );
-  Normalize( yBase );
-  Normalize( zBase );
-
-  _surfaceRotMatrix( 0, 0) = xBase[0];
-  _surfaceRotMatrix( 0, 1) = xBase[1];
-  _surfaceRotMatrix( 0, 2) = xBase[2];
-
-  _surfaceRotMatrix( 1, 0) = yBase[0];
-  _surfaceRotMatrix( 1, 1) = yBase[1];
-  _surfaceRotMatrix( 1, 2) = yBase[2];
-
-  _surfaceRotMatrix( 2, 0) = zBase[0];
-  _surfaceRotMatrix( 2, 1) = zBase[1];
-  _surfaceRotMatrix( 2, 2) = zBase[2];
-}
-
-//------------------------------------------------------------------HeadTracked
-// This enables the display config for head tracking
-void vtkRenderer::SetO2ScreenLeftRightTopBottom()
-{
-  // Get the new DisplayOrigin, DisplayX and DisplayY after transfromation
-  _display.o = _surfaceRotMatrix * _display.o;
-  _display.x = _surfaceRotMatrix * _display.x;
-  _display.y = _surfaceRotMatrix * _display.y;
-
-  // Set O2Screen, O2Right, O2Left, O2Bottom, O2Top
-  _O2Screen = - _display.o.Z();
-  _O2Right  =   _display.x.X();
-  _O2Left   = - _display.o.X();
-  _O2Top    =   _display.y.Y();
-  _O2Bottom = - _display.x.Y();
-}
-
-//-----------------------------------------------------------------------------
-void vtkRenderer::SetSurface2Base()
-{
-  _surface2Base = _surfaceRotMatrix;
-}
-
-//-----------------------------------------------------------------------------
-void vtkRenderer::SetScale(float scale)
-{
-  float interOccDist = 0.065;
-  _scale = scale;
-  _eyeOffset = (interOccDist*_scale)/2.0;
-}
-
-//-----------------------------------------------------------------------------
-void vtkRenderer::CalculateProjAndView()
-{
-
-  vtkMatrix4f eyeOffsetMat;
-  // ( _leftEye == true) ?
-  //   eyeOffsetMat( 0, 3) = -_eyeOffset :
-  //   eyeOffsetMat( 0, 3) =  _eyeOffset ;
-
-  vtkMatrix4f eyePosMat = _head * eyeOffsetMat;\
-
-  // 1. Compute Projection Matrix using head
-
-  // Get eye position on the surface of the screen which is nothing
-  // but the translation component of the eyePosMat
-  vtkVector4f eyeSurface( eyePosMat( 0, 3 ),
-                          eyePosMat( 1, 3 ),
-                          eyePosMat( 2, 3 ),
-                          0.0);
-
-  eyeSurface = _surface2Base * eyeSurface;
-
-  float e2Screen = ( _scale * _O2Screen ) + eyeSurface[2];
-  float e2Right  = ( _scale * _O2Right )  - eyeSurface[0];
-  float e2Left   = ( _scale * _O2Left )   + eyeSurface[0];
-  float e2Top    = ( _scale * _O2Top )    - eyeSurface[1];
-  float e2Bottom = ( _scale * _O2Bottom ) + eyeSurface[1];
-
-  //float o2Near = _clippingRange[0] / e2Screen;
-  float o2Near = 1 / e2Screen;
-
-  // Setting the Projection matrix parameters for HeadTracked Camera
-  float left   = -( e2Left   * o2Near ) ;
-  float right  =   e2Right   * o2Near ;
-  float top    =     e2Top   * o2Near;
-  float bottom = -( e2Bottom * o2Near );
-
-  _proj.frustum(left,right,bottom,top,1,10000.0);
-
-  // 2. Compute View Matrix using head.
-  vtkMatrix4f negEyePosMat;
-  negEyePosMat = negEyePosMat.translate(-eyePosMat(0,3),
-                                        -eyePosMat(1,3),
-                                        -eyePosMat(2,3));
-  //_view = _surface2Base * negEyePosMat;
 }
 
 void vtkRenderer::resetView()
@@ -294,7 +159,6 @@ void vtkRenderer::Render(float xRotation, float yRotation, float scaleFactor, fl
 	 // Finally, set the new matrix that has been calculated from the Core Animation transform
 	 //[self convert3DTransform:&currentCalculatedMatrix toMatrix:_model.Data];
 
-#if 1
 	_model.Data[0] = (GLfloat)currentCalculatedMatrix.m11;
 	_model.Data[1] = (GLfloat)currentCalculatedMatrix.m12;
 	_model.Data[2] = (GLfloat)currentCalculatedMatrix.m13;
@@ -311,24 +175,6 @@ void vtkRenderer::Render(float xRotation, float yRotation, float scaleFactor, fl
 	_model.Data[13] = (GLfloat)currentCalculatedMatrix.m42;
 	_model.Data[14] = (GLfloat)currentCalculatedMatrix.m43;
 	_model.Data[15] = (GLfloat)currentCalculatedMatrix.m44;
-#else
-	_model.Data[0] = (GLfloat)currentCalculatedMatrix.m11;
-	_model.Data[4] = (GLfloat)currentCalculatedMatrix.m12;
-	_model.Data[8] = (GLfloat)currentCalculatedMatrix.m13;
-	_model.Data[12] = 0(GLfloat)currentCalculatedMatrix.m14;
-	_model.Data[1] = (GLfloat)currentCalculatedMatrix.m21;
-	_model.Data[5] = (GLfloat)currentCalculatedMatrix.m22;
-	_model.Data[9] = (GLfloat)currentCalculatedMatrix.m23;
-	_model.Data[13] = 0(GLfloat)currentCalculatedMatrix.m24;
-	_model.Data[2] = (GLfloat)currentCalculatedMatrix.m31;
-	_model.Data[6] = (GLfloat)currentCalculatedMatrix.m32;
-	_model.Data[10] = 0(GLfloat)currentCalculatedMatrix.m33;
-	_model.Data[14] = (GLfloat)currentCalculatedMatrix.m34;
-	_model.Data[3] = (GLfloat)currentCalculatedMatrix.m41;
-	_model.Data[7] = (GLfloat)currentCalculatedMatrix.m42;
-	_model.Data[11] = (GLfloat)currentCalculatedMatrix.m43;
-	_model.Data[15] = 1(GLfloat)currentCalculatedMatrix.m44;
-#endif
 }
 
 void vtkRenderer::Render()
