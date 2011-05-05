@@ -19,6 +19,7 @@
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
 #import <QuartzCore/QuartzCore.h>
+#include "gmtl/Math.h"
 #include "vtkMatrix.h"
 #include <string>
 
