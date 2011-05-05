@@ -45,18 +45,11 @@ vtkRenderer::vtkRenderer() : m_sphere(0), m_view(0),
 	currentCalculatedMatrix.m42 = (CGFloat)matrix[13];
 	currentCalculatedMatrix.m43 = (CGFloat)matrix[14];
 	currentCalculatedMatrix.m44 = (CGFloat)matrix[15];
-
-        _leftEye = true;
 }
 
 void vtkRenderer::readFiles(int files)
 {
-	//NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-	//NSString *documentsDirectory = [paths objectAtIndex:0];
-	//NSString *nameOfDownloadedVTK = @"current.vtk";
 	m_sphere = new vtkFileReader;
-	//NSString *filePath = [documentsDirectory stringByAppendingPathComponent:nameOfDownloadedVTK];
-	//m_sphere ->readFile([filePath UTF8String]);
 	m_sphere ->readFile(filePath);
   _view = _view.translate(-m_sphere->center[0],-m_sphere->center[1],m_sphere->radius);
   resize(_width,_height,m_sphere->radius);
@@ -84,7 +77,6 @@ void vtkRenderer::resize(int width, int height, float scale)
     top = aspect * right;
   }
   _proj.ortho(left, right, bottom, top, nearp, farp);
-  //_view =  _view.translate(0,0,scale);
   glViewport(0, 0, width, height);
 
   glClearColor(63/255.0f, 96/255.0f, 144/255.0, 1.0f);
@@ -92,8 +84,7 @@ void vtkRenderer::resize(int width, int height, float scale)
 
 void vtkRenderer::resetView()
 {
-  //if (m_view == 0)
-    _model = vtkMatrix4f();
+  _model = vtkMatrix4f();
 	GLfloat matrix[16]  = {1.0, 0.0, 0.0, 0.0,
 		0.0, 1.0, 0.0, 0.0,
 		0.0, 0.0, 1.0, 0.0,
@@ -114,9 +105,6 @@ void vtkRenderer::resetView()
 	currentCalculatedMatrix.m42 = (CGFloat)matrix[13];
 	currentCalculatedMatrix.m43 = (CGFloat)matrix[14];
 	currentCalculatedMatrix.m44 = (CGFloat)matrix[15];
-  //else
-   // m_mv_matrix2 = m_mv_matrix2.rotate(270, vtkVector3f(1.0, 0.0, 0.0));
-
 }
 
 void vtkRenderer::release()

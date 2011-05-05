@@ -26,12 +26,6 @@
 class vtkFileReader;
 class vtkShaderProgram;
 
-struct vtkScreenConfig{
-  vtkVector4f o;
-  vtkVector4f x;
-  vtkVector4f y;
-};
-
 class vtkRenderer
 {
 public:
@@ -47,7 +41,6 @@ public:
   }
 
   void readFiles(int file = 0);
-//  void setViewpoint(int view) { m_view = view; }
 
   void resetView();
   
@@ -88,28 +81,11 @@ public:
 
 private:
   vtkShaderProgram* Program;
-  // Configuration
-//  vtkScreenConfig _display;
-//  vtkMatrix4f _surfaceRotMatrix;
-//  float _O2Screen,_O2Right,_O2Left, _O2Top, _O2Bottom;
-//  vtkMatrix4f _surface2Base;
-//  float _scale, _eyeOffset;
-
- // void SetDisplay(int width, int height);
-  //void SetSurfaceRotMatrix();
-  //void SetO2ScreenLeftRightTopBottom();
-  //void SetSurface2Base();
-//  void SetScale(float scale);
-  //void CalculateProjAndView();
-
   // Runtime
   vtkMatrix4f _model;
-  vtkMatrix4f _center;
   vtkMatrix4f _view;
   vtkMatrix4f _proj;
-  vtkMatrix4f _head;
-  bool _leftEye;
-	float _width,_height;
+  float _width,_height;
 
   CATransform3D currentCalculatedMatrix;
 
