@@ -1,21 +1,21 @@
 //
-//  vtkMultitouchNavMatrix.h
+//  vtkCamera.h
 //  kiwi
 //
 //  Created by kitware on 5/6/11.
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
-#ifndef __vtkMultitouchNavMatrix_h
-#define __vtkMultitouchNavMatrix_h
+#ifndef __vtkCamera_h
+#define __vtkCamera_h
 
 #import <QuartzCore/QuartzCore.h>
 #include "vtkGMTL.h"
 
-class vtkMultitouchNavMatrix
+class vtkCamera
 {
 public:
-  vtkMultitouchNavMatrix();
+  vtkCamera();
   void SetWidthHeight(const unsigned int width, 
                       const unsigned int height);
   CATransform3D GetMatrix(){return currentCalculatedMatrix;}
@@ -40,4 +40,4 @@ public:
   vtkMatrix4x4f _matrix;
   CATransform3D currentCalculatedMatrix, testMatrix;
 };
-#endif //__vtkMultitouchNavMatrix_h
+#endif //__vtkCamera_h

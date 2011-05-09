@@ -41,7 +41,7 @@ void vtkRenderer::resize(int width, int height, float scale)
     _width = width;
     _height = height;
   }
-  const GLfloat nearp = .1, farp = 10, fov = 60*M_PI/360.0*scale;
+  const GLfloat nearp = .7, farp = 5, fov = 60*M_PI/360.0*scale*.5;
   float aspect,left,right,bottom,top;
   if(_width > _height) {
     aspect = _width/_height;
@@ -145,9 +145,10 @@ void vtkRenderer::Render()
 
   // Work out the appropriate matrices
   vtkMatrix4x4f mvp;
-  vtkMatrix3x3f normal_matrix = makeNormalMatrix3x3f(mvp);
   mvp = _proj * _view * _model;
-	vtkMatrix4x4f temp = makeNormalizedMatrix4x4(makeTransposeMatrix4x4(_model));
+	
+  vtkMatrix3x3f normal_matrix = makeNormalMatrix3x3f(_view);
+  vtkMatrix4x4f temp = makeNormalizedMatrix4x4(makeTransposeMatrix4x4(_model));
   vtkPoint3f lightDir = transformVector4f(temp,vtkPoint3f(0.0,0.0,.650));
 	
   vtkVector3f light(lightDir.mData[0],lightDir.mData[1],lightDir.mData[2]);

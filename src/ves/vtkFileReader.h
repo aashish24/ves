@@ -46,6 +46,7 @@ public:
   float radius;
 
 private:
+  void ComputeCenterAndRadius();
   void readPoints(std::ifstream &file, Vertex3f *v, int n);
   void readNormals(std::ifstream &file, Vertex3f *v, int n);
   void readPolygons(std::ifstream &file, std::vector<vtkVector3us>& triangleCells, int numPolygons);

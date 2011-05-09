@@ -1,16 +1,16 @@
 //
-//  vtkMultitouchNavMatrix.cpp
+//  vtkCamera.cpp
 //  kiwi
 //
 //  Created by kitware on 5/6/11.
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
-#include "vtkMultitouchNavMatrix.h"
+#include "vtkCamera.h"
 #include "vtkGMTL.h"
 #include <iostream>
 
-vtkMultitouchNavMatrix::vtkMultitouchNavMatrix()
+vtkCamera::vtkCamera()
 {
   currentCalculatedMatrix.m11 = (CGFloat)_matrix.mData[0];
 	currentCalculatedMatrix.m12 = (CGFloat)_matrix.mData[1];
@@ -30,7 +30,7 @@ vtkMultitouchNavMatrix::vtkMultitouchNavMatrix()
 	currentCalculatedMatrix.m44 = (CGFloat)_matrix.mData[15];
 }
 
-void vtkMultitouchNavMatrix::Reset()
+void vtkCamera::Reset()
 {
   float matrix[16]  = {1.0, 0.0, 0.0, 0.0,
 		0.0, 1.0, 0.0, 0.0,
@@ -55,14 +55,14 @@ void vtkMultitouchNavMatrix::Reset()
   gmtl::identity(_matrix);
 }
 // -----------------------------------------------------------------------public
-void vtkMultitouchNavMatrix::SetWidthHeight(const unsigned int width, 
+void vtkCamera::SetWidthHeight(const unsigned int width, 
                                             const unsigned int height)
 {
   _width = width;
   _height = height;
 }
 
-void vtkMultitouchNavMatrix::printCurrentCalculatedMatrix()
+void vtkCamera::printCurrentCalculatedMatrix()
 {
   CATransform3D m = currentCalculatedMatrix;
   std::cout << m.m11 << " " << m.m12 << " " << m.m13 << " " << m.m14 << std::endl
@@ -71,7 +71,7 @@ void vtkMultitouchNavMatrix::printCurrentCalculatedMatrix()
             << m.m41 << " " << m.m42 << " " << m.m43 << " " << m.m44 << std::endl;
 }
 
-void vtkMultitouchNavMatrix::printGMTLMatrix()
+void vtkCamera::printGMTLMatrix()
 {
   vtkMatrix4x4f matrix = makeTransposeMatrix4x4(_matrix);
   for (int i=0;i<4;i++)
@@ -84,7 +84,7 @@ void vtkMultitouchNavMatrix::printGMTLMatrix()
   }  
 }
 // ----------------------------------------------------------------------private
-void vtkMultitouchNavMatrix::UpdateMatrix(const float xRotation, 
+void vtkCamera::UpdateMatrix(const float xRotation, 
                                           const float yRotation, 
                                           const float scaleFactor, 
                                           const float xTranslation, 
@@ -132,7 +132,7 @@ void vtkMultitouchNavMatrix::UpdateMatrix(const float xRotation,
  // UpdateMatrixGMTL(xRotation, yRotation, scaleFactor, xTranslation, yTranslation);
 }
 
-void vtkMultitouchNavMatrix::UpdateMatrixGMTL(const float xRotation, 
+void vtkCamera::UpdateMatrixGMTL(const float xRotation, 
                                           const float yRotation, 
                                           float scaleFactor, 
                                           float xTranslation, 

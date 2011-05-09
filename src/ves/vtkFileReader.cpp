@@ -70,20 +70,29 @@ void vtkFileReader::readPoints(std::ifstream &file, Vertex3f *v, int n)
 			min[2] = max[2] = v->point[2];
 		}else {
 			if(v->point[0] < min[0]) min[0] = v->point[0];
-			if(v->point[0] < min[1]) min[1] = v->point[1];
-			if(v->point[0] < min[2]) min[2] = v->point[2];
+			if(v->point[1] < min[1]) min[1] = v->point[1];
+			if(v->point[2] < min[2]) min[2] = v->point[2];
 			if(v->point[0] > max[0]) max[0] = v->point[0];
-			if(v->point[0] > max[1]) max[1] = v->point[1];
-			if(v->point[0] > max[2]) max[2] = v->point[2];
+			if(v->point[1] > max[1]) max[1] = v->point[1];
+			if(v->point[2] > max[2]) max[2] = v->point[2];
 		}
 	}
-	center[0] = (min[0]+max[0])/2;
+  this->ComputeCenterAndRadius();
+}
+
+//void vtkFileReader::ComputeMinMax(vtkPoint3f point)
+//{
+//}
+
+void vtkFileReader::ComputeCenterAndRadius()
+{
+  center[0] = (min[0]+max[0])/2;
 	center[1] = (min[1]+max[1])/2;
 	center[2] = (min[2]+max[2])/2;
-        float x = max[0]-min[0];
-        float y = max[1]-min[1];
-        float z = max[2]-min[2];
-        radius = sqrt(x*x+y*y+z*z);
+  float x = max[0]-min[0];
+  float y = max[1]-min[1];
+  float z = max[2]-min[2];
+  radius = sqrt(x*x+y*y+z*z);
 }
 
 void vtkFileReader::readNormals(std::ifstream &file, Vertex3f *v, int n)
