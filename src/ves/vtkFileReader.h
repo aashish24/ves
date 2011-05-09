@@ -17,6 +17,7 @@
 #define vtkFileReader_H
 
 #include "vtkMatrix.h"
+#include "vtkGMTL.h"
 #include <vector>
 
 // Small struct packing a point and normal together in a vertex

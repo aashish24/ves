@@ -22,10 +22,10 @@
 #include "gmtl/Math.h"
 #include "vtkMatrix.h"
 #include <string>
+#include "vtkMultitouchNavMatrix.h"
 
 class vtkFileReader;
 class vtkShaderProgram;
-
 class vtkRenderer
 {
 public:
@@ -80,17 +80,16 @@ public:
   }
 
 private:
+  vtkMultitouchNavMatrix _nav;
   vtkShaderProgram* Program;
   // Runtime
-  vtkMatrix4f _model;
-  vtkMatrix4f _view;
-  vtkMatrix4f _proj;
+  vtkMatrix4x4f _model;
+  vtkMatrix4x4f _view;
+  vtkMatrix4x4f _proj;
   float _width,_height;
 
-  CATransform3D currentCalculatedMatrix;
-
-  vtkMatrix4f m_mv_matrix;
-  vtkMatrix3f m_normal_matrix;
+  vtkMatrix4x4f m_mv_matrix;
+  vtkMatrix3x3f m_normal_matrix;
   double m_rotation;
 
 	std::string filePath;

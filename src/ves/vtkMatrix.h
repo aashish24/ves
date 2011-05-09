@@ -335,12 +335,12 @@ public:
 	vtkVector3i(int x = 0, int y = 0, int z = 0) : vtkVector3<int>(x, y, z) {}
 };
 
-class vtkVector3f : public vtkVector3<float>
-{
-public:
-	vtkVector3f(float x = 0.0, float y = 0.0, float z = 0.0)
-    : vtkVector3<float>(x, y, z) {}
-};
+//class vtkVector3f : public vtkVector3<float>
+//{
+//public:
+//	vtkVector3f(float x = 0.0, float y = 0.0, float z = 0.0)
+//    : vtkVector3<float>(x, y, z) {}
+//};
 
 class vtkVector3d : public vtkVector3<double>
 {
@@ -349,12 +349,12 @@ public:
     : vtkVector3<double>(x, y, z) {}
 };
 
-class vtkVector4f : public vtkVector4<float>
-{
-public:
-	vtkVector4f(float x = 0.0, float y = 0.0, float z = 0.0, float w = 0.0)
-    : vtkVector4<float>(x, y, z, w) {}
-};
+//class vtkVector4f : public vtkVector4<float>
+//{
+//public:
+//	vtkVector4f(float x = 0.0, float y = 0.0, float z = 0.0, float w = 0.0)
+//    : vtkVector4<float>(x, y, z, w) {}
+//};
 
 class vtkRecti : public vtkRect<int>
 {
@@ -461,15 +461,15 @@ public:
         return m;
     }
 
-    vtkVector4f operator * (const vtkVector4f& u) const
-    {
-        vtkVector4f v;
-        v(0) = (*this)(0, 0) * u(0) + (*this)(0, 1) * u(1) + (*this)(0, 2) * u(2) + (*this)(0, 3) * u(3);
-        v(1) = (*this)(1, 0) * u(0) + (*this)(1, 1) * u(1) + (*this)(1, 2) * u(2) + (*this)(1, 3) * u(3);
-        v(2) = (*this)(2, 0) * u(0) + (*this)(2, 1) * u(1) + (*this)(2, 2) * u(2) + (*this)(2, 3) * u(3);
-        v(3) = (*this)(3, 0) * u(0) + (*this)(3, 1) * u(1) + (*this)(3, 2) * u(2) + (*this)(3, 3) * u(3);
-        return v;
-    }
+//    vtkVector4f operator * (const vtkVector4f& u) const
+//    {
+//        vtkVector4f v;
+//        v(0) = (*this)(0, 0) * u(0) + (*this)(0, 1) * u(1) + (*this)(0, 2) * u(2) + (*this)(0, 3) * u(3);
+//        v(1) = (*this)(1, 0) * u(0) + (*this)(1, 1) * u(1) + (*this)(1, 2) * u(2) + (*this)(1, 3) * u(3);
+//        v(2) = (*this)(2, 0) * u(0) + (*this)(2, 1) * u(1) + (*this)(2, 2) * u(2) + (*this)(2, 3) * u(3);
+//        v(3) = (*this)(3, 0) * u(0) + (*this)(3, 1) * u(1) + (*this)(3, 2) * u(2) + (*this)(3, 3) * u(3);
+//        return v;
+//    }
 
 	void frustum(float left, float right, float bottom, float top, float near, float far)
 	{
@@ -539,25 +539,25 @@ public:
     }
 
 
-	vtkMatrix4f rotate(float degrees, const vtkVector3f &axis)
-	{
-		vtkMatrix4f m;
-		float radians = degrees * 3.14159f / 180.0f;
-		float s = std::sin(radians);
-		float c = std::cos(radians);
-
-		m(0, 0) = c + (1 - c) * axis.X() * axis.X();
-		m(0, 1) = (1 - c) * axis.X() * axis.Y() - axis.Z() * s;
-		m(0, 2) = (1 - c) * axis.X() * axis.Z() + axis.Y() * s;
-		m(1, 0) = (1 - c) * axis.X() * axis.Y() + axis.Z() * s;
-		m(1, 1) = c + (1 - c) * axis.Y() * axis.Y();
-		m(1, 2) = (1 - c) * axis.Y() * axis.Z() - axis.X() * s;
-		m(2, 0) = (1 - c) * axis.X() * axis.Z() - axis.Y() * s;
-		m(2, 1) = (1 - c) * axis.Y() * axis.Z() + axis.X() * s;
-		m(2, 2) = c + (1 - c) * axis.Z() * axis.Z();
-		m.normalized();
-        return m;
-	}
+//	vtkMatrix4f rotate(float degrees, const vtkVector3f &axis)
+//	{
+//		vtkMatrix4f m;
+//		float radians = degrees * 3.14159f / 180.0f;
+//		float s = std::sin(radians);
+//		float c = std::cos(radians);
+//
+//		m(0, 0) = c + (1 - c) * axis.X() * axis.X();
+//		m(0, 1) = (1 - c) * axis.X() * axis.Y() - axis.Z() * s;
+//		m(0, 2) = (1 - c) * axis.X() * axis.Z() + axis.Y() * s;
+//		m(1, 0) = (1 - c) * axis.X() * axis.Y() + axis.Z() * s;
+//		m(1, 1) = c + (1 - c) * axis.Y() * axis.Y();
+//		m(1, 2) = (1 - c) * axis.Y() * axis.Z() - axis.X() * s;
+//		m(2, 0) = (1 - c) * axis.X() * axis.Z() - axis.Y() * s;
+//		m(2, 1) = (1 - c) * axis.Y() * axis.Z() + axis.X() * s;
+//		m(2, 2) = c + (1 - c) * axis.Z() * axis.Z();
+//		m.normalized();
+//        return m;
+//	}
 
 	vtkMatrix4f transpose()
 	{
