@@ -32,6 +32,7 @@ class vtkRenderer
 {
 public:
   vtkRenderer();
+  ~vtkRenderer();
 
   void Render();
 
@@ -50,7 +51,7 @@ public:
   void Read();
 
   void resetView();
-  void release();
+  //void release();
 	void resize(int widht,int height, float scale);
 
   

@@ -25,6 +25,14 @@ vtkRenderer::vtkRenderer()
   once = true;
 }
 
+vtkRenderer::~vtkRenderer()
+{
+  if(mActor)
+  {
+    delete mActor;
+  }
+}
+
 void vtkRenderer::Read()
 {
   _view = makeTranslationMatrix4x4(vtkVector3f(mActor->center[0],mActor->center[1],mActor->radius));
@@ -67,13 +75,6 @@ void vtkRenderer::resetView()
   mCamera.Reset();	
 }
 
-void vtkRenderer::release()
-{
-  if(mActor)
-  {
-    mActor->Release();
-  }
-}
 
 void vtkRenderer::Render(float xRotation, float yRotation, float scaleFactor, float xTranslation, float yTranslation)
 {
@@ -113,7 +114,7 @@ void vtkRenderer::Render()
 
   // Work out the appropriate matrices
   vtkMatrix4x4f mvp;
-  mvp = _proj * _view * _model;
+  mvp = _proj * _view * _model * mActor->mMatrix;
 	
   vtkMatrix3x3f normal_matrix = makeNormalMatrix3x3f(_view);
   vtkMatrix4x4f temp = makeNormalizedMatrix4x4(makeTransposeMatrix4x4(_model));
