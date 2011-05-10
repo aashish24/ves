@@ -10,6 +10,39 @@
 #include "gmtl/Generate.h"
 #include "gmtl/AxisAngle.h"
 
+//vtkMatrix4x4f::vtkMatrix4x4f()
+//{
+//  
+//}
+//
+//vtkMatrix4x4f::vtkMatrix4x4f(const vtkMatrix4x4f& copy)
+//{
+//  *this = copy;
+//}
+//
+//vtkMatrix4x4f vtkMatrix4x4f::translate(vtkVector3f vec)
+//{
+//  vtkMatrix4x4f temp = *this;
+//  return temp * gmtl::makeTrans<vtkMatrix4x4f >(vec);
+//}
+//
+//vtkMatrix4x4f vtkMatrix4x4f::rotate(float angle, float x, float y, float z)
+//{
+//  return (*this) * gmtl::makeRot<vtkMatrix4x4f>(gmtl::AxisAngle<float>(angle,x,y,z));
+//  
+//}
+//
+//vtkMatrix4x4f vtkMatrix4x4f::scale(float scale)
+//{
+//  return (*this) * gmtl::makeScale<vtkMatrix4x4f>(scale);
+//}
+//
+//vtkMatrix4x4f vtkMatrix4x4f::operator= (const vtkMatrix4x4f& rhs)
+//{
+//  *this = rhs;
+//  return *this;
+//}
+
 vtkMatrix4x4f makeScaleMatrix4x4(float scale)
 {
   return gmtl::makeScale<vtkMatrix4x4f>(scale);

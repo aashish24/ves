@@ -19,20 +19,17 @@
 
 #include <iostream>
 
-vtkRenderer::vtkRenderer() : m_sphere(0), m_view(0),
-  m_initialized(false), m_renderNumber(0),newFile(0)
+vtkRenderer::vtkRenderer()
 {
-  m_sphere_vbo[0] = m_sphere_vbo[1] = 0;
   m_rotation = 0;
+  once = true;
 }
 
-void vtkRenderer::readFiles(int files)
+void vtkRenderer::read()
 {
-	m_sphere = new vtkFileReader;
-	m_sphere ->readFile(filePath);
-  _view = makeTranslationMatrix4x4(vtkVector3f(m_sphere->center[0],m_sphere->center[1],m_sphere->radius));
-  _view = makeScaleMatrix4x4(1/m_sphere->radius)*_view;
-  resize(_width,_height,m_sphere->radius);
+  _view = makeTranslationMatrix4x4(vtkVector3f(mActor->center[0],mActor->center[1],mActor->radius));
+  _view = makeScaleMatrix4x4(1/mActor->radius)*_view;
+  resize(_width,_height,mActor->radius);
 }
 
 void vtkRenderer::resize(int width, int height, float scale)
@@ -67,80 +64,51 @@ void vtkRenderer::resize(int width, int height, float scale)
 void vtkRenderer::resetView()
 {
   _model = vtkMatrix4x4f();
-  _nav.Reset();	
+  mCamera.Reset();	
 }
 
 void vtkRenderer::release()
 {
-  // Release our VBOs before the context is destroyed
-  if (m_initialized) {
-    glDeleteBuffers(2, m_sphere_vbo);
+  if(mActor)
+  {
+    mActor->Release();
   }
 }
 
 void vtkRenderer::Render(float xRotation, float yRotation, float scaleFactor, float xTranslation, float yTranslation)
 {
 #if 1
-  _nav.UpdateMatrix(xRotation,yRotation,scaleFactor,xTranslation,yTranslation);
+  mCamera.UpdateMatrix(xRotation,yRotation,scaleFactor,xTranslation,yTranslation);
  
-	_model.mData[0] = (GLfloat)_nav.GetMatrix().m11;
-	_model.mData[1] = (GLfloat)_nav.GetMatrix().m12;
-	_model.mData[2] = (GLfloat)_nav.GetMatrix().m13;
-	_model.mData[3] = (GLfloat)_nav.GetMatrix().m14;
-	_model.mData[4] = (GLfloat)_nav.GetMatrix().m21;
-	_model.mData[5] = (GLfloat)_nav.GetMatrix().m22;
-	_model.mData[6] = (GLfloat)_nav.GetMatrix().m23;
-	_model.mData[7] = (GLfloat)_nav.GetMatrix().m24;
-	_model.mData[8] = (GLfloat)_nav.GetMatrix().m31;
-	_model.mData[9] = (GLfloat)_nav.GetMatrix().m32;
-	_model.mData[10] = (GLfloat)_nav.GetMatrix().m33;
-	_model.mData[11] = (GLfloat)_nav.GetMatrix().m34;
-	_model.mData[12] = (GLfloat)_nav.GetMatrix().m41;
-	_model.mData[13] = (GLfloat)_nav.GetMatrix().m42;
-	_model.mData[14] = (GLfloat)_nav.GetMatrix().m43;
-	_model.mData[15] = (GLfloat)_nav.GetMatrix().m44;
+	_model.mData[0] = (GLfloat)mCamera.GetMatrix().m11;
+	_model.mData[1] = (GLfloat)mCamera.GetMatrix().m12;
+	_model.mData[2] = (GLfloat)mCamera.GetMatrix().m13;
+	_model.mData[3] = (GLfloat)mCamera.GetMatrix().m14;
+	_model.mData[4] = (GLfloat)mCamera.GetMatrix().m21;
+	_model.mData[5] = (GLfloat)mCamera.GetMatrix().m22;
+	_model.mData[6] = (GLfloat)mCamera.GetMatrix().m23;
+	_model.mData[7] = (GLfloat)mCamera.GetMatrix().m24;
+	_model.mData[8] = (GLfloat)mCamera.GetMatrix().m31;
+	_model.mData[9] = (GLfloat)mCamera.GetMatrix().m32;
+	_model.mData[10] = (GLfloat)mCamera.GetMatrix().m33;
+	_model.mData[11] = (GLfloat)mCamera.GetMatrix().m34;
+	_model.mData[12] = (GLfloat)mCamera.GetMatrix().m41;
+	_model.mData[13] = (GLfloat)mCamera.GetMatrix().m42;
+	_model.mData[14] = (GLfloat)mCamera.GetMatrix().m43;
+	_model.mData[15] = (GLfloat)mCamera.GetMatrix().m44;
 #else
-  _nav.UpdateMatrixGMTL(xRotation,yRotation,scaleFactor,xTranslation,yTranslation);
-  _model = _nav.GetMatrixGMTL();
+  mCamera.UpdateMatrixGMTL(xRotation,yRotation,scaleFactor,xTranslation,yTranslation);
+  _model = mCamera.GetMatrixGMTL();
 #endif
 }
 
 void vtkRenderer::Render()
 {
-	//if(!newFile) return;
-  if (!m_initialized) {
-      if (m_renderNumber == 2000000000) {
-		  readFiles(0);
-		  glGenBuffers(2, m_sphere_vbo);
-		  glBindBuffer(GL_ARRAY_BUFFER, m_sphere_vbo[0]);
-		  glBufferData(GL_ARRAY_BUFFER, m_sphere->m_numPoints * 6 * sizeof(float),
-					   m_sphere->m_points, GL_STATIC_DRAW);
-		  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_sphere_vbo[1]);
-		  glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_sphere->m_triangles.size() * 3 * sizeof(unsigned short),
-					   &m_sphere->m_triangles[0], GL_STATIC_DRAW);
 
-		  glBindBuffer(GL_ARRAY_BUFFER, 0);
-		  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-		  m_initialized = true;
-		  newFile=0;
-	  }
-	  ++m_renderNumber;
-  }
-
-	if (newFile) {
-		readFiles(2);
-		glGenBuffers(2, m_sphere_vbo);
-		glBindBuffer(GL_ARRAY_BUFFER, m_sphere_vbo[0]);
-		glBufferData(GL_ARRAY_BUFFER, m_sphere->m_numPoints * 6 * sizeof(float),
-					 m_sphere->m_points, GL_STATIC_DRAW);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_sphere_vbo[1]);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_sphere->m_triangles.size() * 3 * sizeof(unsigned short),
-					 &m_sphere->m_triangles[0], GL_STATIC_DRAW);
-
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-		m_initialized = true;
-		newFile =0;
+	if (mActor && once) {
+    mActor->read();
+    this->read();
+    once=false;
 	}
 
   // Work out the appropriate matrices
@@ -164,13 +132,8 @@ void vtkRenderer::Render()
   glEnableVertexAttribArray(this->Program->GetAttribute("a_vertex"));
   glEnableVertexAttribArray(this->Program->GetAttribute("a_normal"));
 
-  if (m_sphere) {
-    glVertexAttrib4f(this->Program->GetAttribute("a_texcoord"), 0.8, 0.8, 0.8, 1.0);
-    glVertexAttribPointer(this->Program->GetAttribute("a_vertex"), 3, GL_FLOAT, 0, 6 * sizeof(float), m_sphere->m_points);
-    glVertexAttribPointer(this->Program->GetAttribute("a_normal"), 3, GL_FLOAT, 0, 6 * sizeof(float), m_sphere->m_points[0].normal.mData);
-
-    // Draw
-    glDrawElements(GL_TRIANGLES, m_sphere->m_triangles.size() * 3, GL_UNSIGNED_SHORT, &m_sphere->m_triangles[0]);
+  if (mActor) {
+    mActor->Print(this->Program);
   }
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);

@@ -7,4 +7,4 @@
 //
 
 #include "vtkGMTL.h"
-typedef vtkMatrix4x4f vtkActor;
+

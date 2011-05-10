@@ -34,18 +34,18 @@ struct Vertex3f
 class vtkFileReader
 {
 public:
-  vtkFileReader();
+  vtkFileReader(std::string fileName);
   ~vtkFileReader();
 
-  void readFile(const std::string &fileName);
+  bool read();
 
   unsigned int m_numPoints;
   Vertex3f *m_points;
-  vtkVector3f min,max,center;
+  vtkVector3f min,max;
   std::vector<vtkVector3us> m_triangles;
-  float radius;
-
+  
 private:
+  std::string mFileName;
   void ComputeCenterAndRadius();
   void readPoints(std::ifstream &file, Vertex3f *v, int n);
   void readNormals(std::ifstream &file, Vertex3f *v, int n);
