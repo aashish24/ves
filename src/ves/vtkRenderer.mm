@@ -25,7 +25,7 @@ vtkRenderer::vtkRenderer()
   once = true;
 }
 
-void vtkRenderer::read()
+void vtkRenderer::Read()
 {
   _view = makeTranslationMatrix4x4(vtkVector3f(mActor->center[0],mActor->center[1],mActor->radius));
   _view = makeScaleMatrix4x4(1/mActor->radius)*_view;
@@ -106,8 +106,8 @@ void vtkRenderer::Render()
 {
 
 	if (mActor && once) {
-    mActor->read();
-    this->read();
+    mActor->Read();
+    this->Read();
     once=false;
 	}
 

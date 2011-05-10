@@ -37,7 +37,7 @@ public:
   vtkFileReader(std::string fileName);
   ~vtkFileReader();
 
-  bool read();
+  bool Read();
 
   unsigned int m_numPoints;
   Vertex3f *m_points;

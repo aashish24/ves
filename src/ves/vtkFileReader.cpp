@@ -21,7 +21,7 @@ vtkFileReader::vtkFileReader(std::string fileName)
   this->mFileName = fileName;
 }
 
-bool vtkFileReader::read()
+bool vtkFileReader::Read()
 {
   std::ifstream fileStream(mFileName.c_str());
   if (!fileStream) {
