@@ -1,7 +1,7 @@
 /*=========================================================================
  
  Program:   Visualization Toolkit
- Module:    vtkFileReader.h
+ Module:    vtkLegacyReader.h
  
  Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
  All rights reserved.
@@ -13,16 +13,14 @@
  
  =========================================================================*/
 
-#ifndef vtkFileReader_H
-#define vtkFileReader_H
+#ifndef vtkLegacyReader_H
+#define vtkLegacyReader_H
 
-#include "vtkMatrix.h"
-#include "vtkGMTL.h"
-#include <vector>
+#include "vtkFileReader.h"
 
 // Small struct packing a point and normal together in a vertex
 // Memory layout is 3 floats for a point followed by 3 floats for a normal
-struct vtkVertex3f
+struct Vertex3f
 {
   vtkVector3f point;
   vtkVector3f normal;
@@ -31,32 +29,18 @@ struct vtkVertex3f
 #include <string>
 #include <fstream>
 
-class vtkTriangleData
+class vtkLegacyReader : public vtkFileReader
 {
 public:
-  vtkTriangleData() {}
-  ~vtkTriangleData() {}
-  std::vector<vtkVertex3f>& GetPoints() { return this->Points; }
-  std::vector<vtkVector3us>& GetTriangles() { return this->Triangles; }
-  vtkVector3f& GetMin() { return this->Min; }
-  vtkVector3f& GetMax() { return this->Max; }
-protected:
-  std::vector<vtkVertex3f> Points;
-  std::vector<vtkVector3us> Triangles;
-  vtkVector3f Min;
-  vtkVector3f Max;
-};
+  vtkLegacyReader(std::string filename) : vtkFileReader(filename) {}
+  ~vtkLegacyReader() {}
 
-class vtkFileReader
-{
-public:
-  vtkFileReader(std::string filename);
-  ~vtkFileReader();
+  virtual vtkTriangleData* Read();
 
-  virtual vtkTriangleData* Read() = 0;
-
-protected:
-  std::string mFileName;
+private:
+  void readPoints(std::ifstream &file, vtkVector3f& min, vtkVector3f& max, vtkVertex3f *v, int n);
+  void readNormals(std::ifstream &file, vtkVertex3f *v, int n);
+  void readPolygons(std::ifstream &file, std::vector<vtkVector3us>& triangleCells, int numPolygons);
 };
 
 #endif
