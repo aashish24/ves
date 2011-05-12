@@ -59,6 +59,7 @@ public:
 private:
   vtkCamera mCamera;
   vtkShaderProgram* Program;
+  
   // Runtime
   vtkMatrix4x4f _model;
   vtkMatrix4x4f _view;

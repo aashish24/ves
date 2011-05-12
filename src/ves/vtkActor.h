@@ -17,13 +17,21 @@ public:
   ~vtkActor();
   void Read();
   void Print(vtkShaderProgram *program);
-  
-  vtkVector3f center;
   float radius;
+  vtkMatrix4x4f mMatrix;
+  vtkPoint3f GetMin()
+  {
+   return transformPoint3f(mMatrix ,mMapper->GetMin()); 
+  }
   
- vtkMatrix4x4f mMatrix;
+  vtkPoint3f GetMax()
+  {
+    return transformPoint3f(mMatrix ,mMapper->GetMax());  
+  }
 protected:
-  void ComputeCenterAndRadius(vtkVector3f min, vtkVector3f max);
+  void ComputeCenterAndRadius(vtkPoint3f min, vtkPoint3f max);
   vtkMapper* mMapper;
+  vtkVector3f center;
+  
  };
 

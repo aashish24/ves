@@ -146,7 +146,7 @@ vtkMatrix4x4f makeNormalizedMatrix4x4(vtkMatrix4x4f matrix)
   return mat;
 }
 
-vtkPoint3f transformVector4f(vtkMatrix4x4f matrix, vtkPoint3f vec)
+vtkPoint3f transformPoint3f(vtkMatrix4x4f matrix, vtkPoint3f vec)
 {
   vtkPoint3f ret;
   gmtl::xform(ret,matrix,vec);

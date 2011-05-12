@@ -81,10 +81,6 @@ void vtkFileReader::readPoints(std::ifstream &file, Vertex3f *v, int n)
 	}
 }
 
-//void vtkFileReader::ComputeMinMax(vtkPoint3f point)
-//{
-//}
-
 
 void vtkFileReader::readNormals(std::ifstream &file, Vertex3f *v, int n)
 {

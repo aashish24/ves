@@ -55,5 +55,5 @@ vtkMatrix4x4f makePerspectiveMatrix4x4(float left,
                                        float far);
 vtkMatrix3x3f makeNormalMatrix3x3f(vtkMatrix4x4f matrix);
 vtkMatrix4x4f makeNormalizedMatrix4x4(vtkMatrix4x4f matrix);
-vtkPoint3f transformVector4f(vtkMatrix4x4f matrix, vtkPoint3f vec);
+vtkPoint3f transformPoint3f(vtkMatrix4x4f matrix, vtkPoint3f vec);
 #endif

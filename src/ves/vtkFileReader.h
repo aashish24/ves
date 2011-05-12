@@ -41,7 +41,7 @@ public:
 
   unsigned int m_numPoints;
   Vertex3f *m_points;
-  vtkVector3f min,max;
+  vtkPoint3f min,max;
   std::vector<vtkVector3us> m_triangles;
   
 private:

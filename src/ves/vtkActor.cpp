@@ -25,10 +25,6 @@ void vtkActor::Read()
   mMapper->Read();
   ComputeCenterAndRadius(mMapper->GetMin(),
                          mMapper->GetMax());
-  mMatrix = makeTranslationMatrix4x4(center)*
-                makeScaleMatrix4x4(1/radius)*
-            makeTranslationMatrix4x4(-center);
-  mMatrix = mMatrix * makeTranslationMatrix4x4(-center);
  }
 
 void vtkActor::Print(vtkShaderProgram *program)
@@ -37,7 +33,7 @@ void vtkActor::Print(vtkShaderProgram *program)
   glVertexAttrib4f(program->GetAttribute("a_texcoord"), 0.8, 0.8, 0.8, 1.0);
 }
 
-void vtkActor::ComputeCenterAndRadius(vtkVector3f min, vtkVector3f max)
+void vtkActor::ComputeCenterAndRadius(vtkPoint3f min, vtkPoint3f max)
 {
   center[0] = (min[0]+max[0])/2;
   center[1] = (min[1]+max[1])/2;
@@ -47,6 +43,26 @@ void vtkActor::ComputeCenterAndRadius(vtkVector3f min, vtkVector3f max)
   float z = max[2]-min[2];
   radius = sqrt(x*x+y*y+z*z);
   
+  std::cout << "min    = ( "<< min[0] << " " << min[1] << " " << min[2] << ")" << std::endl;
+  std::cout << "max    = ( "<< max[0] << " " << max[1] << " " << max[2] << ")" << std::endl;
+  std::cout << "Center = ( "<< center[0] << " " << center[1] << " " << center[2] << ")" << std::endl;
+  std::cout << "Radius = " << radius <<std::endl;
+  
+  mMatrix = //makeTranslationMatrix4x4(center)*
+  makeScaleMatrix4x4(1/radius)*
+            makeTranslationMatrix4x4(-center);
+  //mMatrix = makeTranslationMatrix4x4(-center)* mMatrix;
+  
+  std::cout << "Apply Transformations---------" << std::endl;
+  min = transformPoint3f(mMatrix ,min);
+  max = transformPoint3f(mMatrix ,max);
+  center = transformPoint3f(mMatrix, center);
+  
+  x = max[0]-min[0];
+  y = max[1]-min[1];
+  z = max[2]-min[2];
+  
+  float radius = sqrt(x*x+y*y+z*z);
   std::cout << "min    = ( "<< min[0] << " " << min[1] << " " << min[2] << ")" << std::endl;
   std::cout << "max    = ( "<< max[0] << " " << max[1] << " " << max[2] << ")" << std::endl;
   std::cout << "Center = ( "<< center[0] << " " << center[1] << " " << center[2] << ")" << std::endl;

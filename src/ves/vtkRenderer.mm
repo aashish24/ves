@@ -35,9 +35,15 @@ vtkRenderer::~vtkRenderer()
 
 void vtkRenderer::Read()
 {
-  _view = makeTranslationMatrix4x4(vtkVector3f(mActor->center[0],mActor->center[1],mActor->radius));
-  _view = makeScaleMatrix4x4(1/mActor->radius)*_view;
-  resize(_width,_height,mActor->radius);
+//  _view = makeScaleMatrix4x4(1/mActor->radius)*
+//          makeTranslationMatrix4x4(vtkVector3f(mActor->center[0],mActor->center[1],mActor->radius));
+//  
+  //_view = makeScaleMatrix4x4(1/mActor->radius);
+  float scaleToFit = mActor->GetMax()[0]/2;
+  std::cout<< "Scale to fit = "<< scaleToFit <<std::endl;
+  _view = makeTranslationMatrix4x4(vtkVector3f(0,0,2))* makeScaleMatrix4x4(.1);
+  //_model = makeScaleMatrix4x4(1/mActor->radius);
+  resize(_width,_height,1);
 }
 
 void vtkRenderer::resize(int width, int height, float scale)
@@ -46,7 +52,7 @@ void vtkRenderer::resize(int width, int height, float scale)
     _width = width;
     _height = height;
   }
-  const GLfloat nearp = .7, farp = 5, fov = 60*M_PI/360.0*scale*.5;
+  const GLfloat nearp = .1, farp = 10, fov = 90*M_PI/360.0*scale*.5;
   float aspect,left,right,bottom,top;
   if(_width > _height) {
     aspect = _width/_height;
@@ -118,7 +124,7 @@ void vtkRenderer::Render()
 	
   vtkMatrix3x3f normal_matrix = makeNormalMatrix3x3f(_view);
   vtkMatrix4x4f temp = makeNormalizedMatrix4x4(makeTransposeMatrix4x4(_model));
-  vtkPoint3f lightDir = transformVector4f(temp,vtkPoint3f(0.0,0.0,.650));
+  vtkPoint3f lightDir = transformPoint3f(temp,vtkPoint3f(0.0,0.0,.650));
 	
   vtkVector3f light(lightDir.mData[0],lightDir.mData[1],lightDir.mData[2]);
   glUniformMatrix4fv(this->Program->GetUniform("u_mvpMatrix"), 1, GL_FALSE, mvp.mData);
