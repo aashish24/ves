@@ -13,34 +13,33 @@
  
  =========================================================================*/
 
-#ifndef RENDERER_H
-#define RENDERER_H
+#ifndef __vtkRenderer_h
+#define __vtkRenderer_h
 
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
 #import <QuartzCore/QuartzCore.h>
-#include "gmtl/Math.h"
-//include "vtkMatrix.h"
 #include <string>
-#include "vtkCamera.h"
 #include "vtkGMTL.h"
-#include "vtkFileReader.h"
+#include "vtkCamera.h"
 #include "vtkShaderProgram.h"
 #include "vtkActor.h"
 
 class vtkRenderer
 {
 public:
-  vtkRenderer();
+  vtkRenderer(vtkCamera *camera);
+  //vtkRenderer(vtkShaderProgram* program, vktCamera* camera, vtkActor *actor)
+
   ~vtkRenderer();
 
   void Render();
-
-  void Render(float xrot, float yrot, float scale, float xtrans, float ytrans);
+  
+  //void Render(float xrot, float yrot, float scale, float xtrans, float ytrans);
 
   void SetProgram(vtkShaderProgram* program)
   {
-    this->Program = program;
+    this->mProgram = program;
   }
   
   void SetActor(vtkActor* actor)
@@ -52,14 +51,16 @@ public:
   void Read();
 
   void resetView();
-  //void release();
-	void resize(int widht,int height, float scale);
+ 	void resize(int widht,int height, float scale);
 
   
-
+protected:
+  void CopyCamera2Model();
+  
 private:
-  vtkCamera mCamera;
-  vtkShaderProgram* Program;
+  vtkCamera* mCamera;
+  vtkShaderProgram* mProgram;
+  vtkActor *mActor;
   
   // Runtime
   vtkMatrix4x4f _model;
@@ -69,8 +70,7 @@ private:
 
   vtkMatrix4x4f m_mv_matrix;
   vtkMatrix3x3f m_normal_matrix;
-  double m_rotation;
-  vtkActor *mActor;
+  
   bool once;
 };
 

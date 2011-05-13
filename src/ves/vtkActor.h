@@ -6,6 +6,9 @@
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
+#ifndef __vtkActor_h
+#define __vtkActor_h
+
 #include "vtkGMTL.h"
 #include "vtkShaderProgram.h"
 #include "vtkFileReader.h"
@@ -35,3 +38,4 @@ protected:
   
  };
 
+#endif

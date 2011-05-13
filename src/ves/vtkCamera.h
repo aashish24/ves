@@ -12,6 +12,8 @@
 #import <QuartzCore/QuartzCore.h>
 #include "vtkGMTL.h"
 
+#define GMTL_CAMERA 0
+
 class vtkCamera
 {
 public:

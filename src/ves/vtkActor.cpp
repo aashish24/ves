@@ -22,9 +22,10 @@ vtkActor::~vtkActor()
 
 void vtkActor::Read()
 {
-  mMapper->Read();
-  ComputeCenterAndRadius(mMapper->GetMin(),
-                         mMapper->GetMax());
+  if(mMapper->Read())
+  {
+    ComputeCenterAndRadius(mMapper->GetMin(), mMapper->GetMax());
+  }
  }
 
 void vtkActor::Print(vtkShaderProgram *program)

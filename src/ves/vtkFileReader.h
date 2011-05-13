@@ -13,10 +13,9 @@
  
  =========================================================================*/
 
-#ifndef vtkFileReader_H
-#define vtkFileReader_H
+#ifndef vtkFileReader_h
+#define vtkFileReader_h
 
-//#include "vtkMatrix.h"
 #include "vtkGMTL.h"
 #include "vtkTriangleData.h"
 
@@ -29,9 +28,7 @@ class vtkFileReader
 public:
   vtkFileReader(std::string filename);
   ~vtkFileReader();
-
   virtual vtkTriangleData* Read() = 0;
-
 protected:
   std::string mFileName;
 };

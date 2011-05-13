@@ -17,8 +17,8 @@ public:
   vtkMapper(vtkFileReader* reader);
   ~vtkMapper();
   
-  void Read();
-  
+  bool Read();
+  void Reload(vtkFileReader *reader);
   void Print(vtkShaderProgram *program);
   
   vtkPoint3f GetMin();
@@ -27,6 +27,8 @@ public:
 protected:
   
   vtkFileReader *mFileReader;
+  bool mIsNew;
+
   vtkTriangleData *mData;
   bool m_initialized;
   unsigned int mMapperVBO[2];

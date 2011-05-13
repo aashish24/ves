@@ -5,24 +5,25 @@
 //  Created by kitware on 4/22/11.
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
-#ifndef __vtkShaderProgram__
-#define __vtkShaderProgram__
+#ifndef __vtkShaderProgram_h
+#define __vtkShaderProgram_h
 
 #include <OpenGLES/ES2/gl.h>
 #include <OpenGLES/ES2/glext.h>
 #include <map>
 #include <vector>
 #include <string>
+#include "vtkGMTL.h"
 
 using namespace std;
 
-struct cmp_str
-{
-  bool operator()(char const *a, char const *b)
-  {
-    return std::strcmp(a, b) < 0;
-  }
-};
+//struct cmp_str
+//{
+//  bool operator()(char const *a, char const *b)
+//  {
+//    return std::strcmp(a, b) < 0;
+//  }
+//};
 
 struct vtkStringList
 {
@@ -74,6 +75,31 @@ struct vtkShaderProgram
       glDeleteProgram(this->Program);
       this->Program = 0;
     } 
+  }
+  
+  void SetUniformMatrix4x4f(string str, vtkMatrix4x4f& mat)
+  {
+    glUniformMatrix4fv(this->GetUniform(str), 1, GL_FALSE, mat.mData);
+  }
+  
+  void SetUniformMatrix3x3f(string str, vtkMatrix3x3f& mat)
+  {
+    glUniformMatrix3fv(this->GetUniform(str), 1, GL_FALSE, mat.mData); 
+  }
+  
+  void SetUniformVector3f(string str, vtkVector3f& point)
+  {
+    glUniform3fv(this->GetUniform(str), 1, point.mData);
+  }
+  
+  void EnableVertexArray(string str)
+  {
+  glEnableVertexAttribArray(this->GetAttribute(str));
+  }
+  
+  void DisableVertexArray(string str)
+  {
+    glDisableVertexAttribArray(this->GetAttribute(str));
   }
   
   void CompileAndLoadVertexShader(char* vertexShaderStr);
