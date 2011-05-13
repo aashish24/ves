@@ -9,7 +9,7 @@
 #include "vtkMapper.h"
 
 
-vtkMapper::vtkMapper(vtkFileReader* reader):mFileReader(reader), m_initialized(true)
+vtkMapper::vtkMapper(vtkFileReader* reader):mFileReader(reader), mData(NULL), m_initialized(true)
 {
   
 }
@@ -23,21 +23,26 @@ vtkMapper::~vtkMapper()
   {
     delete mFileReader;
   }
+  if(mData)
+  {
+    delete mData;
+  }
 }
 
 void vtkMapper::Read()
 {
-  mFileReader->Read();
+  mData = mFileReader->Read();
+  mData->ComputeNormals();
   glGenBuffers(2, mMapperVBO);
   glBindBuffer(GL_ARRAY_BUFFER, mMapperVBO[0]);
   glBufferData(GL_ARRAY_BUFFER, 
-               mFileReader->m_numPoints * 6 * sizeof(float),
-               mFileReader->m_points, 
+               mData->GetPoints().size() * 6 * sizeof(float),
+               &mData->GetPoints()[0], 
                GL_STATIC_DRAW);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mMapperVBO[1]);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, 
-               mFileReader->m_triangles.size() * 3 * sizeof(unsigned short),
-               &mFileReader->m_triangles[0], 
+               mData->GetTriangles().size() * 3 * sizeof(unsigned short),
+               &mData->GetTriangles()[0], 
                GL_STATIC_DRAW);
   
   glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -52,28 +57,28 @@ void vtkMapper::Print(vtkShaderProgram *program)
                         GL_FLOAT, 
                         0, 
                         6 * sizeof(float), 
-                        mFileReader->m_points);
+                        &mData->GetPoints()[0]);
   glVertexAttribPointer(program->GetAttribute("a_normal"), 
                         3, 
                         GL_FLOAT, 
                         0, 
                         6 * sizeof(float), 
-                        mFileReader->m_points[0].normal.mData);
+                        mData->GetPoints()[0].normal.mData);
   
   // Draw
   glDrawElements(GL_TRIANGLES, 
-                 mFileReader->m_triangles.size() * 3, 
+                 mData->GetTriangles().size() * 3, 
                  GL_UNSIGNED_SHORT, 
-                 &mFileReader->m_triangles[0]);
+                 &mData->GetTriangles()[0]);
 }
 
 vtkPoint3f vtkMapper::GetMin()
 {
-  return mFileReader->min;
+  return mData->GetMin();
 }
 
 vtkPoint3f vtkMapper::GetMax()
 {
-  return mFileReader->max;
+  return mData->GetMax();
 }
 

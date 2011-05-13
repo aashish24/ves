@@ -27,6 +27,7 @@ public:
 protected:
   
   vtkFileReader *mFileReader;
+  vtkTriangleData *mData;
   bool m_initialized;
   unsigned int mMapperVBO[2];
 };

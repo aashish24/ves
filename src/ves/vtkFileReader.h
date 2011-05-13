@@ -18,38 +18,22 @@
 
 //#include "vtkMatrix.h"
 #include "vtkGMTL.h"
+#include "vtkTriangleData.h"
+
 #include <vector>
-
-// Small struct packing a point and normal together in a vertex
-// Memory layout is 3 floats for a point followed by 3 floats for a normal
-struct Vertex3f
-{
-  vtkVector3f point;
-  vtkVector3f normal;
-};
-
 #include <string>
 #include <fstream>
 
 class vtkFileReader
 {
 public:
-  vtkFileReader(std::string fileName);
+  vtkFileReader(std::string filename);
   ~vtkFileReader();
 
-  bool Read();
+  virtual vtkTriangleData* Read() = 0;
 
-  unsigned int m_numPoints;
-  Vertex3f *m_points;
-  vtkPoint3f min,max;
-  std::vector<vtkVector3us> m_triangles;
-  
-private:
+protected:
   std::string mFileName;
-  void ComputeCenterAndRadius();
-  void readPoints(std::ifstream &file, Vertex3f *v, int n);
-  void readNormals(std::ifstream &file, Vertex3f *v, int n);
-  void readPolygons(std::ifstream &file, std::vector<vtkVector3us>& triangleCells, int numPolygons);
 };
 
 #endif
