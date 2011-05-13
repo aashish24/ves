@@ -31,7 +31,7 @@ vtkTriangleData* vtkLegacyReader::Read()
       unsigned short n = 0;
       fileStream >> n >> str;
       t->GetPoints().resize(n);
-      readPoints(fileStream, t->GetMin(), t->GetMax(), &t->GetPoints()[0], n);
+      readPoints(fileStream, &t->GetPoints()[0], n);
     }
     else if (str == "POLYGONS") {
       unsigned int n = 0, e = 0;
@@ -43,29 +43,19 @@ vtkTriangleData* vtkLegacyReader::Read()
       fileStream >> n;
       while (str != "float")
         fileStream >> str;
-      if (n == t->GetPoints().size())
+      if (n == t->GetPoints().size()) {
         readNormals(fileStream, &t->GetPoints()[0],  n);
+        //t->SetHasNormals(true);
+      }
     }
   }
   return t;
 }
 
-void vtkLegacyReader::readPoints(std::ifstream &file, vtkVector3f& min, vtkVector3f& max, vtkVertex3f *v, int n)
+void vtkLegacyReader::readPoints(std::ifstream &file, vtkVertex3f *v, int n)
 {
 	for (int i = 0; i < n; ++i, ++v){
 		file >> v->point[0] >> v->point[1] >> v->point[2];
-		if(0==i){
-			min[0] = max[0] = v->point[0];
-			min[1] = max[1] = v->point[1];
-			min[2] = max[2] = v->point[2];
-		}else {
-			if(v->point[0] < min[0]) min[0] = v->point[0];
-			if(v->point[1] < min[1]) min[1] = v->point[1];
-			if(v->point[2] < min[2]) min[2] = v->point[2];
-			if(v->point[0] > max[0]) max[0] = v->point[0];
-			if(v->point[1] > max[1]) max[1] = v->point[1];
-			if(v->point[2] > max[2]) max[2] = v->point[2];
-		}
 	}
 }
 

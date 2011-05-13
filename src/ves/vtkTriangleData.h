@@ -1,7 +1,7 @@
 /*=========================================================================
  
  Program:   Visualization Toolkit
- Module:    vtkLegacyReader.h
+ Module:    vtkTriangleData.h
  
  Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
  All rights reserved.
@@ -13,34 +13,38 @@
  
  =========================================================================*/
 
-#ifndef vtkLegacyReader_H
-#define vtkLegacyReader_H
+#ifndef vtkTriangleData_H
+#define vtkTriangleData_H
 
-#include "vtkFileReader.h"
+#include "vtkGMTL.h"
+#include <vector>
 
 // Small struct packing a point and normal together in a vertex
 // Memory layout is 3 floats for a point followed by 3 floats for a normal
-struct Vertex3f
+struct vtkVertex3f
 {
   vtkVector3f point;
   vtkVector3f normal;
 };
 
-#include <string>
-#include <fstream>
-
-class vtkLegacyReader : public vtkFileReader
+class vtkTriangleData
 {
 public:
-  vtkLegacyReader(std::string filename) : vtkFileReader(filename) {}
-  ~vtkLegacyReader() {}
-
-  virtual vtkTriangleData* Read();
-
-private:
-  void readPoints(std::ifstream &file, vtkVertex3f *v, int n);
-  void readNormals(std::ifstream &file, vtkVertex3f *v, int n);
-  void readPolygons(std::ifstream &file, std::vector<vtkVector3us>& triangleCells, int numPolygons);
+  vtkTriangleData();
+  std::vector<vtkVertex3f>& GetPoints() { return this->Points; }
+  std::vector<vtkVector3us>& GetTriangles() { return this->Triangles; }
+  vtkVector3f GetMin();
+  vtkVector3f GetMax();
+  void SetHasNormals(bool b) { this->HasNormals = b; }
+  void ComputeNormals();
+protected:
+  std::vector<vtkVertex3f> Points;
+  std::vector<vtkVector3us> Triangles;
+  vtkVector3f Min;
+  vtkVector3f Max;
+  bool HasBounds;
+  bool HasNormals;
+  void ComputeBounds();
 };
 
 #endif

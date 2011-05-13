@@ -23,6 +23,7 @@
 #include <ctype.h>
 #include <iostream>
 #include <vector>
+#include <map>
 
 #define VTK_ASCII 0
 #define VTK_BINARY 1
@@ -198,6 +199,21 @@ vtkTriangleData* vtkSTLReader::Read()
   return t;
 }
 
+struct VectorCompare
+{
+  bool operator()(const vtkVector3f& a, const vtkVector3f& b)
+  {
+    for (int i = 0; i < 3; ++i)
+      {
+      if (a[i] != b[i])
+        {
+        return a[i] < b[i];
+        }
+      }
+    return false;
+  }
+};
+
 int vtkSTLReader::ReadBinarySTL(FILE *fp, vtkTriangleData* t)
 {
   int i, numTris;
@@ -233,9 +249,8 @@ int vtkSTLReader::ReadBinarySTL(FILE *fp, vtkTriangleData* t)
   if (numTris < static_cast<int>(ulFileLength))
     numTris = static_cast<int>(ulFileLength);
 
-  // now we can allocate the memory we need for this STL file
-  //newPts->Allocate(numTris*3,10000);
-  //newPolys->Allocate(numTris,20000);
+  // Simple map for merging points (note that locations must match exactly)
+  std::map<vtkVector3f, int, VectorCompare> locations;
 
   for ( i=0; fread(&facet,48,1,fp) > 0; i++ )
     {
@@ -251,51 +266,59 @@ int vtkSTLReader::ReadBinarySTL(FILE *fp, vtkTriangleData* t)
     vtkVertex3f v;
     for (int j = 0; j < 3; ++j)
       {
-      if (i == 0)
-        {
-        t->GetMin()[j] = facet.v1[j];
-        t->GetMax()[j] = facet.v1[j];
-        }
-      else
-        {
-        t->GetMin()[j] = facet.v1[j] < t->GetMin()[j] ? facet.v1[j] : t->GetMin()[j];
-        t->GetMax()[j] = facet.v1[j] > t->GetMax()[j] ? facet.v1[j] : t->GetMax()[j];
-        }
-
       v.point[j] = facet.v1[j];
       v.normal[j] = facet.n[j];
       }
-    pts[0] = t->GetPoints().size();
-    t->GetPoints().push_back(v);
+    if (locations.find(v.point) != locations.end())
+      {
+      pts[0] = locations[v.point];
+      }
+    else
+      {
+      pts[0] = t->GetPoints().size();
+      //locations[v.point] = pts[0];
+      t->GetPoints().push_back(v);
+      }
 
     vtkByteSwap::Swap4LE (facet.v2);
     vtkByteSwap::Swap4LE (facet.v2+1);
     vtkByteSwap::Swap4LE (facet.v2+2);
     for (int j = 0; j < 3; ++j)
       {
-      t->GetMin()[j] = facet.v2[j] < t->GetMin()[j] ? facet.v2[j] : t->GetMin()[j];
-      t->GetMax()[j] = facet.v2[j] > t->GetMax()[j] ? facet.v2[j] : t->GetMax()[j];
       v.point[j] = facet.v2[j];
-      v.normal[j] = facet.n[j];
       }
-    pts[1] = t->GetPoints().size();
-    t->GetPoints().push_back(v);
-
+    if (locations.find(v.point) != locations.end())
+      {
+      pts[1] = locations[v.point];
+      }
+    else
+      {
+      pts[1] = t->GetPoints().size();
+      //locations[v.point] = pts[1];
+      t->GetPoints().push_back(v);
+      }
+    
     vtkByteSwap::Swap4LE (facet.v3);
     vtkByteSwap::Swap4LE (facet.v3+1);
     vtkByteSwap::Swap4LE (facet.v3+2);
     for (int j = 0; j < 3; ++j)
       {
-      t->GetMin()[j] = facet.v3[j] < t->GetMin()[j] ? facet.v3[j] : t->GetMin()[j];
-      t->GetMax()[j] = facet.v3[j] > t->GetMax()[j] ? facet.v3[j] : t->GetMax()[j];
       v.point[j] = facet.v3[j];
-      v.normal[j] = facet.n[j];
       }
-    pts[2] = t->GetPoints().size();
-    t->GetPoints().push_back(v);
-
+    if (locations.find(v.point) != locations.end())
+      {
+      pts[2] = locations[v.point];
+      }
+    else
+      {
+      pts[2] = t->GetPoints().size();
+      //locations[v.point] = pts[2];
+      t->GetPoints().push_back(v);
+      }
+    
     t->GetTriangles().push_back(pts);
     }
+  t->SetHasNormals(true);
   std::cerr << "Points: " << t->GetPoints().size() << std::endl;
   std::cerr << "Triangles: " << t->GetTriangles().size() << std::endl;
   return 0;
@@ -318,60 +341,62 @@ int vtkSTLReader::ReadASCIISTL(FILE *fp, vtkTriangleData* t)
   done = (fscanf(fp,"%s %*s %f %f %f\n", line, x, x+1, x+2)==EOF);
   if ((strcmp(line, "COLOR") == 0) || (strcmp(line, "color") == 0))
     {
-      done = (fscanf(fp,"%s %*s %f %f %f\n", line, x, x+1, x+2)==EOF);
+    done = (fscanf(fp,"%s %*s %f %f %f\n", line, x, x+1, x+2)==EOF);
     }
 
+  // Simple map for merging points (note that locations must match exactly)
+  std::map<vtkVector3f, int, VectorCompare> locations;
+  
   //  Go into loop, reading  facet normal and vertices
-  //
-//  while (fscanf(fp,"%*s %*s %f %f %f\n", x, x+1, x+2)!=EOF)
-  bool first = true;
   while (!done)
     {
-//if (ctr>=253840) {
-//    fprintf(stdout, "Reading record %d\n", ctr);
-//}
-//ctr += 7;
     fgets (line, 255, fp);
     fscanf (fp, "%*s %f %f %f\n", x,x+1,x+2);
     vtkVertex3f v;
     for (int j = 0; j < 3; ++j)
       {
-      if (first)
-        {
-        first = false;
-        t->GetMin()[j] = x[j];
-        t->GetMax()[j] = x[j];
-        }
-      else
-        {
-        t->GetMin()[j] = x[j] < t->GetMin()[j] ? x[j] : t->GetMin()[j];
-        t->GetMax()[j] = x[j] > t->GetMax()[j] ? x[j] : t->GetMax()[j];
-        }
       v.point[j] = x[j];
-      v.normal[j] = j ? 0 : 1;
       }
-    pts[0] = t->GetPoints().size();
-    t->GetPoints().push_back(v);
+    if (locations.find(v.point) != locations.end())
+      {
+      pts[0] = locations[v.point];
+      }
+    else
+      {
+      pts[0] = t->GetPoints().size();
+      //locations[v.point] = pts[0];
+      t->GetPoints().push_back(v);
+      }
     fscanf (fp, "%*s %f %f %f\n", x,x+1,x+2);
     for (int j = 0; j < 3; ++j)
       {
-      t->GetMin()[j] = x[j] < t->GetMin()[j] ? x[j] : t->GetMin()[j];
-      t->GetMax()[j] = x[j] > t->GetMax()[j] ? x[j] : t->GetMax()[j];
       v.point[j] = x[j];
-      v.normal[j] = j ? 0 : 1;
       }
-    pts[1] = t->GetPoints().size();
-    t->GetPoints().push_back(v);
+    if (locations.find(v.point) != locations.end())
+      {
+      pts[1] = locations[v.point];
+      }
+    else
+      {
+      pts[1] = t->GetPoints().size();
+      //locations[v.point] = pts[1];
+      t->GetPoints().push_back(v);
+      }
     fscanf (fp, "%*s %f %f %f\n", x,x+1,x+2);
     for (int j = 0; j < 3; ++j)
       {
-      t->GetMin()[j] = x[j] < t->GetMin()[j] ? x[j] : t->GetMin()[j];
-      t->GetMax()[j] = x[j] > t->GetMax()[j] ? x[j] : t->GetMax()[j];
       v.point[j] = x[j];
-      v.normal[j] = j ? 0 : 1;
       }
-    pts[2] = t->GetPoints().size();
-    t->GetPoints().push_back(v);
+    if (locations.find(v.point) != locations.end())
+      {
+      pts[2] = locations[v.point];
+      }
+    else
+      {
+      pts[2] = t->GetPoints().size();
+      //locations[v.point] = pts[2];
+      t->GetPoints().push_back(v);
+      }
     fgets (line, 255, fp); // end loop
     fgets (line, 255, fp); // end facet
 
@@ -392,15 +417,15 @@ int vtkSTLReader::ReadASCIISTL(FILE *fp, vtkTriangleData* t)
       done = (fscanf(fp,"%s", line)==EOF);
       if ((strstr(line, "COLOR") == 0) || (strstr(line, "color") == 0))
         {
-          done = (fscanf(fp,"%f %f %f\n", x,x+1,x+2)==EOF);
-          done = (fscanf(fp,"%s", line)==EOF);
+        done = (fscanf(fp,"%f %f %f\n", x,x+1,x+2)==EOF);
+        done = (fscanf(fp,"%s", line)==EOF);
         }
       }
-    if (!done) {
-    done = (fscanf(fp,"%*s %f %f %f\n", x, x+1, x+2)==EOF);
+    if (!done)
+      {
+      done = (fscanf(fp,"%*s %f %f %f\n", x, x+1, x+2)==EOF);
+      }
     }
-    }
-  //fprintf(stdout, "Maximum ctr val %d\n", ctr);
   return 0;
 }
 

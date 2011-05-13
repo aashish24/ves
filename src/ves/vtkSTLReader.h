@@ -18,12 +18,6 @@
 // lithography files (.stl files). The FileName must be specified to
 // vtkSTLReader. The object automatically detects whether the file is
 // ASCII or binary.
-//
-// .stl files are quite inefficient since they duplicate vertex 
-// definitions. By setting the Merging boolean you can control whether the 
-// point data is merged after reading. Merging is performed by default, 
-// however, merging requires a large amount of temporary storage since a 
-// 3D hash table must be constructed.
 
 // .SECTION Caveats
 // Binary files written on one system may not be readable on other systems.
