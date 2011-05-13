@@ -16,7 +16,7 @@
 #ifndef vtkFileReader_H
 #define vtkFileReader_H
 
-#include "vtkMatrix.h"
+//#include "vtkMatrix.h"
 #include "vtkGMTL.h"
 #include <vector>
 

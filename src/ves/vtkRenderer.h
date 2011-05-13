@@ -46,6 +46,7 @@ public:
   void SetActor(vtkActor* actor)
   {
     this->mActor = actor;
+    once = true;
   }
   
   void Read();
