@@ -45,7 +45,7 @@ vtkTriangleData* vtkLegacyReader::Read()
         fileStream >> str;
       if (n == t->GetPoints().size()) {
         readNormals(fileStream, &t->GetPoints()[0],  n);
-        //t->SetHasNormals(true);
+        t->SetHasNormals(true);
       }
     }
   }
