@@ -18,6 +18,7 @@
 vtkFileReader::vtkFileReader(std::string fileName)
 {
   this->mFileName = fileName;
+  this->mHasError = false;
 }
 
 vtkFileReader::~vtkFileReader()

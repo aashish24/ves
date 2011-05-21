@@ -47,7 +47,10 @@ bool vtkMapper::Read()
     mData = mFileReader->Read();
     mData->ComputeNormals();
     this->mIsNew = false;
-    
+  
+    if (mFileReader->HasError()) {
+      return false;
+    }
     glGenBuffers(2, mMapperVBO);
     glBindBuffer(GL_ARRAY_BUFFER, mMapperVBO[0]);
     glBufferData(GL_ARRAY_BUFFER, 

@@ -162,12 +162,14 @@ vtkTriangleData* vtkSTLReader::Read()
   FILE *fp;
   vtkPoints *newPts;
   vtkCellArray *newPolys;
+  this->mHasError = false;
 
   // Initialize
   //
   if ((fp = fopen(this->mFileName.c_str(), "r")) == NULL)
     {
     vtkErrorMacro(<< "File " << this->mFileName << " not found");
+    this->mHasError = true;
     return 0;
     }
 

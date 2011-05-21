@@ -17,23 +17,42 @@
 
 vtkTriangleData* vtkLegacyReader::Read()
 {  
+  mHasError = false;
+  
   std::ifstream fileStream(mFileName.c_str());
   if (!fileStream) {
+    mHasError = true;
     return false;
   }
+  
+  bool hasPoints = false;
+  bool hasPolygons = false;
   
   vtkTriangleData* t = new vtkTriangleData();
   while (!fileStream.eof()) {
     std::string str;
     fileStream >> str;
-    
-    if (str == "POINTS") {
+    if (str == "BINARY") {
+      mHasError = true;
+      break;
+    }
+    else if (str == "DATASET") {
+      std::string datatype;
+      fileStream >> datatype;
+      if (datatype != "POLYDATA") {
+        mHasError = true;
+        break;
+      }
+    }
+    else if (str == "POINTS") {
+      hasPoints = true;
       unsigned short n = 0;
       fileStream >> n >> str;
       t->GetPoints().resize(n);
       readPoints(fileStream, &t->GetPoints()[0], n);
     }
     else if (str == "POLYGONS") {
+      hasPolygons = true;
       unsigned int n = 0, e = 0;
       fileStream >> n >> e;
       readPolygons(fileStream, t->GetTriangles(), n);
@@ -48,6 +67,10 @@ vtkTriangleData* vtkLegacyReader::Read()
         t->SetHasNormals(true);
       }
     }
+  }
+  if (!hasPoints || !hasPolygons)
+  {
+    mHasError = true;
   }
   return t;
 }
@@ -68,6 +91,7 @@ void vtkLegacyReader::readNormals(std::ifstream &file, vtkVertex3f *v, int n)
 void vtkLegacyReader::readPolygons(std::ifstream &file, std::vector<vtkVector3us>& triangleCells, int numPolygons)
 {
   unsigned short numVertices = 0;
+  unsigned short numPolygonsRead = 0;
   for (int i = 0; i < numPolygons; ++i) 
   {
     file >> numVertices;
@@ -76,6 +100,7 @@ void vtkLegacyReader::readPolygons(std::ifstream &file, std::vector<vtkVector3us
       vtkVector3us indices;
       file >> indices[0] >> indices[1] >> indices[2];
       triangleCells.push_back(indices);
+      numPolygonsRead++;
     }
     else if (numVertices == 4)
     {
@@ -86,7 +111,12 @@ void vtkLegacyReader::readPolygons(std::ifstream &file, std::vector<vtkVector3us
       indices2[2] = indices1[2];
       triangleCells.push_back(indices1);
       triangleCells.push_back(indices2);
+      numPolygonsRead++;
     }
+  }
+  if (numPolygonsRead == 0)
+  {
+    mHasError = true;
   }
 }
 
