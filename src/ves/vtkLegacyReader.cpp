@@ -60,8 +60,28 @@ vtkTriangleData* vtkLegacyReader::Read()
     else if (str == "POINT_DATA") {
       unsigned short n = 0;
       fileStream >> n;
-      while (str != "float")
+
+      // make sure we read the normals and not something like scalar data
+      while (!fileStream.eof() && str != "NORMALS")
+      {
         fileStream >> str;
+      }
+      if (fileStream.eof())
+      {
+        mHasError = true;
+        break;
+      }
+      
+      while (!fileStream.eof() && str != "float")
+      {
+        fileStream >> str;
+      }
+      if (fileStream.eof())
+      {
+        mHasError = true;
+        break;
+      }
+      
       if (n == t->GetPoints().size()) {
         readNormals(fileStream, &t->GetPoints()[0],  n);
         t->SetHasNormals(true);
@@ -72,6 +92,7 @@ vtkTriangleData* vtkLegacyReader::Read()
   {
     mHasError = true;
   }
+  fileStream.close();
   return t;
 }
 
