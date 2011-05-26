@@ -107,3 +107,7 @@ vtkPoint3f vtkMapper::GetMax()
   return mData->GetMax();
 }
 
+vtkTriangleData* vtkMapper::GetTriangleData()
+{
+  return mData;
+}

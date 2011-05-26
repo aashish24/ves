@@ -24,6 +24,8 @@ public:
   vtkPoint3f GetMin();
   
   vtkPoint3f GetMax();
+  vtkTriangleData* GetTriangleData();
+  
 protected:
   
   vtkFileReader *mFileReader;
