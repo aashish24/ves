@@ -30,9 +30,11 @@ public:
   ~vtkFileReader();
   virtual vtkTriangleData* Read() = 0;
   virtual bool HasError() { return this->mHasError; }
+  virtual std::string GetErrorMessage() { return this->mErrorMessage; }
 protected:
   std::string mFileName;
   bool mHasError;
+  std::string mErrorMessage;
 };
 
 #endif

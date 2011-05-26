@@ -46,8 +46,13 @@ vtkTriangleData* vtkLegacyReader::Read()
     }
     else if (str == "POINTS") {
       hasPoints = true;
-      unsigned short n = 0;
+      size_t n = 0;
       fileStream >> n >> str;
+      if (n > (1 << 16)) {
+        this->mHasError = true;
+        this->mErrorMessage = "File too large (limit is 65,536 points).";
+        break;
+      }
       t->GetPoints().resize(n);
       readPoints(fileStream, &t->GetPoints()[0], n);
     }

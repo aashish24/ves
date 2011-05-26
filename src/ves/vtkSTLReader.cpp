@@ -257,6 +257,13 @@ int vtkSTLReader::ReadBinarySTL(FILE *fp, vtkTriangleData* t)
   for ( i=0; fread(&facet,48,1,fp) > 0; i++ )
     {
     fread(&ibuff2,2,1,fp); //read extra junk
+    
+    if (t->GetPoints().size()+3 > (1 << 16))
+      {
+      this->mHasError = true;
+      this->mErrorMessage = "File too large (limit is 65,536 points).";
+      break;
+      }
 
     vtkByteSwap::Swap4LE (facet.n);
     vtkByteSwap::Swap4LE (facet.n+1);
@@ -352,6 +359,13 @@ int vtkSTLReader::ReadASCIISTL(FILE *fp, vtkTriangleData* t)
   //  Go into loop, reading  facet normal and vertices
   while (!done)
     {
+    if (t->GetPoints().size()+3 > (1 << 16))
+      {
+      this->mHasError = true;
+      this->mErrorMessage = "File too large (limit is 65,536 points).";
+      break;
+      }
+    
     fgets (line, 255, fp);
     fscanf (fp, "%*s %f %f %f\n", x,x+1,x+2);
     vtkVertex3f v;
