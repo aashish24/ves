@@ -33,6 +33,7 @@ public:
   vtkTriangleData();
   std::vector<vtkVertex3f>& GetPoints() { return this->Points; }
   std::vector<vtkVector3us>& GetTriangles() { return this->Triangles; }
+  std::vector<vtkVector2us>& GetLines() { return this->Lines; }
   vtkVector3f GetMin();
   vtkVector3f GetMax();
   void SetHasNormals(bool b) { this->HasNormals = b; }
@@ -40,6 +41,7 @@ public:
 protected:
   std::vector<vtkVertex3f> Points;
   std::vector<vtkVector3us> Triangles;
+  std::vector<vtkVector2us> Lines;
   vtkVector3f Min;
   vtkVector3f Max;
   bool HasBounds;

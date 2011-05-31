@@ -90,11 +90,17 @@ void vtkMapper::Print(vtkShaderProgram *program)
                         6 * sizeof(float), 
                         mData->GetPoints()[0].normal.mData);
   
-  // Draw
+  // draw triangles
   glDrawElements(GL_TRIANGLES, 
                  mData->GetTriangles().size() * 3, 
                  GL_UNSIGNED_SHORT, 
                  &mData->GetTriangles()[0]);
+  
+  // draw lines
+  glDrawElements(GL_LINES,
+                 mData->GetLines().size() * 2,
+                 GL_UNSIGNED_SHORT,
+                 &mData->GetLines()[0]);
 }
 
 vtkPoint3f vtkMapper::GetMin()

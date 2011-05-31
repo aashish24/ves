@@ -27,6 +27,7 @@ vtkTriangleData* vtkLegacyReader::Read()
   
   bool hasPoints = false;
   bool hasPolygons = false;
+  bool hasLines = false;
   
   vtkTriangleData* t = new vtkTriangleData();
   while (!fileStream.eof()) {
@@ -62,6 +63,12 @@ vtkTriangleData* vtkLegacyReader::Read()
       fileStream >> n >> e;
       readPolygons(fileStream, t->GetTriangles(), n);
     }
+    else if (str == "LINES") {
+      hasLines = true;
+      unsigned int n = 0, e = 0;
+      fileStream >> n >> e;
+      readLines(fileStream, t->GetLines(), n);
+    }
     else if (str == "POINT_DATA") {
       unsigned short n = 0;
       fileStream >> n;
@@ -93,7 +100,7 @@ vtkTriangleData* vtkLegacyReader::Read()
       }
     }
   }
-  if (!hasPoints || !hasPolygons)
+  if (!hasPoints || !(hasPolygons || hasLines))
   {
     mHasError = true;
   }
@@ -145,4 +152,26 @@ void vtkLegacyReader::readPolygons(std::ifstream &file, std::vector<vtkVector3us
     mHasError = true;
   }
 }
+
+void vtkLegacyReader::readLines(std::ifstream &file, std::vector<vtkVector2us>& lineCells, int numLines)
+{
+  unsigned short numVertices = 0;
+  unsigned short numLinesRead = 0;
+  for (int i = 0; i < numLines; ++i) 
+  {
+    file >> numVertices;
+    for (int j = 0; j < numVertices-1; ++j)
+    {
+      vtkVector2us indices;
+      file >> indices[0] >> indices[1];
+      lineCells.push_back(indices);
+      ++numLinesRead;
+    }
+  }
+  if (numLinesRead == 0)
+  {
+    mHasError = true;
+  }
+}
+
 

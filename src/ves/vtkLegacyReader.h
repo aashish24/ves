@@ -41,6 +41,7 @@ private:
   void readPoints(std::ifstream &file, vtkVertex3f *v, int n);
   void readNormals(std::ifstream &file, vtkVertex3f *v, int n);
   void readPolygons(std::ifstream &file, std::vector<vtkVector3us>& triangleCells, int numPolygons);
+  void readLines(std::ifstream &file, std::vector<vtkVector2us>& lineCells, int numLines);
 };
 
 #endif

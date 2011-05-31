@@ -19,6 +19,7 @@ typedef gmtl::Vec3f vtkVector3f;
 typedef gmtl::Vec4f vtkVector4f;
 typedef gmtl::Point3f vtkPoint3f;
 typedef gmtl::Vec<unsigned short,3> vtkVector3us;
+typedef gmtl::Vec<unsigned short, 2> vtkVector2us;
 
 //class vtkMatrix4x4f : public Matrix4x4f
 //{
