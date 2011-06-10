@@ -22,15 +22,8 @@ public:
   void Print(vtkShaderProgram *program);
   float radius;
   vtkMatrix4x4f mMatrix;
-  vtkPoint3f GetMin()
-  {
-   return transformPoint3f(mMatrix ,mMapper->GetMin()); 
-  }
-  
-  vtkPoint3f GetMax()
-  {
-    return transformPoint3f(mMatrix ,mMapper->GetMax());  
-  }
+  vtkPoint3f GetMin();
+  vtkPoint3f GetMax();
 protected:
   void ComputeCenterAndRadius(vtkPoint3f min, vtkPoint3f max);
   vtkMapper* mMapper;

@@ -28,6 +28,17 @@ void vtkActor::Read()
   }
  }
 
+vtkPoint3f vtkActor::GetMin()
+{
+  return transformPoint3f(mMatrix ,mMapper->GetMin()); 
+}
+
+
+vtkPoint3f vtkActor::GetMax()
+{
+  return transformPoint3f(mMatrix ,mMapper->GetMax());  
+}
+
 void vtkActor::Print(vtkShaderProgram *program)
 {
   mMapper->Print(program);
