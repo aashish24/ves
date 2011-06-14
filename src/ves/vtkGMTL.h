@@ -35,11 +35,12 @@ typedef gmtl::Vec<unsigned short, 2> vtkVector2us;
 //  vtkMatrix4x4f& operator= (const vtkMatrix4x4f &rhs);
 //};
 
-vtkMatrix4x4f makeScaleMatrix4x4(float scale);
+vtkMatrix4x4f makeScaleMatrix4x4(float x, float y, float z);
 vtkMatrix4x4f makeRotationMatrix4x4(float angle, float x, float y, float z);
 vtkMatrix4x4f makeTranslationMatrix4x4(vtkVector3f trans);
 vtkVector3f makeTranslationVector3f(vtkMatrix4x4f matrix);
 vtkMatrix4x4f makeTransposeMatrix4x4(vtkMatrix4x4f matrix);
+vtkMatrix4x4f makeInverseMatrix4x4(vtkMatrix4x4f matrix);
 
 vtkMatrix4x4f makeOrthoMatrix4x4(float left, 
                                  float right, 

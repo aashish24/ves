@@ -43,9 +43,9 @@
 //  return *this;
 //}
 
-vtkMatrix4x4f makeScaleMatrix4x4(float scale)
+vtkMatrix4x4f makeScaleMatrix4x4(float x, float y ,float z)
 {
-  return gmtl::makeScale<vtkMatrix4x4f>(scale);
+  return gmtl::makeScale<vtkMatrix4x4f>(vtkVector3f(x,y,z));
 }
 
 vtkMatrix4x4f makeRotationMatrix4x4(float angle, float x, float y, float z)
@@ -69,6 +69,14 @@ vtkMatrix4x4f makeTransposeMatrix4x4(vtkMatrix4x4f matrix)
   gmtl::transpose(mat);
   return mat;
 }
+
+vtkMatrix4x4f makeInverseMatrix4x4(vtkMatrix4x4f matrix)
+{
+  vtkMatrix4x4f mat = matrix;
+  gmtl::invert(mat);
+  return mat;
+}
+
 
 vtkMatrix4x4f makeOrthoMatrix4x4(float left, 
                                  float right, 

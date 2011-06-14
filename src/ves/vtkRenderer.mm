@@ -45,7 +45,7 @@ void vtkRenderer::Read()
 {
   CopyCamera2Model();
   this->mActor->Read();
-  _view = makeTranslationMatrix4x4(vtkVector3f(0,0,2))* makeScaleMatrix4x4(.1);
+  _view = makeTranslationMatrix4x4(vtkVector3f(0,0,2))* makeScaleMatrix4x4(.1,.1,.1);
   resize(_width,_height,1);
 }
 
@@ -114,7 +114,7 @@ void vtkRenderer::Render()
   
   // Work out the appropriate matrices
   vtkMatrix4x4f mvp;
-  mvp = _proj * _view * _model * mActor->mMatrix;
+  mvp = _proj * _view * _model * (*mActor)();
 	
   vtkMatrix3x3f normal_matrix = makeNormalMatrix3x3f(_view);
   vtkMatrix4x4f temp = makeNormalizedMatrix4x4(makeTransposeMatrix4x4(_model));

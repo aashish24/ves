@@ -144,7 +144,7 @@ void vtkCamera::UpdateMatrixGMTL(const float xRotation,
   vtkMatrix4x4f matrix = makeTransposeMatrix4x4(_matrix);
 	
 	// Scale the view to fit current multitouch scaling
-  matrix = makeScaleMatrix4x4(scaleFactor) * matrix;
+  matrix = makeScaleMatrix4x4(scaleFactor,scaleFactor,scaleFactor) * matrix;
   
   
   // Perform incremental rotation based on current angles in X and Y

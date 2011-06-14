@@ -20,6 +20,11 @@ vtkActor::~vtkActor()
   }
 }
 
+vtkMatrix4x4f vtkActor::operator()()
+{
+  return mMatrix;
+}
+
 void vtkActor::Read()
 {
   if(mMapper->Read())
@@ -27,6 +32,17 @@ void vtkActor::Read()
     ComputeCenterAndRadius(mMapper->GetMin(), mMapper->GetMax());
   }
  }
+
+vtkMatrix4x4f vtkActor::Eval()
+{
+  return mMatrix;
+}
+
+void vtkActor::Print(vtkShaderProgram *program)
+{
+  mMapper->Print(program);
+  glVertexAttrib4f(program->GetAttribute("a_texcoord"), 0.8, 0.8, 0.8, 1.0);
+}
 
 vtkPoint3f vtkActor::GetMin()
 {
@@ -37,12 +53,6 @@ vtkPoint3f vtkActor::GetMin()
 vtkPoint3f vtkActor::GetMax()
 {
   return transformPoint3f(mMatrix ,mMapper->GetMax());  
-}
-
-void vtkActor::Print(vtkShaderProgram *program)
-{
-  mMapper->Print(program);
-  glVertexAttrib4f(program->GetAttribute("a_texcoord"), 0.8, 0.8, 0.8, 1.0);
 }
 
 void vtkActor::ComputeCenterAndRadius(vtkPoint3f min, vtkPoint3f max)
@@ -61,7 +71,7 @@ void vtkActor::ComputeCenterAndRadius(vtkPoint3f min, vtkPoint3f max)
   std::cout << "Radius = " << radius <<std::endl;
   
   mMatrix = //makeTranslationMatrix4x4(center)*
-  makeScaleMatrix4x4(1/radius)*
+  makeScaleMatrix4x4(1/radius,1/radius,1/radius)*
             makeTranslationMatrix4x4(-center);
   //mMatrix = makeTranslationMatrix4x4(-center)* mMatrix;
   

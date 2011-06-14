@@ -13,22 +13,27 @@
 #include "vtkShaderProgram.h"
 #include "vtkFileReader.h"
 #include "vtkMapper.h"
-class vtkActor
+#include "vtkBoundedObject.h"
+#include <list>
+
+class vtkActor : public vtkBoundedObject
 {
 public:
   vtkActor(vtkMapper* mapper);
   ~vtkActor();
+  vtkMatrix4x4f operator ()();
   void Read();
+  vtkMatrix4x4f Eval();
   void Print(vtkShaderProgram *program);
-  float radius;
-  vtkMatrix4x4f mMatrix;
+private:
   vtkPoint3f GetMin();
   vtkPoint3f GetMax();
 protected:
   void ComputeCenterAndRadius(vtkPoint3f min, vtkPoint3f max);
-  vtkMapper* mMapper;
   vtkVector3f center;
-  
+  float radius;
+  vtkMatrix4x4f mMatrix;
+  vtkMapper* mMapper;
  };
 
 #endif
