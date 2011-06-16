@@ -7,87 +7,66 @@
 //
 
 #include "vtkActor.h"
+#include "vtkMapper.h"
 
-vtkActor::vtkActor(vtkMapper* mapper): mMapper(mapper)
+vtkActor::vtkActor()
+{
+ this->Mapper = 0;
+  this->Shader =0;
+}
+vtkActor::vtkActor(vtkShader *shader,vtkMapper* mapper): 
+  Shader(shader),Mapper(mapper)
 {
 }
 
 vtkActor::~vtkActor()
 {
-  if(mMapper)
+  if(this->Mapper)
   {
-  delete mMapper;
+  delete this->Mapper;
   }
 }
 
-vtkMatrix4x4f vtkActor::operator()()
+void vtkActor::AddChild(vtkActor* actor)
 {
-  return mMatrix;
+  vector<vtkChildNode*> actorList;
+  actorList.push_back(actor);
+  AddChildren(actorList);
 }
+vtkMatrix4x4f vtkActor::Eval()
+{
+//  vtkMatrix4x4f temp = this->vtkTransform::Eval();
+//  vtkMatrix4x4f temp1 = this->Mapper->Eval();
+//  return temp*temp1;
+  return vtkTransform::Eval() * this->Mapper->Eval();
+} 
 
 void vtkActor::Read()
 {
-  if(mMapper->Read())
+  for (int i =0; i<this->Children.size(); ++i)
   {
-    ComputeCenterAndRadius(mMapper->GetMin(), mMapper->GetMax());
+    vtkActor* child = (vtkActor*) this->Children[i];
+    child->Read();
   }
- }
-
-vtkMatrix4x4f vtkActor::Eval()
-{
-  return mMatrix;
+  if(this->Mapper)
+  {
+    this->Mapper->Read();
+  }
 }
 
-void vtkActor::Print(vtkShaderProgram *program)
+void vtkActor::Render(vtkShaderProgram *program)
 {
-  mMapper->Print(program);
+  for (int i =0; i<this->Children.size(); ++i)
+  {
+    vtkActor* child = (vtkActor*) this->Children[i];
+    child->Render(program);
+  }
+  if (this->Mapper)
+  {
+  this->Mapper->Render(program);
   glVertexAttrib4f(program->GetAttribute("a_texcoord"), 0.8, 0.8, 0.8, 1.0);
-}
-
-vtkPoint3f vtkActor::GetMin()
-{
-  return transformPoint3f(mMatrix ,mMapper->GetMin()); 
+  }
 }
 
 
-vtkPoint3f vtkActor::GetMax()
-{
-  return transformPoint3f(mMatrix ,mMapper->GetMax());  
-}
-
-void vtkActor::ComputeCenterAndRadius(vtkPoint3f min, vtkPoint3f max)
-{
-  center[0] = (min[0]+max[0])/2;
-  center[1] = (min[1]+max[1])/2;
-  center[2] = (min[2]+max[2])/2;
-  float x = max[0]-min[0];
-  float y = max[1]-min[1];
-  float z = max[2]-min[2];
-  radius = sqrt(x*x+y*y+z*z);
-  
-  std::cout << "min    = ( "<< min[0] << " " << min[1] << " " << min[2] << ")" << std::endl;
-  std::cout << "max    = ( "<< max[0] << " " << max[1] << " " << max[2] << ")" << std::endl;
-  std::cout << "Center = ( "<< center[0] << " " << center[1] << " " << center[2] << ")" << std::endl;
-  std::cout << "Radius = " << radius <<std::endl;
-  
-  mMatrix = //makeTranslationMatrix4x4(center)*
-  makeScaleMatrix4x4(1/radius,1/radius,1/radius)*
-            makeTranslationMatrix4x4(-center);
-  //mMatrix = makeTranslationMatrix4x4(-center)* mMatrix;
-  
-  std::cout << "Apply Transformations---------" << std::endl;
-  min = transformPoint3f(mMatrix ,min);
-  max = transformPoint3f(mMatrix ,max);
-  center = transformPoint3f(mMatrix, center);
-  
-  x = max[0]-min[0];
-  y = max[1]-min[1];
-  z = max[2]-min[2];
-  
-  float radius = sqrt(x*x+y*y+z*z);
-  std::cout << "min    = ( "<< min[0] << " " << min[1] << " " << min[2] << ")" << std::endl;
-  std::cout << "max    = ( "<< max[0] << " " << max[1] << " " << max[2] << ")" << std::endl;
-  std::cout << "Center = ( "<< center[0] << " " << center[1] << " " << center[2] << ")" << std::endl;
-  std::cout << "Radius = " << radius <<std::endl;
-}
 

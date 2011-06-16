@@ -11,29 +11,28 @@
 
 #include "vtkGMTL.h"
 #include "vtkShaderProgram.h"
-#include "vtkFileReader.h"
-#include "vtkMapper.h"
-#include "vtkBoundedObject.h"
+#include "vtkTransform.h"
 #include <list>
 
-class vtkActor : public vtkBoundedObject
+class vtkShader;
+class vtkMapper;
+class vtkShader;
+// -----------------------------------------------------------------------class
+class vtkActor : public vtkTransform
 {
 public:
-  vtkActor(vtkMapper* mapper);
+  vtkActor(); // needs to go after scene graph rendering
+  vtkActor(vtkShader* shader,vtkMapper* mapper);
   ~vtkActor();
-  vtkMatrix4x4f operator ()();
-  void Read();
   vtkMatrix4x4f Eval();
-  void Print(vtkShaderProgram *program);
+  void Read();
+  void Render(vtkShaderProgram *program); // needs to go after SG rendering
+  void AddChild(vtkActor* actor);
 private:
-  vtkPoint3f GetMin();
-  vtkPoint3f GetMax();
+  
 protected:
-  void ComputeCenterAndRadius(vtkPoint3f min, vtkPoint3f max);
-  vtkVector3f center;
-  float radius;
-  vtkMatrix4x4f mMatrix;
-  vtkMapper* mMapper;
+  vtkMapper* Mapper;
+  vtkShader* Shader;
  };
 
 #endif

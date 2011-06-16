@@ -17,15 +17,11 @@ class vtkGroupingNode: public vtkChildNode , public vtkBoundedObject
 public:
   vtkGroupingNode();
   virtual ~vtkGroupingNode();
-  
   void AddChildren(const std::vector<vtkChildNode*> &children);
   void RemoveChildren(const std::vector<vtkChildNode*> &children);
-  void SetChildren(const std::vector<vtkChildNode*> &children);
-  bool GetChildren(std::vector<vtkChildNode*> &children);
+  vtkSetGetVectorMacro(Children, vtkChildNode*)
 
-  
-  virtual void Eval(){}
-private:
+  protected:
   std::vector<vtkChildNode*> Children;
 };
 

@@ -47,16 +47,27 @@ public:
 vtkTransform::vtkTransform()
 {
   this->Internals = new vtkTransformInternals;
+  vtkVector3f center(0,0,0);
+  vtkVector4f rotation(0,0,1,0);
+  vtkVector3f scale(1,1,1);
+  vtkVector4f scaleOrientation(0,0,1,0);
+  vtkVector3f translation(0,0,0);
+  this->Center = center;
+  this->Rotation = rotation;
+  this->Scale = scale;
+  this->ScaleOrientation = scaleOrientation;
+  this->Translation = translation;
 }
+
 vtkTransform::~vtkTransform()
 {
   delete this->Internals;
 }
 
-void vtkTransform::Eval()
+vtkMatrix4x4f vtkTransform::Eval()
 {
   this->SetInternals();
-  this->Internals->Eval();
+  return this->Internals->Eval();
 }
 
 void vtkTransform::SetInternals()

@@ -144,17 +144,25 @@ void vtkCamera::UpdateMatrixGMTL(const float xRotation,
   vtkMatrix4x4f matrix = makeTransposeMatrix4x4(_matrix);
 	
 	// Scale the view to fit current multitouch scaling
-  matrix = makeScaleMatrix4x4(scaleFactor,scaleFactor,scaleFactor) * matrix;
+  matrix = makeScaleMatrix4x4(scaleFactor,scaleFactor,scaleFactor)*matrix;
   
   
   // Perform incremental rotation based on current angles in X and Y
-  float totalRotation = sqrt(xRotation*xRotation + yRotation*yRotation);
-  float x = xRotation/totalRotation;
-  float y = yRotation/totalRotation;
-  vtkMatrix4x4f tempMat = makeRotationMatrix4x4(totalRotation * (22/7) * 1/180.0,
-                                               x*matrix[0][1]+y*matrix[0][0],
-                                               x*matrix[1][1]+y*matrix[1][0],
-                                               x*matrix[2][1]+y*matrix[2][0]) * matrix;
+//  float totalRotation = sqrt(xRotation*xRotation + yRotation*yRotation);
+//  float x = xRotation/totalRotation;
+//  float y = yRotation/totalRotation;
+  vtkMatrix4x4f tempMat = makeRotationMatrix4x4(xRotation,
+                                                         matrix.mData[1],
+                                                         matrix.mData[5],
+                                                         matrix.mData[9])*matrix;
+  tempMat = makeRotationMatrix4x4(yRotation, 
+                                            tempMat.mData[0], 
+                                            tempMat.mData[4], 
+                                            tempMat.mData[8])*matrix;
+//  vtkMatrix4x4f tempMat = matrix*makeRotationMatrix4x4(totalRotation * (22/7) * 1/180.0,
+//                                               x*matrix[0][1]+y*matrix[0][0],
+//                                               x*matrix[1][1]+y*matrix[1][0],
+//                                               x*matrix[2][1]+y*matrix[2][0]);
   
   if (tempMat[0][0] >= -100 && tempMat[0][0] <=100) 
   {
@@ -169,28 +177,18 @@ void vtkCamera::UpdateMatrixGMTL(const float xRotation,
   float xTrans = xTranslation / (curScaleFactor * curScaleFactor);
   float yTrans = yTranslation / (curScaleFactor * curScaleFactor);
   
-  tempMat = makeTranslationMatrix4x4(xTrans * makeTranslationVector3f(matrix))*matrix;
-  tempMat = makeTranslationMatrix4x4(yTrans * makeTranslationVector3f(matrix))*matrix;
+  tempMat = makeTranslationMatrix4x4(xTrans * vtkVector3f(matrix.mData[0],
+                                                                 matrix.mData[4],
+                                                                 matrix.mData[8]))*matrix;
+  tempMat = makeTranslationMatrix4x4(yTrans * vtkVector3f(matrix.mData[1],
+                                                                 matrix.mData[5],
+                                                                 matrix.mData[9]))*matrix;
   
   if (tempMat[0][0] >= -100.0 && tempMat[0][0] <=100.0) 
   {
     matrix = tempMat;
   }
-  currentCalculatedMatrix.m11 = (CGFloat)_matrix.mData[0];
-	currentCalculatedMatrix.m12 = (CGFloat)_matrix.mData[1];
-	currentCalculatedMatrix.m13 = (CGFloat)_matrix.mData[2];
-	currentCalculatedMatrix.m14 = (CGFloat)_matrix.mData[3];
-	currentCalculatedMatrix.m21 = (CGFloat)_matrix.mData[4];
-	currentCalculatedMatrix.m22 = (CGFloat)_matrix.mData[5];
-	currentCalculatedMatrix.m23 = (CGFloat)_matrix.mData[6];
-	currentCalculatedMatrix.m24 = (CGFloat)_matrix.mData[7];
-	currentCalculatedMatrix.m31 = (CGFloat)_matrix.mData[8];
-	currentCalculatedMatrix.m32 = (CGFloat)_matrix.mData[9];
-	currentCalculatedMatrix.m33 = (CGFloat)_matrix.mData[10];
-	currentCalculatedMatrix.m34 = (CGFloat)_matrix.mData[11];
-	currentCalculatedMatrix.m41 = (CGFloat)_matrix.mData[12];
-	currentCalculatedMatrix.m42 = (CGFloat)_matrix.mData[13];
-	currentCalculatedMatrix.m43 = (CGFloat)_matrix.mData[14];
-	currentCalculatedMatrix.m44 = (CGFloat)_matrix.mData[15];
+
+  //_matrix = matrix;
   _matrix = makeTransposeMatrix4x4(matrix);
 }

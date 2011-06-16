@@ -24,35 +24,19 @@
 #include "vtkCamera.h"
 #include "vtkShaderProgram.h"
 #include "vtkActor.h"
+#include "vtkSceneRender.h"
 
 class vtkRenderer
 {
 public:
   vtkRenderer(vtkCamera *camera);
-  //vtkRenderer(vtkShaderProgram* program, vktCamera* camera, vtkActor *actor)
-
   ~vtkRenderer();
-
   void Render();
-  
-  //void Render(float xrot, float yrot, float scale, float xtrans, float ytrans);
-
-  void SetProgram(vtkShaderProgram* program)
-  {
-    this->mProgram = program;
-  }
-  
-  void SetActor(vtkActor* actor)
-  {
-    this->mActor = actor;
-    once = true;
-  }
-  
+  void SetProgram(vtkShaderProgram* program);
+  void SetActor(vtkActor* actor);  
   void Read();
-
   void resetView();
  	void resize(int widht,int height, float scale);
-
   
 protected:
   void CopyCamera2Model();

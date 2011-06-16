@@ -10,30 +10,30 @@
 
 #include "vtkFileReader.h"
 #include "vtkShaderProgram.h"
+#include "vtkGeometryNode.h"
+#include "vtkBoundedObject.h"
+#include "vtkGMTL.h"
 
-class vtkMapper
+class vtkMapper :public vtkBoundedObject
 {
 public:
   vtkMapper(vtkFileReader* reader);
   ~vtkMapper();
-  
   bool Read();
   void Reload(vtkFileReader *reader);
-  void Print(vtkShaderProgram *program);
-  
-  vtkPoint3f GetMin();
-  
-  vtkPoint3f GetMax();
+  vtkMatrix4x4f Eval();
+  void Render(vtkShaderProgram *program);
   vtkTriangleData* GetTriangleData();
-  
+private:
+  void ComputeBounds(vtkVector3f min, vtkVector3f max);
+  void Normalize();
+  vtkMatrix4x4f NormalizedMatrix;
 protected:
-  
   vtkFileReader *mFileReader;
   bool mIsNew;
-
-  vtkTriangleData *mData;
+  vtkTriangleData *Data;
   bool m_initialized;
-  unsigned int mMapperVBO[2];
+  // unsigned int mMapperVBO[2];
 };
 
 #endif

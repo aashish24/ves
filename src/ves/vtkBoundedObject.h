@@ -29,13 +29,19 @@ public:
   // ............................................................public-methods
   vtkBoundedObject();
   ~vtkBoundedObject();
-  void SetCenter( vtkVector3f center );
-  void SetSize( vtkVector3f size );
-  vtkVector3f GetCenter();
-  vtkVector3f GetSize();
-private:
-  vtkVector3f mBBoxCenter;
-  vtkVector3f mBBoxSize;
+  void SetBBoxCenter( vtkVector3f center );
+  void SetBBoxSize( vtkVector3f size );
+  
+  void SetBBoxCenter(vtkVector3f min, vtkVector3f max);
+  void SetBBoxSize(vtkVector3f min, vtkVector3f max);
+  
+  vtkVector3f GetBBoxCenter();
+  vtkVector3f GetBBoxSize();
+  float GetBBoxRadius();
+
+protected:
+  vtkVector3f BBoxCenter;
+  vtkVector3f BBoxSize;
 };
 
 #endif // __vtkBoundedObject_h

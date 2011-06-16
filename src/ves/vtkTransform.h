@@ -6,6 +6,9 @@
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
+#ifndef __vtkTransform_h
+#define __vtkTransform_h
+
 #include "vtkGroupingNode.h"
 
 class vtkTransformInternals;
@@ -16,7 +19,7 @@ public:
   vtkTransform();
   virtual ~vtkTransform();
   
-  virtual void Eval();
+  vtkMatrix4x4f Eval();
   
   void SetCenter(vtkVector3f center);
   vtkVector3f GetCenter();
@@ -40,3 +43,5 @@ protected:
   vtkVector3f Translation;
   vtkTransformInternals *Internals;
 };
+
+#endif

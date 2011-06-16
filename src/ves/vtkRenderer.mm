@@ -40,6 +40,16 @@ vtkRenderer::~vtkRenderer()
     delete mActor;
   }
 }
+void vtkRenderer::SetProgram(vtkShaderProgram* program)
+{
+  this->mProgram = program;
+}
+
+void vtkRenderer::SetActor(vtkActor* actor)
+{
+  this->mActor = actor;
+  once = true;
+}
 
 void vtkRenderer::Read()
 {
@@ -109,16 +119,18 @@ void vtkRenderer::CopyCamera2Model()
 }
 void vtkRenderer::Render()
 {
-
   this->Read();
   
   // Work out the appropriate matrices
   vtkMatrix4x4f mvp;
-  mvp = _proj * _view * _model * (*mActor)();
+  //mvp = _proj * _view * _model * (*mActor)();
+  vtkMatrix4x4f mv;
+  mv = _view * _model * mActor->Eval();
+  mvp = _proj * mv;
 	
-  vtkMatrix3x3f normal_matrix = makeNormalMatrix3x3f(_view);
-  vtkMatrix4x4f temp = makeNormalizedMatrix4x4(makeTransposeMatrix4x4(_model));
-  vtkPoint3f lightDir = transformPoint3f(temp,vtkPoint3f(0.0,0.0,.650));
+  vtkMatrix3x3f normal_matrix = makeNormalMatrix3x3f(makeTransposeMatrix4x4(makeInverseMatrix4x4 (mv)));
+  //vtkMatrix4x4f temp = makeNormalizedMatrix4x4(makeTransposeMatrix4x4(_vie);
+  vtkPoint3f lightDir = vtkPoint3f(0.0,0.0,.650);
 	
   vtkVector3f light(lightDir.mData[0],lightDir.mData[1],lightDir.mData[2]);
   this->mProgram->SetUniformMatrix4x4f("u_mvpMatrix",mvp);
@@ -134,11 +146,11 @@ void vtkRenderer::Render()
   this->mProgram->EnableVertexArray("a_normal");
 
   if (mActor) {
-    mActor->Print(this->mProgram);
+    mActor->Render(this->mProgram);
   }
 
-  glBindBuffer(GL_ARRAY_BUFFER, 0);
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+  //glBindBuffer(GL_ARRAY_BUFFER, 0);
+  //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
   this->mProgram->DisableVertexArray("a_vertex");
   this->mProgram->DisableVertexArray("a_normal");
 }
