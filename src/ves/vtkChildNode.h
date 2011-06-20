@@ -14,7 +14,7 @@ class vtkChildNode: public vtkNode
 {
 public:
   vtkChildNode();
-  ~vtkChildNode();
+  virtual ~vtkChildNode();
 };
 
 #endif

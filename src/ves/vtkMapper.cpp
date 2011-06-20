@@ -7,7 +7,7 @@
 //
 
 #include "vtkMapper.h"
-
+#include "vtkPainter.h"
 
 vtkMapper::vtkMapper(vtkFileReader* reader):mFileReader(reader), Data(NULL), m_initialized(false)
 {
@@ -33,7 +33,7 @@ void vtkMapper::Reload(vtkFileReader* reader)
 {
   this->mFileReader = reader;
   this->mIsNew = true;
-  if(m_initialized) 
+  if(m_initialized)
   {
     //glDeleteBuffers(2, mMapperVBO);
     m_initialized = false;
@@ -41,7 +41,7 @@ void vtkMapper::Reload(vtkFileReader* reader)
 }
 
 vtkMatrix4x4f vtkMapper::Eval()
-{ 
+{
   vtkMatrix4x4f temp;
   return temp;
 //  vtkMatrix4x4f temp= makeTransposeMatrix4x4(makeTransposeMatrix4x4(this->NormalizedMatrix));
@@ -50,27 +50,28 @@ vtkMatrix4x4f vtkMapper::Eval()
 
 bool vtkMapper::Read()
 {
-  if(mIsNew) 
+  std::cout << "Read: Mapper" <<std::endl;
+  if(mIsNew)
   {
     this->Data = mFileReader->Read();
     this->Data->ComputeNormals();
     this->mIsNew = false;
-  
+
     if (mFileReader->HasError()) {
       return false;
     }
 //    glGenBuffers(2, mMapperVBO);
 //    glBindBuffer(GL_ARRAY_BUFFER, mMapperVBO[0]);
-//    glBufferData(GL_ARRAY_BUFFER, 
+//    glBufferData(GL_ARRAY_BUFFER,
 //                 mData->GetPoints().size() * 6 * sizeof(float),
-//                 &mData->GetPoints()[0], 
+//                 &mData->GetPoints()[0],
 //                 GL_STATIC_DRAW);
 //    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mMapperVBO[1]);
-//    glBufferData(GL_ELEMENT_ARRAY_BUFFER, 
+//    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
 //                 mData->GetTriangles().size() * 3 * sizeof(unsigned short),
-//                 &mData->GetTriangles()[0], 
+//                 &mData->GetTriangles()[0],
 //                 GL_STATIC_DRAW);
-//    
+//
 //    glBindBuffer(GL_ARRAY_BUFFER, 0);
 //    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     m_initialized = true;
@@ -87,25 +88,25 @@ bool vtkMapper::Read()
 void vtkMapper::Render(vtkShaderProgram *program)
 {
   glVertexAttrib4f(program->GetAttribute("a_texcoord"), 0.8, 0.8, 0.8, 1.0);
-  glVertexAttribPointer(program->GetAttribute("a_vertex"), 
-                        3, 
-                        GL_FLOAT, 
-                        0, 
-                        6 * sizeof(float), 
+  glVertexAttribPointer(program->GetAttribute("a_vertex"),
+                        3,
+                        GL_FLOAT,
+                        0,
+                        6 * sizeof(float),
                         &this->Data->GetPoints()[0]);
-  glVertexAttribPointer(program->GetAttribute("a_normal"), 
-                        3, 
-                        GL_FLOAT, 
-                        0, 
-                        6 * sizeof(float), 
+  glVertexAttribPointer(program->GetAttribute("a_normal"),
+                        3,
+                        GL_FLOAT,
+                        0,
+                        6 * sizeof(float),
                         this->Data->GetPoints()[0].normal.mData);
-  
+
   // draw triangles
-  glDrawElements(GL_TRIANGLES, 
-                 this->Data->GetTriangles().size() * 3, 
-                 GL_UNSIGNED_SHORT, 
+  glDrawElements(GL_TRIANGLES,
+                 this->Data->GetTriangles().size() * 3,
+                 GL_UNSIGNED_SHORT,
                  &this->Data->GetTriangles()[0]);
-  
+
   // draw lines
   glDrawElements(GL_LINES,
                  this->Data->GetLines().size() * 2,
@@ -128,7 +129,7 @@ void vtkMapper::ComputeBounds(vtkVector3f min, vtkVector3f max)
     std::cout<<GetBBoxSize()[i]<< " ";
   }
   std::cout<<"]"<<std::endl;
-  
+
   std::cout<< "BBoxCenter = [ ";
   for (int i =0 ; i<3; ++i) {
     std::cout<<GetBBoxCenter()[i]<< " ";
@@ -149,11 +150,21 @@ void vtkMapper::Normalize()
     std::cout<<GetBBoxSize()[i]<< " ";
   }
   std::cout<<"]"<<std::endl;
-  
+
   std::cout<< "BBoxCenter = [ ";
   for (int i =0 ; i<3; ++i) {
     std::cout<<GetBBoxCenter()[i]<< " ";
   }
   std::cout<<"]"<<std::endl;
+}
+
+void vtkMapper::Render(vtkPainter* render)
+{
+  render->Mapper(this);
+}
+
+vtkTriangleData* vtkMapper::GetData()
+{
+  return this->Data;
 }
 

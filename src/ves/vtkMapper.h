@@ -14,7 +14,7 @@
 #include "vtkBoundedObject.h"
 #include "vtkGMTL.h"
 
-class vtkMapper :public vtkBoundedObject
+class vtkMapper :public vtkGeometryNode, public vtkBoundedObject
 {
 public:
   vtkMapper(vtkFileReader* reader);
@@ -22,8 +22,10 @@ public:
   bool Read();
   void Reload(vtkFileReader *reader);
   vtkMatrix4x4f Eval();
+  void Render(vtkPainter* render);
   void Render(vtkShaderProgram *program);
   vtkTriangleData* GetTriangleData();
+  vtkTriangleData* GetData();
 private:
   void ComputeBounds(vtkVector3f min, vtkVector3f max);
   void Normalize();

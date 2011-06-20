@@ -26,13 +26,17 @@ class vtkActorCollectionInternal;
 class vtkActor;
 
 // -----------------------------------------------------------------------class
-class vtkActorCollection : protected vtkTransform
+class vtkActorCollection : public vtkTransform
 {
 public:
   // ............................................................public-methods
   vtkActorCollection();
   ~vtkActorCollection();
   void AddItem(vtkActor* a);
+  //void Handle(vtkController *handle);
+  bool Read();
+  //vtkMatrix4x4f Eval();
+  void Render(vtkPainter *render);
 protected:
   // ...........................................................protected-ivars
 

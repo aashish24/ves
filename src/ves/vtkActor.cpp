@@ -1,72 +1,95 @@
-//
-//  vtkActor.cpp
-//  kiwi
-//
-//  Created by kitware on 5/9/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
-//
+/*=========================================================================
 
+  Program:   Visualization Toolkit
+  Module:    vtkActor.cxx
+
+  Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
+  All rights reserved.
+  See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
+
+     This software is distributed WITHOUT ANY WARRANTY; without even
+     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+     PURPOSE.  See the above copyright notice for more information.
+
+=========================================================================*/
 #include "vtkActor.h"
+
+// --------------------------------------------------------------------includes
+#include "vtkAppearance.h"
+#include "vtkShape.h"
 #include "vtkMapper.h"
+#include "vtkShader.h"
+#include "vtkSetGet.h"
+#include "vtkPainter.h"
 
-vtkActor::vtkActor()
+// -----------------------------------------------------------------------macro
+
+// --------------------------------------------------------------------internal
+// IMPORTANT: Make sure that this struct has no pointers.  All pointers should
+// be put in the class declaration. For all newly defined pointers make sure to
+// update constructor and destructor methods.
+class vtkActorInternal
 {
- this->Mapper = 0;
-  this->Shader =0;
-}
-vtkActor::vtkActor(vtkShader *shader,vtkMapper* mapper): 
-  Shader(shader),Mapper(mapper)
+  double value; // sample
+};
+
+// -----------------------------------------------------------------------cnstr
+vtkActor::vtkActor(vtkShader *shader,vtkMapper* mapper)
 {
+  this->Internal = new vtkActorInternal();
+  this->Shape = new vtkShape();
+  this->Appearance = new vtkAppearance();
+  this->Appearance->SetShader(shader);
+  this->Shape->SetGeometry(mapper);
+  this->Shape->SetAppearance(this->Appearance);
+  AddShapeChild(this->Shape);
 }
 
+
+// -----------------------------------------------------------------------destr
 vtkActor::~vtkActor()
 {
-  if(this->Mapper)
-  {
-  delete this->Mapper;
-  }
+  delete this->Internal;
+  delete this->Appearance;
+  delete this->Shape;
 }
 
-void vtkActor::AddChild(vtkActor* actor)
-{
-  vector<vtkChildNode*> actorList;
-  actorList.push_back(actor);
-  AddChildren(actorList);
-}
 vtkMatrix4x4f vtkActor::Eval()
 {
-//  vtkMatrix4x4f temp = this->vtkTransform::Eval();
-//  vtkMatrix4x4f temp1 = this->Mapper->Eval();
-//  return temp*temp1;
-  return vtkTransform::Eval() * this->Mapper->Eval();
-} 
-
-void vtkActor::Read()
-{
-  for (int i =0; i<this->Children.size(); ++i)
-  {
-    vtkActor* child = (vtkActor*) this->Children[i];
-    child->Read();
-  }
-  if(this->Mapper)
-  {
-    this->Mapper->Read();
-  }
+  return vtkTransform::Eval();
 }
 
-void vtkActor::Render(vtkShaderProgram *program)
+bool vtkActor::Read()
 {
-  for (int i =0; i<this->Children.size(); ++i)
-  {
-    vtkActor* child = (vtkActor*) this->Children[i];
-    child->Render(program);
-  }
-  if (this->Mapper)
-  {
-  this->Mapper->Render(program);
-  glVertexAttrib4f(program->GetAttribute("a_texcoord"), 0.8, 0.8, 0.8, 1.0);
-  }
+  std::cout << "Read: Actor" <<std::endl;
+  for (int i = 0; i < this->Children.size(); ++i)
+    {
+      this->Children[i]->Read();
+    }
+  return true;
 }
 
+// void vtkActor::Render(vtkShaderProgram *program)
+// {
+//   if (this->Mapper)
+//   {
+//   this->Mapper->Render(program);
+//   glVertexAttrib4f(program->GetAttribute("a_texcoord"), 0.8, 0.8, 0.8, 1.0);
+//   }
+// }
+
+
+void vtkActor::Render(vtkPainter* render)
+{
+  render->Actor(this);
+}
+
+void vtkActor::AddShapeChild(vtkShape* shape)
+{
+  std::vector<vtkChildNode*> temp;
+  temp.push_back(shape);
+  SetChildren(temp);
+
+}
 
 

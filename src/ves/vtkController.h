@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    vtkShape.h
+  Module:    vtkController.h
 
   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
@@ -12,27 +12,28 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vtkShape - Concrete Shape Class
+// .NAME vtkController -
 // .SECTION Description
-// vtkShape This describes the concrete shape class
+// vtkController
 
-#ifndef __vtkShape_h
-#define __vtkShape_h
+#ifndef __vtkController_h
+#define __vtkController_h
 // --------------------------------------------------------------------includes
-#include "vtkShapeNode.h"
+#include "vtkTransform.h"
+#include "vtkShape.h"
 
 // -----------------------------------------------------------------pre-defines
-class vtkShapeInternal;
+class vtkControllerInternal;
 
 // -----------------------------------------------------------------------class
-class vtkShape : public vtkShapeNode
+class vtkController
 {
 public:
   // ............................................................public-methods
-  vtkShape();
-  ~vtkShape();
-  bool Read();
-  void Render(vtkPainter* render);
+  vtkController();
+  ~vtkController();
+  void Transform(vtkTransform* object);
+  void Shape(vtkShape* object);
 protected:
   // ...........................................................protected-ivars
 
@@ -41,9 +42,11 @@ protected:
   // .......................................................................BTX
 
 private:
-  vtkShapeInternal *Internal;
+  vtkControllerInternal *Internal;
 //ETX
   // .......................................................................ETX
+
+
 };
 
-#endif // __vtkShape_h
+#endif // __vtkController_h

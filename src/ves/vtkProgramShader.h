@@ -34,46 +34,9 @@ public:
   // ............................................................public-methods
   vtkProgramShader();
   ~vtkProgramShader();
-  
-  void SetPrograms(const std::vector<vtkShaderProgram*> &_arg)
-  {                                             
-    for(int i =0; i< _arg.size(); i++)          
-    {                                         
-      this->Programs.push_back( _arg[i]);                
-    }                                         
-  } 
-  
-  bool GetPrograms (std::vector<vtkShaderProgram*> &_arg)      
-  {                                             
-    if(this->Programs.size() ==0)                   
-      return false;                             
-    for(int i=0; i < this->Programs.size(); i++) 
-    {                                         
-      _arg.push_back( this->Programs[i]);              
-    }                                         
-    return true;                                
-  }
-  
-//#define vtkSetGetVectorMacro(name,type)         \
-//void Set##name(const std::vector<type> &_arg) \
-//{                                             \
-//for(int i =0; i< _arg.size(); i++)          \
-//{                                         \
-//this->name[i] = _arg[i];                \
-//}                                         \
-//}                                             \
-//\
-//bool Get##name (std::vector<type> &_arg)      \
-//{                                             \
-//if(this->name.size() ==0)                   \
-//return false;                             \
-//for(int ii=0; ii < this->name.size(); ii++) \
-//{                                         \
-//_arg[ii] = this->name[ii];              \
-//}                                         \
-//return true;                                \
-//}
-//
+  vtkSetGetVectorMacro(Programs,vtkShaderProgram*)
+  bool Read();
+  void Render(vtkPainter *render);
 protected:
   // ...........................................................protected-ivars
   std::vector<vtkShaderProgram*> Programs;

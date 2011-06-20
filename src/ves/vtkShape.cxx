@@ -15,6 +15,9 @@
 #include "vtkShape.h"
 
 // --------------------------------------------------------------------includes
+#include <vtkAppearanceNode.h>
+#include <vtkGeometryNode.h>
+#include "vtkPainter.h"
 
 // -----------------------------------------------------------------------macro
 
@@ -37,6 +40,19 @@ vtkShape::vtkShape()
 vtkShape::~vtkShape()
 {
   delete this->Internal;
+}
+
+bool vtkShape::Read()
+{
+  std::cout << "Read: Shape" <<std::endl;
+  GetAppearance() -> Read();
+  GetGeometry() -> Read();
+  return true;
+}
+
+void vtkShape::Render(vtkPainter* render)
+{
+  render->Shape(this);
 }
 
 

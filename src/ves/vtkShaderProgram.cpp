@@ -255,3 +255,8 @@ vtkShaderProgram _program(char* vertexShaderStr,
   return prog;
 }
 
+void vtkShaderProgram::Render(vtkPainter *render)
+{
+  render->ShaderProgram(this);
+}
+

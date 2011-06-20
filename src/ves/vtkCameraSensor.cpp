@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    vtkProgramShader.cxx
+  Module:    vtkCameraSensor.cxx
 
   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
@@ -12,43 +12,18 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#include "vtkProgramShader.h"
+#include "vtkCameraSensor.h"
 
 // --------------------------------------------------------------------includes
-#include <iostream>
 
 // -----------------------------------------------------------------------macro
 
-// --------------------------------------------------------------------internal
-// IMPORTANT: Make sure that this struct has no pointers.  All pointers should
-// be put in the class declaration. For all newly defined pointers make sure to
-// update constructor and destructor methods.
-struct vtkProgramShaderInternal
-{
-  double value; // sample
-};
-
 // -----------------------------------------------------------------------cnstr
-vtkProgramShader::vtkProgramShader()
+vtkCameraSensor::vtkCameraSensor()
 {
-  this->Internal = new vtkProgramShaderInternal();
 }
 
 // -----------------------------------------------------------------------destr
-vtkProgramShader::~vtkProgramShader()
+vtkCameraSensor::~vtkCameraSensor()
 {
-  delete this->Internal;
 }
-
-bool vtkProgramShader::Read()
-{
-  std::cout << "Read: vtkProgramShader" << std::endl;
-  return true;
-}
-
-void vtkProgramShader::Render(vtkPainter *render)
-{
-  std::cout << "Render vtkProgramShader" << std::endl;
-}
-
-

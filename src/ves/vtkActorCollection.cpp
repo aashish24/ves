@@ -16,6 +16,8 @@
 
 // --------------------------------------------------------------------includes
 #include "vtkActor.h"
+#include <iostream>
+#include "vtkPainter.h"
 
 // -----------------------------------------------------------------------macro
 
@@ -43,7 +45,33 @@ vtkActorCollection::~vtkActorCollection()
 // ----------------------------------------------------------------------public
 void vtkActorCollection::AddItem(vtkActor* a)
 {
-  vector<vtkChildNode*> actorList;
+  std::vector<vtkChildNode*> actorList;
   actorList.push_back(a);
-  AddChildren(actorList);
+  SetChildren(actorList);
+}
+
+// void vtkActorCollection::Handle(vtkController *handle)
+// {
+// }
+
+bool vtkActorCollection::Read()
+{
+  std::cout << "Read: Actor Collection" <<std::endl;
+
+  for (int i =0; i<this->Children.size(); ++i)
+  {
+    vtkActor* child = (vtkActor*) this->Children[i];
+    child->Read();
+  }
+  return true;
+}
+
+// vtkMatrix4x4f vtkActorCollection::Eval()
+// {
+//   return vtkTransform::Eval();
+// }
+
+void vtkActorCollection::Render(vtkPainter *render)
+{
+  render->ActorCollection(this);
 }

@@ -83,6 +83,29 @@ void vtkCamera::printGMTLMatrix()
     std::cout<<std::endl;
   }  
 }
+
+vtkMatrix4x4f vtkCamera::GetMatrix()
+{
+  vtkMatrix4x4f _model;
+  _model.mData[0] = (float)currentCalculatedMatrix.m11;
+  _model.mData[1] = (float)currentCalculatedMatrix.m12;
+  _model.mData[2] = (float)currentCalculatedMatrix.m13;
+  _model.mData[3] = (float)currentCalculatedMatrix.m14;
+  _model.mData[4] = (float)currentCalculatedMatrix.m21;
+  _model.mData[5] = (float)currentCalculatedMatrix.m22;
+  _model.mData[6] = (float)currentCalculatedMatrix.m23;
+  _model.mData[7] = (float)currentCalculatedMatrix.m24;
+  _model.mData[8] = (float)currentCalculatedMatrix.m31;
+  _model.mData[9] = (float)currentCalculatedMatrix.m32;
+  _model.mData[10] = (float)currentCalculatedMatrix.m33;
+  _model.mData[11] = (float)currentCalculatedMatrix.m34;
+  _model.mData[12] = (float)currentCalculatedMatrix.m41;
+  _model.mData[13] = (float)currentCalculatedMatrix.m42;
+  _model.mData[14] = (float)currentCalculatedMatrix.m43;
+  _model.mData[15] = (float)currentCalculatedMatrix.m44;
+  return _model;
+}
+
 // ----------------------------------------------------------------------private
 void vtkCamera::UpdateMatrix(const float xRotation, 
                                           const float yRotation, 

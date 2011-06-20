@@ -31,7 +31,8 @@ public:
   // ............................................................public-methods
   vtkShader(vtkShaderProgram* program);
   ~vtkShader();
-
+  bool Read();
+  void Render(vtkPainter *render);
 protected:
   // ...........................................................protected-ivars
 

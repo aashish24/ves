@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    vtkShape.h
+  Module:    vtkPainter.h
 
   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
@@ -12,38 +12,59 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vtkShape - Concrete Shape Class
+// .NAME vtkPainter - Paints the scene graph
 // .SECTION Description
-// vtkShape This describes the concrete shape class
+// vtkPainter
 
-#ifndef __vtkShape_h
-#define __vtkShape_h
+#ifndef __vtkPainter_h
+#define __vtkPainter_h
 // --------------------------------------------------------------------includes
-#include "vtkShapeNode.h"
-
+// #include "vtkTransform.h"
+# include "vtkShape.h"
+# include "vtkActorCollection.h"
+# include "vtkActor.h"
+# include "vtkShader.h"
+# include "vtkMapper.h"
+#include <vector>
 // -----------------------------------------------------------------pre-defines
-class vtkShapeInternal;
+class vtkPainterInternal;
 
 // -----------------------------------------------------------------------class
-class vtkShape : public vtkShapeNode
+class vtkPainter
 {
 public:
   // ............................................................public-methods
-  vtkShape();
-  ~vtkShape();
-  bool Read();
-  void Render(vtkPainter* render);
+  vtkPainter();
+  ~vtkPainter();
+  // void Transform(vtkTransform* transform);
+  void Shape(vtkShape* shape);
+  void Shader(vtkShader * shader);
+  void Mapper(vtkMapper *mapper);
+  void Actor(vtkActor * actor);
+  void ActorCollection(vtkActorCollection *actor);
+  void ShaderProgram(vtkShaderProgram *shaderProg);
+  vtkSetGetMacro(View,vtkMatrix4x4f)
+  vtkSetGetMacro(Model,vtkMatrix4x4f)
+  vtkSetGetMacro(Projection,vtkMatrix4x4f)
 protected:
   // ...........................................................protected-ivars
+  vtkMatrix4x4f Projection,Model,View;
+  std::vector<vtkMatrix4x4f> MatrixStack;
+  // vtkMatrix4x4f MatrixStack[10];
+  // int index;
+  vtkMatrix4x4f Eval();
+  void Push(vtkMatrix4x4f mat);
+  void Pop();
 
 protected:
 //BTX
   // .......................................................................BTX
 
 private:
-  vtkShapeInternal *Internal;
+  vtkPainterInternal *Internal;
+
 //ETX
   // .......................................................................ETX
 };
 
-#endif // __vtkShape_h
+#endif // __vtkPainter_h

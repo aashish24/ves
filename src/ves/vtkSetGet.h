@@ -43,18 +43,18 @@
   {                                             \
     for(int i =0; i< _arg.size(); i++)          \
       {                                         \
-        this->name[i] = _arg[i];                \
+        this->name.push_back( _arg[i]);         \
       }                                         \
   }
 
 #define vtkGetVectorMacro(name,type)            \
-  bool Get##name (std::vector<type> &_arg)      \
+  bool Get##name (std::vector<type> *_arg)      \
   {                                             \
     if(this->name.size() ==0)                   \
       return false;                             \
     for(int ii=0; ii < this->name.size(); ii++) \
       {                                         \
-        _arg[ii] = this->name[ii];              \
+        _arg->push_back(this->name[ii]);         \
       }                                         \
     return true;                                \
   }
@@ -64,17 +64,17 @@
   {                                             \
     for(int i =0; i< _arg.size(); i++)          \
       {                                         \
-        this->name[i] = _arg[i];                \
+        this->name.push_back( _arg[i]);         \
       }                                         \
   }                                             \
                                                 \
-  bool Get##name (std::vector<type> &_arg)      \
+  bool Get##name (std::vector<type> *_arg)      \
   {                                             \
     if(this->name.size() ==0)                   \
       return false;                             \
     for(int ii=0; ii < this->name.size(); ii++) \
       {                                         \
-        _arg[ii] = this->name[ii];              \
+        _arg->push_back(this->name[ii]);         \
       }                                         \
     return true;                                \
   }

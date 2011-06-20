@@ -13,8 +13,10 @@
 
 =========================================================================*/
 #include "vtkAppearance.h"
+#include <iostream>
 
 // --------------------------------------------------------------------includes
+#include "vtkShaderNode.h"
 
 // -----------------------------------------------------------------------macro
 
@@ -37,6 +39,17 @@ vtkAppearance::vtkAppearance()
 vtkAppearance::~vtkAppearance()
 {
   delete this->Internal;
+}
+
+void vtkAppearance::Render(vtkPainter* render)
+{
+  this->Shader->Render(render);
+}
+
+bool vtkAppearance::Read()
+{
+  this->Shader->Read();
+  return true;
 }
 
 

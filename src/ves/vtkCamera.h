@@ -20,7 +20,7 @@ public:
   vtkCamera();
   void SetWidthHeight(const unsigned int width, 
                       const unsigned int height);
-  CATransform3D GetMatrix(){return currentCalculatedMatrix;}
+  vtkMatrix4x4f GetMatrix();
   vtkMatrix4x4f GetMatrixGMTL(){return _matrix;}
   void Reset();
 

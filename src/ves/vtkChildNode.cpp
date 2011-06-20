@@ -7,6 +7,7 @@
 //
 
 #include "vtkChildNode.h"
+#include <iostream>
 
 vtkChildNode::vtkChildNode()
 {

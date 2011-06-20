@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    vtkProgramShader.cxx
+  Module:    vtkRenderer.cxx
 
   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
@@ -12,43 +12,45 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#include "vtkProgramShader.h"
+#include "vtkRenderer.h"
 
 // --------------------------------------------------------------------includes
-#include <iostream>
+#include "vtkObjectFactory.h"
 
 // -----------------------------------------------------------------------macro
+// Defines standard new macro
+vtkStandardNewMacro(vtkRenderer);
+
+// -----------------------------------------------------------------------macro
+// Needed when we don't use vtkStandardNewMacro
+// vtkInstantiatorNewMacro(vtkRenderer);
 
 // --------------------------------------------------------------------internal
 // IMPORTANT: Make sure that this struct has no pointers.  All pointers should
 // be put in the class declaration. For all newly defined pointers make sure to
 // update constructor and destructor methods.
-struct vtkProgramShaderInternal
+struct vtkRendererInternal
 {
   double value; // sample
 };
 
 // -----------------------------------------------------------------------cnstr
-vtkProgramShader::vtkProgramShader()
+vtkRenderer::vtkRenderer()
 {
-  this->Internal = new vtkProgramShaderInternal();
+  this->Internal = new vtkRendererInternal();
 }
 
 // -----------------------------------------------------------------------destr
-vtkProgramShader::~vtkProgramShader()
+vtkRenderer::~vtkRenderer()
 {
-  delete this->Internal;
+  delete this->Interna;l
 }
 
-bool vtkProgramShader::Read()
+// -----------------------------------------------------------------------print
+void vtkRenderer::PrintSelf(ostream& os, vtkIndent indent)
 {
-  std::cout << "Read: vtkProgramShader" << std::endl;
-  return true;
+  this->Superclass::PrintSelf(os, indent);
+  os << indent << "Double: (" << this->vtkRendererInternal->value << ")"
+     << endl;
 }
-
-void vtkProgramShader::Render(vtkPainter *render)
-{
-  std::cout << "Render vtkProgramShader" << std::endl;
-}
-
 

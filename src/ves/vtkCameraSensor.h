@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    vtkShape.h
+  Module:    vtkCameraSensor.h
 
   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
@@ -12,38 +12,37 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vtkShape - Concrete Shape Class
+// .NAME vtkCameraSensor -
 // .SECTION Description
-// vtkShape This describes the concrete shape class
+// vtkCameraSensor
 
-#ifndef __vtkShape_h
-#define __vtkShape_h
+#ifndef __vtkCameraSensor_h
+#define __vtkCameraSensor_h
 // --------------------------------------------------------------------includes
-#include "vtkShapeNode.h"
 
 // -----------------------------------------------------------------pre-defines
-class vtkShapeInternal;
+class vtkCameraSensorInternal;
 
 // -----------------------------------------------------------------------class
-class vtkShape : public vtkShapeNode
+class vtkCameraSensor
 {
 public:
+
   // ............................................................public-methods
-  vtkShape();
-  ~vtkShape();
-  bool Read();
-  void Render(vtkPainter* render);
+  vtkCameraSensor();
+  ~vtkCameraSensor();
+
 protected:
   // ...........................................................protected-ivars
 
 protected:
 //BTX
   // .......................................................................BTX
-
 private:
-  vtkShapeInternal *Internal;
 //ETX
   // .......................................................................ETX
+
+
 };
 
-#endif // __vtkShape_h
+#endif // __vtkCameraSensor_h

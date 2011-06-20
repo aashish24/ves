@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    vtkProgramShader.cxx
+  Module:    vtkController.cxx
 
   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
@@ -12,10 +12,9 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#include "vtkProgramShader.h"
+#include "vtkController.h"
 
 // --------------------------------------------------------------------includes
-#include <iostream>
 
 // -----------------------------------------------------------------------macro
 
@@ -23,32 +22,31 @@
 // IMPORTANT: Make sure that this struct has no pointers.  All pointers should
 // be put in the class declaration. For all newly defined pointers make sure to
 // update constructor and destructor methods.
-struct vtkProgramShaderInternal
+struct vtkControllerInternal
 {
   double value; // sample
 };
 
 // -----------------------------------------------------------------------cnstr
-vtkProgramShader::vtkProgramShader()
+vtkController::vtkController()
 {
-  this->Internal = new vtkProgramShaderInternal();
+  this->Internal = new vtkControllerInternal();
 }
 
 // -----------------------------------------------------------------------destr
-vtkProgramShader::~vtkProgramShader()
+vtkController::~vtkController()
 {
   delete this->Internal;
 }
 
-bool vtkProgramShader::Read()
+
+void vtkController::Transform(vtkTransform* object)
 {
-  std::cout << "Read: vtkProgramShader" << std::endl;
-  return true;
+
 }
 
-void vtkProgramShader::Render(vtkPainter *render)
+void vtkController::Shape(vtkShape* object)
 {
-  std::cout << "Render vtkProgramShader" << std::endl;
-}
 
+}
 

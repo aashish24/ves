@@ -17,6 +17,7 @@
 #include "vtkFileReader.h"
 #include "vtkCamera.h"
 #include "vtkShaderProgram.h"
+#include "vtkActorCollection.h"
 
 #include <iostream>
 #include <string>
@@ -32,30 +33,27 @@
 vtkRenderer::vtkRenderer(vtkCamera* camera)
 {
   this->mCamera = camera;
+  this->Actor = new vtkActorCollection();
+  this->Painter = new vtkPainter();
 }
 vtkRenderer::~vtkRenderer()
 {
-  if(mActor)
-  {
-    delete mActor;
-  }
-}
-void vtkRenderer::SetProgram(vtkShaderProgram* program)
-{
-  this->mProgram = program;
+  delete Actor;
+  delete Painter;
 }
 
-void vtkRenderer::SetActor(vtkActor* actor)
+void vtkRenderer::AddActor(vtkActor* actor)
 {
-  this->mActor = actor;
+  this->Actor->AddItem(actor);
   once = true;
 }
 
 void vtkRenderer::Read()
 {
   CopyCamera2Model();
-  this->mActor->Read();
+  this->Actor->Read();
   _view = makeTranslationMatrix4x4(vtkVector3f(0,0,2))* makeScaleMatrix4x4(.1,.1,.1);
+  this->Painter->SetView(_view);
   resize(_width,_height,1);
 }
 
@@ -83,6 +81,7 @@ void vtkRenderer::resize(int width, int height, float scale)
   _proj= makeOrthoMatrix4x4(left, right, bottom, top, nearp, farp);
   //_proj= makePerspectiveMatrix4x4(left, right, bottom, top, nearp, farp);
   
+  this->Painter->SetProjection(_proj);
   glViewport(0, 0, width, height);
 
   glClearColor(63/255.0f, 96/255.0f, 144/255.0, 1.0f);
@@ -91,6 +90,7 @@ void vtkRenderer::resize(int width, int height, float scale)
 void vtkRenderer::resetView()
 {
   _model = vtkMatrix4x4f();
+  this->Painter->SetModel(_model);
   mCamera->Reset();	
 }
 
@@ -99,33 +99,23 @@ void vtkRenderer::CopyCamera2Model()
 #if GMTL_CAMERA
   _model = mCamera->GetMatrixGMTL();
 #else
-  _model.mData[0] = (GLfloat)mCamera->GetMatrix().m11;
-	_model.mData[1] = (GLfloat)mCamera->GetMatrix().m12;
-	_model.mData[2] = (GLfloat)mCamera->GetMatrix().m13;
-	_model.mData[3] = (GLfloat)mCamera->GetMatrix().m14;
-	_model.mData[4] = (GLfloat)mCamera->GetMatrix().m21;
-	_model.mData[5] = (GLfloat)mCamera->GetMatrix().m22;
-	_model.mData[6] = (GLfloat)mCamera->GetMatrix().m23;
-	_model.mData[7] = (GLfloat)mCamera->GetMatrix().m24;
-	_model.mData[8] = (GLfloat)mCamera->GetMatrix().m31;
-	_model.mData[9] = (GLfloat)mCamera->GetMatrix().m32;
-	_model.mData[10] = (GLfloat)mCamera->GetMatrix().m33;
-	_model.mData[11] = (GLfloat)mCamera->GetMatrix().m34;
-	_model.mData[12] = (GLfloat)mCamera->GetMatrix().m41;
-	_model.mData[13] = (GLfloat)mCamera->GetMatrix().m42;
-	_model.mData[14] = (GLfloat)mCamera->GetMatrix().m43;
-	_model.mData[15] = (GLfloat)mCamera->GetMatrix().m44;
+  _model = mCamera->GetMatrix();
 #endif  
+  this->Painter->SetModel(_model);
 }
 void vtkRenderer::Render()
 {
   this->Read();
-  
+  // Clear the buffers
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glEnable(GL_DEPTH_TEST);
+  this->Actor->Render(this->Painter);
+#if MOVE_THIS 
   // Work out the appropriate matrices
   vtkMatrix4x4f mvp;
   //mvp = _proj * _view * _model * (*mActor)();
   vtkMatrix4x4f mv;
-  mv = _view * _model * mActor->Eval();
+  mv = _view * _model * Actor->Eval();
   mvp = _proj * mv;
 	
   vtkMatrix3x3f normal_matrix = makeNormalMatrix3x3f(makeTransposeMatrix4x4(makeInverseMatrix4x4 (mv)));
@@ -153,4 +143,5 @@ void vtkRenderer::Render()
   //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
   this->mProgram->DisableVertexArray("a_vertex");
   this->mProgram->DisableVertexArray("a_normal");
+#endif
 }

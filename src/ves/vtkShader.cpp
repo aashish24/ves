@@ -16,6 +16,7 @@
 
 // --------------------------------------------------------------------includes
 #include "vtkShaderProgram.h"
+#include "vtkPainter.h"
 #include <vector>
 
 // -----------------------------------------------------------------------macro
@@ -42,5 +43,18 @@ vtkShader::vtkShader(vtkShaderProgram* shader)
 vtkShader::~vtkShader()
 {
   delete this->Internal;
+}
+
+// ----------------------------------------------------------------------public
+bool vtkShader::Read()
+{
+  std::cout << "Read: Shader" <<std::endl;
+  return true;
+}
+
+// ----------------------------------------------------------------------public
+void vtkShader::Render(vtkPainter *render)
+{
+  render->Shader(this);
 }
 

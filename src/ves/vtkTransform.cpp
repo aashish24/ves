@@ -1,14 +1,10 @@
-//
-//  vtkTransform.cpp
-//  kiwi
-//
-//  Created by kitware on 6/10/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
-//
 
+// --------------------------------------------------------------------includes
 #include "vtkTransform.h"
 #include "vtkGMTL.h"
+#include "vtkPainter.h"
 
+// --------------------------------------------------------------------internal
 class vtkTransformInternals
 {
   vtkMatrix4x4f T,C,R,SR,S,_SR,_C;
@@ -17,7 +13,7 @@ public:
   {
     return T * C * R * SR * S * _SR * _C;
   }
-  
+
   void SetTranslation(vtkVector3f trans)
   {
     T = makeTranslationMatrix4x4(trans);
@@ -31,19 +27,20 @@ public:
   {
     R = makeRotationMatrix4x4(rot[3], rot[0], rot[1], rot[2]);
   }
-  
+
   void SetScaleOrientation(vtkVector4f sr)
   {
     SR = makeRotationMatrix4x4(sr[3], sr[0], sr[1], sr[2]);
     _SR = makeInverseMatrix4x4(SR);
   }
-  
+
   void SetScale(vtkVector3f scale)
   {
     S = makeScaleMatrix4x4(scale[0],scale[1],scale[2]);
   }
 };
 
+// -----------------------------------------------------------------------cnstr
 vtkTransform::vtkTransform()
 {
   this->Internals = new vtkTransformInternals;
@@ -59,17 +56,33 @@ vtkTransform::vtkTransform()
   this->Translation = translation;
 }
 
+// -----------------------------------------------------------------------destr
 vtkTransform::~vtkTransform()
 {
   delete this->Internals;
 }
 
+// ----------------------------------------------------------------------public
 vtkMatrix4x4f vtkTransform::Eval()
 {
   this->SetInternals();
   return this->Internals->Eval();
 }
 
+// ----------------------------------------------------------------------public
+// void vtkTransform::Render(vtkPainter *render)
+// {
+//   render->Transform(this);
+// }
+
+// ---------------------------------------------------------------------private
+vtkMatrix4x4f vtkTransform::ComputeTransform()
+{
+  this->SetInternals();
+  return this->Internals->Eval();
+}
+
+// ---------------------------------------------------------------------private
 void vtkTransform::SetInternals()
 {
   this->Internals->SetTranslation(this->Translation);
@@ -79,52 +92,7 @@ void vtkTransform::SetInternals()
   this->Internals->SetScale(this->Scale);
 }
 
-void vtkTransform::SetCenter(vtkVector3f center)
-{
-  this->Center = center;
-}
-
-vtkVector3f vtkTransform::GetCenter()
-{
-  return this->Center;
-}
-
-void vtkTransform::SetRotation(vtkVector4f rotation)
-{
-  this->Rotation = rotation;
-}
-
-vtkVector4f vtkTransform::GetRotation()
-{
-  return this->Rotation;
-}
-
-void vtkTransform::SetScale(vtkVector3f scale)
-{
-  this->Scale = scale;
-}
-
-vtkVector3f vtkTransform::GetScale()
-{
-  return this->Scale;
-}
-
-void vtkTransform::SetScaleOrientation(vtkVector4f scaleOrientation)
-{
-  this->ScaleOrientation = scaleOrientation;
-}
-
-vtkVector4f vtkTransform::GetScaleOrientation()
-{
-  return this->ScaleOrientation;
-}
-
-void vtkTransform::SetTranslation(vtkVector3f translation)
-{
-  this->Translation = translation;
-}
-
-vtkVector3f vtkTransform::GetTranslation()
-{
-  return this->Translation;
-}
+// void vtkTransform::Handle(vtkController *handle)
+// {
+//   handle->Transform(this);
+// }

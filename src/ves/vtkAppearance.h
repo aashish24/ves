@@ -24,12 +24,12 @@
 #include <vector>
 // -----------------------------------------------------------------pre-defines
 class vtkAppearanceInternal;
-class vtkFillProperties;
-class vtkLineProperties;
-class vtkMaterialNode;
+// class vtkFillProperties;
+// class vtkLineProperties;
+// class vtkMaterialNode;
 class vtkShaderNode;
-class vtkTextureNode;
-class vtkTextureTransformNode;
+// class vtkTextureNode;
+// class vtkTextureTransformNode;
 
 // -----------------------------------------------------------------------class
 class vtkAppearance : public vtkAppearanceNode
@@ -38,18 +38,24 @@ public:
   // ............................................................public-methods
   vtkAppearance();
   ~vtkAppearance();
+  bool Read();
+  void Render(vtkPainter* render);
+  vtkSetGetMacro(Shader,vtkShaderNode*)
+
   // vtkSetGetMacro(FillProperties, vtkFillProperties*)
   // vtkSetGetMacro(LineProperties, vtkLineProperties*)
   // vtkSetGetMacro(Material, vtkMaterialNode*)
-  vtkSetGetVectorMacro(Shaders,vtkShaderNode*)
+  // vtkSetGetVectorMacro(Shaders,vtkShaderNode*)
   // vtkSetGetMacro(Texture, vtkTextureNode*)
   // vtkSetGetMacro(TextureTransform, vtkTextureTransformNode*)
 protected:
   // ...........................................................protected-ivars
+  vtkShaderNode* Shader;
+
   // vtkFillProperties* FillProperties;
   // vtkLineProperties* LineProperties;
   // vtkMaterialNode* Material;
-  std::vector<vtkShaderNode*> Shaders;
+  // std::vector<vtkShaderNode*> Shaders;
   // vtkTextureNode * Texture;
   // vtkTextureTransformNode* TextureTransform;
 protected:
