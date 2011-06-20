@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    vtkSensorNode.h
+  Module:    vtkMultitouchSensorNode.h
 
   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
@@ -12,40 +12,40 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vtkSensorNode -
+// .NAME vtkMultitouchSensorNode -
 // .SECTION Description
-// vtkSensorNode
+// vtkMultitouchSensorNode
 
-#ifndef __vtkSensorNode_h
-#define __vtkSensorNode_h
+#ifndef __vtkMultitouchSensorNode_h
+#define __vtkMultitouchSensorNode_h
 // --------------------------------------------------------------------includes
-#include "vtkChildNode.h"
-#include "vtkSetGet.h"
+#include "vtkSensorNode.h"
 
 // -----------------------------------------------------------------pre-defines
 
+
 // -----------------------------------------------------------------------class
-class vtkSensorNode : public vtkChildNode
+class vtkMultitouchSensorNode : public vtkSensorNode
 {
 public:
   // ............................................................public-methods
-  vtkSensorNode();
-  ~vtkSensorNode();
-  virtual bool IsActive();
-  vtkSetGetMacro(Enabled,bool)
-protected:
+  vtkMultitouchSensorNode();
+  ~vtkMultitouchSensorNode();
 
+protected:
   // ...........................................................protected-ivars
-  bool Enabled;
+  float Translation[2];
+  float Scale;
+  float Rotation[2];
+
 protected:
 //BTX
   // .......................................................................BTX
 
 private:
+
 //ETX
   // .......................................................................ETX
-
-
 };
 
-#endif // __vtkSensorNode_h
+#endif // __vtkMultitouchSensorNode_h

@@ -15,7 +15,7 @@
 
 #include "vtkRenderer.h"
 #include "vtkFileReader.h"
-#include "vtkCamera.h"
+#include "vtkMultitouchCamera.h"
 #include "vtkShaderProgram.h"
 #include "vtkActorCollection.h"
 
@@ -30,7 +30,7 @@
 //  once = true;
 //}
 
-vtkRenderer::vtkRenderer(vtkCamera* camera)
+vtkRenderer::vtkRenderer(vtkMultitouchCamera* camera)
 {
   this->mCamera = camera;
   this->Actor = new vtkActorCollection();

@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    vtkSensorNode.cxx
+  Module:    vtkMultitouchSensorNode.cxx
 
   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
@@ -12,26 +12,21 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#include "vtkSensorNode.h"
+#include "vtkMultitouchSensorNode.h"
 
 // --------------------------------------------------------------------includes
 
 // -----------------------------------------------------------------------macro
 
 // -----------------------------------------------------------------------cnstr
-vtkSensorNode::vtkSensorNode()
+vtkMultitouchSensorNode::vtkMultitouchSensorNode()
 {
+
 }
 
 // -----------------------------------------------------------------------destr
-vtkSensorNode::~vtkSensorNode()
+vtkMultitouchSensorNode::~vtkMultitouchSensorNode()
 {
+
 }
-
-bool vtkSensorNode::IsActive()
-{
-  return this->Enabled;
-}
-
-
 

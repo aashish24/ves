@@ -21,7 +21,7 @@
 #import <QuartzCore/QuartzCore.h>
 #include <string>
 #include "vtkGMTL.h"
-#include "vtkCamera.h"
+#include "vtkMultitouchCamera.h"
 #include "vtkShaderProgram.h"
 #include "vtkActor.h"
 #include "vtkSceneRender.h"
@@ -32,7 +32,7 @@ class vtkActorCollection;
 class vtkRenderer
 {
 public:
-  vtkRenderer(vtkCamera *camera);
+  vtkRenderer(vtkMultitouchCamera *camera);
   ~vtkRenderer();
   void Render();
   void AddActor(vtkActor* actor);
@@ -44,7 +44,7 @@ protected:
   void CopyCamera2Model();
 
 private:
-  vtkCamera* mCamera;
+  vtkMultitouchCamera* mCamera;
   vtkActorCollection *Actor;
   vtkPainter *Painter;
   // Runtime
