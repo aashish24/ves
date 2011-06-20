@@ -48,7 +48,7 @@ vtkMultitouchCamera::~vtkMultitouchCamera()
 
 bool vtkMultitouchCamera::Read()
 {
-
+  return true;
 }
 
 void vtkMultitouchCamera::Render(vtkPainter* render)

@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    vtkSensorNode.cxx
+  Module:    vtkMultitouchWidget.cxx
 
   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
@@ -12,27 +12,43 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#include "vtkSensorNode.h"
+#include "vtkMultitouchWidget.h"
 
 // --------------------------------------------------------------------includes
+#include "vtkPainter.h"
 
 // -----------------------------------------------------------------------macro
 
 // -----------------------------------------------------------------------cnstr
-vtkSensorNode::vtkSensorNode()
+vtkMultitouchWidget::vtkMultitouchWidget()
 {
-  this->Enabled = false;
 }
 
 // -----------------------------------------------------------------------destr
-vtkSensorNode::~vtkSensorNode()
+vtkMultitouchWidget::~vtkMultitouchWidget()
 {
 }
 
-bool vtkSensorNode::IsActive()
+void vtkMultitouchWidget::Update(float xRotation,
+                                  float yRotation,
+                                  float scaleFactor,
+                                  float xTranslation,
+                                  float yTranslation)
 {
-  return this->Enabled;
+  std::cout << "**** Multitouch Widget update ****" <<std::endl;
+  Translation[0] = xTranslation*10000;
+  Translation[1] = yTranslation*10000;
+  Translation[2] = 0;
 }
 
+bool vtkMultitouchWidget::Read()
+{
+  return true;
+}
+
+void vtkMultitouchWidget::Render(vtkPainter* render)
+{
+
+}
 
 

@@ -18,7 +18,7 @@ class vtkCamera
 {
 public:
   vtkCamera();
-  void SetWidthHeight(const unsigned int width, 
+  void SetWidthHeight(const unsigned int width,
                       const unsigned int height);
   vtkMatrix4x4f GetMatrix();
   vtkMatrix4x4f GetMatrixGMTL(){return _matrix;}
@@ -27,17 +27,17 @@ public:
 //private:
   void printCurrentCalculatedMatrix();
   void printGMTLMatrix();
-  void UpdateMatrix(const float xRotation, 
-                    const float yRotation, 
-                    float scaleFactor, 
-                    float xTranslation, 
+  void UpdateMatrix(const float xRotation,
+                    const float yRotation,
+                    float scaleFactor,
+                    float xTranslation,
                     float yTranslation);
-  void UpdateMatrixGMTL(const float xRotation, 
-                    const float yRotation, 
-                    float scaleFactor, 
-                    float xTranslation, 
+  void UpdateMatrixGMTL(const float xRotation,
+                    const float yRotation,
+                    float scaleFactor,
+                    float xTranslation,
                     float yTranslation);
-  
+
   unsigned int _width,_height;
   vtkMatrix4x4f _matrix;
   CATransform3D currentCalculatedMatrix, testMatrix;

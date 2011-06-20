@@ -31,7 +31,7 @@ public:
   // ............................................................public-methods
   vtkSensorNode();
   ~vtkSensorNode();
-  virtual bool IsActive();
+  bool IsActive();
   vtkSetGetMacro(Enabled,bool)
 protected:
 

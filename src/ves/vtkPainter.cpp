@@ -21,6 +21,7 @@
 #include "vtkChildNode.h"
 #include "vtkGeometryNode.h"
 #include "vtkAppearance.h"
+#include "vtkMultitouchWidget.h"
 
 // -----------------------------------------------------------------------macro
 
@@ -89,6 +90,14 @@ void vtkPainter::Mapper(vtkMapper *mapper)
 void vtkPainter::Actor(vtkActor * actor)
 {
   std::cout << "Render: Actor" <<std::endl;
+  if(actor->GetSensor())
+    {
+      if(actor->GetWidget()->IsActive())
+        {
+          std::cout<<"translating the widget" <<std::endl;
+          actor->SetTranslation(actor->GetWidget()->GetTranslation());
+        }
+    }
   this->Push(actor->Eval());
   vector<vtkChildNode *> temp;
   actor->GetChildren(&temp);

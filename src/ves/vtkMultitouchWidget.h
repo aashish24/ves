@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    vtkActor.h
+  Module:    vtkMultitouchWidget.h
 
   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
@@ -12,55 +12,44 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vtkActor - Defines a entity in the scene
+// .NAME vtkMultitouchWidget -
 // .SECTION Description
-// vtkActor
+// vtkMultitouchWidget
 
-#ifndef __vtkActor_h
-#define __vtkActor_h
+#ifndef __vtkMultitouchWidget_h
+#define __vtkMultitouchWidget_h
 // --------------------------------------------------------------------includes
-#include "vtkGMTL.h"
-#include "vtkShaderProgram.h"
-#include "vtkTransform.h"
-#include "vtkShape.h"
-
-#include <list>
+#include "vtkMultitouchSensorNode.h"
 
 // -----------------------------------------------------------------pre-defines
-class vtkActorInternal;
-class vtkShader;
-class vtkMapper;
-class vtkAppearance;
-class vtkMultitouchWidget;
+class vtkPainter;
 
 // -----------------------------------------------------------------------class
-class vtkActor : public vtkTransform
+class vtkMultitouchWidget : public vtkMultitouchSensorNode
 {
 public:
   // ............................................................public-methods
-  vtkActor(vtkShader* shader,vtkMapper* mapper,vtkMultitouchWidget *widget=0);
-  ~vtkActor();
-
-  vtkMatrix4x4f Eval();
+  vtkMultitouchWidget();
+  ~vtkMultitouchWidget();
   bool Read();
   void Render(vtkPainter* render);
-  vtkSetGetMacro(Sensor,bool)
-  vtkSetGetMacro(Widget,vtkMultitouchWidget*);
+  void Update(float xRotation,
+              float yRotation,
+              float scaleFactor,
+              float xTranslation,
+              float yTranslation);
 protected:
   // ...........................................................protected-ivars
-  vtkAppearance *Appearance;
-  vtkShape *Shape;
-  bool Sensor;
-  vtkMultitouchWidget* Widget;
-  vtkMatrix4x4f Matrix;
+
 protected:
 //BTX
   // .......................................................................BTX
-  void AddShapeChild(vtkShape* shape);
+
 private:
-  vtkActorInternal *Internal;
+
 //ETX
   // .......................................................................ETX
+
 };
 
-#endif // __vtkActor_h
+#endif // __vtkMultitouchWidget_h

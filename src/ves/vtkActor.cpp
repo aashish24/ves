@@ -34,7 +34,7 @@ class vtkActorInternal
 };
 
 // -----------------------------------------------------------------------cnstr
-vtkActor::vtkActor(vtkShader *shader,vtkMapper* mapper)
+vtkActor::vtkActor(vtkShader *shader,vtkMapper* mapper,vtkMultitouchWidget *widget)
 {
   this->Internal = new vtkActorInternal();
   this->Shape = new vtkShape();
@@ -43,6 +43,16 @@ vtkActor::vtkActor(vtkShader *shader,vtkMapper* mapper)
   this->Shape->SetGeometry(mapper);
   this->Shape->SetAppearance(this->Appearance);
   AddShapeChild(this->Shape);
+  if(widget)
+    {
+      this->Sensor = true;
+      this->Widget = widget;
+      std::cout<< "Adding widget interactor" <<std::endl;
+    }
+  else
+    {
+      this->Sensor = false;
+    }
 }
 
 
@@ -56,7 +66,8 @@ vtkActor::~vtkActor()
 
 vtkMatrix4x4f vtkActor::Eval()
 {
-  return vtkTransform::Eval();
+  this->Matrix *= this->vtkTransform::Eval();
+  return this->Matrix;
 }
 
 bool vtkActor::Read()
