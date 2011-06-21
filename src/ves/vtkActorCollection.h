@@ -35,15 +35,16 @@ public:
   void AddItem(vtkActor* a);
   //void Handle(vtkController *handle);
   bool Read();
-  //vtkMatrix4x4f Eval();
+  vtkMatrix4x4f Eval();
   void Render(vtkPainter *render);
   void ComputeBounds();
   vtkGetMacro(Min, vtkVector3f)
   vtkGetMacro(Max, vtkVector3f)
-  
+  void Normalize(); 
 protected:
   // ...........................................................protected-ivars
-
+ 
+  vtkMatrix4x4f NormalizedMatrix;
 protected:
 //BTX
   // .......................................................................BTX

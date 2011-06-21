@@ -52,6 +52,8 @@ void vtkRenderer::Read()
 {
   CopyCamera2Model();
   this->Actor->Read();
+  this->Actor->ComputeBounds();
+  this->Actor->Normalize();
   _view = makeTranslationMatrix4x4(vtkVector3f(0,0,2))* makeScaleMatrix4x4(.1,.1,.1);
   this->Painter->SetView(_view);
   resize(_width,_height,1);

@@ -62,23 +62,14 @@ bool vtkActorCollection::Read()
   {
     vtkActor* child = (vtkActor*) this->Children[i];
     child->Read();
-    vtkVector3f min = child->GetMin();
-    vtkVector3f max = child->GetMax();
-    for (int i = 0; i < 3; ++i)
-      {
-        (max[i] > GetMax()[i]) ? max[i] = max[i]: max[i] = GetMax()[i];
-        (min[i] < GetMin()[i]) ? min[i] = min[i]: min[i] = GetMin()[i];
-      }
-    SetBBoxCenter(min,max);
-    SetBBoxSize(min,max);
   }
   return true;
 }
 
-// vtkMatrix4x4f vtkActorCollection::Eval()
-// {
-//   return vtkTransform::Eval();
-// }
+ vtkMatrix4x4f vtkActorCollection::Eval()
+ {
+   return vtkTransform::Eval()*NormalizedMatrix;
+ }
 
 void vtkActorCollection::Render(vtkPainter *render)
 {
@@ -101,4 +92,25 @@ void vtkActorCollection::ComputeBounds()
     SetBBoxCenter(min,max);
     SetBBoxSize(min,max);
   }
+}
+
+void vtkActorCollection::Normalize()
+{
+  float r = GetBBoxRadius();
+  this->NormalizedMatrix =
+  makeScaleMatrix4x4(1/r,1/r,1/r)*
+  makeTranslationMatrix4x4(-GetBBoxCenter());
+  SetBBoxCenter(transformPoint3f(this->NormalizedMatrix, GetBBoxCenter()));
+  SetBBoxSize(transformPoint3f(this->NormalizedMatrix, GetBBoxSize()));
+  std::cout<< "BBoxSize = [ ";
+  for (int i =0 ; i<3; ++i) {
+    std::cout<<GetBBoxSize()[i]<< " ";
+  }
+  std::cout<<"]"<<std::endl;
+  
+  std::cout<< "BBoxCenter = [ ";
+  for (int i =0 ; i<3; ++i) {
+    std::cout<<GetBBoxCenter()[i]<< " ";
+  }
+  std::cout<<"]"<<std::endl;
 }
