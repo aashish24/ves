@@ -23,7 +23,7 @@
 #include "vtkShaderProgram.h"
 #include "vtkTransform.h"
 #include "vtkShape.h"
-
+#include "vtkSetGet.h"
 #include <list>
 
 // -----------------------------------------------------------------pre-defines
@@ -43,9 +43,13 @@ public:
 
   vtkMatrix4x4f Eval();
   bool Read();
+  void ComputeBounds();
   void Render(vtkPainter* render);
   vtkSetGetMacro(Sensor,bool)
   vtkSetGetMacro(Widget,vtkMultitouchWidget*);
+  vtkGetMacro(Min, vtkVector3f)
+  vtkGetMacro(Max, vtkVector3f)
+  
 protected:
   // ...........................................................protected-ivars
   vtkAppearance *Appearance;

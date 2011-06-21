@@ -22,6 +22,8 @@
 #define __vtkBoundedObject_h
 
 #include "vtkGMTL.h"
+#include "vtkSetGet.h"
+
 // -----------------------------------------------------------------------class
 class vtkBoundedObject
 {
@@ -29,17 +31,22 @@ public:
   // ............................................................public-methods
   vtkBoundedObject();
   ~vtkBoundedObject();
-  void SetBBoxCenter( vtkVector3f center );
-  void SetBBoxSize( vtkVector3f size );
-  
+  virtual void ComputeBounds()=0;
+  virtual vtkVector3f GetMin()=0;
+  virtual vtkVector3f GetMax()=0;
+  vtkSetMacro(BBoxCenter,vtkVector3f)
+  vtkGetMacro(BBoxCenter,vtkVector3f)
+  vtkSetMacro(BBoxSize,vtkVector3f)
+  vtkGetMacro(BBoxSize,vtkVector3f)
+
   void SetBBoxCenter(vtkVector3f min, vtkVector3f max);
   void SetBBoxSize(vtkVector3f min, vtkVector3f max);
-  
-  vtkVector3f GetBBoxCenter();
-  vtkVector3f GetBBoxSize();
-  float GetBBoxRadius();
-
+//  vtkGetMacro(Min,vtkVector3f)
+//  vtkGetMacro(Max,vtkVector3f)
+  virtual float GetBBoxRadius();
 protected:
+  vtkVector3f Min;
+  vtkVector3f Max;
   vtkVector3f BBoxCenter;
   vtkVector3f BBoxSize;
 };

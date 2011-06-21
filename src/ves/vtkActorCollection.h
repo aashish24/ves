@@ -37,6 +37,10 @@ public:
   bool Read();
   //vtkMatrix4x4f Eval();
   void Render(vtkPainter *render);
+  void ComputeBounds();
+  vtkGetMacro(Min, vtkVector3f)
+  vtkGetMacro(Max, vtkVector3f)
+  
 protected:
   // ...........................................................protected-ivars
 

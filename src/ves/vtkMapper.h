@@ -26,8 +26,11 @@ public:
   void Render(vtkShaderProgram *program);
   vtkTriangleData* GetTriangleData();
   vtkTriangleData* GetData();
+  void ComputeBounds();
+  vtkGetMacro(Min, vtkVector3f)
+  vtkGetMacro(Max, vtkVector3f)
+  
 private:
-  void ComputeBounds(vtkVector3f min, vtkVector3f max);
   void Normalize();
   vtkMatrix4x4f NormalizedMatrix;
 protected:

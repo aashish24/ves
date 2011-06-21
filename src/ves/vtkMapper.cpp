@@ -75,8 +75,7 @@ bool vtkMapper::Read()
 //    glBindBuffer(GL_ARRAY_BUFFER, 0);
 //    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     m_initialized = true;
-//    ComputeBounds(this->Data->GetMin(), this->Data->GetMax());
-//    Normalize();
+   //Normalize();
     return true;
   }
   else
@@ -120,8 +119,10 @@ vtkTriangleData* vtkMapper::GetTriangleData()
   return this->Data;
 }
 
-void vtkMapper::ComputeBounds(vtkVector3f min, vtkVector3f max)
+void vtkMapper::ComputeBounds()
 {
+  vtkVector3f min = this->Data->GetMin();
+  vtkVector3f max = this->Data->GetMax();
   SetBBoxSize(min,max);
   SetBBoxCenter(min, max);
   std::cout<< "BBoxSize = [ ";

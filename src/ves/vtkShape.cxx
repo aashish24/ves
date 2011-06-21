@@ -18,7 +18,7 @@
 #include <vtkAppearanceNode.h>
 #include <vtkGeometryNode.h>
 #include "vtkPainter.h"
-
+#include "vtkMapper.h"
 // -----------------------------------------------------------------------macro
 
 // --------------------------------------------------------------------internal
@@ -53,6 +53,14 @@ bool vtkShape::Read()
 void vtkShape::Render(vtkPainter* render)
 {
   render->Shape(this);
+}
+
+void vtkShape::ComputeBounds()
+{
+  vtkMapper* mapper = (vtkMapper*) GetGeometry();
+  mapper->ComputeBounds();
+  SetBBoxCenter(mapper->GetMin(),mapper->GetMax());
+  SetBBoxSize(mapper->GetMin(),mapper->GetMax());
 }
 
 

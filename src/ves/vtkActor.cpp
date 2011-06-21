@@ -103,4 +103,11 @@ void vtkActor::AddShapeChild(vtkShape* shape)
 
 }
 
+void vtkActor::ComputeBounds()
+{
+  Shape->ComputeBounds();
+  SetBBoxCenter(Shape->GetMin(),Shape->GetMax());
+  SetBBoxSize(Shape->GetMin(), Shape->GetMax());
+}
+
 

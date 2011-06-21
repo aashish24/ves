@@ -20,7 +20,7 @@
 #define __vtkGeometryNode_h
 // --------------------------------------------------------------------includes
 #include "vtkNode.h"
-
+#include "vtkGMTL.h"
 // -----------------------------------------------------------------pre-defines
 class vtkGeometryNodeInternal;
 
@@ -31,8 +31,7 @@ public:
   // ............................................................public-methods
   vtkGeometryNode();
   ~vtkGeometryNode();
-
-
+  
 protected:
   // ...........................................................protected-ivars
 

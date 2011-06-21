@@ -33,6 +33,10 @@ public:
   ~vtkShape();
   bool Read();
   void Render(vtkPainter* render);
+  void ComputeBounds();
+  vtkGetMacro(Min, vtkVector3f)
+  vtkGetMacro(Max, vtkVector3f)
+  
 protected:
   // ...........................................................protected-ivars
 

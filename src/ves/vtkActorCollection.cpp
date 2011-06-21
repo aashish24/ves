@@ -62,6 +62,15 @@ bool vtkActorCollection::Read()
   {
     vtkActor* child = (vtkActor*) this->Children[i];
     child->Read();
+    vtkVector3f min = child->GetMin();
+    vtkVector3f max = child->GetMax();
+    for (int i = 0; i < 3; ++i)
+      {
+        (max[i] > GetMax()[i]) ? max[i] = max[i]: max[i] = GetMax()[i];
+        (min[i] < GetMin()[i]) ? min[i] = min[i]: min[i] = GetMin()[i];
+      }
+    SetBBoxCenter(min,max);
+    SetBBoxSize(min,max);
   }
   return true;
 }
@@ -74,4 +83,22 @@ bool vtkActorCollection::Read()
 void vtkActorCollection::Render(vtkPainter *render)
 {
   render->ActorCollection(this);
+}
+
+void vtkActorCollection::ComputeBounds()
+{
+  for (int i =0; i<this->Children.size(); ++i)
+  {
+    vtkActor* child = (vtkActor*) this->Children[i];
+    child->ComputeBounds();
+    vtkVector3f min = child->GetMin();
+    vtkVector3f max = child->GetMax();
+    for (int i = 0; i < 3; ++i)
+      {
+        (max[i] > GetMax()[i]) ? max[i] = max[i]: max[i] = GetMax()[i];
+        (min[i] < GetMin()[i]) ? min[i] = min[i]: min[i] = GetMin()[i];
+      }
+    SetBBoxCenter(min,max);
+    SetBBoxSize(min,max);
+  }
 }
