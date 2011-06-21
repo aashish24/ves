@@ -36,9 +36,16 @@ void vtkMultitouchWidget::Update(float xRotation,
                                   float yTranslation)
 {
   std::cout << "**** Multitouch Widget update ****" <<std::endl;
-  Translation[0] = xTranslation*10000;
-  Translation[1] = yTranslation*10000;
+  Translation[0] = xTranslation*1000;
+  Translation[1] = yTranslation*1000;
   Translation[2] = 0;
+  Rotation[0] = 0;
+  Rotation[1] = 0;
+  Rotation[2] = 1;
+  Rotation[3] = xRotation/100;
+  Scale[0] = scaleFactor;
+  Scale[1] = scaleFactor;
+  Scale[2] = scaleFactor;
 }
 
 bool vtkMultitouchWidget::Read()

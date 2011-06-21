@@ -96,6 +96,8 @@ void vtkPainter::Actor(vtkActor * actor)
         {
           std::cout<<"translating the widget" <<std::endl;
           actor->SetTranslation(actor->GetWidget()->GetTranslation());
+          actor->SetRotation(actor->GetWidget()->GetRotation());
+          //actor->SetScale(actor->GetWidget()->GetScale());
         }
     }
   this->Push(actor->Eval());
