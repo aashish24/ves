@@ -42,6 +42,7 @@ vtkActor::vtkActor(vtkShader *shader,vtkMapper* mapper,vtkMultitouchWidget *widg
   this->Appearance->SetShader(shader);
   this->Shape->SetGeometry(mapper);
   this->Shape->SetAppearance(this->Appearance);
+  this->Mapper = mapper;        // This is used to make the actor visible again
   AddShapeChild(this->Shape);
   if(widget)
     {
@@ -53,6 +54,7 @@ vtkActor::vtkActor(vtkShader *shader,vtkMapper* mapper,vtkMultitouchWidget *widg
     {
       this->Sensor = false;
     }
+  this->Visible = true;
 }
 
 
@@ -100,7 +102,6 @@ void vtkActor::AddShapeChild(vtkShape* shape)
   std::vector<vtkChildNode*> temp;
   temp.push_back(shape);
   SetChildren(temp);
-
 }
 
 void vtkActor::ComputeBounds()
@@ -108,6 +109,24 @@ void vtkActor::ComputeBounds()
   Shape->ComputeBounds();
   SetBBoxCenter(Shape->GetMin(),Shape->GetMax());
   SetBBoxSize(Shape->GetMin(), Shape->GetMax());
+}
+
+bool vtkActor::SetVisible(bool value)
+{
+  if(value)
+    {
+      this->Shape->SetGeometry(this->Mapper);
+    }
+  else
+    {
+      this->Shape->SetGeometry(NULL);
+    }
+  this->Visible = value;
+}
+
+bool vtkActor::isVisible()
+{
+
 }
 
 

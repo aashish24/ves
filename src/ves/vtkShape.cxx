@@ -46,7 +46,10 @@ bool vtkShape::Read()
 {
   std::cout << "Read: Shape" <<std::endl;
   GetAppearance() -> Read();
-  GetGeometry() -> Read();
+  if (GetGeometry()) 
+  {
+    GetGeometry() -> Read();
+  }
   return true;
 }
 
@@ -58,9 +61,12 @@ void vtkShape::Render(vtkPainter* render)
 void vtkShape::ComputeBounds()
 {
   vtkMapper* mapper = (vtkMapper*) GetGeometry();
+  if(mapper)
+  {
   mapper->ComputeBounds();
   SetBBoxCenter(mapper->GetMin(),mapper->GetMax());
   SetBBoxSize(mapper->GetMin(),mapper->GetMax());
+  }
 }
 
 

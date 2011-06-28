@@ -49,7 +49,9 @@ public:
   vtkSetGetMacro(Widget,vtkMultitouchWidget*);
   vtkGetMacro(Min, vtkVector3f)
   vtkGetMacro(Max, vtkVector3f)
-  
+  bool SetVisible(bool value);
+  bool isVisible();
+
 protected:
   // ...........................................................protected-ivars
   vtkAppearance *Appearance;
@@ -57,6 +59,8 @@ protected:
   bool Sensor;
   vtkMultitouchWidget* Widget;
   vtkMatrix4x4f Matrix;
+  vtkMapper *Mapper;
+  bool Visible;
 protected:
 //BTX
   // .......................................................................BTX

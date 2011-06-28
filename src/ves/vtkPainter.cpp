@@ -133,7 +133,14 @@ void vtkPainter::Shape(vtkShape* shape)
 {
   std::cout << "Render: Shape" <<std::endl;
   shape->GetAppearance() -> Render(this);
-  shape->GetGeometry() -> Render(this);
+  if(shape->GetGeometry())
+    {
+    shape->GetGeometry() -> Render(this);
+    }
+  else
+    {
+    return;
+    }
 
   std::vector<vtkShaderProgram*> temp;
   vtkShaderProgram * program;
