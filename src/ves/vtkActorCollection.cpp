@@ -47,9 +47,16 @@ void vtkActorCollection::AddItem(vtkActor* a)
 {
   std::vector<vtkChildNode*> actorList;
   actorList.push_back(a);
-  SetChildren(actorList);
+  AddChildren(actorList);
 }
 
+// ----------------------------------------------------------------------public
+void vtkActorCollection::RemoveItem(vtkActor* a)
+{
+  std::vector<vtkChildNode*> actorList;
+  actorList.push_back(a);
+  RemoveChildren(actorList);
+}
 // void vtkActorCollection::Handle(vtkController *handle)
 // {
 // }

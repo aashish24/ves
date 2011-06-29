@@ -33,6 +33,7 @@ public:
   vtkActorCollection();
   ~vtkActorCollection();
   void AddItem(vtkActor* a);
+  void RemoveItem(vtkActor* a);
   //void Handle(vtkController *handle);
   bool Read();
   vtkMatrix4x4f Eval();

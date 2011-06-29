@@ -36,6 +36,7 @@ public:
   ~vtkRenderer();
   void Render();
   void AddActor(vtkActor* actor);
+  void RemoveActor(vtkActor* actor);
   void Read();
   void resetView();
   void resize(int widht,int height, float scale);

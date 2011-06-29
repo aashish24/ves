@@ -48,6 +48,13 @@ void vtkRenderer::AddActor(vtkActor* actor)
   once = true;
 }
 
+void vtkRenderer::RemoveActor(vtkActor* actor)
+{
+  this->Actor->RemoveItem(actor);
+  once = true;
+}
+
+
 void vtkRenderer::Read()
 {
   CopyCamera2Model();
