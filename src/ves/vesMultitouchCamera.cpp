@@ -116,6 +116,11 @@ void vesMultitouchCamera::Reset()
 
 }
 
+void vesMultitouchCamera::RotateAngleAxis(double angle, double x, double y, double z)
+{
+  currentCalculatedMatrix = CATransform3DRotate(currentCalculatedMatrix, angle, x, y, z);
+}
+
 void vesMultitouchCamera::UpdateMatrix(const float xRotation,
                                        const float yRotation,
                                        float scaleFactor,

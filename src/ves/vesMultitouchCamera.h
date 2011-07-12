@@ -44,6 +44,10 @@ public:
   vesMatrix4x4f GetMatrixGMTL();
   void Reset();
 
+  // Description:
+  // Rotate the camera matrix by angle radians about the axis [x,y,z]
+  void RotateAngleAxis(double angle, double x, double y, double z);
+
   void printCurrentCalculatedMatrix();
   void printGMTLMatrix();
   void UpdateMatrix(const float xRotation,
