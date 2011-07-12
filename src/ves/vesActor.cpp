@@ -66,6 +66,11 @@ vesActor::~vesActor()
   delete this->_shape;
 }
 
+vesMapper* vesActor::GetMapper()
+{
+  return this->Mapper;
+}
+
 vesMatrix4x4f vesActor::Eval()
 {
   this->Matrix *= this->Transform::Eval();

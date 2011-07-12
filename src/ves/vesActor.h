@@ -51,6 +51,8 @@ public:
   vesGetMacro(Max, vesVector3f)
   bool SetVisible(bool value);
   bool isVisible();
+  vesMapper* GetMapper();
+  //vesSetGetMacro(Tx, Transform*)
 
 protected:
   // ...........................................................protected-ivars
