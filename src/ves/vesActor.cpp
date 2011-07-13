@@ -122,11 +122,12 @@ bool vesActor::SetVisible(bool value)
       this->_shape->SetGeometry(NULL);
     }
   this->Visible = value;
+  return true;
 }
 
 bool vesActor::isVisible()
 {
-
+  return true;
 }
 
 
