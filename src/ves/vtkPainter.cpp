@@ -21,7 +21,7 @@
 #include "vtkChildNode.h"
 #include "vtkGeometryNode.h"
 #include "vtkAppearance.h"
-#include "vtkMultitouchWidget.h"
+#include "vesMultitouchWidget.h"
 
 // -----------------------------------------------------------------------macro
 
@@ -60,10 +60,10 @@ vtkPainter::~vtkPainter()
 
 
 // ----------------------------------------------------------------------public
-void vtkPainter::Shader(vtkShader * shader)
+void vtkPainter::Shader(vesShader * shader)
 {
   std::cout << "Render: Shader" <<std::endl;
-  std::vector<vtkShaderProgram*> temp;
+  std::vector<vesShaderProgram*> temp;
   if(shader->GetPrograms(&temp))
     {
       for (int i = 0; i < temp.size(); ++i)
@@ -74,20 +74,20 @@ void vtkPainter::Shader(vtkShader * shader)
 }
 
 // ----------------------------------------------------------------------public
-void vtkPainter::ShaderProgram(vtkShaderProgram *shaderProg)
+void vtkPainter::ShaderProgram(vesShaderProgram *shaderProg)
 {
   std::cout << "Render: ShaderProgram" <<std::endl;
   shaderProg->Use();
 }
 
 // ----------------------------------------------------------------------public
-void vtkPainter::Mapper(vtkMapper *mapper)
+void vtkPainter::Mapper(vesMapper *mapper)
 {
   std::cout << "Render: Mapper" << std::endl;
 }
 
 // ----------------------------------------------------------------------public
-void vtkPainter::Actor(vtkActor * actor)
+void vtkPainter::Actor(vesActor * actor)
 {
   std::cout << "Render: Actor" <<std::endl;
   if(actor->GetSensor())
@@ -108,7 +108,7 @@ void vtkPainter::Actor(vtkActor * actor)
 }
 
 // ----------------------------------------------------------------------public
-void vtkPainter::ActorCollection(vtkActorCollection *actor)
+void vtkPainter::ActorCollection(vesActorCollection *actor)
 {
   std::cout << "Render: ActorCollection" <<std::endl;
   // Push the transformation
@@ -142,8 +142,8 @@ void vtkPainter::Shape(vtkShape* shape)
     return;
     }
 
-  std::vector<vtkShaderProgram*> temp;
-  vtkShaderProgram * program;
+  std::vector<vesShaderProgram*> temp;
+  vesShaderProgram * program;
   vtkAppearance *appear = (vtkAppearance*) shape->GetAppearance();
   vtkProgramShader *prog = (vtkProgramShader*) appear->GetShader();
   if(prog->GetPrograms(&temp))
@@ -151,7 +151,7 @@ void vtkPainter::Shape(vtkShape* shape)
       program = temp[0]; // currently we are only using one shader
     }
 
-  vtkMapper* mapper = (vtkMapper*)shape->GetGeometry();
+  vesMapper* mapper = (vesMapper*)shape->GetGeometry();
 
   // Work out the appropriate matrices
   vesMatrix4x4f mvp;

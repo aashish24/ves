@@ -10,7 +10,7 @@ class vtkTransform: public vtkGroupingNode
 public:
   vtkTransform();
   virtual ~vtkTransform();
-  //void Handle(vtkController *handle);
+  //void Handle(vesController *handle);
   //void Render(vtkPainter *render);
   vesMatrix4x4f Eval();
   vesSetGetMacro(Center,vesVector3f)

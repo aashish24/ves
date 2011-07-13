@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    vtkShape.cxx
+  Module:    vesShader.cxx
 
   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
@@ -12,62 +12,49 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#include "vtkShape.h"
+#include "vesShader.h"
 
 // --------------------------------------------------------------------includes
-#include <vtkAppearanceNode.h>
-#include <vtkGeometryNode.h>
+#include "vesShaderProgram.h"
 #include "vtkPainter.h"
-#include "vesMapper.h"
+#include <vector>
+
 // -----------------------------------------------------------------------macro
 
 // --------------------------------------------------------------------internal
 // IMPORTANT: Make sure that this struct has no pointers.  All pointers should
 // be put in the class declaration. For all newly defined pointers make sure to
 // update constructor and destructor methods.
-struct vtkShapeInternal
+struct vesShaderInternal
 {
   double value; // sample
 };
 
 // -----------------------------------------------------------------------cnstr
-vtkShape::vtkShape()
+vesShader::vesShader(vesShaderProgram* shader)
 {
-  this->Internal = new vtkShapeInternal();
+  std::vector<vesShaderProgram*> temp;
+  temp.push_back(shader);
+  SetPrograms(temp);
+  this->Internal = new vesShaderInternal();
 }
 
 // -----------------------------------------------------------------------destr
-vtkShape::~vtkShape()
+vesShader::~vesShader()
 {
   delete this->Internal;
 }
 
-bool vtkShape::Read()
+// ----------------------------------------------------------------------public
+bool vesShader::Read()
 {
-  std::cout << "Read: Shape" <<std::endl;
-  GetAppearance() -> Read();
-  if (GetGeometry()) 
-  {
-    GetGeometry() -> Read();
-  }
+  std::cout << "Read: Shader" <<std::endl;
   return true;
 }
 
-void vtkShape::Render(vtkPainter* render)
+// ----------------------------------------------------------------------public
+void vesShader::Render(vtkPainter *render)
 {
-  render->Shape(this);
+  render->Shader(this);
 }
-
-void vtkShape::ComputeBounds()
-{
-  vesMapper* mapper = (vesMapper*) GetGeometry();
-  if(mapper)
-  {
-  mapper->ComputeBounds();
-  SetBBoxCenter(mapper->GetMin(),mapper->GetMax());
-  SetBBoxSize(mapper->GetMin(),mapper->GetMax());
-  }
-}
-
-
 

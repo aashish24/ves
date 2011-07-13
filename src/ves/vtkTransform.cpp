@@ -92,7 +92,7 @@ void vtkTransform::SetInternals()
   this->Internals->SetScale(this->Scale);
 }
 
-// void vtkTransform::Handle(vtkController *handle)
+// void vtkTransform::Handle(vesController *handle)
 // {
 //   handle->Transform(this);
 // }

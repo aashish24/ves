@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    vtkPainter.h
+  Module:    vesMultitouchWidget.h
 
   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
@@ -12,59 +12,44 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vtkPainter - Paints the scene graph
+// .NAME vesMultitouchWidget -
 // .SECTION Description
-// vtkPainter
+// vesMultitouchWidget
 
-#ifndef __vtkPainter_h
-#define __vtkPainter_h
+#ifndef __vesMultitouchWidget_h
+#define __vesMultitouchWidget_h
 // --------------------------------------------------------------------includes
-// #include "vtkTransform.h"
-# include "vtkShape.h"
-# include "vesActorCollection.h"
-# include "vesActor.h"
-# include "vesShader.h"
-# include "vesMapper.h"
-#include <vector>
+#include "vesMultitouchSensorNode.h"
+
 // -----------------------------------------------------------------pre-defines
-class vtkPainterInternal;
+class vtkPainter;
 
 // -----------------------------------------------------------------------class
-class vtkPainter
+class vesMultitouchWidget : public vesMultitouchSensorNode
 {
 public:
   // ............................................................public-methods
-  vtkPainter();
-  ~vtkPainter();
-  // void Transform(vtkTransform* transform);
-  void Shape(vtkShape* shape);
-  void Shader(vesShader * shader);
-  void Mapper(vesMapper *mapper);
-  void Actor(vesActor * actor);
-  void ActorCollection(vesActorCollection *actor);
-  void ShaderProgram(vesShaderProgram *shaderProg);
-  vesSetGetMacro(View,vesMatrix4x4f)
-  vesSetGetMacro(Model,vesMatrix4x4f)
-  vesSetGetMacro(Projection,vesMatrix4x4f)
+  vesMultitouchWidget();
+  ~vesMultitouchWidget();
+  bool Read();
+  void Render(vtkPainter* render);
+  void Update(float xRotation,
+              float yRotation,
+              float scaleFactor,
+              float xTranslation,
+              float yTranslation);
 protected:
   // ...........................................................protected-ivars
-  vesMatrix4x4f Projection,Model,View;
-  std::vector<vesMatrix4x4f> MatrixStack;
-  // vesMatrix4x4f MatrixStack[10];
-  // int index;
-  vesMatrix4x4f Eval();
-  void Push(vesMatrix4x4f mat);
-  void Pop();
 
 protected:
 //BTX
   // .......................................................................BTX
 
 private:
-  vtkPainterInternal *Internal;
 
 //ETX
   // .......................................................................ETX
+
 };
 
-#endif // __vtkPainter_h
+#endif // __vesMultitouchWidget_h

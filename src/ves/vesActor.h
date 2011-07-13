@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    vtkPainter.h
+  Module:    vesActor.h
 
   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
@@ -12,59 +12,63 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vtkPainter - Paints the scene graph
+// .NAME vesActor - Defines a entity in the scene
 // .SECTION Description
-// vtkPainter
+// vesActor
 
-#ifndef __vtkPainter_h
-#define __vtkPainter_h
+#ifndef __vesActor_h
+#define __vesActor_h
 // --------------------------------------------------------------------includes
-// #include "vtkTransform.h"
-# include "vtkShape.h"
-# include "vesActorCollection.h"
-# include "vesActor.h"
-# include "vesShader.h"
-# include "vesMapper.h"
-#include <vector>
+#include "vesGMTL.h"
+#include "vesShaderProgram.h"
+#include "vtkTransform.h"
+#include "vtkShape.h"
+#include "vesSetGet.h"
+#include <list>
+
 // -----------------------------------------------------------------pre-defines
-class vtkPainterInternal;
+class vesActorInternal;
+class vesShader;
+class vesMapper;
+class vtkAppearance;
+class vesMultitouchWidget;
 
 // -----------------------------------------------------------------------class
-class vtkPainter
+class vesActor : public vtkTransform
 {
 public:
   // ............................................................public-methods
-  vtkPainter();
-  ~vtkPainter();
-  // void Transform(vtkTransform* transform);
-  void Shape(vtkShape* shape);
-  void Shader(vesShader * shader);
-  void Mapper(vesMapper *mapper);
-  void Actor(vesActor * actor);
-  void ActorCollection(vesActorCollection *actor);
-  void ShaderProgram(vesShaderProgram *shaderProg);
-  vesSetGetMacro(View,vesMatrix4x4f)
-  vesSetGetMacro(Model,vesMatrix4x4f)
-  vesSetGetMacro(Projection,vesMatrix4x4f)
+  vesActor(vesShader* shader,vesMapper* mapper,vesMultitouchWidget *widget=0);
+  ~vesActor();
+
+  vesMatrix4x4f Eval();
+  bool Read();
+  void ComputeBounds();
+  void Render(vtkPainter* render);
+  vesSetGetMacro(Sensor,bool)
+  vesSetGetMacro(Widget,vesMultitouchWidget*);
+  vesGetMacro(Min, vesVector3f)
+  vesGetMacro(Max, vesVector3f)
+  bool SetVisible(bool value);
+  bool isVisible();
+
 protected:
   // ...........................................................protected-ivars
-  vesMatrix4x4f Projection,Model,View;
-  std::vector<vesMatrix4x4f> MatrixStack;
-  // vesMatrix4x4f MatrixStack[10];
-  // int index;
-  vesMatrix4x4f Eval();
-  void Push(vesMatrix4x4f mat);
-  void Pop();
-
+  vtkAppearance *Appearance;
+  vtkShape *Shape;
+  bool Sensor;
+  vesMultitouchWidget* Widget;
+  vesMatrix4x4f Matrix;
+  vesMapper *Mapper;
+  bool Visible;
 protected:
 //BTX
   // .......................................................................BTX
-
+  void AddShapeChild(vtkShape* shape);
 private:
-  vtkPainterInternal *Internal;
-
+  vesActorInternal *Internal;
 //ETX
   // .......................................................................ETX
 };
 
-#endif // __vtkPainter_h
+#endif // __vesActor_h

@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    vtkShape.cxx
+  Module:    vesController.cxx
 
   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
@@ -12,62 +12,41 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#include "vtkShape.h"
+#include "vesController.h"
 
 // --------------------------------------------------------------------includes
-#include <vtkAppearanceNode.h>
-#include <vtkGeometryNode.h>
-#include "vtkPainter.h"
-#include "vesMapper.h"
+
 // -----------------------------------------------------------------------macro
 
 // --------------------------------------------------------------------internal
 // IMPORTANT: Make sure that this struct has no pointers.  All pointers should
 // be put in the class declaration. For all newly defined pointers make sure to
 // update constructor and destructor methods.
-struct vtkShapeInternal
+struct vesControllerInternal
 {
   double value; // sample
 };
 
 // -----------------------------------------------------------------------cnstr
-vtkShape::vtkShape()
+vesController::vesController()
 {
-  this->Internal = new vtkShapeInternal();
+  this->Internal = new vesControllerInternal();
 }
 
 // -----------------------------------------------------------------------destr
-vtkShape::~vtkShape()
+vesController::~vesController()
 {
   delete this->Internal;
 }
 
-bool vtkShape::Read()
+
+void vesController::Transform(vtkTransform* object)
 {
-  std::cout << "Read: Shape" <<std::endl;
-  GetAppearance() -> Read();
-  if (GetGeometry()) 
-  {
-    GetGeometry() -> Read();
-  }
-  return true;
+
 }
 
-void vtkShape::Render(vtkPainter* render)
+void vesController::Shape(vtkShape* object)
 {
-  render->Shape(this);
+
 }
-
-void vtkShape::ComputeBounds()
-{
-  vesMapper* mapper = (vesMapper*) GetGeometry();
-  if(mapper)
-  {
-  mapper->ComputeBounds();
-  SetBBoxCenter(mapper->GetMin(),mapper->GetMax());
-  SetBBoxSize(mapper->GetMin(),mapper->GetMax());
-  }
-}
-
-
 

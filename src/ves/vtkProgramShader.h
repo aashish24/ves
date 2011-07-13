@@ -25,7 +25,7 @@
 
 // -----------------------------------------------------------------pre-defines
 class vtkProgramShaderInternal;
-class vtkShaderProgram;
+class vesShaderProgram;
 
 // -----------------------------------------------------------------------class
 class vtkProgramShader : public vtkShaderNode
@@ -34,12 +34,12 @@ public:
   // ............................................................public-methods
   vtkProgramShader();
   ~vtkProgramShader();
-  vesSetGetVectorMacro(Programs,vtkShaderProgram*)
+  vesSetGetVectorMacro(Programs,vesShaderProgram*)
   bool Read();
   void Render(vtkPainter *render);
 protected:
   // ...........................................................protected-ivars
-  std::vector<vtkShaderProgram*> Programs;
+  std::vector<vesShaderProgram*> Programs;
 protected:
 //BTX
   // .......................................................................BTX

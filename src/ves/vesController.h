@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    vtkPainter.h
+  Module:    vesController.h
 
   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
@@ -12,59 +12,41 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vtkPainter - Paints the scene graph
+// .NAME vesController -
 // .SECTION Description
-// vtkPainter
+// vesController
 
-#ifndef __vtkPainter_h
-#define __vtkPainter_h
+#ifndef __vesController_h
+#define __vesController_h
 // --------------------------------------------------------------------includes
-// #include "vtkTransform.h"
-# include "vtkShape.h"
-# include "vesActorCollection.h"
-# include "vesActor.h"
-# include "vesShader.h"
-# include "vesMapper.h"
-#include <vector>
+#include "vtkTransform.h"
+#include "vtkShape.h"
+
 // -----------------------------------------------------------------pre-defines
-class vtkPainterInternal;
+class vesControllerInternal;
 
 // -----------------------------------------------------------------------class
-class vtkPainter
+class vesController
 {
 public:
   // ............................................................public-methods
-  vtkPainter();
-  ~vtkPainter();
-  // void Transform(vtkTransform* transform);
-  void Shape(vtkShape* shape);
-  void Shader(vesShader * shader);
-  void Mapper(vesMapper *mapper);
-  void Actor(vesActor * actor);
-  void ActorCollection(vesActorCollection *actor);
-  void ShaderProgram(vesShaderProgram *shaderProg);
-  vesSetGetMacro(View,vesMatrix4x4f)
-  vesSetGetMacro(Model,vesMatrix4x4f)
-  vesSetGetMacro(Projection,vesMatrix4x4f)
+  vesController();
+  ~vesController();
+  void Transform(vtkTransform* object);
+  void Shape(vtkShape* object);
 protected:
   // ...........................................................protected-ivars
-  vesMatrix4x4f Projection,Model,View;
-  std::vector<vesMatrix4x4f> MatrixStack;
-  // vesMatrix4x4f MatrixStack[10];
-  // int index;
-  vesMatrix4x4f Eval();
-  void Push(vesMatrix4x4f mat);
-  void Pop();
 
 protected:
 //BTX
   // .......................................................................BTX
 
 private:
-  vtkPainterInternal *Internal;
-
+  vesControllerInternal *Internal;
 //ETX
   // .......................................................................ETX
+
+
 };
 
-#endif // __vtkPainter_h
+#endif // __vesController_h
