@@ -12,20 +12,20 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vesShader - Concrete class which implementes vsgProgramShader
+// .NAME vesShader - Concrete class which implementes ProgramShader
 // .SECTION Description
 // vesShader [refer ISO/IEC 19775-1:2008 31.4.6]
 
 #ifndef __vesShader_h
 #define __vesShader_h
 // --------------------------------------------------------------------includes
-#include "vsgProgramShader.h"
+#include "ProgramShader.h"
 
 // -----------------------------------------------------------------pre-defines
 class vesShaderInternal;
 
 // -----------------------------------------------------------------------class
-class vesShader : public vsgProgramShader
+class vesShader : public ProgramShader
 {
 public:
   // ............................................................public-methods

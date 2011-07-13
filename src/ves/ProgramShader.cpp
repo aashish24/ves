@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    vsgProgramShader.cxx
+  Module:    ProgramShader.cxx
 
   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
@@ -12,7 +12,7 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#include "vsgProgramShader.h"
+#include "ProgramShader.h"
 
 // --------------------------------------------------------------------includes
 #include <iostream>
@@ -23,32 +23,32 @@
 // IMPORTANT: Make sure that this struct has no pointers.  All pointers should
 // be put in the class declaration. For all newly defined pointers make sure to
 // update constructor and destructor methods.
-struct vsgProgramShaderInternal
+struct ProgramShaderInternal
 {
   double value; // sample
 };
 
 // -----------------------------------------------------------------------cnstr
-vsgProgramShader::vsgProgramShader()
+ProgramShader::ProgramShader()
 {
-  this->Internal = new vsgProgramShaderInternal();
+  this->Internal = new ProgramShaderInternal();
 }
 
 // -----------------------------------------------------------------------destr
-vsgProgramShader::~vsgProgramShader()
+ProgramShader::~ProgramShader()
 {
   delete this->Internal;
 }
 
-bool vsgProgramShader::Read()
+bool ProgramShader::Read()
 {
-  std::cout << "Read: vsgProgramShader" << std::endl;
+  std::cout << "Read: ProgramShader" << std::endl;
   return true;
 }
 
-void vsgProgramShader::Render(Painter *render)
+void ProgramShader::Render(Painter *render)
 {
-  std::cout << "Render vsgProgramShader" << std::endl;
+  std::cout << "Render ProgramShader" << std::endl;
 }
 
 

@@ -145,7 +145,7 @@ void Painter::visitShape(Shape* shape)
   std::vector<vesShaderProgram*> temp;
   vesShaderProgram * program;
   Appearance *appear = (Appearance*) shape->GetAppearance();
-  vsgProgramShader *prog = (vsgProgramShader*) appear->GetShader();
+  ProgramShader *prog = (ProgramShader*) appear->GetShader();
   if(prog->GetPrograms(&temp))
     {
       program = temp[0]; // currently we are only using one shader

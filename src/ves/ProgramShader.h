@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    vsgProgramShader.h
+  Module:    ProgramShader.h
 
   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
@@ -12,28 +12,28 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vsgProgramShader - Defines a collection of individual shaders.
+// .NAME ProgramShader - Defines a collection of individual shaders.
 // .SECTION Description
-// vsgProgramShader [refer 31.4.6]
+// ProgramShader [refer 31.4.6]
 
-#ifndef __vsgProgramShader_h
-#define __vsgProgramShader_h
+#ifndef __ProgramShader_h
+#define __ProgramShader_h
 // --------------------------------------------------------------------includes
 #include "vsgShaderNode.h"
 #include "vesSetGet.h"
 #include <vector>
 
 // -----------------------------------------------------------------pre-defines
-class vsgProgramShaderInternal;
+class ProgramShaderInternal;
 class vesShaderProgram;
 
 // -----------------------------------------------------------------------class
-class vsgProgramShader : public vsgShaderNode
+class ProgramShader : public vsgShaderNode
 {
 public:
   // ............................................................public-methods
-  vsgProgramShader();
-  ~vsgProgramShader();
+  ProgramShader();
+  ~ProgramShader();
   vesSetGetVectorMacro(Programs,vesShaderProgram*)
   bool Read();
   void Render(Painter *render);
@@ -45,10 +45,10 @@ protected:
   // .......................................................................BTX
 
 private:
-  vsgProgramShaderInternal *Internal;
+  ProgramShaderInternal *Internal;
 
 //ETX
   // .......................................................................ETX
 };
 
-#endif // __vsgProgramShader_h
+#endif // __ProgramShader_h
