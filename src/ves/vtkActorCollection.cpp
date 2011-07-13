@@ -73,7 +73,7 @@ bool vtkActorCollection::Read()
   return true;
 }
 
- vtkMatrix4x4f vtkActorCollection::Eval()
+ vesMatrix4x4f vtkActorCollection::Eval()
  {
    return vtkTransform::Eval()*NormalizedMatrix;
  }
@@ -89,8 +89,8 @@ void vtkActorCollection::ComputeBounds()
   {
     vtkActor* child = (vtkActor*) this->Children[i];
     child->ComputeBounds();
-    vtkVector3f min = child->GetMin();
-    vtkVector3f max = child->GetMax();
+    vesVector3f min = child->GetMin();
+    vesVector3f max = child->GetMax();
     for (int i = 0; i < 3; ++i)
       {
         (max[i] > GetMax()[i]) ? max[i] = max[i]: max[i] = GetMax()[i];

@@ -10,7 +10,7 @@
 #define __vtkCamera_h
 
 #import <QuartzCore/QuartzCore.h>
-#include "vtkGMTL.h"
+#include "vesGMTL.h"
 
 #define GMTL_CAMERA 0
 
@@ -20,8 +20,8 @@ public:
   vtkCamera();
   void SetWidthHeight(const unsigned int width,
                       const unsigned int height);
-  vtkMatrix4x4f GetMatrix();
-  vtkMatrix4x4f GetMatrixGMTL(){return _matrix;}
+  vesMatrix4x4f GetMatrix();
+  vesMatrix4x4f GetMatrixGMTL(){return _matrix;}
   void Reset();
 
 //private:
@@ -39,7 +39,7 @@ public:
                     float yTranslation);
 
   unsigned int _width,_height;
-  vtkMatrix4x4f _matrix;
+  vesMatrix4x4f _matrix;
   CATransform3D currentCalculatedMatrix, testMatrix;
 };
 #endif //__vtkCamera_h

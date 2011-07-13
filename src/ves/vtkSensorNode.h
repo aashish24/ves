@@ -20,7 +20,7 @@
 #define __vtkSensorNode_h
 // --------------------------------------------------------------------includes
 #include "vtkChildNode.h"
-#include "vtkSetGet.h"
+#include "vesSetGet.h"
 
 // -----------------------------------------------------------------pre-defines
 
@@ -32,7 +32,7 @@ public:
   vtkSensorNode();
   ~vtkSensorNode();
   bool IsActive();
-  vtkSetGetMacro(Enabled,bool)
+  vesSetGetMacro(Enabled,bool)
 protected:
 
   // ...........................................................protected-ivars

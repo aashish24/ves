@@ -121,7 +121,7 @@ void vtkLegacyReader::readNormals(std::ifstream &file, vtkVertex3f *v, int n)
     file >> v->normal[0] >> v->normal[1] >> v->normal[2];
 }
 
-void vtkLegacyReader::readPolygons(std::ifstream &file, std::vector<vtkVector3us>& triangleCells, int numPolygons)
+void vtkLegacyReader::readPolygons(std::ifstream &file, std::vector<vesVector3us>& triangleCells, int numPolygons)
 {
   unsigned short numVertices = 0;
   unsigned short numPolygonsRead = 0;
@@ -130,15 +130,15 @@ void vtkLegacyReader::readPolygons(std::ifstream &file, std::vector<vtkVector3us
     file >> numVertices;
     if (numVertices == 3) 
     {
-      vtkVector3us indices;
+      vesVector3us indices;
       file >> indices[0] >> indices[1] >> indices[2];
       triangleCells.push_back(indices);
       numPolygonsRead++;
     }
     else if (numVertices == 4)
     {
-      vtkVector3us indices1;
-      vtkVector3us indices2;
+      vesVector3us indices1;
+      vesVector3us indices2;
       file >> indices1[0] >> indices1[1] >> indices1[2] >> indices2[0];
       indices2[1] = indices1[0];
       indices2[2] = indices1[2];
@@ -153,7 +153,7 @@ void vtkLegacyReader::readPolygons(std::ifstream &file, std::vector<vtkVector3us
   }
 }
 
-void vtkLegacyReader::readLines(std::ifstream &file, std::vector<vtkVector2us>& lineCells, int numLines)
+void vtkLegacyReader::readLines(std::ifstream &file, std::vector<vesVector2us>& lineCells, int numLines)
 {
   unsigned short numVertices = 0;
   unsigned short numLinesRead = 0;
@@ -162,7 +162,7 @@ void vtkLegacyReader::readLines(std::ifstream &file, std::vector<vtkVector2us>& 
     file >> numVertices;
     for (int j = 0; j < numVertices-1; ++j)
     {
-      vtkVector2us indices;
+      vesVector2us indices;
       file >> indices[0] >> indices[1];
       lineCells.push_back(indices);
       ++numLinesRead;

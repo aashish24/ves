@@ -21,8 +21,8 @@
 #ifndef __vtkBoundedObject_h
 #define __vtkBoundedObject_h
 
-#include "vtkGMTL.h"
-#include "vtkSetGet.h"
+#include "vesGMTL.h"
+#include "vesSetGet.h"
 
 // -----------------------------------------------------------------------class
 class vtkBoundedObject
@@ -32,23 +32,23 @@ public:
   vtkBoundedObject();
   ~vtkBoundedObject();
   virtual void ComputeBounds()=0;
-  virtual vtkVector3f GetMin()=0;
-  virtual vtkVector3f GetMax()=0;
-  vtkSetMacro(BBoxCenter,vtkVector3f)
-  vtkGetMacro(BBoxCenter,vtkVector3f)
-  vtkSetMacro(BBoxSize,vtkVector3f)
-  vtkGetMacro(BBoxSize,vtkVector3f)
+  virtual vesVector3f GetMin()=0;
+  virtual vesVector3f GetMax()=0;
+  vesSetMacro(BBoxCenter,vesVector3f)
+  vesGetMacro(BBoxCenter,vesVector3f)
+  vesSetMacro(BBoxSize,vesVector3f)
+  vesGetMacro(BBoxSize,vesVector3f)
 
-  void SetBBoxCenter(vtkVector3f min, vtkVector3f max);
-  void SetBBoxSize(vtkVector3f min, vtkVector3f max);
-//  vtkGetMacro(Min,vtkVector3f)
-//  vtkGetMacro(Max,vtkVector3f)
+  void SetBBoxCenter(vesVector3f min, vesVector3f max);
+  void SetBBoxSize(vesVector3f min, vesVector3f max);
+//  vesGetMacro(Min,vesVector3f)
+//  vesGetMacro(Max,vesVector3f)
   virtual float GetBBoxRadius();
 protected:
-  vtkVector3f Min;
-  vtkVector3f Max;
-  vtkVector3f BBoxCenter;
-  vtkVector3f BBoxSize;
+  vesVector3f Min;
+  vesVector3f Max;
+  vesVector3f BBoxCenter;
+  vesVector3f BBoxSize;
 };
 
 #endif // __vtkBoundedObject_h

@@ -21,7 +21,7 @@
 // --------------------------------------------------------------------includes
 #include "vtkMultitouchSensorNode.h"
 #import <QuartzCore/QuartzCore.h>
-#include "vtkGMTL.h"
+#include "vesGMTL.h"
 
 #define GMTL_CAMERA 0
 
@@ -40,8 +40,8 @@ public:
   void Render(vtkPainter* render);
   void SetWidthHeight(const unsigned int width,
                       const unsigned int height);
-  vtkMatrix4x4f GetMatrix();
-  vtkMatrix4x4f GetMatrixGMTL();
+  vesMatrix4x4f GetMatrix();
+  vesMatrix4x4f GetMatrixGMTL();
   void Reset();
 
   void printCurrentCalculatedMatrix();
@@ -60,7 +60,7 @@ protected:
   // ...........................................................protected-ivars
   
   unsigned int _width,_height;
-  vtkMatrix4x4f _matrix;
+  vesMatrix4x4f _matrix;
   CATransform3D currentCalculatedMatrix, testMatrix;
 
 protected:

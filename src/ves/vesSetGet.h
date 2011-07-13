@@ -1,15 +1,15 @@
 //
-//  vtkSetGet.h
+//  vesSetGet.h
 //  kiwi
 //
 //  Created by kitware on 6/14/11.
 //  Copyright 2011 __MyCompanyName__. All rights reserved.
 //
 
-#ifndef __vtkSetGet_h
-#define __vtkSetGet_h
+#ifndef __vesSetGet_h
+#define __vesSetGet_h
 
-#define vtkSetMacro(name,type)                  \
+#define vesSetMacro(name,type)                  \
   virtual void Set##name (type _arg)            \
   {                                             \
     if (this->name != _arg)                     \
@@ -18,13 +18,13 @@
       }                                         \
   }
 
-#define vtkGetMacro(name,type)                  \
+#define vesGetMacro(name,type)                  \
   virtual type Get##name ()                     \
   {                                             \
     return this->name;                          \
   }
 
-#define vtkSetGetMacro(name,type)               \
+#define vesSetGetMacro(name,type)               \
   virtual void Set##name (type _arg)            \
   {                                             \
     if (this->name != _arg)                     \
@@ -38,7 +38,7 @@
     return this->name;                          \
   }
 
-#define vtkSetVectorMacro(name,type)            \
+#define vesSetVectorMacro(name,type)            \
   void Set##name(const std::vector<type> &_arg) \
   {                                             \
     for(int i =0; i< _arg.size(); i++)          \
@@ -47,7 +47,7 @@
       }                                         \
   }
 
-#define vtkGetVectorMacro(name,type)            \
+#define vesGetVectorMacro(name,type)            \
   bool Get##name (std::vector<type> *_arg)      \
   {                                             \
     if(this->name.size() ==0)                   \
@@ -59,7 +59,7 @@
     return true;                                \
   }
 
-#define vtkSetGetVectorMacro(name,type)         \
+#define vesSetGetVectorMacro(name,type)         \
   void Set##name(const std::vector<type> &_arg) \
   {                                             \
     for(int i =0; i< _arg.size(); i++)          \

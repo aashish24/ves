@@ -43,17 +43,17 @@ public:
   void Actor(vtkActor * actor);
   void ActorCollection(vtkActorCollection *actor);
   void ShaderProgram(vtkShaderProgram *shaderProg);
-  vtkSetGetMacro(View,vtkMatrix4x4f)
-  vtkSetGetMacro(Model,vtkMatrix4x4f)
-  vtkSetGetMacro(Projection,vtkMatrix4x4f)
+  vesSetGetMacro(View,vesMatrix4x4f)
+  vesSetGetMacro(Model,vesMatrix4x4f)
+  vesSetGetMacro(Projection,vesMatrix4x4f)
 protected:
   // ...........................................................protected-ivars
-  vtkMatrix4x4f Projection,Model,View;
-  std::vector<vtkMatrix4x4f> MatrixStack;
-  // vtkMatrix4x4f MatrixStack[10];
+  vesMatrix4x4f Projection,Model,View;
+  std::vector<vesMatrix4x4f> MatrixStack;
+  // vesMatrix4x4f MatrixStack[10];
   // int index;
-  vtkMatrix4x4f Eval();
-  void Push(vtkMatrix4x4f mat);
+  vesMatrix4x4f Eval();
+  void Push(vesMatrix4x4f mat);
   void Pop();
 
 protected:

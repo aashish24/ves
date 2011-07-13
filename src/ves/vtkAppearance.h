@@ -20,7 +20,7 @@
 #define __vtkAppearance_h
 // --------------------------------------------------------------------includes
 #include "vtkAppearanceNode.h"
-#include "vtkSetGet.h"
+#include "vesSetGet.h"
 #include <vector>
 // -----------------------------------------------------------------pre-defines
 class vtkAppearanceInternal;
@@ -40,14 +40,14 @@ public:
   ~vtkAppearance();
   bool Read();
   void Render(vtkPainter* render);
-  vtkSetGetMacro(Shader,vtkShaderNode*)
+  vesSetGetMacro(Shader,vtkShaderNode*)
 
-  // vtkSetGetMacro(FillProperties, vtkFillProperties*)
-  // vtkSetGetMacro(LineProperties, vtkLineProperties*)
-  // vtkSetGetMacro(Material, vtkMaterialNode*)
-  // vtkSetGetVectorMacro(Shaders,vtkShaderNode*)
-  // vtkSetGetMacro(Texture, vtkTextureNode*)
-  // vtkSetGetMacro(TextureTransform, vtkTextureTransformNode*)
+  // vesSetGetMacro(FillProperties, vtkFillProperties*)
+  // vesSetGetMacro(LineProperties, vtkLineProperties*)
+  // vesSetGetMacro(Material, vtkMaterialNode*)
+  // vesSetGetVectorMacro(Shaders,vtkShaderNode*)
+  // vesSetGetMacro(Texture, vtkTextureNode*)
+  // vesSetGetMacro(TextureTransform, vtkTextureTransformNode*)
 protected:
   // ...........................................................protected-ivars
   vtkShaderNode* Shader;

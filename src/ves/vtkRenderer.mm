@@ -61,7 +61,7 @@ void vtkRenderer::Read()
   this->Actor->Read();
   this->Actor->ComputeBounds();
   this->Actor->Normalize();
-  _view = makeTranslationMatrix4x4(vtkVector3f(0,0,2))* makeScaleMatrix4x4(.1,.1,.1);
+  _view = makeTranslationMatrix4x4(vesVector3f(0,0,2))* makeScaleMatrix4x4(.1,.1,.1);
   this->Painter->SetView(_view);
   resize(_width,_height,1);
 }
@@ -98,7 +98,7 @@ void vtkRenderer::resize(int width, int height, float scale)
 
 void vtkRenderer::resetView()
 {
-  _model = vtkMatrix4x4f();
+  _model = vesMatrix4x4f();
   this->Painter->SetModel(_model);
   mCamera->Reset();	
 }
@@ -121,17 +121,17 @@ void vtkRenderer::Render()
   this->Actor->Render(this->Painter);
 #if MOVE_THIS 
   // Work out the appropriate matrices
-  vtkMatrix4x4f mvp;
+  vesMatrix4x4f mvp;
   //mvp = _proj * _view * _model * (*mActor)();
-  vtkMatrix4x4f mv;
+  vesMatrix4x4f mv;
   mv = _view * _model * Actor->Eval();
   mvp = _proj * mv;
 	
-  vtkMatrix3x3f normal_matrix = makeNormalMatrix3x3f(makeTransposeMatrix4x4(makeInverseMatrix4x4 (mv)));
-  //vtkMatrix4x4f temp = makeNormalizedMatrix4x4(makeTransposeMatrix4x4(_vie);
+  vesMatrix3x3f normal_matrix = makeNormalMatrix3x3f(makeTransposeMatrix4x4(makeInverseMatrix4x4 (mv)));
+  //vesMatrix4x4f temp = makeNormalizedMatrix4x4(makeTransposeMatrix4x4(_vie);
   vtkPoint3f lightDir = vtkPoint3f(0.0,0.0,.650);
 	
-  vtkVector3f light(lightDir.mData[0],lightDir.mData[1],lightDir.mData[2]);
+  vesVector3f light(lightDir.mData[0],lightDir.mData[1],lightDir.mData[2]);
   this->mProgram->SetUniformMatrix4x4f("u_mvpMatrix",mvp);
   this->mProgram->SetUniformMatrix3x3f("u_normalMatrix",normal_matrix);
   this->mProgram->SetUniformVector3f("u_ecLightDir",light);

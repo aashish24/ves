@@ -12,7 +12,7 @@
 #include "vtkShaderProgram.h"
 #include "vtkGeometryNode.h"
 #include "vtkBoundedObject.h"
-#include "vtkGMTL.h"
+#include "vesGMTL.h"
 
 class vtkMapper :public vtkGeometryNode, public vtkBoundedObject
 {
@@ -21,18 +21,18 @@ public:
   ~vtkMapper();
   bool Read();
   void Reload(vtkFileReader *reader);
-  vtkMatrix4x4f Eval();
+  vesMatrix4x4f Eval();
   void Render(vtkPainter* render);
   void Render(vtkShaderProgram *program);
   vtkTriangleData* GetTriangleData();
   vtkTriangleData* GetData();
   void ComputeBounds();
-  vtkGetMacro(Min, vtkVector3f)
-  vtkGetMacro(Max, vtkVector3f)
+  vesGetMacro(Min, vesVector3f)
+  vesGetMacro(Max, vesVector3f)
   
 private:
   void Normalize();
-  vtkMatrix4x4f NormalizedMatrix;
+  vesMatrix4x4f NormalizedMatrix;
 protected:
   vtkFileReader *mFileReader;
   bool mIsNew;

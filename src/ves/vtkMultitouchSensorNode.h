@@ -20,7 +20,7 @@
 #define __vtkMultitouchSensorNode_h
 // --------------------------------------------------------------------includes
 #include "vtkSensorNode.h"
-#include "vtkGMTL.h"
+#include "vesGMTL.h"
 // -----------------------------------------------------------------pre-defines
 
 
@@ -31,14 +31,14 @@ public:
   // ............................................................public-methods
   vtkMultitouchSensorNode();
   ~vtkMultitouchSensorNode();
-  vtkSetGetMacro(Translation, vtkVector3f)
-  vtkSetGetMacro(Scale, vtkVector3f)
-  vtkSetGetMacro(Rotation,vtkVector4f)
+  vesSetGetMacro(Translation, vesVector3f)
+  vesSetGetMacro(Scale, vesVector3f)
+  vesSetGetMacro(Rotation,vesVector4f)
 protected:
   // ...........................................................protected-ivars
-  vtkVector3f Translation;
-  vtkVector3f Scale;
-  vtkVector4f Rotation;
+  vesVector3f Translation;
+  vesVector3f Scale;
+  vesVector4f Rotation;
 
 protected:
 //BTX

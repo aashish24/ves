@@ -37,7 +37,7 @@ vtkBoundedObject::~vtkBoundedObject()
 
 }
 
-void vtkBoundedObject::SetBBoxCenter(vtkVector3f min, vtkVector3f max)
+void vtkBoundedObject::SetBBoxCenter(vesVector3f min, vesVector3f max)
 {
   this->Min = (min);
   this->Max = (max);
@@ -45,7 +45,7 @@ void vtkBoundedObject::SetBBoxCenter(vtkVector3f min, vtkVector3f max)
   this->BBoxCenter /= 2.0f;
 }
 
-void vtkBoundedObject::SetBBoxSize(vtkVector3f min, vtkVector3f max)
+void vtkBoundedObject::SetBBoxSize(vesVector3f min, vesVector3f max)
 {
   this->Min = (min);
   this->Max = (max);
@@ -60,7 +60,7 @@ void vtkBoundedObject::SetBBoxSize(vtkVector3f min, vtkVector3f max)
 
 float vtkBoundedObject::GetBBoxRadius()
 {
-  vtkVector3f temp = this->BBoxSize;
+  vesVector3f temp = this->BBoxSize;
   return sqrt(temp[0]*temp[0]+
               temp[1]*temp[1]+
               temp[2]*temp[2]);

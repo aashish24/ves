@@ -16,15 +16,15 @@
 #ifndef vtkTriangleData_H
 #define vtkTriangleData_H
 
-#include "vtkGMTL.h"
+#include "vesGMTL.h"
 #include <vector>
 
 // Small struct packing a point and normal together in a vertex
 // Memory layout is 3 floats for a point followed by 3 floats for a normal
 struct vtkVertex3f
 {
-  vtkVector3f point;
-  vtkVector3f normal;
+  vesVector3f point;
+  vesVector3f normal;
 };
 
 class vtkTriangleData
@@ -32,18 +32,18 @@ class vtkTriangleData
 public:
   vtkTriangleData();
   std::vector<vtkVertex3f>& GetPoints() { return this->Points; }
-  std::vector<vtkVector3us>& GetTriangles() { return this->Triangles; }
-  std::vector<vtkVector2us>& GetLines() { return this->Lines; }
-  vtkVector3f GetMin();
-  vtkVector3f GetMax();
+  std::vector<vesVector3us>& GetTriangles() { return this->Triangles; }
+  std::vector<vesVector2us>& GetLines() { return this->Lines; }
+  vesVector3f GetMin();
+  vesVector3f GetMax();
   void SetHasNormals(bool b) { this->HasNormals = b; }
   void ComputeNormals();
 protected:
   std::vector<vtkVertex3f> Points;
-  std::vector<vtkVector3us> Triangles;
-  std::vector<vtkVector2us> Lines;
-  vtkVector3f Min;
-  vtkVector3f Max;
+  std::vector<vesVector3us> Triangles;
+  std::vector<vesVector2us> Lines;
+  vesVector3f Min;
+  vesVector3f Max;
   bool HasBounds;
   bool HasNormals;
   void ComputeBounds();

@@ -15,7 +15,7 @@
 #include "vtkPainter.h"
 
 // --------------------------------------------------------------------includes
-#include "vtkGMTL.h"
+#include "vesGMTL.h"
 #include <iostream>
 #include <vector>
 #include "vtkChildNode.h"
@@ -154,17 +154,17 @@ void vtkPainter::Shape(vtkShape* shape)
   vtkMapper* mapper = (vtkMapper*)shape->GetGeometry();
 
   // Work out the appropriate matrices
-  vtkMatrix4x4f mvp;
+  vesMatrix4x4f mvp;
   //mvp = _proj * _view * _model * (*mActor)();
-  vtkMatrix4x4f mv;
+  vesMatrix4x4f mv;
   mv = this->View * this->Model * this->Eval();
   mvp = this->Projection * mv;
 
-  vtkMatrix3x3f normal_matrix = makeNormalMatrix3x3f(makeTransposeMatrix4x4(makeInverseMatrix4x4 (mv)));
-  //vtkMatrix4x4f temp = makeNormalizedMatrix4x4(makeTransposeMatrix4x4(_vie);
+  vesMatrix3x3f normal_matrix = makeNormalMatrix3x3f(makeTransposeMatrix4x4(makeInverseMatrix4x4 (mv)));
+  //vesMatrix4x4f temp = makeNormalizedMatrix4x4(makeTransposeMatrix4x4(_vie);
   vtkPoint3f lightDir = vtkPoint3f(0.0,0.0,.650);
 
-  vtkVector3f light(lightDir.mData[0],lightDir.mData[1],lightDir.mData[2]);
+  vesVector3f light(lightDir.mData[0],lightDir.mData[1],lightDir.mData[2]);
   program->SetUniformMatrix4x4f("u_mvpMatrix",mvp);
   program->SetUniformMatrix3x3f("u_normalMatrix",normal_matrix);
   program->SetUniformVector3f("u_ecLightDir",light);
@@ -211,7 +211,7 @@ void vtkPainter::Shape(vtkShape* shape)
 }
 
 // --------------------------------------------------------------------internal
-void vtkPainter::Push(vtkMatrix4x4f mat)
+void vtkPainter::Push(vesMatrix4x4f mat)
 {
   std::cout << "Pushed Matrix" <<std::endl;
   MatrixStack.push_back(mat);
@@ -227,9 +227,9 @@ void vtkPainter::Pop()
 
 
 // --------------------------------------------------------------------internal
-vtkMatrix4x4f vtkPainter::Eval()
+vesMatrix4x4f vtkPainter::Eval()
 {
-  vtkMatrix4x4f temp;
+  vesMatrix4x4f temp;
   for (int i = 0; i < MatrixStack.size(); ++i)
     {
       temp *= MatrixStack[i];

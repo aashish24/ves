@@ -1,40 +1,40 @@
 
 // --------------------------------------------------------------------includes
 #include "vtkTransform.h"
-#include "vtkGMTL.h"
+#include "vesGMTL.h"
 #include "vtkPainter.h"
 
 // --------------------------------------------------------------------internal
 class vtkTransformInternals
 {
-  vtkMatrix4x4f T,C,R,SR,S,_SR,_C;
+  vesMatrix4x4f T,C,R,SR,S,_SR,_C;
 public:
-  vtkMatrix4x4f Eval()
+  vesMatrix4x4f Eval()
   {
     return T * C * R * SR * S * _SR * _C;
   }
 
-  void SetTranslation(vtkVector3f trans)
+  void SetTranslation(vesVector3f trans)
   {
     T = makeTranslationMatrix4x4(trans);
   }
-  void SetCenter(vtkVector3f center)
+  void SetCenter(vesVector3f center)
   {
     C = makeTranslationMatrix4x4(center);
     _C = makeInverseMatrix4x4(C);
   }
-  void SetRotation(vtkVector4f rot)
+  void SetRotation(vesVector4f rot)
   {
     R = makeRotationMatrix4x4(rot[3], rot[0], rot[1], rot[2]);
   }
 
-  void SetScaleOrientation(vtkVector4f sr)
+  void SetScaleOrientation(vesVector4f sr)
   {
     SR = makeRotationMatrix4x4(sr[3], sr[0], sr[1], sr[2]);
     _SR = makeInverseMatrix4x4(SR);
   }
 
-  void SetScale(vtkVector3f scale)
+  void SetScale(vesVector3f scale)
   {
     S = makeScaleMatrix4x4(scale[0],scale[1],scale[2]);
   }
@@ -44,11 +44,11 @@ public:
 vtkTransform::vtkTransform()
 {
   this->Internals = new vtkTransformInternals;
-  vtkVector3f center(0,0,0);
-  vtkVector4f rotation(0,0,1,0);
-  vtkVector3f scale(1,1,1);
-  vtkVector4f scaleOrientation(0,0,1,0);
-  vtkVector3f translation(0,0,0);
+  vesVector3f center(0,0,0);
+  vesVector4f rotation(0,0,1,0);
+  vesVector3f scale(1,1,1);
+  vesVector4f scaleOrientation(0,0,1,0);
+  vesVector3f translation(0,0,0);
   this->Center = center;
   this->Rotation = rotation;
   this->Scale = scale;
@@ -63,7 +63,7 @@ vtkTransform::~vtkTransform()
 }
 
 // ----------------------------------------------------------------------public
-vtkMatrix4x4f vtkTransform::Eval()
+vesMatrix4x4f vtkTransform::Eval()
 {
   this->SetInternals();
   return this->Internals->Eval();
@@ -76,7 +76,7 @@ vtkMatrix4x4f vtkTransform::Eval()
 // }
 
 // ---------------------------------------------------------------------private
-vtkMatrix4x4f vtkTransform::ComputeTransform()
+vesMatrix4x4f vtkTransform::ComputeTransform()
 {
   this->SetInternals();
   return this->Internals->Eval();

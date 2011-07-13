@@ -19,11 +19,11 @@
 #ifndef __vtkActor_h
 #define __vtkActor_h
 // --------------------------------------------------------------------includes
-#include "vtkGMTL.h"
+#include "vesGMTL.h"
 #include "vtkShaderProgram.h"
 #include "vtkTransform.h"
 #include "vtkShape.h"
-#include "vtkSetGet.h"
+#include "vesSetGet.h"
 #include <list>
 
 // -----------------------------------------------------------------pre-defines
@@ -41,14 +41,14 @@ public:
   vtkActor(vtkShader* shader,vtkMapper* mapper,vtkMultitouchWidget *widget=0);
   ~vtkActor();
 
-  vtkMatrix4x4f Eval();
+  vesMatrix4x4f Eval();
   bool Read();
   void ComputeBounds();
   void Render(vtkPainter* render);
-  vtkSetGetMacro(Sensor,bool)
-  vtkSetGetMacro(Widget,vtkMultitouchWidget*);
-  vtkGetMacro(Min, vtkVector3f)
-  vtkGetMacro(Max, vtkVector3f)
+  vesSetGetMacro(Sensor,bool)
+  vesSetGetMacro(Widget,vtkMultitouchWidget*);
+  vesGetMacro(Min, vesVector3f)
+  vesGetMacro(Max, vesVector3f)
   bool SetVisible(bool value);
   bool isVisible();
 
@@ -58,7 +58,7 @@ protected:
   vtkShape *Shape;
   bool Sensor;
   vtkMultitouchWidget* Widget;
-  vtkMatrix4x4f Matrix;
+  vesMatrix4x4f Matrix;
   vtkMapper *Mapper;
   bool Visible;
 protected:

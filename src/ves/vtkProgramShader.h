@@ -20,7 +20,7 @@
 #define __vtkProgramShader_h
 // --------------------------------------------------------------------includes
 #include "vtkShaderNode.h"
-#include "vtkSetGet.h"
+#include "vesSetGet.h"
 #include <vector>
 
 // -----------------------------------------------------------------pre-defines
@@ -34,7 +34,7 @@ public:
   // ............................................................public-methods
   vtkProgramShader();
   ~vtkProgramShader();
-  vtkSetGetVectorMacro(Programs,vtkShaderProgram*)
+  vesSetGetVectorMacro(Programs,vtkShaderProgram*)
   bool Read();
   void Render(vtkPainter *render);
 protected:

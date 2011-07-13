@@ -20,7 +20,7 @@
 #import <OpenGLES/ES2/glext.h>
 #import <QuartzCore/QuartzCore.h>
 #include <string>
-#include "vtkGMTL.h"
+#include "vesGMTL.h"
 #include "vtkMultitouchCamera.h"
 #include "vtkShaderProgram.h"
 #include "vtkActor.h"
@@ -49,13 +49,13 @@ private:
   vtkActorCollection *Actor;
   vtkPainter *Painter;
   // Runtime
-  vtkMatrix4x4f _model;
-  vtkMatrix4x4f _view;
-  vtkMatrix4x4f _proj;
+  vesMatrix4x4f _model;
+  vesMatrix4x4f _view;
+  vesMatrix4x4f _proj;
   float _width,_height;
 
-  vtkMatrix4x4f m_mv_matrix;
-  vtkMatrix3x3f m_normal_matrix;
+  vesMatrix4x4f m_mv_matrix;
+  vesMatrix3x3f m_normal_matrix;
 
   bool once;
 };

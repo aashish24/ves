@@ -46,17 +46,17 @@ void vtkShaderProgram::DeleteProgram()
     }
 }
 
-void vtkShaderProgram::SetUniformMatrix4x4f(string str, vtkMatrix4x4f& mat)
+void vtkShaderProgram::SetUniformMatrix4x4f(string str, vesMatrix4x4f& mat)
 {
   glUniformMatrix4fv(this->GetUniform(str), 1, GL_FALSE, mat.mData);
 }
 
-void vtkShaderProgram::SetUniformMatrix3x3f(string str, vtkMatrix3x3f& mat)
+void vtkShaderProgram::SetUniformMatrix3x3f(string str, vesMatrix3x3f& mat)
 {
   glUniformMatrix3fv(this->GetUniform(str), 1, GL_FALSE, mat.mData);
 }
 
-void vtkShaderProgram::SetUniformVector3f(string str, vtkVector3f& point)
+void vtkShaderProgram::SetUniformVector3f(string str, vesVector3f& point)
 {
   glUniform3fv(this->GetUniform(str), 1, point.mData);
 }

@@ -22,8 +22,8 @@
 // Memory layout is 3 floats for a point followed by 3 floats for a normal
 struct Vertex3f
 {
-  vtkVector3f point;
-  vtkVector3f normal;
+  vesVector3f point;
+  vesVector3f normal;
 };
 
 #include <string>
@@ -40,8 +40,8 @@ public:
 private:
   void readPoints(std::ifstream &file, vtkVertex3f *v, int n);
   void readNormals(std::ifstream &file, vtkVertex3f *v, int n);
-  void readPolygons(std::ifstream &file, std::vector<vtkVector3us>& triangleCells, int numPolygons);
-  void readLines(std::ifstream &file, std::vector<vtkVector2us>& lineCells, int numLines);
+  void readPolygons(std::ifstream &file, std::vector<vesVector3us>& triangleCells, int numPolygons);
+  void readLines(std::ifstream &file, std::vector<vesVector2us>& lineCells, int numLines);
 };
 
 #endif

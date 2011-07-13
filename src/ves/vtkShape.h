@@ -34,8 +34,8 @@ public:
   bool Read();
   void Render(vtkPainter* render);
   void ComputeBounds();
-  vtkGetMacro(Min, vtkVector3f)
-  vtkGetMacro(Max, vtkVector3f)
+  vesGetMacro(Min, vesVector3f)
+  vesGetMacro(Max, vesVector3f)
   
 protected:
   // ...........................................................protected-ivars

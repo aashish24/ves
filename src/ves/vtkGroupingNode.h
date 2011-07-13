@@ -9,7 +9,7 @@
 #include "vtkChildNode.h"
 #include "vtkBoundedObject.h"
 #include <vector>
-#include "vtkSetGet.h"
+#include "vesSetGet.h"
 
 
 class vtkGroupingNode: public vtkChildNode , public vtkBoundedObject
@@ -19,7 +19,7 @@ public:
   virtual ~vtkGroupingNode();
   void AddChildren(const std::vector<vtkChildNode*> &children);
   void RemoveChildren(const std::vector<vtkChildNode*> &children);
-  vtkSetGetVectorMacro(Children, vtkChildNode*)
+  vesSetGetVectorMacro(Children, vtkChildNode*)
 
   protected:
   std::vector<vtkChildNode*> Children;

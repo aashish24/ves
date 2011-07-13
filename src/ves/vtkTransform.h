@@ -12,23 +12,23 @@ public:
   virtual ~vtkTransform();
   //void Handle(vtkController *handle);
   //void Render(vtkPainter *render);
-  vtkMatrix4x4f Eval();
-  vtkSetGetMacro(Center,vtkVector3f)
-  vtkSetGetMacro(Rotation, vtkVector4f)
-  vtkSetGetMacro(Scale, vtkVector3f)
-  vtkSetGetMacro(ScaleOrientation, vtkVector4f)
-  vtkSetGetMacro(Translation,vtkVector3f)
+  vesMatrix4x4f Eval();
+  vesSetGetMacro(Center,vesVector3f)
+  vesSetGetMacro(Rotation, vesVector4f)
+  vesSetGetMacro(Scale, vesVector3f)
+  vesSetGetMacro(ScaleOrientation, vesVector4f)
+  vesSetGetMacro(Translation,vesVector3f)
 
 private:
   void SetInternals();
-  vtkMatrix4x4f ComputeTransform();
+  vesMatrix4x4f ComputeTransform();
 
 protected:
-  vtkVector3f Center;
-  vtkVector4f Rotation;
-  vtkVector3f Scale;
-  vtkVector4f ScaleOrientation;
-  vtkVector3f Translation;
+  vesVector3f Center;
+  vesVector4f Rotation;
+  vesVector3f Scale;
+  vesVector4f ScaleOrientation;
+  vesVector3f Translation;
   vtkTransformInternals *Internals;
 };
 

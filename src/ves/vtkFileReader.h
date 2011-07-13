@@ -16,7 +16,7 @@
 #ifndef vtkFileReader_h
 #define vtkFileReader_h
 
-#include "vtkGMTL.h"
+#include "vesGMTL.h"
 #include "vtkTriangleData.h"
 
 #include <vector>

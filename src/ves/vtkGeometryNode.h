@@ -20,7 +20,7 @@
 #define __vtkGeometryNode_h
 // --------------------------------------------------------------------includes
 #include "vtkNode.h"
-#include "vtkGMTL.h"
+#include "vesGMTL.h"
 // -----------------------------------------------------------------pre-defines
 class vtkGeometryNodeInternal;
 

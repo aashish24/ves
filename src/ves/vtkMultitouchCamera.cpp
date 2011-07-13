@@ -62,9 +62,9 @@ void vtkMultitouchCamera::SetWidthHeight(const unsigned int width,
 
 }
 
-vtkMatrix4x4f vtkMultitouchCamera::GetMatrix()
+vesMatrix4x4f vtkMultitouchCamera::GetMatrix()
 {
-  vtkMatrix4x4f _model;
+  vesMatrix4x4f _model;
   _model.mData[0] = (float)currentCalculatedMatrix.m11;
   _model.mData[1] = (float)currentCalculatedMatrix.m12;
   _model.mData[2] = (float)currentCalculatedMatrix.m13;
@@ -85,7 +85,7 @@ vtkMatrix4x4f vtkMultitouchCamera::GetMatrix()
 
 }
 
-vtkMatrix4x4f vtkMultitouchCamera::GetMatrixGMTL()
+vesMatrix4x4f vtkMultitouchCamera::GetMatrixGMTL()
 {
   return _matrix;
 }
@@ -173,7 +173,7 @@ void vtkMultitouchCamera::UpdateMatrixGMTL(const float xRotation,
       std::cout<<"------------------------"<<std::endl;
   printGMTLMatrix();
 
-  vtkMatrix4x4f matrix = makeTransposeMatrix4x4(_matrix);
+  vesMatrix4x4f matrix = makeTransposeMatrix4x4(_matrix);
 
 	// Scale the view to fit current multitouch scaling
   matrix = makeScaleMatrix4x4(scaleFactor,scaleFactor,scaleFactor)*matrix;
@@ -183,7 +183,7 @@ void vtkMultitouchCamera::UpdateMatrixGMTL(const float xRotation,
 //  float totalRotation = sqrt(xRotation*xRotation + yRotation*yRotation);
 //  float x = xRotation/totalRotation;
 //  float y = yRotation/totalRotation;
-  vtkMatrix4x4f tempMat = makeRotationMatrix4x4(xRotation,
+  vesMatrix4x4f tempMat = makeRotationMatrix4x4(xRotation,
                                                          matrix.mData[1],
                                                          matrix.mData[5],
                                                          matrix.mData[9])*matrix;
@@ -191,7 +191,7 @@ void vtkMultitouchCamera::UpdateMatrixGMTL(const float xRotation,
                                             tempMat.mData[0],
                                             tempMat.mData[4],
                                             tempMat.mData[8])*matrix;
-//  vtkMatrix4x4f tempMat = matrix*makeRotationMatrix4x4(totalRotation * (22/7) * 1/180.0,
+//  vesMatrix4x4f tempMat = matrix*makeRotationMatrix4x4(totalRotation * (22/7) * 1/180.0,
 //                                               x*matrix[0][1]+y*matrix[0][0],
 //                                               x*matrix[1][1]+y*matrix[1][0],
 //                                               x*matrix[2][1]+y*matrix[2][0]);
@@ -209,10 +209,10 @@ void vtkMultitouchCamera::UpdateMatrixGMTL(const float xRotation,
   float xTrans = xTranslation / (curScaleFactor * curScaleFactor);
   float yTrans = yTranslation / (curScaleFactor * curScaleFactor);
 
-  tempMat = makeTranslationMatrix4x4(xTrans * vtkVector3f(matrix.mData[0],
+  tempMat = makeTranslationMatrix4x4(xTrans * vesVector3f(matrix.mData[0],
                                                                  matrix.mData[4],
                                                                  matrix.mData[8]))*matrix;
-  tempMat = makeTranslationMatrix4x4(yTrans * vtkVector3f(matrix.mData[1],
+  tempMat = makeTranslationMatrix4x4(yTrans * vesVector3f(matrix.mData[1],
                                                                  matrix.mData[5],
                                                                  matrix.mData[9]))*matrix;
 
@@ -237,7 +237,7 @@ void vtkMultitouchCamera::printCurrentCalculatedMatrix()
 
 void vtkMultitouchCamera::printGMTLMatrix()
 {
-  vtkMatrix4x4f matrix = makeTransposeMatrix4x4(_matrix);
+  vesMatrix4x4f matrix = makeTransposeMatrix4x4(_matrix);
   for (int i=0;i<4;i++)
   {
     for(int j=0;j<4;j++)

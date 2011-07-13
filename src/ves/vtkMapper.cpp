@@ -40,11 +40,11 @@ void vtkMapper::Reload(vtkFileReader* reader)
   }
 }
 
-vtkMatrix4x4f vtkMapper::Eval()
+vesMatrix4x4f vtkMapper::Eval()
 {
-  vtkMatrix4x4f temp;
+  vesMatrix4x4f temp;
   return temp;
-//  vtkMatrix4x4f temp= makeTransposeMatrix4x4(makeTransposeMatrix4x4(this->NormalizedMatrix));
+//  vesMatrix4x4f temp= makeTransposeMatrix4x4(makeTransposeMatrix4x4(this->NormalizedMatrix));
 //  return temp;
 }
 
@@ -121,8 +121,8 @@ vtkTriangleData* vtkMapper::GetTriangleData()
 
 void vtkMapper::ComputeBounds()
 {
-  vtkVector3f min = this->Data->GetMin();
-  vtkVector3f max = this->Data->GetMax();
+  vesVector3f min = this->Data->GetMin();
+  vesVector3f max = this->Data->GetMax();
   SetBBoxSize(min,max);
   SetBBoxCenter(min, max);
   std::cout<< "BBoxSize = [ ";

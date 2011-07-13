@@ -19,7 +19,7 @@
 #include "vtkShape.h"
 #include "vtkMapper.h"
 #include "vtkShader.h"
-#include "vtkSetGet.h"
+#include "vesSetGet.h"
 #include "vtkPainter.h"
 
 // -----------------------------------------------------------------------macro
@@ -66,7 +66,7 @@ vtkActor::~vtkActor()
   delete this->Shape;
 }
 
-vtkMatrix4x4f vtkActor::Eval()
+vesMatrix4x4f vtkActor::Eval()
 {
   this->Matrix *= this->vtkTransform::Eval();
   return this->Matrix;

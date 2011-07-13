@@ -203,7 +203,7 @@ vtkTriangleData* vtkSTLReader::Read()
 
 struct VectorCompare
 {
-  bool operator()(const vtkVector3f& a, const vtkVector3f& b)
+  bool operator()(const vesVector3f& a, const vesVector3f& b)
   {
     for (int i = 0; i < 3; ++i)
       {
@@ -219,7 +219,7 @@ struct VectorCompare
 int vtkSTLReader::ReadBinarySTL(FILE *fp, vtkTriangleData* t)
 {
   int i, numTris;
-  vtkVector3us pts;
+  vesVector3us pts;
   unsigned long   ulint;
   unsigned short  ibuff2;
   char    header[81];
@@ -252,7 +252,7 @@ int vtkSTLReader::ReadBinarySTL(FILE *fp, vtkTriangleData* t)
     numTris = static_cast<int>(ulFileLength);
 
   // Simple map for merging points (note that locations must match exactly)
-  std::map<vtkVector3f, int, VectorCompare> locations;
+  std::map<vesVector3f, int, VectorCompare> locations;
 
   for ( i=0; fread(&facet,48,1,fp) > 0; i++ )
     {
@@ -337,7 +337,7 @@ int vtkSTLReader::ReadASCIISTL(FILE *fp, vtkTriangleData* t)
 {
   char line[256];
   float x[3];
-  vtkVector3us pts;
+  vesVector3us pts;
   int done;
   int currentSolid = 0;
 
@@ -354,7 +354,7 @@ int vtkSTLReader::ReadASCIISTL(FILE *fp, vtkTriangleData* t)
     }
 
   // Simple map for merging points (note that locations must match exactly)
-  std::map<vtkVector3f, int, VectorCompare> locations;
+  std::map<vesVector3f, int, VectorCompare> locations;
   
   //  Go into loop, reading  facet normal and vertices
   while (!done)

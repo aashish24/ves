@@ -21,7 +21,7 @@
 // --------------------------------------------------------------------includes
 #include "vtkChildNode.h"
 #include "vtkBoundedObject.h"
-#include "vtkSetGet.h"
+#include "vesSetGet.h"
 
 // -----------------------------------------------------------------pre-defines
 class vtkShapeNodeInternal;
@@ -35,8 +35,8 @@ public:
   // ............................................................public-methods
   vtkShapeNode();
   ~vtkShapeNode();
-  vtkSetGetMacro(Appearance,vtkAppearanceNode*)
-  vtkSetGetMacro(Geometry,vtkGeometryNode*)
+  vesSetGetMacro(Appearance,vtkAppearanceNode*)
+  vesSetGetMacro(Geometry,vtkGeometryNode*)
 protected:
   // ...........................................................protected-ivars
   vtkAppearanceNode * Appearance;
