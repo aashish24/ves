@@ -40,6 +40,14 @@ void vesMapper::Reload(vesFileReader* reader)
   }
 }
 
+void vesMapper::SetColor(float r, float g, float b, float a)
+{
+  this->Red = r;
+  this->Green = g;
+  this->Blue = b;
+  this->Alpha =a;
+}
+
 vesMatrix4x4f vesMapper::Eval()
 {
   vesMatrix4x4f temp;

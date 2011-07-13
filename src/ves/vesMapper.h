@@ -29,15 +29,21 @@ public:
   void ComputeBounds();
   vesGetMacro(Min, vesVector3f)
   vesGetMacro(Max, vesVector3f)
-  
+  void SetColor(float r, float g, float b, float a);
+  vesGetMacro(Red, float)
+  vesGetMacro(Green, float)
+  vesGetMacro(Blue, float)
+  vesGetMacro(Alpha, float)
 private:
   void Normalize();
   vesMatrix4x4f NormalizedMatrix;
 protected:
+  float Red,Green,Blue,Alpha;
   vesFileReader *mFileReader;
   bool mIsNew;
   vesTriangleData *Data;
   bool m_initialized;
+
   // unsigned int mMapperVBO[2];
 };
 

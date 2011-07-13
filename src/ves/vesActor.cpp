@@ -71,6 +71,11 @@ vesMapper* vesActor::GetMapper()
   return this->Mapper;
 }
 
+void vesActor::SetColor(float r, float g, float b, float a)
+{
+  this->Mapper->SetColor(r, g, b, a);
+}
+
 vesMatrix4x4f vesActor::Eval()
 {
   this->Matrix *= this->Transform::Eval();

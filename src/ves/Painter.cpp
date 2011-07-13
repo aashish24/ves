@@ -177,7 +177,13 @@ void Painter::visitShape(Shape* shape)
   program->EnableVertexArray("a_vertex");
   program->EnableVertexArray("a_normal");
 
-  glVertexAttrib4f(program->GetAttribute("a_texcoord"), 0.8, 0.8, 0.8, 1.0);
+//  glVertexAttrib4f(program->GetAttribute("a_texcoord"), 0.8, 0.8, 0.8, 1.0);
+  glVertexAttrib4f(program->GetAttribute("a_texcoord"),
+                   mapper->GetRed(),
+                   mapper->GetGreen(),
+                   mapper->GetBlue(),
+                   mapper->GetAlpha());
+
   glVertexAttribPointer(program->GetAttribute("a_vertex"),
                         3,
                         GL_FLOAT,

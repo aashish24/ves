@@ -53,6 +53,7 @@ public:
   bool isVisible();
   vesMapper* GetMapper();
   //vesSetGetMacro(Tx, Transform*)
+  void SetColor(float r, float g, float b, float a);
 
 protected:
   // ...........................................................protected-ivars
