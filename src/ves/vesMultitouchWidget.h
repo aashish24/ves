@@ -22,7 +22,7 @@
 #include "vesMultitouchSensorNode.h"
 
 // -----------------------------------------------------------------pre-defines
-class vtkPainter;
+class Painter;
 
 // -----------------------------------------------------------------------class
 class vesMultitouchWidget : public vesMultitouchSensorNode
@@ -32,7 +32,7 @@ public:
   vesMultitouchWidget();
   ~vesMultitouchWidget();
   bool Read();
-  void Render(vtkPainter* render);
+  void Render(Painter* render);
   void Update(float xRotation,
               float yRotation,
               float scaleFactor,

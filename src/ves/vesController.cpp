@@ -40,12 +40,12 @@ vesController::~vesController()
 }
 
 
-void vesController::Transform(vtkTransform* object)
+void vesController::visitTransform(Transform* object)
 {
 
 }
 
-void vesController::Shape(vtkShape* object)
+void vesController::visitShape(Shape* object)
 {
 
 }

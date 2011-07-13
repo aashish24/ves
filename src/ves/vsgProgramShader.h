@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    vesController.h
+  Module:    vsgProgramShader.h
 
   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
@@ -12,41 +12,43 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vesController -
+// .NAME vsgProgramShader - Defines a collection of individual shaders.
 // .SECTION Description
-// vesController
+// vsgProgramShader [refer 31.4.6]
 
-#ifndef __vesController_h
-#define __vesController_h
+#ifndef __vsgProgramShader_h
+#define __vsgProgramShader_h
 // --------------------------------------------------------------------includes
-#include "Transform.h"
-#include "Shape.h"
+#include "vsgShaderNode.h"
+#include "vesSetGet.h"
+#include <vector>
 
 // -----------------------------------------------------------------pre-defines
-class vesControllerInternal;
+class vsgProgramShaderInternal;
+class vesShaderProgram;
 
 // -----------------------------------------------------------------------class
-class vesController
+class vsgProgramShader : public vsgShaderNode
 {
 public:
   // ............................................................public-methods
-  vesController();
-  ~vesController();
-  void visitTransform(Transform* object);
-  void visitShape(Shape* object);
+  vsgProgramShader();
+  ~vsgProgramShader();
+  vesSetGetVectorMacro(Programs,vesShaderProgram*)
+  bool Read();
+  void Render(Painter *render);
 protected:
   // ...........................................................protected-ivars
-
+  std::vector<vesShaderProgram*> Programs;
 protected:
 //BTX
   // .......................................................................BTX
 
 private:
-  vesControllerInternal *Internal;
+  vsgProgramShaderInternal *Internal;
+
 //ETX
   // .......................................................................ETX
-
-
 };
 
-#endif // __vesController_h
+#endif // __vsgProgramShader_h

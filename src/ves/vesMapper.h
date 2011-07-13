@@ -10,11 +10,11 @@
 
 #include "vesFileReader.h"
 #include "vesShaderProgram.h"
-#include "vtkGeometryNode.h"
-#include "vtkBoundedObject.h"
+#include "vsgGeometryNode.h"
+#include "vsgBoundedObject.h"
 #include "vesGMTL.h"
 
-class vesMapper :public vtkGeometryNode, public vtkBoundedObject
+class vesMapper :public vsgGeometryNode, public vsgBoundedObject
 {
 public:
   vesMapper(vesFileReader* reader);
@@ -22,7 +22,7 @@ public:
   bool Read();
   void Reload(vesFileReader *reader);
   vesMatrix4x4f Eval();
-  void Render(vtkPainter* render);
+  void Render(Painter* render);
   void Render(vesShaderProgram *program);
   vesTriangleData* GetTriangleData();
   vesTriangleData* GetData();

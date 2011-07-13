@@ -15,12 +15,12 @@
 #include "vesActor.h"
 
 // --------------------------------------------------------------------includes
-#include "vtkAppearance.h"
-#include "vtkShape.h"
+#include "Appearance.h"
+#include "Shape.h"
 #include "vesMapper.h"
 #include "vesShader.h"
 #include "vesSetGet.h"
-#include "vtkPainter.h"
+#include "Painter.h"
 
 // -----------------------------------------------------------------------macro
 
@@ -37,13 +37,13 @@ class vesActorInternal
 vesActor::vesActor(vesShader *shader,vesMapper* mapper,vesMultitouchWidget *widget)
 {
   this->Internal = new vesActorInternal();
-  this->Shape = new vtkShape();
-  this->Appearance = new vtkAppearance();
-  this->Appearance->SetShader(shader);
-  this->Shape->SetGeometry(mapper);
-  this->Shape->SetAppearance(this->Appearance);
+  this->_shape = new Shape();
+  this->_appearance = new Appearance();
+  this->_appearance->SetShader(shader);
+  this->_shape->SetGeometry(mapper);
+  this->_shape->SetAppearance(this->_appearance);
   this->Mapper = mapper;        // This is used to make the actor visible again
-  AddShapeChild(this->Shape);
+  AddShapeChild(this->_shape);
   if(widget)
     {
       this->Sensor = true;
@@ -62,13 +62,13 @@ vesActor::vesActor(vesShader *shader,vesMapper* mapper,vesMultitouchWidget *widg
 vesActor::~vesActor()
 {
   delete this->Internal;
-  delete this->Appearance;
-  delete this->Shape;
+  delete this->_appearance;
+  delete this->_shape;
 }
 
 vesMatrix4x4f vesActor::Eval()
 {
-  this->Matrix *= this->vtkTransform::Eval();
+  this->Matrix *= this->Transform::Eval();
   return this->Matrix;
 }
 
@@ -92,34 +92,34 @@ bool vesActor::Read()
 // }
 
 
-void vesActor::Render(vtkPainter* render)
+void vesActor::Render(Painter* render)
 {
   render->Actor(this);
 }
 
-void vesActor::AddShapeChild(vtkShape* shape)
+void vesActor::AddShapeChild(Shape* shape)
 {
-  std::vector<vtkChildNode*> temp;
+  std::vector<vsgChildNode*> temp;
   temp.push_back(shape);
   SetChildren(temp);
 }
 
 void vesActor::ComputeBounds()
 {
-  Shape->ComputeBounds();
-  SetBBoxCenter(Shape->GetMin(),Shape->GetMax());
-  SetBBoxSize(Shape->GetMin(), Shape->GetMax());
+  _shape->ComputeBounds();
+  SetBBoxCenter(_shape->GetMin(),_shape->GetMax());
+  SetBBoxSize(_shape->GetMin(), _shape->GetMax());
 }
 
 bool vesActor::SetVisible(bool value)
 {
   if(value)
     {
-      this->Shape->SetGeometry(this->Mapper);
+      this->_shape->SetGeometry(this->Mapper);
     }
   else
     {
-      this->Shape->SetGeometry(NULL);
+      this->_shape->SetGeometry(NULL);
     }
   this->Visible = value;
 }

@@ -7,7 +7,7 @@
 //
 
 #include "vesMapper.h"
-#include "vtkPainter.h"
+#include "Painter.h"
 
 vesMapper::vesMapper(vesFileReader* reader):mFileReader(reader), Data(NULL), m_initialized(false)
 {
@@ -159,7 +159,7 @@ void vesMapper::Normalize()
   std::cout<<"]"<<std::endl;
 }
 
-void vesMapper::Render(vtkPainter* render)
+void vesMapper::Render(Painter* render)
 {
   render->Mapper(this);
 }

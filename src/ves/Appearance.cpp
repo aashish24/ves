@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    vesShader.cxx
+  Module:    Appearance.cxx
 
   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
@@ -12,12 +12,11 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#include "vesShader.h"
+#include "Appearance.h"
+#include <iostream>
 
 // --------------------------------------------------------------------includes
-#include "vesShaderProgram.h"
-#include "Painter.h"
-#include <vector>
+#include "vsgShaderNode.h"
 
 // -----------------------------------------------------------------------macro
 
@@ -25,36 +24,32 @@
 // IMPORTANT: Make sure that this struct has no pointers.  All pointers should
 // be put in the class declaration. For all newly defined pointers make sure to
 // update constructor and destructor methods.
-struct vesShaderInternal
+struct AppearanceInternal
 {
   double value; // sample
 };
 
 // -----------------------------------------------------------------------cnstr
-vesShader::vesShader(vesShaderProgram* shader)
+Appearance::Appearance()
 {
-  std::vector<vesShaderProgram*> temp;
-  temp.push_back(shader);
-  SetPrograms(temp);
-  this->Internal = new vesShaderInternal();
+  this->Internal = new AppearanceInternal();
 }
 
 // -----------------------------------------------------------------------destr
-vesShader::~vesShader()
+Appearance::~Appearance()
 {
   delete this->Internal;
 }
 
-// ----------------------------------------------------------------------public
-bool vesShader::Read()
+void Appearance::Render(Painter* render)
 {
-  std::cout << "Read: Shader" <<std::endl;
+  this->Shader->Render(render);
+}
+
+bool Appearance::Read()
+{
+  this->Shader->Read();
   return true;
 }
 
-// ----------------------------------------------------------------------public
-void vesShader::Render(Painter *render)
-{
-  render->Shader(this);
-}
 

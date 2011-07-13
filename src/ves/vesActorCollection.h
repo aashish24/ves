@@ -19,14 +19,14 @@
 #ifndef __vesActorCollection_h
 #define __vesActorCollection_h
 // --------------------------------------------------------------------includes
-#include "vtkTransform.h"
+#include "Transform.h"
 
 // -----------------------------------------------------------------pre-defines
 class vesActorCollectionInternal;
 class vesActor;
 
 // -----------------------------------------------------------------------class
-class vesActorCollection : public vtkTransform
+class vesActorCollection : public Transform
 {
 public:
   // ............................................................public-methods
@@ -37,7 +37,7 @@ public:
   //void Handle(vesController *handle);
   bool Read();
   vesMatrix4x4f Eval();
-  void Render(vtkPainter *render);
+  void Render(Painter *render);
   void ComputeBounds();
   vesGetMacro(Min, vesVector3f)
   vesGetMacro(Max, vesVector3f)

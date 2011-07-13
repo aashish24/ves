@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    vesController.h
+  Module:    vsgShapeNode.h
 
   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
@@ -12,41 +12,45 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vesController -
+// .NAME vsgShapeNode - A basic viewable object
 // .SECTION Description
-// vesController
+// vsgShapeNode describes a basic viewable object.
 
-#ifndef __vesController_h
-#define __vesController_h
+#ifndef __vsgShapeNode_h
+#define __vsgShapeNode_h
 // --------------------------------------------------------------------includes
-#include "Transform.h"
-#include "Shape.h"
+#include "vsgChildNode.h"
+#include "vsgBoundedObject.h"
+#include "vesSetGet.h"
 
 // -----------------------------------------------------------------pre-defines
-class vesControllerInternal;
+class vsgShapeNodeInternal;
+class vsgAppearanceNode;
+class vsgGeometryNode;
 
 // -----------------------------------------------------------------------class
-class vesController
+class vsgShapeNode : public vsgChildNode, public vsgBoundedObject
 {
 public:
   // ............................................................public-methods
-  vesController();
-  ~vesController();
-  void visitTransform(Transform* object);
-  void visitShape(Shape* object);
+  vsgShapeNode();
+  ~vsgShapeNode();
+  vesSetGetMacro(Appearance,vsgAppearanceNode*)
+  vesSetGetMacro(Geometry,vsgGeometryNode*)
 protected:
   // ...........................................................protected-ivars
+  vsgAppearanceNode * Appearance;
+  vsgGeometryNode *Geometry;
 
-protected:
 //BTX
   // .......................................................................BTX
-
 private:
-  vesControllerInternal *Internal;
+  vsgShapeNodeInternal *Internal;
+  // vsgShapeNode(const vsgShapeNode&); // Not implemented.
+  // void operator=(const vsgShapeNode&); // Not implemented.
 //ETX
   // .......................................................................ETX
-
-
 };
 
-#endif // __vesController_h
+#endif // __ShapeNode_h
+

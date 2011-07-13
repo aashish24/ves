@@ -19,13 +19,13 @@
 #ifndef __vesMultitouchSensorNode_h
 #define __vesMultitouchSensorNode_h
 // --------------------------------------------------------------------includes
-#include "vtkSensorNode.h"
+#include "vsgSensorNode.h"
 #include "vesGMTL.h"
 // -----------------------------------------------------------------pre-defines
 
 
 // -----------------------------------------------------------------------class
-class vesMultitouchSensorNode : public vtkSensorNode
+class vesMultitouchSensorNode : public vsgSensorNode
 {
 public:
   // ............................................................public-methods

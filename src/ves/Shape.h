@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    vesController.h
+  Module:    Shape.h
 
   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
@@ -12,28 +12,31 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vesController -
+// .NAME Shape - Concrete Shape Class
 // .SECTION Description
-// vesController
+// Shape This describes the concrete shape class
 
-#ifndef __vesController_h
-#define __vesController_h
+#ifndef __Shape_h
+#define __Shape_h
 // --------------------------------------------------------------------includes
-#include "Transform.h"
-#include "Shape.h"
+#include "vsgShapeNode.h"
 
 // -----------------------------------------------------------------pre-defines
-class vesControllerInternal;
+class ShapeInternal;
 
 // -----------------------------------------------------------------------class
-class vesController
+class Shape : public vsgShapeNode
 {
 public:
   // ............................................................public-methods
-  vesController();
-  ~vesController();
-  void visitTransform(Transform* object);
-  void visitShape(Shape* object);
+  Shape();
+  ~Shape();
+  bool Read();
+  void Render(Painter* render);
+  void ComputeBounds();
+  vesGetMacro(Min, vesVector3f)
+  vesGetMacro(Max, vesVector3f)
+  
 protected:
   // ...........................................................protected-ivars
 
@@ -42,11 +45,9 @@ protected:
   // .......................................................................BTX
 
 private:
-  vesControllerInternal *Internal;
+  ShapeInternal *Internal;
 //ETX
   // .......................................................................ETX
-
-
 };
 
-#endif // __vesController_h
+#endif // __Shape_h

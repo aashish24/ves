@@ -17,7 +17,7 @@
 // --------------------------------------------------------------------includes
 #include "vesActor.h"
 #include <iostream>
-#include "vtkPainter.h"
+#include "Painter.h"
 
 // -----------------------------------------------------------------------macro
 
@@ -45,7 +45,7 @@ vesActorCollection::~vesActorCollection()
 // ----------------------------------------------------------------------public
 void vesActorCollection::AddItem(vesActor* a)
 {
-  std::vector<vtkChildNode*> actorList;
+  std::vector<vsgChildNode*> actorList;
   actorList.push_back(a);
   AddChildren(actorList);
 }
@@ -53,7 +53,7 @@ void vesActorCollection::AddItem(vesActor* a)
 // ----------------------------------------------------------------------public
 void vesActorCollection::RemoveItem(vesActor* a)
 {
-  std::vector<vtkChildNode*> actorList;
+  std::vector<vsgChildNode*> actorList;
   actorList.push_back(a);
   RemoveChildren(actorList);
 }
@@ -75,10 +75,10 @@ bool vesActorCollection::Read()
 
  vesMatrix4x4f vesActorCollection::Eval()
  {
-   return vtkTransform::Eval()*NormalizedMatrix;
+   return Transform::Eval()*NormalizedMatrix;
  }
 
-void vesActorCollection::Render(vtkPainter *render)
+void vesActorCollection::Render(Painter *render)
 {
   render->ActorCollection(this);
 }

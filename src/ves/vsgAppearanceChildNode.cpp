@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    vesShader.cxx
+  Module:    vsgAppearanceChildNode.cxx
 
   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
@@ -12,12 +12,9 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#include "vesShader.h"
+#include "vsgAppearanceChildNode.h"
 
 // --------------------------------------------------------------------includes
-#include "vesShaderProgram.h"
-#include "Painter.h"
-#include <vector>
 
 // -----------------------------------------------------------------------macro
 
@@ -25,36 +22,20 @@
 // IMPORTANT: Make sure that this struct has no pointers.  All pointers should
 // be put in the class declaration. For all newly defined pointers make sure to
 // update constructor and destructor methods.
-struct vesShaderInternal
+struct vsgAppearanceChildNodeInternal
 {
   double value; // sample
 };
 
 // -----------------------------------------------------------------------cnstr
-vesShader::vesShader(vesShaderProgram* shader)
+vsgAppearanceChildNode::vsgAppearanceChildNode()
 {
-  std::vector<vesShaderProgram*> temp;
-  temp.push_back(shader);
-  SetPrograms(temp);
-  this->Internal = new vesShaderInternal();
+  this->Internal = new vsgAppearanceChildNodeInternal();
 }
 
 // -----------------------------------------------------------------------destr
-vesShader::~vesShader()
+vsgAppearanceChildNode::~vsgAppearanceChildNode()
 {
   delete this->Internal;
-}
-
-// ----------------------------------------------------------------------public
-bool vesShader::Read()
-{
-  std::cout << "Read: Shader" <<std::endl;
-  return true;
-}
-
-// ----------------------------------------------------------------------public
-void vesShader::Render(Painter *render)
-{
-  render->Shader(this);
 }
 

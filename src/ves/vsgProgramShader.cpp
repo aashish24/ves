@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    vesShader.cxx
+  Module:    vsgProgramShader.cxx
 
   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
@@ -12,12 +12,10 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#include "vesShader.h"
+#include "vsgProgramShader.h"
 
 // --------------------------------------------------------------------includes
-#include "vesShaderProgram.h"
-#include "Painter.h"
-#include <vector>
+#include <iostream>
 
 // -----------------------------------------------------------------------macro
 
@@ -25,36 +23,32 @@
 // IMPORTANT: Make sure that this struct has no pointers.  All pointers should
 // be put in the class declaration. For all newly defined pointers make sure to
 // update constructor and destructor methods.
-struct vesShaderInternal
+struct vsgProgramShaderInternal
 {
   double value; // sample
 };
 
 // -----------------------------------------------------------------------cnstr
-vesShader::vesShader(vesShaderProgram* shader)
+vsgProgramShader::vsgProgramShader()
 {
-  std::vector<vesShaderProgram*> temp;
-  temp.push_back(shader);
-  SetPrograms(temp);
-  this->Internal = new vesShaderInternal();
+  this->Internal = new vsgProgramShaderInternal();
 }
 
 // -----------------------------------------------------------------------destr
-vesShader::~vesShader()
+vsgProgramShader::~vsgProgramShader()
 {
   delete this->Internal;
 }
 
-// ----------------------------------------------------------------------public
-bool vesShader::Read()
+bool vsgProgramShader::Read()
 {
-  std::cout << "Read: Shader" <<std::endl;
+  std::cout << "Read: vsgProgramShader" << std::endl;
   return true;
 }
 
-// ----------------------------------------------------------------------public
-void vesShader::Render(Painter *render)
+void vsgProgramShader::Render(Painter *render)
 {
-  render->Shader(this);
+  std::cout << "Render vsgProgramShader" << std::endl;
 }
+
 

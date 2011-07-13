@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    vesMultitouchCamera.h
+  Module:    Appearance.h
 
   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
@@ -12,67 +12,60 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vesMultitouchCamera -
+// .NAME Appearance - Specifies the visual properties of geometry
 // .SECTION Description
-// vesMultitouchCamera
+// Appearance Refer to spec 12.4.1
 
-#ifndef __vesMultitouchCamera_h
-#define __vesMultitouchCamera_h
+#ifndef __Appearance_h
+#define __Appearance_h
 // --------------------------------------------------------------------includes
-#include "vesMultitouchSensorNode.h"
-#import <QuartzCore/QuartzCore.h>
-#include "vesGMTL.h"
-
-#define GMTL_CAMERA 0
-
+#include "vsgAppearanceNode.h"
+#include "vesSetGet.h"
+#include <vector>
 // -----------------------------------------------------------------pre-defines
-class Painter;
+class AppearanceInternal;
+// class vtkFillProperties;
+// class vtkLineProperties;
+// class vtkMaterialNode;
+class vsgShaderNode;
+// class vtkTextureNode;
+// class vtkTextureTransformNode;
 
 // -----------------------------------------------------------------------class
-class vesMultitouchCamera : public vesMultitouchSensorNode
+class Appearance : public vsgAppearanceNode
 {
 public:
   // ............................................................public-methods
-  vesMultitouchCamera();
-  ~vesMultitouchCamera();
-
+  Appearance();
+  ~Appearance();
   bool Read();
   void Render(Painter* render);
-  void SetWidthHeight(const unsigned int width,
-                      const unsigned int height);
-  vesMatrix4x4f GetMatrix();
-  vesMatrix4x4f GetMatrixGMTL();
-  void Reset();
+  vesSetGetMacro(Shader,vsgShaderNode*)
 
-  void printCurrentCalculatedMatrix();
-  void printGMTLMatrix();
-  void UpdateMatrix(const float xRotation,
-                    const float yRotation,
-                    float scaleFactor,
-                    float xTranslation,
-                    float yTranslation);
-  void UpdateMatrixGMTL(const float xRotation,
-                    const float yRotation,
-                    float scaleFactor,
-                    float xTranslation,
-                    float yTranslation);
+  // vesSetGetMacro(FillProperties, vtkFillProperties*)
+  // vesSetGetMacro(LineProperties, vtkLineProperties*)
+  // vesSetGetMacro(Material, vtkMaterialNode*)
+  // vesSetGetVectorMacro(Shaders,vsgShaderNode*)
+  // vesSetGetMacro(Texture, vtkTextureNode*)
+  // vesSetGetMacro(TextureTransform, vtkTextureTransformNode*)
 protected:
   // ...........................................................protected-ivars
-  
-  unsigned int _width,_height;
-  vesMatrix4x4f _matrix;
-  CATransform3D currentCalculatedMatrix, testMatrix;
+  vsgShaderNode* Shader;
 
+  // vtkFillProperties* FillProperties;
+  // vtkLineProperties* LineProperties;
+  // vtkMaterialNode* Material;
+  // std::vector<vsgShaderNode*> Shaders;
+  // vtkTextureNode * Texture;
+  // vtkTextureTransformNode* TextureTransform;
 protected:
 //BTX
   // .......................................................................BTX
 
 private:
-
+  AppearanceInternal *Internal;
 //ETX
   // .......................................................................ETX
-
-
 };
 
-#endif // __vesMultitouchCamera_h
+#endif // __Appearance_h

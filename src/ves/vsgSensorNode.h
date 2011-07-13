@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    vesController.h
+  Module:    vsgSensorNode.h
 
   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
@@ -12,41 +12,40 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vesController -
+// .NAME vsgSensorNode -
 // .SECTION Description
-// vesController
+// vsgSensorNode
 
-#ifndef __vesController_h
-#define __vesController_h
+#ifndef __vsgSensorNode_h
+#define __vsgSensorNode_h
 // --------------------------------------------------------------------includes
-#include "Transform.h"
-#include "Shape.h"
+#include "vsgChildNode.h"
+#include "vesSetGet.h"
 
 // -----------------------------------------------------------------pre-defines
-class vesControllerInternal;
 
 // -----------------------------------------------------------------------class
-class vesController
+class vsgSensorNode : public vsgChildNode
 {
 public:
   // ............................................................public-methods
-  vesController();
-  ~vesController();
-  void visitTransform(Transform* object);
-  void visitShape(Shape* object);
+  vsgSensorNode();
+  ~vsgSensorNode();
+  bool IsActive();
+  vesSetGetMacro(Enabled,bool)
 protected:
-  // ...........................................................protected-ivars
 
+  // ...........................................................protected-ivars
+  bool Enabled;
 protected:
 //BTX
   // .......................................................................BTX
 
 private:
-  vesControllerInternal *Internal;
 //ETX
   // .......................................................................ETX
 
 
 };
 
-#endif // __vesController_h
+#endif // __vsgSensorNode_h

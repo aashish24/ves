@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    vesMultitouchWidget.cxx
+  Module:    vsgSensorNode.cxx
 
   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
@@ -12,50 +12,27 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#include "vesMultitouchWidget.h"
+#include "vsgSensorNode.h"
 
 // --------------------------------------------------------------------includes
-#include "Painter.h"
 
 // -----------------------------------------------------------------------macro
 
 // -----------------------------------------------------------------------cnstr
-vesMultitouchWidget::vesMultitouchWidget()
+vsgSensorNode::vsgSensorNode()
 {
+  this->Enabled = false;
 }
 
 // -----------------------------------------------------------------------destr
-vesMultitouchWidget::~vesMultitouchWidget()
+vsgSensorNode::~vsgSensorNode()
 {
 }
 
-void vesMultitouchWidget::Update(float xRotation,
-                                  float yRotation,
-                                  float scaleFactor,
-                                  float xTranslation,
-                                  float yTranslation)
+bool vsgSensorNode::IsActive()
 {
-  std::cout << "**** Multitouch Widget update ****" <<std::endl;
-  Translation[0] = xTranslation*1000;
-  Translation[1] = yTranslation*1000;
-  Translation[2] = 0;
-  Rotation[0] = 0;
-  Rotation[1] = 0;
-  Rotation[2] = 1;
-  Rotation[3] = xRotation/100;
-  Scale[0] = scaleFactor;
-  Scale[1] = scaleFactor;
-  Scale[2] = scaleFactor;
+  return this->Enabled;
 }
 
-bool vesMultitouchWidget::Read()
-{
-  return true;
-}
-
-void vesMultitouchWidget::Render(Painter* render)
-{
-
-}
 
 

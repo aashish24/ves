@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    vesShader.cxx
+  Module:    Shape.cxx
 
   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
@@ -12,49 +12,62 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#include "vesShader.h"
+#include "Shape.h"
 
 // --------------------------------------------------------------------includes
-#include "vesShaderProgram.h"
+#include <vsgAppearanceNode.h>
+#include <vsgGeometryNode.h>
 #include "Painter.h"
-#include <vector>
-
+#include "vesMapper.h"
 // -----------------------------------------------------------------------macro
 
 // --------------------------------------------------------------------internal
 // IMPORTANT: Make sure that this struct has no pointers.  All pointers should
 // be put in the class declaration. For all newly defined pointers make sure to
 // update constructor and destructor methods.
-struct vesShaderInternal
+struct ShapeInternal
 {
   double value; // sample
 };
 
 // -----------------------------------------------------------------------cnstr
-vesShader::vesShader(vesShaderProgram* shader)
+Shape::Shape()
 {
-  std::vector<vesShaderProgram*> temp;
-  temp.push_back(shader);
-  SetPrograms(temp);
-  this->Internal = new vesShaderInternal();
+  this->Internal = new ShapeInternal();
 }
 
 // -----------------------------------------------------------------------destr
-vesShader::~vesShader()
+Shape::~Shape()
 {
   delete this->Internal;
 }
 
-// ----------------------------------------------------------------------public
-bool vesShader::Read()
+bool Shape::Read()
 {
-  std::cout << "Read: Shader" <<std::endl;
+  std::cout << "Read: Shape" <<std::endl;
+  GetAppearance() -> Read();
+  if (GetGeometry()) 
+  {
+    GetGeometry() -> Read();
+  }
   return true;
 }
 
-// ----------------------------------------------------------------------public
-void vesShader::Render(Painter *render)
+void Shape::Render(Painter* render)
 {
-  render->Shader(this);
+  render->visitShape(this);
 }
+
+void Shape::ComputeBounds()
+{
+  vesMapper* mapper = (vesMapper*) GetGeometry();
+  if(mapper)
+  {
+  mapper->ComputeBounds();
+  SetBBoxCenter(mapper->GetMin(),mapper->GetMax());
+  SetBBoxSize(mapper->GetMin(),mapper->GetMax());
+  }
+}
+
+
 

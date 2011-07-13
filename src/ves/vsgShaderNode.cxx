@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    vesShader.cxx
+  Module:    vsgShaderNode.cxx
 
   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
@@ -12,12 +12,9 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-#include "vesShader.h"
+#include "vsgShaderNode.h"
 
 // --------------------------------------------------------------------includes
-#include "vesShaderProgram.h"
-#include "Painter.h"
-#include <vector>
 
 // -----------------------------------------------------------------------macro
 
@@ -25,36 +22,22 @@
 // IMPORTANT: Make sure that this struct has no pointers.  All pointers should
 // be put in the class declaration. For all newly defined pointers make sure to
 // update constructor and destructor methods.
-struct vesShaderInternal
+struct vsgShaderNodeInternal
 {
   double value; // sample
 };
 
 // -----------------------------------------------------------------------cnstr
-vesShader::vesShader(vesShaderProgram* shader)
+vsgShaderNode::vsgShaderNode()
 {
-  std::vector<vesShaderProgram*> temp;
-  temp.push_back(shader);
-  SetPrograms(temp);
-  this->Internal = new vesShaderInternal();
+  this->Language = "GLSL";
+  this->Internal = new vsgShaderNodeInternal();
 }
 
 // -----------------------------------------------------------------------destr
-vesShader::~vesShader()
+vsgShaderNode::~vsgShaderNode()
 {
   delete this->Internal;
 }
 
-// ----------------------------------------------------------------------public
-bool vesShader::Read()
-{
-  std::cout << "Read: Shader" <<std::endl;
-  return true;
-}
-
-// ----------------------------------------------------------------------public
-void vesShader::Render(Painter *render)
-{
-  render->Shader(this);
-}
 

@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    vesController.h
+  Module:    Painter.h
 
   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
@@ -12,41 +12,59 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vesController -
+// .NAME Painter - Paints the scene graph
 // .SECTION Description
-// vesController
+// Painter
 
-#ifndef __vesController_h
-#define __vesController_h
+#ifndef __Painter_h
+#define __Painter_h
 // --------------------------------------------------------------------includes
-#include "Transform.h"
-#include "Shape.h"
-
+// #include "Transform.h"
+# include "Shape.h"
+# include "vesActorCollection.h"
+# include "vesActor.h"
+# include "vesShader.h"
+# include "vesMapper.h"
+#include <vector>
 // -----------------------------------------------------------------pre-defines
-class vesControllerInternal;
+class PainterInternal;
 
 // -----------------------------------------------------------------------class
-class vesController
+class Painter
 {
 public:
   // ............................................................public-methods
-  vesController();
-  ~vesController();
-  void visitTransform(Transform* object);
-  void visitShape(Shape* object);
+  Painter();
+  ~Painter();
+  // void Transform(Transform* transform);
+  void visitShape(Shape* shape);
+  void Shader(vesShader * shader);
+  void Mapper(vesMapper *mapper);
+  void Actor(vesActor * actor);
+  void ActorCollection(vesActorCollection *actor);
+  void ShaderProgram(vesShaderProgram *shaderProg);
+  vesSetGetMacro(View,vesMatrix4x4f)
+  vesSetGetMacro(Model,vesMatrix4x4f)
+  vesSetGetMacro(Projection,vesMatrix4x4f)
 protected:
   // ...........................................................protected-ivars
+  vesMatrix4x4f Projection,Model,View;
+  std::vector<vesMatrix4x4f> MatrixStack;
+  // vesMatrix4x4f MatrixStack[10];
+  // int index;
+  vesMatrix4x4f Eval();
+  void Push(vesMatrix4x4f mat);
+  void Pop();
 
 protected:
 //BTX
   // .......................................................................BTX
 
 private:
-  vesControllerInternal *Internal;
+  PainterInternal *Internal;
+
 //ETX
   // .......................................................................ETX
-
-
 };
 
-#endif // __vesController_h
+#endif // __Painter_h

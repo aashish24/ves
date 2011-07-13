@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    vesController.h
+  Module:    vsgProgrammableShaderObject.h
 
   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
@@ -12,28 +12,25 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vesController -
+// .NAME vsgProgrammableShaderObject - Abstract base type for all nodes that specify arbitary fields for interfacing with per-object attribute values
 // .SECTION Description
-// vesController
+// vsgProgrammableShaderObject concrete node instance can be used to program behavior for a shader in a scene.
 
-#ifndef __vesController_h
-#define __vesController_h
+#ifndef __vsgProgrammableShaderObject_h
+#define __vsgProgrammableShaderObject_h
 // --------------------------------------------------------------------includes
-#include "Transform.h"
-#include "Shape.h"
 
 // -----------------------------------------------------------------pre-defines
-class vesControllerInternal;
+class vsgProgrammableShaderObjectInternal;
 
 // -----------------------------------------------------------------------class
-class vesController
+class vsgProgrammableShaderObject
 {
 public:
   // ............................................................public-methods
-  vesController();
-  ~vesController();
-  void visitTransform(Transform* object);
-  void visitShape(Shape* object);
+  vsgProgrammableShaderObject();
+  ~vsgProgrammableShaderObject();
+
 protected:
   // ...........................................................protected-ivars
 
@@ -42,11 +39,9 @@ protected:
   // .......................................................................BTX
 
 private:
-  vesControllerInternal *Internal;
+  vsgProgrammableShaderObjectInternal *Internal;
 //ETX
   // .......................................................................ETX
-
-
 };
 
-#endif // __vesController_h
+#endif // __vsgProgrammableShaderObject_h

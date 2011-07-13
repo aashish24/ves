@@ -12,27 +12,27 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vesShader - Concrete class which implementes vtkProgramShader
+// .NAME vesShader - Concrete class which implementes vsgProgramShader
 // .SECTION Description
 // vesShader [refer ISO/IEC 19775-1:2008 31.4.6]
 
 #ifndef __vesShader_h
 #define __vesShader_h
 // --------------------------------------------------------------------includes
-#include "vtkProgramShader.h"
+#include "vsgProgramShader.h"
 
 // -----------------------------------------------------------------pre-defines
 class vesShaderInternal;
 
 // -----------------------------------------------------------------------class
-class vesShader : public vtkProgramShader
+class vesShader : public vsgProgramShader
 {
 public:
   // ............................................................public-methods
   vesShader(vesShaderProgram* program);
   ~vesShader();
   bool Read();
-  void Render(vtkPainter *render);
+  void Render(Painter *render);
 protected:
   // ...........................................................protected-ivars
 

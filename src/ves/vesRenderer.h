@@ -25,7 +25,7 @@
 #include "vesShaderProgram.h"
 #include "vesActor.h"
 #include "vesSceneRender.h"
-#include "vtkPainter.h"
+#include "Painter.h"
 
 class vesActorCollection;
 
@@ -47,7 +47,7 @@ protected:
 private:
   vesMultitouchCamera* mCamera;
   vesActorCollection *Actor;
-  vtkPainter *Painter;
+  Painter *_Painter;
   // Runtime
   vesMatrix4x4f _model;
   vesMatrix4x4f _view;

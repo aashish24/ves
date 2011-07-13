@@ -14,7 +14,7 @@
 #include <vector>
 #include <string>
 #include "vesGMTL.h"
-#include "vtkPainter.h"
+#include "Painter.h"
 
 using namespace std;
 
@@ -49,7 +49,7 @@ public:
                    vtkStringList uniforms,
                    vtkStringList attributes);
   ~vesShaderProgram();
-  void Render(vtkPainter *render);
+  void Render(Painter *render);
   bool Validate();
   void Use();
   int GetUniform(string value);

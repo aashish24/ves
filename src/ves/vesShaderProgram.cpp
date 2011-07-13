@@ -255,7 +255,7 @@ vesShaderProgram _program(char* vertexShaderStr,
   return prog;
 }
 
-void vesShaderProgram::Render(vtkPainter *render)
+void vesShaderProgram::Render(Painter *render)
 {
   render->ShaderProgram(this);
 }

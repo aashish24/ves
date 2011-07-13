@@ -15,7 +15,7 @@
 #include "vesMultitouchCamera.h"
 
 // --------------------------------------------------------------------includes
-#include "vtkPainter.h"
+#include "Painter.h"
 
 // -----------------------------------------------------------------------macro
 
@@ -51,7 +51,7 @@ bool vesMultitouchCamera::Read()
   return true;
 }
 
-void vesMultitouchCamera::Render(vtkPainter* render)
+void vesMultitouchCamera::Render(Painter* render)
 {
 
 }

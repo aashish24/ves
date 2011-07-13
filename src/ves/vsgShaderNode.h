@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    vesController.h
+  Module:    vsgShaderNode.h
 
   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
@@ -12,41 +12,41 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vesController -
+// .NAME vsgShaderNode - Abstract base type for all nodes that specify a programmable shader.
 // .SECTION Description
-// vesController
+// vsgShaderNode
 
-#ifndef __vesController_h
-#define __vesController_h
+#ifndef __vsgShaderNode_h
+#define __vsgShaderNode_h
 // --------------------------------------------------------------------includes
-#include "Transform.h"
-#include "Shape.h"
+#include "vsgAppearanceChildNode.h"
+#include <string>
 
 // -----------------------------------------------------------------pre-defines
-class vesControllerInternal;
+class vsgShaderNodeInternal;
 
 // -----------------------------------------------------------------------class
-class vesController
+class vsgShaderNode :public vsgAppearanceChildNode
 {
 public:
   // ............................................................public-methods
-  vesController();
-  ~vesController();
-  void visitTransform(Transform* object);
-  void visitShape(Shape* object);
+  vsgShaderNode();
+  ~vsgShaderNode();
+  void Activate(bool value);
+  bool IsSelected();
+  bool IsValid();
 protected:
   // ...........................................................protected-ivars
-
+  std::string Language;
 protected:
 //BTX
   // .......................................................................BTX
-
 private:
-  vesControllerInternal *Internal;
+  vsgShaderNodeInternal *Internal;
 //ETX
   // .......................................................................ETX
 
 
 };
 
-#endif // __vesController_h
+#endif // __vsgShaderNode_h

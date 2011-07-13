@@ -1,7 +1,7 @@
 /*=========================================================================
 
   Program:   Visualization Toolkit
-  Module:    vesController.h
+  Module:    vsgAppearanceChildNode.h
 
   Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
   All rights reserved.
@@ -12,28 +12,26 @@
      PURPOSE.  See the above copyright notice for more information.
 
 =========================================================================*/
-// .NAME vesController -
+// .NAME vsgAppearanceChildNode - Base node for all child nodes of vsgAppearanceNode type
 // .SECTION Description
-// vesController
+// vsgAppearanceChildNode Base node for all child nodes of vsgAppearanceNode type.
 
-#ifndef __vesController_h
-#define __vesController_h
+#ifndef __vsgAppearanceChildNode_h
+#define __vsgAppearanceChildNode_h
 // --------------------------------------------------------------------includes
-#include "Transform.h"
-#include "Shape.h"
+#include "vsgNode.h"
 
 // -----------------------------------------------------------------pre-defines
-class vesControllerInternal;
+class vsgAppearanceChildNodeInternal;
 
 // -----------------------------------------------------------------------class
-class vesController
+class vsgAppearanceChildNode : public vsgNode
 {
 public:
   // ............................................................public-methods
-  vesController();
-  ~vesController();
-  void visitTransform(Transform* object);
-  void visitShape(Shape* object);
+  vsgAppearanceChildNode();
+  ~vsgAppearanceChildNode();
+
 protected:
   // ...........................................................protected-ivars
 
@@ -42,11 +40,9 @@ protected:
   // .......................................................................BTX
 
 private:
-  vesControllerInternal *Internal;
+  vsgAppearanceChildNodeInternal *Internal;
 //ETX
   // .......................................................................ETX
-
-
 };
 
-#endif // __vesController_h
+#endif // __vsgAppearanceChildNode_h
