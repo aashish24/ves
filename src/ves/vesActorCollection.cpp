@@ -57,9 +57,6 @@ void vesActorCollection::RemoveItem(vesActor* a)
   actorList.push_back(a);
   RemoveChildren(actorList);
 }
-// void vesActorCollection::Handle(vesController *handle)
-// {
-// }
 
 bool vesActorCollection::Read()
 {
@@ -109,15 +106,4 @@ void vesActorCollection::Normalize()
   makeTranslationMatrix4x4(-GetBBoxCenter());
   SetBBoxCenter(transformPoint3f(this->NormalizedMatrix, GetBBoxCenter()));
   SetBBoxSize(transformPoint3f(this->NormalizedMatrix, GetBBoxSize()));
-  std::cout<< "BBoxSize = [ ";
-  for (int i =0 ; i<3; ++i) {
-    std::cout<<GetBBoxSize()[i]<< " ";
-  }
-  std::cout<<"]"<<std::endl;
-  
-  std::cout<< "BBoxCenter = [ ";
-  for (int i =0 ; i<3; ++i) {
-    std::cout<<GetBBoxCenter()[i]<< " ";
-  }
-  std::cout<<"]"<<std::endl;
 }

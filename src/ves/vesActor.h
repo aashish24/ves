@@ -52,7 +52,6 @@ public:
   bool SetVisible(bool value);
   bool isVisible();
   vesMapper* GetMapper();
-  //vesSetGetMacro(Tx, Transform*)
   void SetColor(float r, float g, float b, float a);
 
 protected:
@@ -61,7 +60,6 @@ protected:
   Shape *_shape;
   bool Sensor;
   vesMultitouchWidget* Widget;
-  vesMatrix4x4f Matrix;
   vesMapper *Mapper;
   bool Visible;
 protected:

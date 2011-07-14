@@ -66,22 +66,25 @@ vesActor::~vesActor()
   delete this->_shape;
 }
 
+// ----------------------------------------------------------------------public
 vesMapper* vesActor::GetMapper()
 {
   return this->Mapper;
 }
 
+// ----------------------------------------------------------------------public
 void vesActor::SetColor(float r, float g, float b, float a)
 {
   this->Mapper->SetColor(r, g, b, a);
 }
 
+// ----------------------------------------------------------------------public
 vesMatrix4x4f vesActor::Eval()
 {
-//  this->Matrix *= this->Transform::Eval();
-  return this->Transform::Eval();//this->Matrix;
+  return this->Transform::Eval();
 }
 
+// ----------------------------------------------------------------------public
 bool vesActor::Read()
 {
   std::cout << "Read: Actor" <<std::endl;
@@ -92,21 +95,13 @@ bool vesActor::Read()
   return true;
 }
 
-// void vesActor::Render(vesShaderProgram *program)
-// {
-//   if (this->Mapper)
-//   {
-//   this->Mapper->Render(program);
-//   glVertexAttrib4f(program->GetAttribute("a_texcoord"), 0.8, 0.8, 0.8, 1.0);
-//   }
-// }
-
-
+// ----------------------------------------------------------------------public
 void vesActor::Render(Painter* render)
 {
   render->Actor(this);
 }
 
+// ----------------------------------------------------------------------public
 void vesActor::AddShapeChild(Shape* shape)
 {
   std::vector<vsgChildNode*> temp;
@@ -114,13 +109,17 @@ void vesActor::AddShapeChild(Shape* shape)
   SetChildren(temp);
 }
 
+// ----------------------------------------------------------------------public
 void vesActor::ComputeBounds()
 {
   _shape->ComputeBounds();
-  SetBBoxCenter(_shape->GetMin(),_shape->GetMax());
-  SetBBoxSize(_shape->GetMin(), _shape->GetMax());
+  vesVector3f min = transformPoint3f(this->Eval(), _shape->GetMin());
+  vesVector3f max = transformPoint3f(this->Eval(), _shape->GetMax());
+  SetBBoxCenter(min,max);
+  SetBBoxSize(min,max);
 }
 
+// ----------------------------------------------------------------------public
 bool vesActor::SetVisible(bool value)
 {
   if(value)
@@ -135,6 +134,7 @@ bool vesActor::SetVisible(bool value)
   return true;
 }
 
+// ----------------------------------------------------------------------public
 bool vesActor::isVisible()
 {
   return true;
