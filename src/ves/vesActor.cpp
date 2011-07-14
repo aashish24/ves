@@ -78,8 +78,8 @@ void vesActor::SetColor(float r, float g, float b, float a)
 
 vesMatrix4x4f vesActor::Eval()
 {
-  this->Matrix *= this->Transform::Eval();
-  return this->Matrix;
+//  this->Matrix *= this->Transform::Eval();
+  return this->Transform::Eval();//this->Matrix;
 }
 
 bool vesActor::Read()
