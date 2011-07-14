@@ -8,22 +8,22 @@
 #ifndef __vesMapper_h
 #define __vesMapper_h
 
-#include "vesFileReader.h"
 #include "vesShaderProgram.h"
 #include "vsgGeometryNode.h"
 #include "vsgBoundedObject.h"
 #include "vesGMTL.h"
+#include "vesTriangleData.h"
 
 class vesMapper :public vsgGeometryNode, public vsgBoundedObject
 {
 public:
-  vesMapper(vesFileReader* reader);
+  vesMapper();
   ~vesMapper();
   bool Read();
-  void Reload(vesFileReader *reader);
   vesMatrix4x4f Eval();
   void Render(Painter* render);
   void Render(vesShaderProgram *program);
+  void SetTriangleData(vesTriangleData* data);
   vesTriangleData* GetTriangleData();
   vesTriangleData* GetData();
   void ComputeBounds();
@@ -39,7 +39,6 @@ private:
   vesMatrix4x4f NormalizedMatrix;
 protected:
   float Red,Green,Blue,Alpha;
-  vesFileReader *mFileReader;
   bool mIsNew;
   vesTriangleData *Data;
   bool m_initialized;

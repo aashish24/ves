@@ -9,7 +9,7 @@
 #include "vesMapper.h"
 #include "Painter.h"
 
-vesMapper::vesMapper(vesFileReader* reader):mFileReader(reader), Data(NULL), m_initialized(false)
+vesMapper::vesMapper(): Data(NULL), m_initialized(false)
 {
   this->mIsNew = true;
 }
@@ -19,25 +19,11 @@ vesMapper::~vesMapper()
   if (m_initialized) {
       //glDeleteBuffers(2, mMapperVBO);
   }
-//  if(mFileReader)
-//  {
-//    delete mFileReader;
-//  }
-  if(this->Data)
-  {
-    delete this->Data;
-  }
 }
 
-void vesMapper::Reload(vesFileReader* reader)
+void vesMapper::SetTriangleData(vesTriangleData* data)
 {
-  this->mFileReader = reader;
-  this->mIsNew = true;
-  if(m_initialized)
-  {
-    //glDeleteBuffers(2, mMapperVBO);
-    m_initialized = false;
-  }
+  this->Data = data;
 }
 
 void vesMapper::SetColor(float r, float g, float b, float a)
@@ -58,38 +44,7 @@ vesMatrix4x4f vesMapper::Eval()
 
 bool vesMapper::Read()
 {
-  std::cout << "Read: Mapper" <<std::endl;
-  if(mIsNew)
-  {
-    this->Data = mFileReader->Read();
-    this->Data->ComputeNormals();
-    this->mIsNew = false;
-
-    if (mFileReader->HasError()) {
-      return false;
-    }
-//    glGenBuffers(2, mMapperVBO);
-//    glBindBuffer(GL_ARRAY_BUFFER, mMapperVBO[0]);
-//    glBufferData(GL_ARRAY_BUFFER,
-//                 mData->GetPoints().size() * 6 * sizeof(float),
-//                 &mData->GetPoints()[0],
-//                 GL_STATIC_DRAW);
-//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mMapperVBO[1]);
-//    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-//                 mData->GetTriangles().size() * 3 * sizeof(unsigned short),
-//                 &mData->GetTriangles()[0],
-//                 GL_STATIC_DRAW);
-//
-//    glBindBuffer(GL_ARRAY_BUFFER, 0);
-//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    m_initialized = true;
-   //Normalize();
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  return true;
 }
 
 void vesMapper::Render(vesShaderProgram *program)
