@@ -1,0 +1,522 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1D3623260D0F684500981E51 /* kiwiAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* kiwiAppDelegate.m */; };
+		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
+		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
+		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
+		1F4C1BF4137D970E0052301B /* InfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1F4C1BF3137D970E0052301B /* InfoView.xib */; };
+		1FBD34E3132163C300738902 /* current.vtk in Resources */ = {isa = PBXBuildFile; fileRef = 1FBD34E2132163C300738902 /* current.vtk */; };
+		2514C27310084DB100A42282 /* ES2Renderer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2514C27010084DB100A42282 /* ES2Renderer.mm */; };
+		28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD733E0D9D9553002E5188 /* MainWindow.xib */; };
+		28FD14FE0DC6FC130079059D /* EAGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 28FD14FD0DC6FC130079059D /* EAGLView.mm */; };
+		28FD15000DC6FC520079059D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD14FF0DC6FC520079059D /* OpenGLES.framework */; };
+		28FD15080DC6FC5B0079059D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD15070DC6FC5B0079059D /* QuartzCore.framework */; };
+		4307FCFE13C8E32100FFF019 /* DataReader.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4307FCFD13C8E32100FFF019 /* DataReader.mm */; };
+		432DE14D13D15D81000F8EC0 /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 432DE13013D158B8000F8EC0 /* Shader.fsh */; };
+		432DE14E13D15D81000F8EC0 /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 432DE13113D158B8000F8EC0 /* Shader.vsh */; };
+		432DE15113D15DC2000F8EC0 /* vesPolyDataToTriangleData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 432DE14F13D15DC2000F8EC0 /* vesPolyDataToTriangleData.cpp */; };
+		432DE15F13D15DFC000F8EC0 /* libvtkCommonCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 432DE15213D15DFC000F8EC0 /* libvtkCommonCore.a */; };
+		432DE16013D15DFC000F8EC0 /* libvtkCommonDataModel.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 432DE15313D15DFC000F8EC0 /* libvtkCommonDataModel.a */; };
+		432DE16113D15DFC000F8EC0 /* libvtkCommonMath.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 432DE15413D15DFC000F8EC0 /* libvtkCommonMath.a */; };
+		432DE16213D15DFC000F8EC0 /* libvtkCommonMisc.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 432DE15513D15DFC000F8EC0 /* libvtkCommonMisc.a */; };
+		432DE16313D15DFC000F8EC0 /* libvtkCommonSystem.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 432DE15613D15DFC000F8EC0 /* libvtkCommonSystem.a */; };
+		432DE16413D15DFC000F8EC0 /* libvtkCommonTransforms.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 432DE15713D15DFC000F8EC0 /* libvtkCommonTransforms.a */; };
+		432DE16513D15DFC000F8EC0 /* libvtkexpat.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 432DE15813D15DFC000F8EC0 /* libvtkexpat.a */; };
+		432DE16613D15DFC000F8EC0 /* libvtkFiltersCutter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 432DE15913D15DFC000F8EC0 /* libvtkFiltersCutter.a */; };
+		432DE16713D15DFC000F8EC0 /* libvtkIOCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 432DE15A13D15DFC000F8EC0 /* libvtkIOCore.a */; };
+		432DE16813D15DFC000F8EC0 /* libvtkIOGeometry.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 432DE15B13D15DFC000F8EC0 /* libvtkIOGeometry.a */; };
+		432DE16913D15DFC000F8EC0 /* libvtkIOXML.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 432DE15C13D15DFC000F8EC0 /* libvtkIOXML.a */; };
+		432DE16A13D15DFC000F8EC0 /* libvtksys.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 432DE15D13D15DFC000F8EC0 /* libvtksys.a */; };
+		432DE16B13D15DFC000F8EC0 /* libvtkzlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 432DE15E13D15DFC000F8EC0 /* libvtkzlib.a */; };
+		432DE16D13D15E1C000F8EC0 /* libves.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 432DE16C13D15E1C000F8EC0 /* libves.a */; };
+		436B34B413C802D500C5726C /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 436B34AF13C802D500C5726C /* Default-Landscape~ipad.png */; };
+		436B34B513C802D500C5726C /* Default-Portrait~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 436B34B013C802D500C5726C /* Default-Portrait~ipad.png */; };
+		436B34B613C802D500C5726C /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 436B34B113C802D500C5726C /* icon.png */; };
+		436B34B713C802D500C5726C /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = 436B34B213C802D500C5726C /* iTunesArtwork */; };
+		436B34B813C802D500C5726C /* Kiwi_Splash_72.png in Resources */ = {isa = PBXBuildFile; fileRef = 436B34B313C802D500C5726C /* Kiwi_Splash_72.png */; };
+		6F25E721137DEA5400BF4BCA /* current.stl in Resources */ = {isa = PBXBuildFile; fileRef = 6F25E720137DEA5400BF4BCA /* current.stl */; };
+		6F41B5C01360C0CA00D0079D /* InfoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F41B5BE1360C0CA00D0079D /* InfoView.m */; };
+		6F43A8AE138AC01D0053899E /* Kiwi_K.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F43A8AD138AC01D0053899E /* Kiwi_K.png */; };
+		6F5CF7A313103D7700BB1195 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F5CF7A213103D7700BB1195 /* CoreGraphics.framework */; };
+		70298AEA138D3BB200ED02AB /* MountStHelen.vtk in Resources */ = {isa = PBXBuildFile; fileRef = 70298AE9138D3BB200ED02AB /* MountStHelen.vtk */; };
+		70398015138551CE00E579C2 /* LoadDataController.m in Sources */ = {isa = PBXBuildFile; fileRef = 70398014138551CE00E579C2 /* LoadDataController.m */; };
+		70398018138576D200E579C2 /* AppendedKneeData.vtk in Resources */ = {isa = PBXBuildFile; fileRef = 70398017138576D200E579C2 /* AppendedKneeData.vtk */; };
+		706F0E44138C677000B575F4 /* bunny.vtk in Resources */ = {isa = PBXBuildFile; fileRef = 706F0E43138C677000B575F4 /* bunny.vtk */; };
+		706F0E46138C678300B575F4 /* old_well.vtk in Resources */ = {isa = PBXBuildFile; fileRef = 706F0E45138C678300B575F4 /* old_well.vtk */; };
+		706F0E48138C679300B575F4 /* teapot.vtk in Resources */ = {isa = PBXBuildFile; fileRef = 706F0E47138C679300B575F4 /* teapot.vtk */; };
+		706F0E4A138C691E00B575F4 /* fullscreen_32.png in Resources */ = {isa = PBXBuildFile; fileRef = 706F0E49138C691E00B575F4 /* fullscreen_32.png */; };
+		706F0E4C138C693100B575F4 /* opendata_32.png in Resources */ = {isa = PBXBuildFile; fileRef = 706F0E4B138C693100B575F4 /* opendata_32.png */; };
+		70A9B9E1139412CD00C7DEE0 /* shuttle-ascii.vtk in Resources */ = {isa = PBXBuildFile; fileRef = 70A9B9E0139412CD00C7DEE0 /* shuttle-ascii.vtk */; };
+		70A9B9E5139421D300C7DEE0 /* visible-woman-hand.vtk in Resources */ = {isa = PBXBuildFile; fileRef = 70A9B9E4139421D300C7DEE0 /* visible-woman-hand.vtk */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		1D3623240D0F684500981E51 /* kiwiAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kiwiAppDelegate.h; sourceTree = "<group>"; };
+		1D3623250D0F684500981E51 /* kiwiAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = kiwiAppDelegate.m; sourceTree = "<group>"; };
+		1D6058910D05DD3D006BFB54 /* kiwi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = kiwi.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		1F4C1BF3137D970E0052301B /* InfoView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = InfoView.xib; sourceTree = "<group>"; };
+		1FBD34E2132163C300738902 /* current.vtk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = current.vtk; sourceTree = "<group>"; };
+		2514C26F10084DB100A42282 /* ES2Renderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ES2Renderer.h; sourceTree = "<group>"; };
+		2514C27010084DB100A42282 /* ES2Renderer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ES2Renderer.mm; sourceTree = "<group>"; };
+		2514C27110084DB100A42282 /* ESRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ESRenderer.h; sourceTree = "<group>"; };
+		28AD733E0D9D9553002E5188 /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
+		28FD14FC0DC6FC130079059D /* EAGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EAGLView.h; sourceTree = "<group>"; };
+		28FD14FD0DC6FC130079059D /* EAGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = EAGLView.mm; sourceTree = "<group>"; };
+		28FD14FF0DC6FC520079059D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		28FD15070DC6FC5B0079059D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = main.m; sourceTree = "<group>"; };
+		32CA4F630368D1EE00C91783 /* Kiwi-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Kiwi-Prefix.pch"; sourceTree = "<group>"; };
+		4307FCFA13C8E22E00FFF019 /* DataReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataReader.h; sourceTree = "<group>"; };
+		4307FCFD13C8E32100FFF019 /* DataReader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DataReader.mm; sourceTree = "<group>"; };
+		432DE13013D158B8000F8EC0 /* Shader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = Shader.fsh; path = ../../../../src/shaders/Shader.fsh; sourceTree = "<group>"; };
+		432DE13113D158B8000F8EC0 /* Shader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = Shader.vsh; path = ../../../../src/shaders/Shader.vsh; sourceTree = "<group>"; };
+		432DE14F13D15DC2000F8EC0 /* vesPolyDataToTriangleData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vesPolyDataToTriangleData.cpp; sourceTree = "<group>"; };
+		432DE15013D15DC2000F8EC0 /* vesPolyDataToTriangleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vesPolyDataToTriangleData.h; sourceTree = "<group>"; };
+		432DE15213D15DFC000F8EC0 /* libvtkCommonCore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkCommonCore.a; path = "../CMakeBuild/build/CMakeExternals/Install/vtkmodular-device/lib/libvtkCommonCore.a"; sourceTree = "<group>"; };
+		432DE15313D15DFC000F8EC0 /* libvtkCommonDataModel.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkCommonDataModel.a; path = "../CMakeBuild/build/CMakeExternals/Install/vtkmodular-device/lib/libvtkCommonDataModel.a"; sourceTree = "<group>"; };
+		432DE15413D15DFC000F8EC0 /* libvtkCommonMath.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkCommonMath.a; path = "../CMakeBuild/build/CMakeExternals/Install/vtkmodular-device/lib/libvtkCommonMath.a"; sourceTree = "<group>"; };
+		432DE15513D15DFC000F8EC0 /* libvtkCommonMisc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkCommonMisc.a; path = "../CMakeBuild/build/CMakeExternals/Install/vtkmodular-device/lib/libvtkCommonMisc.a"; sourceTree = "<group>"; };
+		432DE15613D15DFC000F8EC0 /* libvtkCommonSystem.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkCommonSystem.a; path = "../CMakeBuild/build/CMakeExternals/Install/vtkmodular-device/lib/libvtkCommonSystem.a"; sourceTree = "<group>"; };
+		432DE15713D15DFC000F8EC0 /* libvtkCommonTransforms.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkCommonTransforms.a; path = "../CMakeBuild/build/CMakeExternals/Install/vtkmodular-device/lib/libvtkCommonTransforms.a"; sourceTree = "<group>"; };
+		432DE15813D15DFC000F8EC0 /* libvtkexpat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkexpat.a; path = "../CMakeBuild/build/CMakeExternals/Install/vtkmodular-device/lib/libvtkexpat.a"; sourceTree = "<group>"; };
+		432DE15913D15DFC000F8EC0 /* libvtkFiltersCutter.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkFiltersCutter.a; path = "../CMakeBuild/build/CMakeExternals/Install/vtkmodular-device/lib/libvtkFiltersCutter.a"; sourceTree = "<group>"; };
+		432DE15A13D15DFC000F8EC0 /* libvtkIOCore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkIOCore.a; path = "../CMakeBuild/build/CMakeExternals/Install/vtkmodular-device/lib/libvtkIOCore.a"; sourceTree = "<group>"; };
+		432DE15B13D15DFC000F8EC0 /* libvtkIOGeometry.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkIOGeometry.a; path = "../CMakeBuild/build/CMakeExternals/Install/vtkmodular-device/lib/libvtkIOGeometry.a"; sourceTree = "<group>"; };
+		432DE15C13D15DFC000F8EC0 /* libvtkIOXML.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkIOXML.a; path = "../CMakeBuild/build/CMakeExternals/Install/vtkmodular-device/lib/libvtkIOXML.a"; sourceTree = "<group>"; };
+		432DE15D13D15DFC000F8EC0 /* libvtksys.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtksys.a; path = "../CMakeBuild/build/CMakeExternals/Install/vtkmodular-device/lib/libvtksys.a"; sourceTree = "<group>"; };
+		432DE15E13D15DFC000F8EC0 /* libvtkzlib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkzlib.a; path = "../CMakeBuild/build/CMakeExternals/Install/vtkmodular-device/lib/libvtkzlib.a"; sourceTree = "<group>"; };
+		432DE16C13D15E1C000F8EC0 /* libves.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libves.a; path = "../CMakeBuild/build/CMakeExternals/Build/ves-device/libves.a"; sourceTree = "<group>"; };
+		436B34AF13C802D500C5726C /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
+		436B34B013C802D500C5726C /* Default-Portrait~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait~ipad.png"; sourceTree = "<group>"; };
+		436B34B113C802D500C5726C /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
+		436B34B213C802D500C5726C /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; path = iTunesArtwork; sourceTree = "<group>"; };
+		436B34B313C802D500C5726C /* Kiwi_Splash_72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Kiwi_Splash_72.png; sourceTree = "<group>"; };
+		6F25E720137DEA5400BF4BCA /* current.stl */ = {isa = PBXFileReference; lastKnownFileType = file; path = current.stl; sourceTree = "<group>"; };
+		6F41B5BD1360C0C900D0079D /* InfoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfoView.h; sourceTree = "<group>"; };
+		6F41B5BE1360C0CA00D0079D /* InfoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InfoView.m; sourceTree = "<group>"; };
+		6F43A8AD138AC01D0053899E /* Kiwi_K.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Kiwi_K.png; sourceTree = "<group>"; };
+		6F5CF7A213103D7700BB1195 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		70298AE9138D3BB200ED02AB /* MountStHelen.vtk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = MountStHelen.vtk; sourceTree = "<group>"; };
+		70398013138551CE00E579C2 /* LoadDataController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadDataController.h; sourceTree = "<group>"; };
+		70398014138551CE00E579C2 /* LoadDataController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadDataController.m; sourceTree = "<group>"; };
+		70398017138576D200E579C2 /* AppendedKneeData.vtk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AppendedKneeData.vtk; sourceTree = "<group>"; };
+		706F0E43138C677000B575F4 /* bunny.vtk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bunny.vtk; sourceTree = "<group>"; };
+		706F0E45138C678300B575F4 /* old_well.vtk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = old_well.vtk; sourceTree = "<group>"; };
+		706F0E47138C679300B575F4 /* teapot.vtk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = teapot.vtk; sourceTree = "<group>"; };
+		706F0E49138C691E00B575F4 /* fullscreen_32.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fullscreen_32.png; sourceTree = "<group>"; };
+		706F0E4B138C693100B575F4 /* opendata_32.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = opendata_32.png; sourceTree = "<group>"; };
+		70A9B9E0139412CD00C7DEE0 /* shuttle-ascii.vtk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "shuttle-ascii.vtk"; sourceTree = "<group>"; };
+		70A9B9E4139421D300C7DEE0 /* visible-woman-hand.vtk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "visible-woman-hand.vtk"; sourceTree = "<group>"; };
+		8D1107310486CEB800E47090 /* Kiwi-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Kiwi-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1D60588F0D05DD3D006BFB54 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				432DE16D13D15E1C000F8EC0 /* libves.a in Frameworks */,
+				432DE15F13D15DFC000F8EC0 /* libvtkCommonCore.a in Frameworks */,
+				432DE16013D15DFC000F8EC0 /* libvtkCommonDataModel.a in Frameworks */,
+				432DE16113D15DFC000F8EC0 /* libvtkCommonMath.a in Frameworks */,
+				432DE16213D15DFC000F8EC0 /* libvtkCommonMisc.a in Frameworks */,
+				432DE16313D15DFC000F8EC0 /* libvtkCommonSystem.a in Frameworks */,
+				432DE16413D15DFC000F8EC0 /* libvtkCommonTransforms.a in Frameworks */,
+				432DE16513D15DFC000F8EC0 /* libvtkexpat.a in Frameworks */,
+				432DE16613D15DFC000F8EC0 /* libvtkFiltersCutter.a in Frameworks */,
+				432DE16713D15DFC000F8EC0 /* libvtkIOCore.a in Frameworks */,
+				432DE16813D15DFC000F8EC0 /* libvtkIOGeometry.a in Frameworks */,
+				432DE16913D15DFC000F8EC0 /* libvtkIOXML.a in Frameworks */,
+				432DE16A13D15DFC000F8EC0 /* libvtksys.a in Frameworks */,
+				432DE16B13D15DFC000F8EC0 /* libvtkzlib.a in Frameworks */,
+				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
+				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
+				28FD15000DC6FC520079059D /* OpenGLES.framework in Frameworks */,
+				28FD15080DC6FC5B0079059D /* QuartzCore.framework in Frameworks */,
+				6F5CF7A313103D7700BB1195 /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		080E96DDFE201D6D7F000001 /* Kiwi */ = {
+			isa = PBXGroup;
+			children = (
+				432DE14F13D15DC2000F8EC0 /* vesPolyDataToTriangleData.cpp */,
+				432DE15013D15DC2000F8EC0 /* vesPolyDataToTriangleData.h */,
+				70398013138551CE00E579C2 /* LoadDataController.h */,
+				70398014138551CE00E579C2 /* LoadDataController.m */,
+				2514C26F10084DB100A42282 /* ES2Renderer.h */,
+				2514C27010084DB100A42282 /* ES2Renderer.mm */,
+				2514C27110084DB100A42282 /* ESRenderer.h */,
+				28FD14FC0DC6FC130079059D /* EAGLView.h */,
+				28FD14FD0DC6FC130079059D /* EAGLView.mm */,
+				1D3623240D0F684500981E51 /* kiwiAppDelegate.h */,
+				1D3623250D0F684500981E51 /* kiwiAppDelegate.m */,
+				6F41B5BD1360C0C900D0079D /* InfoView.h */,
+				6F41B5BE1360C0CA00D0079D /* InfoView.m */,
+				4307FCFA13C8E22E00FFF019 /* DataReader.h */,
+				4307FCFD13C8E32100FFF019 /* DataReader.mm */,
+				1F4C1BF3137D970E0052301B /* InfoView.xib */,
+				28AD733E0D9D9553002E5188 /* MainWindow.xib */,
+				6F25E6F3137D8B5600BF4BCA /* Supporting Files */,
+			);
+			path = Kiwi;
+			sourceTree = "<group>";
+		};
+		19C28FACFE9D520D11CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1D6058910D05DD3D006BFB54 /* kiwi.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
+			isa = PBXGroup;
+			children = (
+				080E96DDFE201D6D7F000001 /* Kiwi */,
+				6F25E6F2137D88DD00BF4BCA /* Data */,
+				6F25E6F0137D86C700BF4BCA /* Images */,
+				29B97323FDCFA39411CA2CEA /* Frameworks */,
+				19C28FACFE9D520D11CA2CBB /* Products */,
+			);
+			name = CustomTemplate;
+			sourceTree = "<group>";
+		};
+		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				432DE16F13D15EA6000F8EC0 /* ves libs */,
+				432DE16E13D15E8C000F8EC0 /* vtkmodular libs */,
+				6F5CF7A213103D7700BB1195 /* CoreGraphics.framework */,
+				28FD15070DC6FC5B0079059D /* QuartzCore.framework */,
+				28FD14FF0DC6FC520079059D /* OpenGLES.framework */,
+				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
+				1D30AB110D05D00D00671497 /* Foundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		432DE16E13D15E8C000F8EC0 /* vtkmodular libs */ = {
+			isa = PBXGroup;
+			children = (
+				432DE15213D15DFC000F8EC0 /* libvtkCommonCore.a */,
+				432DE15313D15DFC000F8EC0 /* libvtkCommonDataModel.a */,
+				432DE15413D15DFC000F8EC0 /* libvtkCommonMath.a */,
+				432DE15513D15DFC000F8EC0 /* libvtkCommonMisc.a */,
+				432DE15613D15DFC000F8EC0 /* libvtkCommonSystem.a */,
+				432DE15713D15DFC000F8EC0 /* libvtkCommonTransforms.a */,
+				432DE15813D15DFC000F8EC0 /* libvtkexpat.a */,
+				432DE15913D15DFC000F8EC0 /* libvtkFiltersCutter.a */,
+				432DE15A13D15DFC000F8EC0 /* libvtkIOCore.a */,
+				432DE15B13D15DFC000F8EC0 /* libvtkIOGeometry.a */,
+				432DE15C13D15DFC000F8EC0 /* libvtkIOXML.a */,
+				432DE15D13D15DFC000F8EC0 /* libvtksys.a */,
+				432DE15E13D15DFC000F8EC0 /* libvtkzlib.a */,
+			);
+			name = "vtkmodular libs";
+			sourceTree = "<group>";
+		};
+		432DE16F13D15EA6000F8EC0 /* ves libs */ = {
+			isa = PBXGroup;
+			children = (
+				432DE16C13D15E1C000F8EC0 /* libves.a */,
+			);
+			name = "ves libs";
+			sourceTree = "<group>";
+		};
+		6F25E6F0137D86C700BF4BCA /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				436B34AF13C802D500C5726C /* Default-Landscape~ipad.png */,
+				436B34B013C802D500C5726C /* Default-Portrait~ipad.png */,
+				436B34B113C802D500C5726C /* icon.png */,
+				436B34B213C802D500C5726C /* iTunesArtwork */,
+				436B34B313C802D500C5726C /* Kiwi_Splash_72.png */,
+				706F0E4B138C693100B575F4 /* opendata_32.png */,
+				706F0E49138C691E00B575F4 /* fullscreen_32.png */,
+				6F43A8AD138AC01D0053899E /* Kiwi_K.png */,
+			);
+			name = Images;
+			path = Kiwi/Images;
+			sourceTree = "<group>";
+		};
+		6F25E6F2137D88DD00BF4BCA /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				70A9B9E4139421D300C7DEE0 /* visible-woman-hand.vtk */,
+				70A9B9E0139412CD00C7DEE0 /* shuttle-ascii.vtk */,
+				70298AE9138D3BB200ED02AB /* MountStHelen.vtk */,
+				706F0E47138C679300B575F4 /* teapot.vtk */,
+				706F0E45138C678300B575F4 /* old_well.vtk */,
+				706F0E43138C677000B575F4 /* bunny.vtk */,
+				70398017138576D200E579C2 /* AppendedKneeData.vtk */,
+				6F25E720137DEA5400BF4BCA /* current.stl */,
+				1FBD34E2132163C300738902 /* current.vtk */,
+			);
+			name = Data;
+			path = Kiwi/Data;
+			sourceTree = "<group>";
+		};
+		6F25E6F3137D8B5600BF4BCA /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				432DE13013D158B8000F8EC0 /* Shader.fsh */,
+				432DE13113D158B8000F8EC0 /* Shader.vsh */,
+				29B97316FDCFA39411CA2CEA /* main.m */,
+				32CA4F630368D1EE00C91783 /* Kiwi-Prefix.pch */,
+				8D1107310486CEB800E47090 /* Kiwi-Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1D6058900D05DD3D006BFB54 /* kiwi */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "kiwi" */;
+			buildPhases = (
+				1D60588D0D05DD3D006BFB54 /* Resources */,
+				1D60588E0D05DD3D006BFB54 /* Sources */,
+				1D60588F0D05DD3D006BFB54 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = kiwi;
+			productName = "ipad-demo";
+			productReference = 1D6058910D05DD3D006BFB54 /* kiwi.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		29B97313FDCFA39411CA2CEA /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Kiwi" */;
+			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = 29B97314FDCFA39411CA2CEA /* CustomTemplate */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1D6058900D05DD3D006BFB54 /* kiwi */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1D60588D0D05DD3D006BFB54 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				432DE14D13D15D81000F8EC0 /* Shader.fsh in Resources */,
+				432DE14E13D15D81000F8EC0 /* Shader.vsh in Resources */,
+				28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */,
+				1FBD34E3132163C300738902 /* current.vtk in Resources */,
+				1F4C1BF4137D970E0052301B /* InfoView.xib in Resources */,
+				6F25E721137DEA5400BF4BCA /* current.stl in Resources */,
+				70398018138576D200E579C2 /* AppendedKneeData.vtk in Resources */,
+				6F43A8AE138AC01D0053899E /* Kiwi_K.png in Resources */,
+				706F0E44138C677000B575F4 /* bunny.vtk in Resources */,
+				706F0E46138C678300B575F4 /* old_well.vtk in Resources */,
+				706F0E48138C679300B575F4 /* teapot.vtk in Resources */,
+				706F0E4A138C691E00B575F4 /* fullscreen_32.png in Resources */,
+				706F0E4C138C693100B575F4 /* opendata_32.png in Resources */,
+				70298AEA138D3BB200ED02AB /* MountStHelen.vtk in Resources */,
+				70A9B9E1139412CD00C7DEE0 /* shuttle-ascii.vtk in Resources */,
+				70A9B9E5139421D300C7DEE0 /* visible-woman-hand.vtk in Resources */,
+				436B34B413C802D500C5726C /* Default-Landscape~ipad.png in Resources */,
+				436B34B513C802D500C5726C /* Default-Portrait~ipad.png in Resources */,
+				436B34B613C802D500C5726C /* icon.png in Resources */,
+				436B34B713C802D500C5726C /* iTunesArtwork in Resources */,
+				436B34B813C802D500C5726C /* Kiwi_Splash_72.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1D60588E0D05DD3D006BFB54 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
+				1D3623260D0F684500981E51 /* kiwiAppDelegate.m in Sources */,
+				28FD14FE0DC6FC130079059D /* EAGLView.mm in Sources */,
+				2514C27310084DB100A42282 /* ES2Renderer.mm in Sources */,
+				6F41B5C01360C0CA00D0079D /* InfoView.m in Sources */,
+				70398015138551CE00E579C2 /* LoadDataController.m in Sources */,
+				4307FCFE13C8E32100FFF019 /* DataReader.mm in Sources */,
+				432DE15113D15DC2000F8EC0 /* vesPolyDataToTriangleData.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1D6058940D05DD3E006BFB54 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Kiwi/Kiwi-Prefix.pch";
+				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
+				HEADER_SEARCH_PATHS = (
+					"../CMakeBuild/build/CMakeExternals/Install/vtkmodular-device/include/vtk",
+					../../../src,
+					../../../src/ves,
+					../../../src/ves/vsg,
+					../../../src/ves/vsg/Core,
+					../../../src/ves/vsg/Utility,
+				);
+				INFOPLIST_FILE = "Kiwi/Kiwi-Info.plist";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				"LIBRARY_SEARCH_PATHS[sdk=iphoneos*][arch=*]" = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Install/vtkmodular-device/lib\"",
+					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Build/ves-device\"",
+				);
+				"LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*][arch=*]" = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Install/vtkmodular-simulator/lib\"",
+					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Build/ves-simulator\"",
+				);
+				PRODUCT_NAME = kiwi;
+				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = 2;
+				USER_HEADER_SEARCH_PATHS = "";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Debug;
+		};
+		1D6058950D05DD3E006BFB54 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				COPY_PHASE_STRIP = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Kiwi/Kiwi-Prefix.pch";
+				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
+				HEADER_SEARCH_PATHS = (
+					"../CMakeBuild/build/CMakeExternals/Install/vtkmodular-device/include/vtk",
+					../../../src,
+					../../../src/ves,
+					../../../src/ves/vsg,
+					../../../src/ves/vsg/Core,
+					../../../src/ves/vsg/Utility,
+				);
+				INFOPLIST_FILE = "Kiwi/Kiwi-Info.plist";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				"LIBRARY_SEARCH_PATHS[sdk=iphoneos*][arch=*]" = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Install/vtkmodular-device/lib\"",
+					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Build/ves-device\"",
+				);
+				"LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*][arch=*]" = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Install/vtkmodular-simulator/lib\"",
+					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Build/ves-simulator\"",
+				);
+				PRODUCT_NAME = kiwi;
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				TARGETED_DEVICE_FAMILY = 2;
+				USER_HEADER_SEARCH_PATHS = "";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		C01FCF4F08A954540054247B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Kiwi/Kiwi-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = "Kiwi/Kiwi-Info.plist";
+				PREBINDING = NO;
+				PRODUCT_NAME = kiwi;
+				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 2;
+			};
+			name = Debug;
+		};
+		C01FCF5008A954540054247B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Kiwi/Kiwi-Prefix.pch";
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = "Kiwi/Kiwi-Info.plist";
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				PREBINDING = NO;
+				PRODUCT_NAME = kiwi;
+				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1D6058960D05DD3E006BFB54 /* Build configuration list for PBXNativeTarget "kiwi" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1D6058940D05DD3E006BFB54 /* Debug */,
+				1D6058950D05DD3E006BFB54 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Kiwi" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C01FCF4F08A954540054247B /* Debug */,
+				C01FCF5008A954540054247B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 29B97313FDCFA39411CA2CEA /* Project object */;
+}
