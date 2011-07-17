@@ -12,6 +12,10 @@
 vesMapper::vesMapper(): Data(NULL), m_initialized(false)
 {
   this->mIsNew = true;
+  this->Red = 0.8;
+  this->Green = 0.8;
+  this->Blue = 0.8;
+  this->Alpha = 1.0;
 }
 vesMapper::~vesMapper()
 {
