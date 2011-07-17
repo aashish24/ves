@@ -5,7 +5,7 @@ set(sources
   Appearance.cpp
   Painter.cpp
   ProgramShader.cpp
-  Shape.cxx
+  Shape.cpp
   Transform.cpp
   vesActor.cpp
   vesActorCollection.cpp
@@ -39,7 +39,7 @@ set(sources
   vsgGeometryNode.cpp
   vsgGroupingNode.cpp
   vsgProgrammableShaderObject.cpp
-  vsgShaderNode.cxx
+  vsgShaderNode.cpp
   vsgShapeNode.cpp
 )
 
