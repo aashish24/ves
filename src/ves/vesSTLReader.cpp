@@ -328,8 +328,6 @@ int vesSTLReader::ReadBinarySTL(FILE *fp, vesTriangleData* t)
     t->GetTriangles().push_back(pts);
     }
   t->SetHasNormals(true);
-  std::cerr << "Points: " << t->GetPoints().size() << std::endl;
-  std::cerr << "Triangles: " << t->GetTriangles().size() << std::endl;
   return 0;
 }
 

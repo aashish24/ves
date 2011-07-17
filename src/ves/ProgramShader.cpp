@@ -42,13 +42,13 @@ ProgramShader::~ProgramShader()
 
 bool ProgramShader::Read()
 {
-  std::cout << "Read: ProgramShader" << std::endl;
+  //std::cout << "Read: ProgramShader" << std::endl;
   return true;
 }
 
 void ProgramShader::Render(Painter *render)
 {
-  std::cout << "Render ProgramShader" << std::endl;
+  //std::cout << "Render ProgramShader" << std::endl;
 }
 
 

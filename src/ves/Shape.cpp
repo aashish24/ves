@@ -44,7 +44,7 @@ Shape::~Shape()
 
 bool Shape::Read()
 {
-  std::cout << "Read: Shape" <<std::endl;
+  //std::cout << "Read: Shape" <<std::endl;
   GetAppearance() -> Read();
   if (GetGeometry()) 
   {

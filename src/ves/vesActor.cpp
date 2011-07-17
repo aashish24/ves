@@ -48,7 +48,7 @@ vesActor::vesActor(vesShader *shader,vesMapper* mapper,vesMultitouchWidget *widg
     {
       this->Sensor = true;
       this->Widget = widget;
-      std::cout<< "Adding widget interactor" <<std::endl;
+      //std::cout<< "Adding widget interactor" <<std::endl;
     }
   else
     {
@@ -87,7 +87,7 @@ vesMatrix4x4f vesActor::Eval()
 // ----------------------------------------------------------------------public
 bool vesActor::Read()
 {
-  std::cout << "Read: Actor" <<std::endl;
+  //std::cout << "Read: Actor" <<std::endl;
   for (int i = 0; i < this->Children.size(); ++i)
     {
       this->Children[i]->Read();

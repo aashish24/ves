@@ -129,8 +129,8 @@ void vesMultitouchCamera::UpdateMatrix(const float xRotation,
 {
       // Scale the view to fit current multitouch scaling
   currentCalculatedMatrix = CATransform3DScale(currentCalculatedMatrix, scaleFactor, scaleFactor, scaleFactor);
-  std::cout<<"========================"<<std::endl;
-  printCurrentCalculatedMatrix();
+  //std::cout<<"========================"<<std::endl;
+  //printCurrentCalculatedMatrix();
 
   // Perform incremental rotation based on current angles in X and Y
   float totalRotation = sqrt(xRotation*xRotation + yRotation*yRotation);
@@ -175,7 +175,7 @@ void vesMultitouchCamera::UpdateMatrixGMTL(const float xRotation,
                                            float xTranslation,
                                            float yTranslation)
 {
-      std::cout<<"------------------------"<<std::endl;
+  //    std::cout<<"------------------------"<<std::endl;
   printGMTLMatrix();
 
   vesMatrix4x4f matrix = makeTransposeMatrix4x4(_matrix);

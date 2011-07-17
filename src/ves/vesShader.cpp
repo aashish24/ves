@@ -48,7 +48,7 @@ vesShader::~vesShader()
 // ----------------------------------------------------------------------public
 bool vesShader::Read()
 {
-  std::cout << "Read: Shader" <<std::endl;
+  //std::cout << "Read: Shader" <<std::endl;
   return true;
 }
 

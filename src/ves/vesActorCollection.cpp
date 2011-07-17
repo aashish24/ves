@@ -60,7 +60,7 @@ void vesActorCollection::RemoveItem(vesActor* a)
 
 bool vesActorCollection::Read()
 {
-  std::cout << "Read: Actor Collection" <<std::endl;
+  //std::cout << "Read: Actor Collection" <<std::endl;
 
   for (int i =0; i<this->Children.size(); ++i)
   {

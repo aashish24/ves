@@ -62,7 +62,7 @@ Painter::~Painter()
 // ----------------------------------------------------------------------public
 void Painter::Shader(vesShader * shader)
 {
-  std::cout << "Render: Shader" <<std::endl;
+  //std::cout << "Render: Shader" <<std::endl;
   std::vector<vesShaderProgram*> temp;
   if(shader->GetPrograms(&temp))
     {
@@ -76,25 +76,25 @@ void Painter::Shader(vesShader * shader)
 // ----------------------------------------------------------------------public
 void Painter::ShaderProgram(vesShaderProgram *shaderProg)
 {
-  std::cout << "Render: ShaderProgram" <<std::endl;
+  //std::cout << "Render: ShaderProgram" <<std::endl;
   shaderProg->Use();
 }
 
 // ----------------------------------------------------------------------public
 void Painter::Mapper(vesMapper *mapper)
 {
-  std::cout << "Render: Mapper" << std::endl;
+  //std::cout << "Render: Mapper" << std::endl;
 }
 
 // ----------------------------------------------------------------------public
 void Painter::Actor(vesActor * actor)
 {
-  std::cout << "Render: Actor" <<std::endl;
+  //std::cout << "Render: Actor" <<std::endl;
   if(actor->GetSensor())
     {
       if(actor->GetWidget()->IsActive())
         {
-          std::cout<<"translating the widget" <<std::endl;
+          //std::cout<<"translating the widget" <<std::endl;
           actor->SetTranslation(actor->GetWidget()->GetTranslation());
           actor->SetRotation(actor->GetWidget()->GetRotation());
           //actor->SetScale(actor->GetWidget()->GetScale());
@@ -110,7 +110,7 @@ void Painter::Actor(vesActor * actor)
 // ----------------------------------------------------------------------public
 void Painter::ActorCollection(vesActorCollection *actor)
 {
-  std::cout << "Render: ActorCollection" <<std::endl;
+  //std::cout << "Render: ActorCollection" <<std::endl;
   // Push the transformation
   this->Push(actor->Eval());
 
@@ -131,7 +131,7 @@ void Painter::ActorCollection(vesActorCollection *actor)
 // ----------------------------------------------------------------------public
 void Painter::visitShape(Shape* shape)
 {
-  std::cout << "Render: Shape" <<std::endl;
+  //std::cout << "Render: Shape" <<std::endl;
   shape->GetAppearance() -> Render(this);
   if(shape->GetGeometry())
     {
@@ -219,14 +219,14 @@ void Painter::visitShape(Shape* shape)
 // --------------------------------------------------------------------internal
 void Painter::Push(vesMatrix4x4f mat)
 {
-  std::cout << "Pushed Matrix" <<std::endl;
+  //std::cout << "Pushed Matrix" <<std::endl;
   MatrixStack.push_back(mat);
 }
 
 // --------------------------------------------------------------------internal
 void Painter::Pop()
 {
-  std::cout << "Popped Matrix" << std::endl;
+  //std::cout << "Popped Matrix" << std::endl;
   MatrixStack.pop_back();
 
 }
