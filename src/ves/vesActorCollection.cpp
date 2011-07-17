@@ -82,20 +82,37 @@ void vesActorCollection::Render(Painter *render)
 
 void vesActorCollection::ComputeBounds()
 {
+  vesVector3f allMin(0,0,0);
+  vesVector3f allMax(0,0,0);
+
   for (int i =0; i<this->Children.size(); ++i)
-  {
+    {
     vesActor* child = (vesActor*) this->Children[i];
     child->ComputeBounds();
     vesVector3f min = child->GetMin();
     vesVector3f max = child->GetMax();
+
+    if (i == 0)
+      {
+      allMin = min;
+      allMax = max;
+      }
+
     for (int i = 0; i < 3; ++i)
       {
-        (max[i] > GetMax()[i]) ? max[i] = max[i]: max[i] = GetMax()[i];
-        (min[i] < GetMin()[i]) ? min[i] = min[i]: min[i] = GetMin()[i];
+      if (max[i] > allMax[i])
+        {
+        allMax[i] = max[i];
+        }
+      if (min[i] < allMin[i])
+        {
+        allMin[i] = min[i];
+        }
       }
-    SetBBoxCenter(min,max);
-    SetBBoxSize(min,max);
-  }
+    }
+
+  SetBBoxCenter(allMin, allMax);
+  SetBBoxSize(allMin, allMax);
 }
 
 void vesActorCollection::Normalize()
