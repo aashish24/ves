@@ -59,7 +59,20 @@ vesTriangleData* vesPolyDataToTriangleData::Convert(vtkPolyData* input)
           output->GetTriangles().push_back(indices);
           }
     }
-    
+
+    vtkCellArray* lines = input->GetLines();
+    lines->InitTraversal();
+    for (int i = 0; i < lines->GetNumberOfCells(); ++i) {
+        lines->GetNextCell(num, vertices);
+        for (int i = 1; i < num; ++i)
+          {
+          vesVector2us indices;
+          indices[0] = vertices[i-1];
+          indices[1] = vertices[i];
+          output->GetLines().push_back(indices);
+          }
+    }
+
     if (input->GetPointData()->GetNormals()) {
         vtkDataArray* normals = input->GetPointData()->GetNormals();
         v = &output->GetPoints()[0];
