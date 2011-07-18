@@ -173,7 +173,7 @@ void Painter::visitShape(Shape* shape)
 //  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 //  glEnable(GL_DEPTH_TEST);
   glEnable(GL_BLEND);
-  glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   // Enable our attribute arrays
   program->EnableVertexArray("a_vertex");
@@ -210,7 +210,7 @@ void Painter::visitShape(Shape* shape)
                  mapper->GetData()->GetLines().size() * 2,
                  GL_UNSIGNED_SHORT,
                  &mapper->GetData()->GetLines()[0]);
-
+  glDisable(GL_BLEND);
   //glBindBuffer(GL_ARRAY_BUFFER, 0);
   //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
   program->DisableVertexArray("a_vertex");
