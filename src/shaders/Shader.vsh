@@ -28,10 +28,10 @@ void main()
 {
   // put vertex normal into eye coords
   vec3 ec_normal = normalize(u_normalMatrix * a_normal);
-  
+
   // emit diffuse scale factor, texcoord and position
   float v_diffuse  = max(dot(u_ecLightDir,ec_normal),0.0);
-  
+
   //vec3 light = normalize(vec3(0.0, 0.0, -1.0));
   //vec3 eye = vec3(0, 0, 1);
   //vec3 EL = normalize(light + eye);
@@ -42,7 +42,7 @@ void main()
 
   vec3 outColor = vec3(.25,.25,.25)+v_diffuse * a_texcoord.xyz ;// + sf * vec3(0.9, 0.9, 0.9);
 
-  v_texcoord = vec4(outColor, 1.0);
+  v_texcoord = vec4(outColor, a_texcoord.a);
   //v_texcoord = a_texcoord;
   gl_Position = u_mvpMatrix * a_vertex;
 }

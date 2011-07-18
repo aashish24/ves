@@ -1,16 +1,16 @@
 /*=========================================================================
- 
+
  Program:   Visualization Toolkit
  Module:    vesRenderer.mm
- 
+
  Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
  All rights reserved.
  See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
- 
+
  This software is distributed WITHOUT ANY WARRANTY; without even
  the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
  PURPOSE.  See the above copyright notice for more information.
- 
+
  =========================================================================*/
 
 #include "vesRenderer.h"
@@ -81,7 +81,7 @@ void vesRenderer::resize(int width, int height, float scale)
     left = aspect * bottom;
     right = aspect * top;
   }else{
-    aspect = _height/width;
+    aspect = _height/_width;
     right = tan(fov) * nearp;
     left = -right;
     bottom = aspect * left;
@@ -89,7 +89,7 @@ void vesRenderer::resize(int width, int height, float scale)
   }
   _proj= makeOrthoMatrix4x4(left, right, bottom, top, nearp, farp);
   //_proj= makePerspectiveMatrix4x4(left, right, bottom, top, nearp, farp);
-  
+
   this->_Painter->SetProjection(_proj);
   glViewport(0, 0, width, height);
 
@@ -100,7 +100,7 @@ void vesRenderer::resetView()
 {
   _model = vesMatrix4x4f();
   this->_Painter->SetModel(_model);
-  mCamera->Reset();	
+  mCamera->Reset();
 }
 
 void vesRenderer::CopyCamera2Model()
@@ -109,7 +109,7 @@ void vesRenderer::CopyCamera2Model()
   _model = mCamera->GetMatrixGMTL();
 #else
   _model = mCamera->GetMatrix();
-#endif  
+#endif
   this->_Painter->SetModel(_model);
 }
 void vesRenderer::Render()

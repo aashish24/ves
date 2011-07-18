@@ -98,14 +98,14 @@ public:
   double center[3] = {0,0,0};
   vesTriangleData* data = [self makeConeWithCenter:center];
   vesActor* actor = [self addActorWithData:data];
-  actor->SetColor(0, 0.8, 0, 1.0);
+  actor->SetColor(0, 0.8, 0, .5);
   vesVector4f angleAxis(0, 0, 1, M_PI_2);
   actor->SetRotation(angleAxis);
 
   center[0] = 3;
   data = [self makeConeWithCenter:center];
   actor = [self addActorWithData:data];
-  actor->SetColor(0, 0.0, 0.8, 1.0);
+  actor->SetColor(0, 0.0, 0.8, .5);
   vesVector3f translation(-3, 1, 0);
   actor->SetTranslation(translation);
 }
