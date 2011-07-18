@@ -11,7 +11,14 @@
 #include "vesTriangleData.h"
 #include "vesSTLReader.h"
 #include "vesPolyDataToTriangleData.h"
+
+#include "vtkSmartPointer.h"
+#include "vtkXMLPolyDataReader.h"
 #include "vtkPolyDataReader.h"
+#include "vtkOBJReader.h"
+#include "vtkSTLReader.h"
+#include "vtkTriangleFilter.h"
+#include "vtkErrorCode.h"
 
 
 @implementation DataReader
@@ -33,6 +40,88 @@ bool hasEnding(std::string const &fullString, std::string const &ending)
 }
 
 
+-(void)setMaximumNumberOfPointsErrorMessage
+{
+  self.errorTitle = NSLocalizedStringFromTable(@"Could not read file", @"Localized", nil);
+  self.errorMessage = NSLocalizedStringFromTable(@"The file contains more than the supported maximum number of points.", @"Localized", nil);
+}
+
+
+// Updates the given algorithm.  Returns nil if the update is successful.
+// If there is an error, returns the error string.
+-(NSString*)safelyUpdateAlgorithm:(vtkAlgorithm*)algorithm
+{
+  algorithm->Update();
+  unsigned long errorCode = algorithm->GetErrorCode();
+  if (errorCode == vtkErrorCode::NoError)
+    {
+    return nil;
+    }
+  else
+    {
+    const char* errorString = vtkErrorCode::GetStringFromErrorCode(errorCode);
+    if (!errorString || !errorString[0])
+      {
+      return @"Could not read the file specified";
+      }
+    return [NSString stringWithUTF8String:errorString];
+    }
+}
+
+
+-(BOOL)updateAlgorithmOrSetErrorString:(vtkAlgorithm*)algorithm
+{
+  NSString* errorString = [self safelyUpdateAlgorithm:algorithm];
+  if (errorString != nil)
+    {
+    self.errorTitle = NSLocalizedStringFromTable(@"Could not read file", @"Localized", nil);
+    self.errorMessage = NSLocalizedStringFromTable(errorString, @"Localized", nil);
+    return FALSE;
+    }
+  return TRUE;
+}
+
+
+// It is mandatory that the caller passes a vtkAlgorithm that produces vtkPolyData.
+-(vesTriangleData*) dataFromPolyDataReader:(vtkAlgorithm*)reader
+{
+  if (![self updateAlgorithmOrSetErrorString:reader])
+    {
+    return 0;
+    }
+
+  vtkPolyData* readerOutput = vtkPolyData::SafeDownCast(reader->GetOutputDataObject(0));
+  assert(readerOutput);
+
+  vtkIdType maximumNumberOfPoints = 65536;
+  if (readerOutput->GetNumberOfPoints() > maximumNumberOfPoints)
+    {
+    [self setMaximumNumberOfPointsErrorMessage];
+    return 0;
+    }
+
+
+  // Always use triangle filter for now.  This will ensure that models containing
+  // polygons other than tris and quads will be rendered correctly.
+  BOOL useTriangleFilter = TRUE;
+  if (useTriangleFilter)
+    {
+    vtkSmartPointer<vtkTriangleFilter> triangleFilter = vtkSmartPointer<vtkTriangleFilter>::New();
+    triangleFilter->PassLinesOn();
+    triangleFilter->SetInputConnection(reader->GetOutputPort());
+    if (![self updateAlgorithmOrSetErrorString:triangleFilter])
+      {
+      return 0;
+      }
+    return vesPolyDataToTriangleData::Convert(triangleFilter->GetOutput());
+    }
+  else
+    {
+    return vesPolyDataToTriangleData::Convert(readerOutput);
+    }
+}
+
+
 - (vesTriangleData*)readData:(NSString*)fpath
 {
   std::string str = [fpath UTF8String];
@@ -40,29 +129,27 @@ bool hasEnding(std::string const &fullString, std::string const &ending)
 
   if (hasEnding(str, "vtk"))
     {
-    vtkPolyDataReader* reader = vtkPolyDataReader::New();
+    vtkSmartPointer<vtkPolyDataReader> reader = vtkSmartPointer<vtkPolyDataReader>::New();
     reader->SetFileName(str.c_str());
-    reader->Update();
-    newData = vesPolyDataToTriangleData::Convert(reader->GetOutput());
-    reader->Delete();
+    return [self dataFromPolyDataReader:reader];
     }
-  else if(hasEnding(str, "stl"))
+  if (hasEnding(str, "vtp"))
     {
-    vesSTLReader* reader = new vesSTLReader(str);
-    newData = reader->Read();
-    if (!newData || reader->HasError())
-      {
-      NSString *err = @"Could not read the file specified";
-      if (reader->GetErrorMessage().size() > 0)
-        {
-        err = [NSString stringWithUTF8String:reader->GetErrorMessage().c_str()];
-        }
-      delete newData;
-      delete reader;
-      self.errorTitle = NSLocalizedStringFromTable(@"Could not read file", @"Localized", nil);
-      self.errorMessage = NSLocalizedStringFromTable(err, @"Localized", nil);
-      return 0;
-      }
+    vtkSmartPointer<vtkXMLPolyDataReader> reader = vtkSmartPointer<vtkXMLPolyDataReader>::New();
+    reader->SetFileName(str.c_str());
+    return [self dataFromPolyDataReader:reader];
+    }
+  else if (hasEnding(str, "obj"))
+    {
+    vtkSmartPointer<vtkOBJReader> reader = vtkSmartPointer<vtkOBJReader>::New();
+    reader->SetFileName(str.c_str());
+    return [self dataFromPolyDataReader:reader];
+    }
+  else if (hasEnding(str, "stl"))
+    {
+    vtkSmartPointer<vtkSTLReader> reader = vtkSmartPointer<vtkSTLReader>::New();
+    reader->SetFileName(str.c_str());
+    return [self dataFromPolyDataReader:reader];
     }
   else
     {
