@@ -16,9 +16,14 @@
 #ifndef __vesRenderer_h
 #define __vesRenderer_h
 
+#ifdef ANDROID
+#include <GLES2/gl2.h>
+#include <GLES2/gl2ext.h>
+#else
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
-#import <QuartzCore/QuartzCore.h>
+#endif
+
 #include <string>
 #include "vesGMTL.h"
 #include "vesMultitouchCamera.h"

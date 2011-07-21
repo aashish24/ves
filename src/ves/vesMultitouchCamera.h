@@ -20,7 +20,11 @@
 #define __vesMultitouchCamera_h
 // --------------------------------------------------------------------includes
 #include "vesMultitouchSensorNode.h"
+
+#ifndef ANDROID
 #import <QuartzCore/QuartzCore.h>
+#endif
+
 #include "vesGMTL.h"
 
 #define GMTL_CAMERA 0
@@ -65,7 +69,9 @@ protected:
   
   unsigned int _width,_height;
   vesMatrix4x4f _matrix;
+#ifndef ANDROID
   CATransform3D currentCalculatedMatrix, testMatrix;
+#endif
 
 protected:
 //BTX
