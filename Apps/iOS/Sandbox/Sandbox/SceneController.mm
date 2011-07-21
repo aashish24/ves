@@ -13,6 +13,9 @@
 
 #include "vtkSmartPointer.h"
 #include "vtkConeSource.h"
+#include "vtkLineSource.h"
+#include "vtkSphereSource.h"
+#include "vtkTubeFilter.h"
 
 //------------------------------------------------------------------------------
 class SceneControllerImpl
@@ -82,39 +85,80 @@ public:
 }
 
 //------------------------------------------------------------------------------
--(vesTriangleData*)makeConeWithCenter:(double[3])center
+-(vesTriangleData*)makeSphereWithCenter:(double[3])center Radius:(double)radius
+{
+  vtkSmartPointer<vtkSphereSource> cone = vtkSmartPointer<vtkSphereSource>::New();
+  cone->SetCenter(center);
+  cone->SetRadius(radius);
+  cone->SetPhiResolution(24);
+  cone->SetThetaResolution(24);
+  cone->Update();
+  return vesPolyDataToTriangleData::Convert(cone->GetOutput());
+}
+
+//------------------------------------------------------------------------------
+-(vesTriangleData*)makeConeWithCenter:(double[3])center Scale:(double)scale
 {
   vtkSmartPointer<vtkConeSource> cone = vtkSmartPointer<vtkConeSource>::New();
   cone->SetCenter(center);
   cone->SetDirection(0,1,0);
+  cone->SetRadius(cone->GetRadius()*scale);
+  cone->SetHeight(cone->GetHeight()*scale);
   cone->SetResolution(24);
   cone->Update();
   return vesPolyDataToTriangleData::Convert(cone->GetOutput());
 }
 
 //------------------------------------------------------------------------------
+-(vesTriangleData*)makeTubeWithEndPoints:(double[6])endPoints Radius:(double)radius
+{
+  vtkSmartPointer<vtkLineSource> line = vtkSmartPointer<vtkLineSource>::New();
+  line->SetPoint1(endPoints);
+  line->SetPoint2(endPoints+3);
+  vtkSmartPointer<vtkTubeFilter> tube = vtkSmartPointer<vtkTubeFilter>::New();
+  tube->SetInputConnection(line->GetOutputPort());
+  tube->SetNumberOfSides(24);
+  tube->SetRadius(radius);
+  tube->Update();
+  return vesPolyDataToTriangleData::Convert(tube->GetOutput());
+}
+
+//------------------------------------------------------------------------------
 -(void)initializeScene
 {
-  double center[3] = {0,0,0};
-  vesTriangleData* data = [self makeConeWithCenter:center];
-  vesActor* actor = [self addActorWithData:data];
-  actor->SetColor(0, 0.8, 0, .5);
-  vesVector4f angleAxis(0, 0, 1, M_PI_2);
-  actor->SetRotation(angleAxis);
+  vesActor* actor;
 
-  center[0] = 3;
-  data = [self makeConeWithCenter:center];
-  actor = [self addActorWithData:data];
-  actor->SetColor(0, 0.0, 0.8, .5);
-  vesVector3f translation(-3, 1, 0);
-  actor->SetTranslation(translation);
+  double endPoints[6] = {-100,-200,200,  100,-200,200};
+
+  actor = [self addActorWithData:[self makeTubeWithEndPoints:endPoints Radius:10]];
+  actor->SetColor(0.8, 0, 0, 1.0);
+
+  actor = [self addActorWithData:[self makeSphereWithCenter:endPoints Radius:20]];
+  actor->SetColor(0, 0.8, 0, 1.0);
+
+  actor = [self addActorWithData:[self makeSphereWithCenter:endPoints+3 Radius:20]];
+  actor->SetColor(0, 0, 0.8, 1.0);
+
+  [self resetView];
 }
 
 
 //------------------------------------------------------------------------------
 -(void)resetView
 {
-  [self->renderView resetView];
+  vesMultitouchCamera* camera = [self->renderView.renderer getCamera];
+
+  // reset the camera
+  camera->Reset();
+
+  // set the camera orientation
+  double angleAxis[4] = {-M_PI_2, 0, 0, 1};
+  camera->RotateAngleAxis(angleAxis[0], angleAxis[1], angleAxis[2], angleAxis[3]);
+
+  // todo-
+  // set camera focal point to [-100,-200,200] so the green sphere is centered in the view
+  // set camera position to be [-100,-200,200] + X*[0,0,-1] so that the red cylinder is perpendicular to the view direction
+
   [self->renderView drawView:nil];
 }
 
