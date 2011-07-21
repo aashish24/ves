@@ -8,8 +8,13 @@
 #ifndef __vesShaderProgram_h
 #define __vesShaderProgram_h
 
+#ifdef ANDROID
+#include <GLES2/gl2.h>
+#include <GLES2/gl2ext.h>
+#else
 #include <OpenGLES/ES2/gl.h>
 #include <OpenGLES/ES2/glext.h>
+#endif
 #include <map>
 #include <vector>
 #include <string>

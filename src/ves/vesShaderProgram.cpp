@@ -121,7 +121,7 @@ bool vesShaderProgram::Link()
   glGetProgramiv(this->Program, GL_INFO_LOG_LENGTH, &logLength);
   if (logLength > 0)
     {
-      GLchar *log = (GLchar *)malloc(logLength);
+      char *log = (char *)malloc(logLength);
       glGetProgramInfoLog(this->Program, logLength, &logLength, log);
       std::cerr  << "Program link log:" << std::endl << log << std::endl;
       free(log);
@@ -142,7 +142,7 @@ bool vesShaderProgram::Validate()
   glGetProgramiv(this->Program, GL_INFO_LOG_LENGTH, &logLength);
   if (logLength > 0)
     {
-      GLchar *log = (GLchar *)malloc(logLength);
+      char *log = (char *)malloc(logLength);
       glGetProgramInfoLog(this->Program, logLength, &logLength, log);
       std::cerr << "Program validate log:" <<std::endl << log << std::endl;
       free(log);

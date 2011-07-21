@@ -7,11 +7,17 @@
 // --------------------------------------------------------------------internal
 class TransformInternals
 {
-  vesMatrix4x4f T,C,R,SR,S,_SR,_C;
+  vesMatrix4x4f T;
+  vesMatrix4x4f C;
+  vesMatrix4x4f R;
+  vesMatrix4x4f SR;
+  vesMatrix4x4f S;
+  vesMatrix4x4f SRI;
+  vesMatrix4x4f CI;
 public:
   vesMatrix4x4f Eval()
   {
-    return T * C * R * SR * S * _SR * _C;
+    return T * C * R * SR * S * SRI * CI;
   }
 
   void SetTranslation(vesVector3f trans)
@@ -21,7 +27,7 @@ public:
   void SetCenter(vesVector3f center)
   {
     C = makeTranslationMatrix4x4(center);
-    _C = makeInverseMatrix4x4(C);
+    CI = makeInverseMatrix4x4(C);
   }
   void SetRotation(vesVector4f rot)
   {
@@ -31,7 +37,7 @@ public:
   void SetScaleOrientation(vesVector4f sr)
   {
     SR = makeRotationMatrix4x4(sr[3], sr[0], sr[1], sr[2]);
-    _SR = makeInverseMatrix4x4(SR);
+    SRI = makeInverseMatrix4x4(SR);
   }
 
   void SetScale(vesVector3f scale)

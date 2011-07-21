@@ -22,6 +22,7 @@
 // -----------------------------------------------------------------------cnstr
 vesMultitouchCamera::vesMultitouchCamera()
 {
+#ifndef ANDROID
   currentCalculatedMatrix.m11 = (CGFloat)_matrix.mData[0];
 	currentCalculatedMatrix.m12 = (CGFloat)_matrix.mData[1];
 	currentCalculatedMatrix.m13 = (CGFloat)_matrix.mData[2];
@@ -38,7 +39,7 @@ vesMultitouchCamera::vesMultitouchCamera()
 	currentCalculatedMatrix.m42 = (CGFloat)_matrix.mData[13];
 	currentCalculatedMatrix.m43 = (CGFloat)_matrix.mData[14];
 	currentCalculatedMatrix.m44 = (CGFloat)_matrix.mData[15];
-
+#endif
 }
 
 // -----------------------------------------------------------------------destr
@@ -65,6 +66,7 @@ void vesMultitouchCamera::SetWidthHeight(const unsigned int width,
 vesMatrix4x4f vesMultitouchCamera::GetMatrix()
 {
   vesMatrix4x4f _model;
+#ifndef ANDROID
   _model.mData[0] = (float)currentCalculatedMatrix.m11;
   _model.mData[1] = (float)currentCalculatedMatrix.m12;
   _model.mData[2] = (float)currentCalculatedMatrix.m13;
@@ -81,8 +83,8 @@ vesMatrix4x4f vesMultitouchCamera::GetMatrix()
   _model.mData[13] = (float)currentCalculatedMatrix.m42;
   _model.mData[14] = (float)currentCalculatedMatrix.m43;
   _model.mData[15] = (float)currentCalculatedMatrix.m44;
+#endif
   return _model;
-
 }
 
 vesMatrix4x4f vesMultitouchCamera::GetMatrixGMTL()
@@ -92,6 +94,7 @@ vesMatrix4x4f vesMultitouchCamera::GetMatrixGMTL()
 
 void vesMultitouchCamera::Reset()
 {
+#ifndef ANDROID
   float matrix[16]  = {1.0, 0.0, 0.0, 0.0,
 		0.0, 1.0, 0.0, 0.0,
 		0.0, 0.0, 1.0, 0.0,
@@ -112,13 +115,15 @@ void vesMultitouchCamera::Reset()
 	currentCalculatedMatrix.m42 = (CGFloat)matrix[13];
 	currentCalculatedMatrix.m43 = (CGFloat)matrix[14];
 	currentCalculatedMatrix.m44 = (CGFloat)matrix[15];
+#endif
   gmtl::identity(_matrix);
-
 }
 
 void vesMultitouchCamera::RotateAngleAxis(double angle, double x, double y, double z)
 {
+#ifndef ANDROID
   currentCalculatedMatrix = CATransform3DRotate(currentCalculatedMatrix, angle, x, y, z);
+#endif
 }
 
 void vesMultitouchCamera::UpdateMatrix(const float xRotation,
@@ -127,6 +132,7 @@ void vesMultitouchCamera::UpdateMatrix(const float xRotation,
                                        float xTranslation,
                                        float yTranslation)
 {
+#ifndef ANDROID
       // Scale the view to fit current multitouch scaling
   currentCalculatedMatrix = CATransform3DScale(currentCalculatedMatrix, scaleFactor, scaleFactor, scaleFactor);
   //std::cout<<"========================"<<std::endl;
@@ -167,6 +173,7 @@ void vesMultitouchCamera::UpdateMatrix(const float xRotation,
     currentCalculatedMatrix = temporaryMatrix;
 
  // UpdateMatrixGMTL(xRotation, yRotation, scaleFactor, xTranslation, yTranslation);
+#endif
 }
 
 void vesMultitouchCamera::UpdateMatrixGMTL(const float xRotation,
@@ -233,11 +240,13 @@ void vesMultitouchCamera::UpdateMatrixGMTL(const float xRotation,
 
 void vesMultitouchCamera::printCurrentCalculatedMatrix()
 {
+#ifndef ANDROID
     CATransform3D m = currentCalculatedMatrix;
   std::cout << m.m11 << " " << m.m12 << " " << m.m13 << " " << m.m14 << std::endl
             << m.m21 << " " << m.m22 << " " << m.m23 << " " << m.m24 << std::endl
             << m.m31 << " " << m.m32 << " " << m.m33 << " " << m.m34 << std::endl
             << m.m41 << " " << m.m42 << " " << m.m43 << " " << m.m44 << std::endl;
+#endif
 }
 
 void vesMultitouchCamera::printGMTLMatrix()

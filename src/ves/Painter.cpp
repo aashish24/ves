@@ -199,7 +199,7 @@ void Painter::visitShape(Shape* shape)
                         GL_FLOAT,
                         0,
                         6 * sizeof(float),
-                        mapper->GetData()->GetPoints()[0].normal.mData);
+                        &(mapper->GetData()->GetPoints()[0])+3);
 
   // draw triangles
   glDrawElements(GL_TRIANGLES,

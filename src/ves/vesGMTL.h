@@ -9,6 +9,8 @@
 #ifndef __vesGMTL_h
 #define __vesGMTL_h
 
+#include "gmtl/AxisAngle.h"
+#include "gmtl/Generate.h"
 #include "gmtl/Matrix.h"
 #include "gmtl/MatrixOps.h"
 #include "gmtl/Point.h"
