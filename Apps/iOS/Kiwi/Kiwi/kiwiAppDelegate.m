@@ -310,7 +310,7 @@
     self.loadDataPopover = [[[UIPopoverController alloc]
                              initWithContentViewController:_dataLoader] autorelease];
   }
-  [self.loadDataPopover presentPopoverFromRect:CGRectMake(515,980,300,200) 
+  [self.loadDataPopover presentPopoverFromRect:CGRectMake(515,960,300,200) 
                                         inView:self.glView permittedArrowDirections:UIPopoverArrowDirectionDown animated:YES];
 }
 @end
