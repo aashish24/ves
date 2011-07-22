@@ -41,11 +41,8 @@ public:
   void ComputeBounds();
   vesGetMacro(Min, vesVector3f)
   vesGetMacro(Max, vesVector3f)
-  void Normalize(); 
 protected:
   // ...........................................................protected-ivars
- 
-  vesMatrix4x4f NormalizedMatrix;
 protected:
 //BTX
   // .......................................................................BTX

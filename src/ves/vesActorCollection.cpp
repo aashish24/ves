@@ -72,7 +72,7 @@ bool vesActorCollection::Read()
 
  vesMatrix4x4f vesActorCollection::Eval()
  {
-   return Transform::Eval()*NormalizedMatrix;
+   return Transform::Eval();
  }
 
 void vesActorCollection::Render(Painter *render)
@@ -113,14 +113,4 @@ void vesActorCollection::ComputeBounds()
 
   SetBBoxCenter(allMin, allMax);
   SetBBoxSize(allMin, allMax);
-}
-
-void vesActorCollection::Normalize()
-{
-  float r = GetBBoxRadius();
-  this->NormalizedMatrix =
-  makeScaleMatrix4x4(1/r,1/r,1/r)*
-  makeTranslationMatrix4x4(-GetBBoxCenter());
-  SetBBoxCenter(transformPoint3f(this->NormalizedMatrix, GetBBoxCenter()));
-  SetBBoxSize(transformPoint3f(this->NormalizedMatrix, GetBBoxSize()));
 }

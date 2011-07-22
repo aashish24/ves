@@ -1,217 +1,205 @@
-//
-//  vesCamera.cpp
-//  kiwi
-//
-//  Created by kitware on 5/6/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
-//
-
 #include "vesCamera.h"
 #include "vesGMTL.h"
 #include <iostream>
+#include "Painter.h"
 
+// -----------------------------------------------------------------------cnstr
 vesCamera::vesCamera()
 {
-  currentCalculatedMatrix.m11 = (CGFloat)_matrix.mData[0];
-	currentCalculatedMatrix.m12 = (CGFloat)_matrix.mData[1];
-	currentCalculatedMatrix.m13 = (CGFloat)_matrix.mData[2];
-	currentCalculatedMatrix.m14 = (CGFloat)_matrix.mData[3];
-	currentCalculatedMatrix.m21 = (CGFloat)_matrix.mData[4];
-	currentCalculatedMatrix.m22 = (CGFloat)_matrix.mData[5];
-	currentCalculatedMatrix.m23 = (CGFloat)_matrix.mData[6];
-	currentCalculatedMatrix.m24 = (CGFloat)_matrix.mData[7];
-	currentCalculatedMatrix.m31 = (CGFloat)_matrix.mData[8];
-	currentCalculatedMatrix.m32 = (CGFloat)_matrix.mData[9];
-	currentCalculatedMatrix.m33 = (CGFloat)_matrix.mData[10];
-	currentCalculatedMatrix.m34 = (CGFloat)_matrix.mData[11];
-	currentCalculatedMatrix.m41 = (CGFloat)_matrix.mData[12];
-	currentCalculatedMatrix.m42 = (CGFloat)_matrix.mData[13];
-	currentCalculatedMatrix.m43 = (CGFloat)_matrix.mData[14];
-	currentCalculatedMatrix.m44 = (CGFloat)_matrix.mData[15];
 }
 
-void vesCamera::Reset()
+// -----------------------------------------------------------------------destr
+vesCamera::~vesCamera()
 {
-  float matrix[16]  = {1.0, 0.0, 0.0, 0.0,
-		0.0, 1.0, 0.0, 0.0,
-		0.0, 0.0, 1.0, 0.0,
-		0.0, 0.0, 0.0, 1.0};
-	currentCalculatedMatrix.m11 = (CGFloat)matrix[0];
-	currentCalculatedMatrix.m12 = (CGFloat)matrix[1];
-	currentCalculatedMatrix.m13 = (CGFloat)matrix[2];
-	currentCalculatedMatrix.m14 = (CGFloat)matrix[3];
-	currentCalculatedMatrix.m21 = (CGFloat)matrix[4];
-	currentCalculatedMatrix.m22 = (CGFloat)matrix[5];
-	currentCalculatedMatrix.m23 = (CGFloat)matrix[6];
-	currentCalculatedMatrix.m24 = (CGFloat)matrix[7];
-	currentCalculatedMatrix.m31 = (CGFloat)matrix[8];
-	currentCalculatedMatrix.m32 = (CGFloat)matrix[9];
-	currentCalculatedMatrix.m33 = (CGFloat)matrix[10];
-	currentCalculatedMatrix.m34 = (CGFloat)matrix[11];
-	currentCalculatedMatrix.m41 = (CGFloat)matrix[12];
-	currentCalculatedMatrix.m42 = (CGFloat)matrix[13];
-	currentCalculatedMatrix.m43 = (CGFloat)matrix[14];
-	currentCalculatedMatrix.m44 = (CGFloat)matrix[15];
-  gmtl::identity(_matrix);
-}
-// -----------------------------------------------------------------------public
-void vesCamera::SetWidthHeight(const unsigned int width, 
-                                            const unsigned int height)
-{
-  _width = width;
-  _height = height;
+
 }
 
-void vesCamera::printCurrentCalculatedMatrix()
+#if VTK
+// ----------------------------------------------------------------------public
+vesMatrix4x4f vesCamera::ComputeViewTransform()
 {
-  CATransform3D m = currentCalculatedMatrix;
-  std::cout << m.m11 << " " << m.m12 << " " << m.m13 << " " << m.m14 << std::endl
-            << m.m21 << " " << m.m22 << " " << m.m23 << " " << m.m24 << std::endl
-            << m.m31 << " " << m.m32 << " " << m.m33 << " " << m.m34 << std::endl
-            << m.m41 << " " << m.m42 << " " << m.m43 << " " << m.m44 << std::endl;
+  return vesLookAt (this->Position,
+		    this->FocalPoint,
+		    this->ViewUp);
 }
 
-void vesCamera::printGMTLMatrix()
+// ----------------------------------------------------------------------public
+vesMatrix4x4f vesCamera::ComputeProjectionTransform(float aspect,
+                                                    float nearz,
+                                                    float farz)
 {
-  vesMatrix4x4f matrix = makeTransposeMatrix4x4(_matrix);
-  for (int i=0;i<4;i++)
-  {
-    for(int j=0;j<4;j++)
+  vesMatrix4x4f matrix;
+
+  // adjust Z-buffer range
+  matrix[2][2] = (farz - nearz)/(1 - (-1));
+  matrix[2][3] = (nearz*1 - farz*(-1))/(1 - (-1));
+
+
+  if ( this->ParallelProjection)
     {
-      std::cout << _matrix[i][j] << " ";
+    // set up a rectangular parallelipiped
+
+    double width = this->ParallelScale * aspect;
+    double height = this->ParallelScale;
+
+    double xmin = ( this->WindowCenter[0] - 1.0 ) * width;
+    double xmax = ( this->WindowCenter[0] + 1.0 ) * width;
+    double ymin = ( this->WindowCenter[1] - 1.0 ) * height;
+    double ymax = ( this->WindowCenter[1] + 1.0 ) * height;
+
+    return matrix * vesOrtho( xmin, xmax, ymin, ymax,
+                              this->ClippingRange[0],
+                              this->ClippingRange[1] );
     }
-    std::cout<<std::endl;
-  }  
+  else
+    {
+      // set up a perspective frustum
+      double tmp = tan( deg2Rad( this->ViewAngle ) / 2. );
+      double width;
+      double height;
+      if ( this->UseHorizontalViewAngle )
+        {
+        width = this->ClippingRange[0] * tmp;
+        height = this->ClippingRange[0] * tmp / aspect;
+        }
+      else
+        {
+        width = this->ClippingRange[0] * tmp * aspect;
+        height = this->ClippingRange[0] * tmp;
+        }
+
+      double xmin = ( this->WindowCenter[0] - 1.0 ) * width;
+      double xmax = ( this->WindowCenter[0] + 1.0 ) * width;
+      double ymin = ( this->WindowCenter[1] - 1.0 ) * height;
+      double ymax = ( this->WindowCenter[1] + 1.0 ) * height;
+
+      return matrix*vesFrustum( xmin, xmax, ymin, ymax,
+      this->ClippingRange[0],
+      this->ClippingRange[1] );
+    }
+}
+//----------------------------------------------------------------------------
+void vesCamera::SetWindowCenter(double x, double y)
+{
+  this->WindowCenter[0] = x;
+  this->WindowCenter[1] = y;
 }
 
-vesMatrix4x4f vesCamera::GetMatrix()
+// ----------------------------------------------------------------------public
+void vesCamera::SetClippingRange(float near, float far)
 {
-  vesMatrix4x4f _model;
-  _model.mData[0] = (float)currentCalculatedMatrix.m11;
-  _model.mData[1] = (float)currentCalculatedMatrix.m12;
-  _model.mData[2] = (float)currentCalculatedMatrix.m13;
-  _model.mData[3] = (float)currentCalculatedMatrix.m14;
-  _model.mData[4] = (float)currentCalculatedMatrix.m21;
-  _model.mData[5] = (float)currentCalculatedMatrix.m22;
-  _model.mData[6] = (float)currentCalculatedMatrix.m23;
-  _model.mData[7] = (float)currentCalculatedMatrix.m24;
-  _model.mData[8] = (float)currentCalculatedMatrix.m31;
-  _model.mData[9] = (float)currentCalculatedMatrix.m32;
-  _model.mData[10] = (float)currentCalculatedMatrix.m33;
-  _model.mData[11] = (float)currentCalculatedMatrix.m34;
-  _model.mData[12] = (float)currentCalculatedMatrix.m41;
-  _model.mData[13] = (float)currentCalculatedMatrix.m42;
-  _model.mData[14] = (float)currentCalculatedMatrix.m43;
-  _model.mData[15] = (float)currentCalculatedMatrix.m44;
-  return _model;
+  this->ClippingRange[0] = near;
+  this->ClippingRange[1] = far;
+}
+#endif
+//----------------------------------------------------------------------------
+// This method must be called when the focal point or camera position changes
+void vesCamera::ComputeDistance()
+{
+  double dx = this->FocalPoint[0] - this->Position[0];
+  double dy = this->FocalPoint[1] - this->Position[1];
+  double dz = this->FocalPoint[2] - this->Position[2];
+
+  this->Distance = sqrt(dx*dx + dy*dy + dz*dz);
+
+  if (this->Distance < 1e-20)
+  {
+    this->Distance = 1e-20;
+    vesVector3f vec = this->DirectionOfProjection;
+
+    // recalculate FocalPoint
+    this->FocalPoint[0] = this->Position[0] + vec[0]*this->Distance;
+    this->FocalPoint[1] = this->Position[1] + vec[1]*this->Distance;
+    this->FocalPoint[2] = this->Position[2] + vec[2]*this->Distance;
+  }
+
+  this->DirectionOfProjection[0] = dx/this->Distance;
+  this->DirectionOfProjection[1] = dy/this->Distance;
+  this->DirectionOfProjection[2] = dz/this->Distance;
+
+  this->ComputeViewPlaneNormal();
 }
 
-// ----------------------------------------------------------------------private
-void vesCamera::UpdateMatrix(const float xRotation, 
-                                          const float yRotation, 
-                                          const float scaleFactor, 
-                                          const float xTranslation, 
-                                          const float yTranslation)
+// ----------------------------------------------------------------------public
+void vesCamera::ComputeViewPlaneNormal()
 {
-  // Scale the view to fit current multitouch scaling
-  currentCalculatedMatrix = CATransform3DScale(currentCalculatedMatrix, scaleFactor, scaleFactor, scaleFactor);
-  std::cout<<"========================"<<std::endl;
-  printCurrentCalculatedMatrix();
-  
-  // Perform incremental rotation based on current angles in X and Y
-  float totalRotation = sqrt(xRotation*xRotation + yRotation*yRotation);
-  
-  CATransform3D temporaryMatrix = CATransform3DRotate(currentCalculatedMatrix, totalRotation * (22/7)* 1 / 180.0,
-                                                      ((xRotation/totalRotation) * currentCalculatedMatrix.m12 + (yRotation/totalRotation) * currentCalculatedMatrix.m11),
-                                                      ((xRotation/totalRotation) * currentCalculatedMatrix.m22 + (yRotation/totalRotation) * currentCalculatedMatrix.m21),
-                                                      ((xRotation/totalRotation) * currentCalculatedMatrix.m32 + (yRotation/totalRotation) * currentCalculatedMatrix.m31));
-    
-	if ((temporaryMatrix.m11 >= -100.0) && (temporaryMatrix.m11 <= 100.0))
-  {
-    currentCalculatedMatrix = temporaryMatrix;
-  }
-
-  // Translate the model by the accumulated amount
-  float currentScaleFactor = sqrt(pow(currentCalculatedMatrix.m11, 2.0f) + pow(currentCalculatedMatrix.m12, 2.0f) + pow(currentCalculatedMatrix.m13, 2.0f));
-
-  float xTranslat = xTranslation / (currentScaleFactor * currentScaleFactor);
-  float yTranslat = yTranslation / (currentScaleFactor * currentScaleFactor);
-  
-  // Use the (0,4,8) components to figure the eye's X axis in the model coordinate system, translate along that
-  temporaryMatrix = CATransform3DTranslate(currentCalculatedMatrix, 
-                                           xTranslat * currentCalculatedMatrix.m11, 
-                                           xTranslat * currentCalculatedMatrix.m21, 
-                                           xTranslat * currentCalculatedMatrix.m31);
-  // Use the (1,5,9) components to figure the eye's Y axis in the model coordinate system, translate along that
-  temporaryMatrix = CATransform3DTranslate(temporaryMatrix, 
-                                           yTranslat * currentCalculatedMatrix.m12, 
-                                           yTranslat * currentCalculatedMatrix.m22, 
-                                           yTranslat * currentCalculatedMatrix.m32);
-  
-  
-  if ((temporaryMatrix.m11 >= -100.0) && (temporaryMatrix.m11 <= 100.0))
-    currentCalculatedMatrix = temporaryMatrix;
-  
- // UpdateMatrixGMTL(xRotation, yRotation, scaleFactor, xTranslation, yTranslation);
+    this->ViewPlaneNormal[0] = -this->DirectionOfProjection[0];
+    this->ViewPlaneNormal[1] = -this->DirectionOfProjection[1];
+    this->ViewPlaneNormal[2] = -this->DirectionOfProjection[2];
 }
 
-void vesCamera::UpdateMatrixGMTL(const float xRotation, 
-                                          const float yRotation, 
-                                          float scaleFactor, 
-                                          float xTranslation, 
-                                          float yTranslation)
+// ----------------------------------------------------------------------public
+void vesCamera::Render(Painter *render)
 {
-  std::cout<<"------------------------"<<std::endl;
-  printGMTLMatrix();
+  render->Camera(this);
+}
 
-  vesMatrix4x4f matrix = makeTransposeMatrix4x4(_matrix);
-	
-	// Scale the view to fit current multitouch scaling
-  matrix = makeScaleMatrix4x4(scaleFactor,scaleFactor,scaleFactor)*matrix;
-  
-  
-  // Perform incremental rotation based on current angles in X and Y
-//  float totalRotation = sqrt(xRotation*xRotation + yRotation*yRotation);
-//  float x = xRotation/totalRotation;
-//  float y = yRotation/totalRotation;
-  vesMatrix4x4f tempMat = makeRotationMatrix4x4(xRotation,
-                                                         matrix.mData[1],
-                                                         matrix.mData[5],
-                                                         matrix.mData[9])*matrix;
-  tempMat = makeRotationMatrix4x4(yRotation, 
-                                            tempMat.mData[0], 
-                                            tempMat.mData[4], 
-                                            tempMat.mData[8])*matrix;
-//  vesMatrix4x4f tempMat = matrix*makeRotationMatrix4x4(totalRotation * (22/7) * 1/180.0,
-//                                               x*matrix[0][1]+y*matrix[0][0],
-//                                               x*matrix[1][1]+y*matrix[1][0],
-//                                               x*matrix[2][1]+y*matrix[2][0]);
-  
-  if (tempMat[0][0] >= -100 && tempMat[0][0] <=100) 
-  {
-    matrix = tempMat;
-  }
-  
-  // Translate the model by the accumulated amount
-  float curScaleFactor = sqrt(pow(matrix[0][0],2.0f) +
-                              pow(matrix[0][1],2.0f) +
-                              pow(matrix[0][2],2.0f));
-  
-  float xTrans = xTranslation / (curScaleFactor * curScaleFactor);
-  float yTrans = yTranslation / (curScaleFactor * curScaleFactor);
-  
-  tempMat = makeTranslationMatrix4x4(xTrans * vesVector3f(matrix.mData[0],
-                                                                 matrix.mData[4],
-                                                                 matrix.mData[8]))*matrix;
-  tempMat = makeTranslationMatrix4x4(yTrans * vesVector3f(matrix.mData[1],
-                                                                 matrix.mData[5],
-                                                                 matrix.mData[9]))*matrix;
-  
-  if (tempMat[0][0] >= -100.0 && tempMat[0][0] <=100.0) 
-  {
-    matrix = tempMat;
-  }
+// ----------------------------------------------------------------------public
+void vesCamera::ComputeBounds()
+{
+  vesVector3f allMin(0,0,0);
+  vesVector3f allMax(0,0,0);
 
-  //_matrix = matrix;
-  _matrix = makeTransposeMatrix4x4(matrix);
+  for (int i =0; i<this->Children.size(); ++i)
+    {
+    vesActorCollection* child = (vesActorCollection*) this->Children[i];
+    child->ComputeBounds();
+    vesVector3f min = child->GetMin();
+    vesVector3f max = child->GetMax();
+
+    if (i == 0)
+      {
+      allMin = min;
+      allMax = max;
+      }
+
+    for (int i = 0; i < 3; ++i)
+      {
+      if (max[i] > allMax[i])
+        {
+        allMax[i] = max[i];
+        }
+      if (min[i] < allMin[i])
+        {
+        allMin[i] = min[i];
+        }
+      }
+    }
+
+  SetBBoxCenter(allMin, allMax);
+  SetBBoxSize(allMin, allMax);
+}
+
+// ----------------------------------------------------------------------public
+void vesCamera::Normalize()
+{
+  float r = GetBBoxRadius();
+  this->NormalizedMatrix =
+  makeScaleMatrix4x4(1/r,1/r,1/r)*
+  makeTranslationMatrix4x4(-GetBBoxCenter());
+  SetBBoxCenter(transformPoint3f(this->NormalizedMatrix, GetBBoxCenter()));
+  SetBBoxSize(transformPoint3f(this->NormalizedMatrix, GetBBoxSize()));
+}
+
+// ----------------------------------------------------------------------public
+bool vesCamera::Read()
+{
+  for (int i =0; i<this->Children.size(); ++i)
+  {
+    vesActorCollection* child = (vesActorCollection*) this->Children[i];
+    child->Read();
+  }
+  return true;
+}
+
+void vesCamera::AddActorCollection(vesActorCollection* actor)
+{
+  std::vector<vsgChildNode*> actorList;
+  actorList.push_back(actor);
+  AddChildren(actorList);
+}
+
+vesMatrix4x4f vesCamera::Eval()
+{
+  return NormalizedMatrix*Transform::Eval();
 }

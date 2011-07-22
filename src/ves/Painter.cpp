@@ -247,3 +247,25 @@ vesMatrix4x4f Painter::Eval()
     }
   return temp;
 }
+
+void Painter::Camera(vesCamera *camera)
+{
+  // View = camera->ComputeViewTransform();
+  // Projection = camera->ComputeProjectionTransform(this->Aspect,this->NearZ, this->FarZ);
+
+ this->Push(camera->Eval());
+
+  // If there are children nodes then tternate through and render
+  std::vector<vsgChildNode*> children;
+  if (camera->GetChildren(&children))
+    {
+    for (int i = 0; i < children.size(); ++i)
+      {
+      children[i]->Render(this);
+      }
+    }
+
+  // Pop the transformation
+  this->Pop();
+
+}

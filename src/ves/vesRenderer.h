@@ -31,6 +31,7 @@
 #include "vesActor.h"
 #include "vesSceneRender.h"
 #include "Painter.h"
+#include "vesCamera.h"
 
 class vesActorCollection;
 
@@ -44,7 +45,14 @@ public:
   void RemoveActor(vesActor* actor);
   void Read();
   void resetView();
+
   void resize(int widht,int height, float scale);
+  vesCamera* GetActiveCamera();
+#if VTK
+  void ResetCamera();
+protected:
+  void ResetCameraClippingRange(float bounds[6]);
+#endif
 
 protected:
   void CopyCamera2Model();
@@ -52,6 +60,7 @@ protected:
 private:
   vesMultitouchCamera* mCamera;
   vesActorCollection *Actor;
+  vesCamera *ActiveCamera;
   Painter *_Painter;
   // Runtime
   vesMatrix4x4f _model;
@@ -60,8 +69,9 @@ private:
   float _width,_height;
 
   vesMatrix4x4f m_mv_matrix;
-  vesMatrix3x3f m_normal_matrix;
+  vesMatrix3x3f m_normal_matxrix;
 
+  float Aspect[2];
   bool once;
 };
 
