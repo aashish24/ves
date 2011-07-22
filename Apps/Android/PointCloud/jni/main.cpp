@@ -30,6 +30,12 @@
 #include <vtkPolyDataReader.h>
 #include <vtkSmartPointer.h>
 #include <vtkPolyData.h>
+#include <vesPolyDataToTriangleData.h>
+
+#include <vesMultiTouchCamera.h>
+#include <vesRenderer.h>
+#include <vesShader.h>
+#include <vesShaderProgram.h>
 
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "native-activity", __VA_ARGS__))
 #define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "native-activity", __VA_ARGS__))
@@ -258,7 +264,37 @@ void android_main(struct android_app* state) {
     read->Update ();
     vtkPolyData *data = read->GetOutput ();
     LOGI("number of points is %d", data->GetNumberOfPoints());
+    vesTriangleData* triangle_data = vesPolyDataToTriangleData::Convert (data);
 
+    
+    
+		// Create a C++ renderer object
+		vesMultitouchCamera* camera = new vesMultitouchCamera;
+    vesRenderer* renderer = new vesRenderer(camera);
+    
+    AAsset* vertex_asset = AAssetManager_open(assetManager, "Shader.vsh", AASSET_MODE_UNKNOWN);
+    AAsset* fragment_asset = AAssetManager_open(assetManager, "Shader.fsh", AASSET_MODE_UNKNOWN);
+    
+    std::string vertex_source = std::string(static_cast<const char*>(AAsset_getBuffer(vertex_asset)), AAsset_getLength(vertex_asset));
+    std::string fragment_source = std::string(static_cast<const char*>(AAsset_getBuffer(fragment_asset)), AAsset_getLength(fragment_asset));
+    
+    vesShaderProgram* shader_program = new vesShaderProgram(
+                                   const_cast<char*>(vertex_source.c_str()),
+                                   const_cast<char*>(fragment_source.c_str()),
+                                   (_uni("u_mvpMatrix"),
+                                    _uni("u_normalMatrix"),
+                                    _uni("u_ecLightDir")),
+                                   (_att("a_vertex"),
+                                    _att("a_normal"),
+                                    _att("a_texcoord"))
+                                   );
+    vesShader* shader = new vesShader(shader_program);    
+    
+    vesMapper* mapper = new vesMapper();
+    mapper->SetTriangleData(triangle_data);
+    vesActor* actor = new vesActor(shader, mapper);
+    renderer->AddActor(actor);
+    
     AAsset_close(asset);
     
     // Make sure glue isn't stripped.
