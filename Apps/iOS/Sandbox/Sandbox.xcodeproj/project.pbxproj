@@ -17,8 +17,8 @@
 		43533C1713CD08D9004DCF07 /* libves.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43533C1613CD08D9004DCF07 /* libves.a */; };
 		43533C2113CD0A39004DCF07 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43533C2013CD0A39004DCF07 /* QuartzCore.framework */; };
 		43533C2313CD0A41004DCF07 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43533C2213CD0A41004DCF07 /* OpenGLES.framework */; };
+		43657DF913D9D92E0016FBC1 /* vesPolyDataToTriangleData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43657DF713D9D92E0016FBC1 /* vesPolyDataToTriangleData.cpp */; };
 		4385FDA013CE8F0500BCE998 /* SceneController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4385FD9F13CE8F0500BCE998 /* SceneController.mm */; };
-		4385FDA413CE8F7100BCE998 /* vesPolyDataToTriangleData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 4385FDA213CE8F7100BCE998 /* vesPolyDataToTriangleData.cpp */; };
 		4385FDB213CE905000BCE998 /* libvtkCommonCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4385FDA513CE905000BCE998 /* libvtkCommonCore.a */; };
 		4385FDB313CE905000BCE998 /* libvtkCommonDataModel.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4385FDA613CE905000BCE998 /* libvtkCommonDataModel.a */; };
 		4385FDB413CE905000BCE998 /* libvtkCommonMath.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4385FDA713CE905000BCE998 /* libvtkCommonMath.a */; };
@@ -56,10 +56,10 @@
 		43533C1613CD08D9004DCF07 /* libves.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libves.a; path = "../CMakeBuild/build/CMakeExternals/Build/ves-simulator/libves.a"; sourceTree = "<group>"; };
 		43533C2013CD0A39004DCF07 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		43533C2213CD0A41004DCF07 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		43657DF713D9D92E0016FBC1 /* vesPolyDataToTriangleData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = vesPolyDataToTriangleData.cpp; path = ../../../../src/ves/vesPolyDataToTriangleData.cpp; sourceTree = "<group>"; };
+		43657DF813D9D92E0016FBC1 /* vesPolyDataToTriangleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vesPolyDataToTriangleData.h; path = ../../../../src/ves/vesPolyDataToTriangleData.h; sourceTree = "<group>"; };
 		4385FD9E13CE8F0500BCE998 /* SceneController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SceneController.h; sourceTree = "<group>"; };
 		4385FD9F13CE8F0500BCE998 /* SceneController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SceneController.mm; sourceTree = "<group>"; };
-		4385FDA213CE8F7100BCE998 /* vesPolyDataToTriangleData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vesPolyDataToTriangleData.cpp; sourceTree = "<group>"; };
-		4385FDA313CE8F7100BCE998 /* vesPolyDataToTriangleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vesPolyDataToTriangleData.h; sourceTree = "<group>"; };
 		4385FDA513CE905000BCE998 /* libvtkCommonCore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkCommonCore.a; path = "../CMakeBuild/build/CMakeExternals/Install/vtkmodular-simulator/lib/libvtkCommonCore.a"; sourceTree = "<group>"; };
 		4385FDA613CE905000BCE998 /* libvtkCommonDataModel.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkCommonDataModel.a; path = "../CMakeBuild/build/CMakeExternals/Install/vtkmodular-simulator/lib/libvtkCommonDataModel.a"; sourceTree = "<group>"; };
 		4385FDA713CE905000BCE998 /* libvtkCommonMath.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkCommonMath.a; path = "../CMakeBuild/build/CMakeExternals/Install/vtkmodular-simulator/lib/libvtkCommonMath.a"; sourceTree = "<group>"; };
@@ -184,8 +184,8 @@
 		43D6026213CD05830077C8B7 /* Sandbox */ = {
 			isa = PBXGroup;
 			children = (
-				4385FDA213CE8F7100BCE998 /* vesPolyDataToTriangleData.cpp */,
-				4385FDA313CE8F7100BCE998 /* vesPolyDataToTriangleData.h */,
+				43657DF713D9D92E0016FBC1 /* vesPolyDataToTriangleData.cpp */,
+				43657DF813D9D92E0016FBC1 /* vesPolyDataToTriangleData.h */,
 				4385FD9E13CE8F0500BCE998 /* SceneController.h */,
 				4385FD9F13CE8F0500BCE998 /* SceneController.mm */,
 				43D6026B13CD05830077C8B7 /* SandboxAppDelegate.h */,
@@ -283,8 +283,8 @@
 				43533ACC13CD0654004DCF07 /* ESRenderView.mm in Sources */,
 				43533ACD13CD0654004DCF07 /* ESRenderViewController.mm in Sources */,
 				4385FDA013CE8F0500BCE998 /* SceneController.mm in Sources */,
-				4385FDA413CE8F7100BCE998 /* vesPolyDataToTriangleData.cpp in Sources */,
 				4325001213CE9F5300D41D42 /* RootViewController.m in Sources */,
+				43657DF913D9D92E0016FBC1 /* vesPolyDataToTriangleData.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

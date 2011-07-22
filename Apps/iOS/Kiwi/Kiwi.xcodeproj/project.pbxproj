@@ -21,7 +21,6 @@
 		4307FCFE13C8E32100FFF019 /* DataReader.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4307FCFD13C8E32100FFF019 /* DataReader.mm */; };
 		432DE14D13D15D81000F8EC0 /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 432DE13013D158B8000F8EC0 /* Shader.fsh */; };
 		432DE14E13D15D81000F8EC0 /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 432DE13113D158B8000F8EC0 /* Shader.vsh */; };
-		432DE15113D15DC2000F8EC0 /* vesPolyDataToTriangleData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 432DE14F13D15DC2000F8EC0 /* vesPolyDataToTriangleData.cpp */; };
 		432DE15F13D15DFC000F8EC0 /* libvtkCommonCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 432DE15213D15DFC000F8EC0 /* libvtkCommonCore.a */; };
 		432DE16013D15DFC000F8EC0 /* libvtkCommonDataModel.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 432DE15313D15DFC000F8EC0 /* libvtkCommonDataModel.a */; };
 		432DE16113D15DFC000F8EC0 /* libvtkCommonMath.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 432DE15413D15DFC000F8EC0 /* libvtkCommonMath.a */; };
@@ -36,6 +35,7 @@
 		432DE16A13D15DFC000F8EC0 /* libvtksys.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 432DE15D13D15DFC000F8EC0 /* libvtksys.a */; };
 		432DE16B13D15DFC000F8EC0 /* libvtkzlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 432DE15E13D15DFC000F8EC0 /* libvtkzlib.a */; };
 		432DE16D13D15E1C000F8EC0 /* libves.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 432DE16C13D15E1C000F8EC0 /* libves.a */; };
+		43657DED13D9D8AB0016FBC1 /* vesPolyDataToTriangleData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43657DEB13D9D8AB0016FBC1 /* vesPolyDataToTriangleData.cpp */; };
 		436B34B413C802D500C5726C /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 436B34AF13C802D500C5726C /* Default-Landscape~ipad.png */; };
 		436B34B513C802D500C5726C /* Default-Portrait~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 436B34B013C802D500C5726C /* Default-Portrait~ipad.png */; };
 		436B34B613C802D500C5726C /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 436B34B113C802D500C5726C /* icon.png */; };
@@ -79,8 +79,6 @@
 		4307FCFD13C8E32100FFF019 /* DataReader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DataReader.mm; sourceTree = "<group>"; };
 		432DE13013D158B8000F8EC0 /* Shader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = Shader.fsh; path = ../../../../src/shaders/Shader.fsh; sourceTree = "<group>"; };
 		432DE13113D158B8000F8EC0 /* Shader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = Shader.vsh; path = ../../../../src/shaders/Shader.vsh; sourceTree = "<group>"; };
-		432DE14F13D15DC2000F8EC0 /* vesPolyDataToTriangleData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vesPolyDataToTriangleData.cpp; sourceTree = "<group>"; };
-		432DE15013D15DC2000F8EC0 /* vesPolyDataToTriangleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vesPolyDataToTriangleData.h; sourceTree = "<group>"; };
 		432DE15213D15DFC000F8EC0 /* libvtkCommonCore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkCommonCore.a; path = "../CMakeBuild/build/CMakeExternals/Install/vtkmodular-device/lib/libvtkCommonCore.a"; sourceTree = "<group>"; };
 		432DE15313D15DFC000F8EC0 /* libvtkCommonDataModel.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkCommonDataModel.a; path = "../CMakeBuild/build/CMakeExternals/Install/vtkmodular-device/lib/libvtkCommonDataModel.a"; sourceTree = "<group>"; };
 		432DE15413D15DFC000F8EC0 /* libvtkCommonMath.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkCommonMath.a; path = "../CMakeBuild/build/CMakeExternals/Install/vtkmodular-device/lib/libvtkCommonMath.a"; sourceTree = "<group>"; };
@@ -95,6 +93,8 @@
 		432DE15D13D15DFC000F8EC0 /* libvtksys.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtksys.a; path = "../CMakeBuild/build/CMakeExternals/Install/vtkmodular-device/lib/libvtksys.a"; sourceTree = "<group>"; };
 		432DE15E13D15DFC000F8EC0 /* libvtkzlib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkzlib.a; path = "../CMakeBuild/build/CMakeExternals/Install/vtkmodular-device/lib/libvtkzlib.a"; sourceTree = "<group>"; };
 		432DE16C13D15E1C000F8EC0 /* libves.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libves.a; path = "../CMakeBuild/build/CMakeExternals/Build/ves-device/libves.a"; sourceTree = "<group>"; };
+		43657DEB13D9D8AB0016FBC1 /* vesPolyDataToTriangleData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = vesPolyDataToTriangleData.cpp; path = ../../../../src/ves/vesPolyDataToTriangleData.cpp; sourceTree = "<group>"; };
+		43657DEC13D9D8AB0016FBC1 /* vesPolyDataToTriangleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vesPolyDataToTriangleData.h; path = ../../../../src/ves/vesPolyDataToTriangleData.h; sourceTree = "<group>"; };
 		436B34AF13C802D500C5726C /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
 		436B34B013C802D500C5726C /* Default-Portrait~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait~ipad.png"; sourceTree = "<group>"; };
 		436B34B113C802D500C5726C /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
@@ -152,8 +152,8 @@
 		080E96DDFE201D6D7F000001 /* Kiwi */ = {
 			isa = PBXGroup;
 			children = (
-				432DE14F13D15DC2000F8EC0 /* vesPolyDataToTriangleData.cpp */,
-				432DE15013D15DC2000F8EC0 /* vesPolyDataToTriangleData.h */,
+				43657DEB13D9D8AB0016FBC1 /* vesPolyDataToTriangleData.cpp */,
+				43657DEC13D9D8AB0016FBC1 /* vesPolyDataToTriangleData.h */,
 				70398013138551CE00E579C2 /* LoadDataController.h */,
 				70398014138551CE00E579C2 /* LoadDataController.m */,
 				2514C26F10084DB100A42282 /* ES2Renderer.h */,
@@ -368,7 +368,7 @@
 				6F41B5C01360C0CA00D0079D /* InfoView.m in Sources */,
 				70398015138551CE00E579C2 /* LoadDataController.m in Sources */,
 				4307FCFE13C8E32100FFF019 /* DataReader.mm in Sources */,
-				432DE15113D15DC2000F8EC0 /* vesPolyDataToTriangleData.cpp in Sources */,
+				43657DED13D9D8AB0016FBC1 /* vesPolyDataToTriangleData.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
