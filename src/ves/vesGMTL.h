@@ -44,20 +44,27 @@ vesVector3f makeTranslationVector3f(vesMatrix4x4f matrix);
 vesMatrix4x4f makeTransposeMatrix4x4(vesMatrix4x4f matrix);
 vesMatrix4x4f makeInverseMatrix4x4(vesMatrix4x4f matrix);
 
-vesMatrix4x4f makeOrthoMatrix4x4(float left, 
-                                 float right, 
-                                 float bottom, 
-                                 float top, 
-                                 float near, 
+vesMatrix4x4f makeOrthoMatrix4x4(float left,
+                                 float right,
+                                 float bottom,
+                                 float top,
+                                 float near,
                                  float far);
 
-vesMatrix4x4f makePerspectiveMatrix4x4(float left, 
-                                      float right, 
-                                      float bottom, 
-                                      float top, 
-                                      float near, 
-                                       float far);
+vesMatrix4x4f vesFrustum(float left,
+			 float right,
+			 float bottom,
+			 float top,
+			 float near,
+			 float far);
+
 vesMatrix3x3f makeNormalMatrix3x3f(vesMatrix4x4f matrix);
 vesMatrix4x4f makeNormalizedMatrix4x4(vesMatrix4x4f matrix);
 vtkPoint3f transformPoint3f(vesMatrix4x4f matrix, vtkPoint3f vec);
+float deg2Rad(float degree);
+vesMatrix4x4f vesLookAt( vesVector3f position,
+			 vesVector3f focalPoint,
+			 vesVector3f viewUp);
+vesMatrix4x4f vesPerspective(float fov,float aspectRatio, float near,float far);
+
 #endif

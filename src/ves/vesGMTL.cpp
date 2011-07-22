@@ -99,12 +99,12 @@ vesMatrix4x4f makeOrthoMatrix4x4(float left,
   return mat;
 }
 
-vesMatrix4x4f makePerspectiveMatrix4x4(float left, 
-                                      float right, 
-                                      float bottom, 
-                                      float top, 
-                                      float near, 
-                                      float far)
+vesMatrix4x4f vesFrustum(float left,
+			 float right,
+			 float bottom,
+			 float top,
+			 float near,
+			 float far)
 {
   vesMatrix4x4f mat;
   float a = 2 * near / (right - left);
@@ -159,4 +159,66 @@ vtkPoint3f transformPoint3f(vesMatrix4x4f matrix, vtkPoint3f vec)
   vtkPoint3f ret;
   gmtl::xform(ret,matrix,vec);
   return ret;
+}
+
+float deg2Rad(float degree)
+{
+  return gmtl::Math::deg2Rad(degree);
+}
+
+// ----------------------------------------------------------------------------
+vesMatrix4x4f vesLookAt( vesVector3f position,
+			 vesVector3f focalPoint,
+			 vesVector3f viewUp)
+{
+  vesMatrix4x4f matrix;
+  gmtl::identity(matrix);
+
+  gmtl::Vec3f viewSideways, orthoViewUp, viewPlaneNormal;
+
+  viewPlaneNormal = position - focalPoint;
+  gmtl::normalize(viewPlaneNormal);
+
+  // orthogonalize viewUp and compute viewSideways
+  viewSideways = gmtl::makeCross(viewUp,viewPlaneNormal);
+  gmtl::normalize(viewSideways);
+  orthoViewUp = gmtl::makeCross(viewPlaneNormal,viewSideways);
+
+  // the three vectors become the respective columns of rotation matrix
+  matrix[0][0] = viewSideways[0];
+  matrix[0][1] = viewSideways[1];
+  matrix[0][2] = viewSideways[2];
+
+  matrix[1][0] = orthoViewUp[0];
+  matrix[1][1] = orthoViewUp[1];
+  matrix[1][2] = orthoViewUp[2];
+
+  matrix[2][0] = viewPlaneNormal[0];
+  matrix[2][1] = viewPlaneNormal[1];
+  matrix[2][2] = viewPlaneNormal[2];
+
+  // translate by the vector from the position to the origin
+  vesVector4f delta;
+  delta[0] = -position[0];
+  delta[1] = -position[1];
+  delta[2] = -position[2];
+  delta[3] = 0.0; // yes, this should be zero, not one
+
+  gmtl::xform(delta, matrix,delta);
+
+  matrix[0][3] = delta[0];
+  matrix[1][3] = delta[1];
+  matrix[2][3] = delta[2];
+
+  return matrix;
+}
+
+// ----------------------------------------------------------------------public
+vesMatrix4x4f vesPerspective(float fovY,float aspect, float zNear,float zFar)
+{
+  const float pi = 3.14195926535897932384626433832795;
+  float width,height;
+  height = tan( fovY / 360 * pi ) * zNear;
+  width = height * aspect;
+  return vesFrustum( -width, width, -height, height, zNear, zFar );
 }
