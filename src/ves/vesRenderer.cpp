@@ -87,9 +87,13 @@ void vesRenderer::resize(int width, int height, float scale)
     bottom = aspect * left;
     top = aspect * right;
   }
-  _proj= makeOrthoMatrix4x4(left, right, bottom, top, nearp, farp);
-  //_proj= makePerspectiveMatrix4x4(left, right, bottom, top, nearp, farp);
 
+  this->Aspect[0] = _width/_height;
+  this->Aspect[1] = _height/_width;
+
+  _proj= vesOrtho(left, right, bottom, top, nearp, farp);
+  //_proj= vesFrustum(left, right, bottom, top, nearp, farp);
+  //_proj = vesPerspective(60,aspect,0,1000);
   this->_Painter->SetProjection(_proj);
   glViewport(0, 0, width, height);
 

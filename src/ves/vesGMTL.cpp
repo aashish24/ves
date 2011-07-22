@@ -43,12 +43,12 @@ vesMatrix4x4f makeInverseMatrix4x4(vesMatrix4x4f matrix)
 }
 
 // -------------------------------------------------------------------------fun
-vesMatrix4x4f makeOrthoMatrix4x4(float left,
-                                 float right,
-                                 float bottom,
-                                 float top,
-                                 float near,
-                                 float far)
+vesMatrix4x4f vesOrtho(float left,
+                       float right,
+                       float bottom,
+                       float top,
+                       float near,
+                       float far)
 {
   vesMatrix4x4f mat;
   float a = 2.0f / (right - left);
@@ -187,7 +187,7 @@ vesMatrix4x4f vesPerspective(float fovY,float aspect, float zNear,float zFar)
 {
   const float pi = 3.14195926535897932384626433832795;
   float width,height;
-  height = tan( fovY / 360 * pi ) * zNear;
+  height = tan( deg2Rad(fovY)/2 ) * zNear;
   width = height * aspect;
   return vesFrustum( -width, width, -height, height, zNear, zFar );
 }

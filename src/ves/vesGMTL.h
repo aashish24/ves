@@ -22,12 +22,12 @@ vesVector3f makeTranslationVector3f(vesMatrix4x4f matrix);
 vesMatrix4x4f makeTransposeMatrix4x4(vesMatrix4x4f matrix);
 vesMatrix4x4f makeInverseMatrix4x4(vesMatrix4x4f matrix);
 
-vesMatrix4x4f makeOrthoMatrix4x4(float left,
-                                 float right,
-                                 float bottom,
-                                 float top,
-                                 float near,
-                                 float far);
+vesMatrix4x4f vesOrtho(float left,
+                       float right,
+                       float bottom,
+                       float top,
+                       float near,
+                       float far);
 
 vesMatrix4x4f vesFrustum(float left,
 			 float right,
