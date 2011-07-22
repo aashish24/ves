@@ -53,9 +53,18 @@ vesTriangleData* vesPolyDataToTriangleData::Convert(vtkPolyData* input)
         for (int i = 2; i < num; ++i)
           {
           vesVector3us indices;
-          indices[0] = vertices[i-2];
-          indices[1] = vertices[i-1];
-          indices[2] = vertices[i];
+          if (i & 1)
+            {
+            indices[0] = vertices[i-1];
+            indices[1] = vertices[i-2];
+            indices[2] = vertices[i];
+            }
+          else
+            {
+            indices[0] = vertices[i-2];
+            indices[1] = vertices[i-1];
+            indices[2] = vertices[i];
+            }
           output->GetTriangles().push_back(indices);
           }
     }
