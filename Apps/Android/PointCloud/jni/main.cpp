@@ -25,6 +25,11 @@
 #include <android/sensor.h>
 #include <android/log.h>
 #include <android_native_app_glue.h>
+#include <android/asset_manager.h>
+
+#include <vtkPolyDataReader.h>
+#include <vtkSmartPointer.h>
+#include <vtkPolyData.h>
 
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "native-activity", __VA_ARGS__))
 #define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "native-activity", __VA_ARGS__))
@@ -129,6 +134,7 @@ static int engine_init_display(struct engine* engine) {
  * Just the current frame in the display.
  */
 static void engine_draw_frame(struct engine* engine) {
+    LOGI("engine_draw_frame");
     if (engine->display == NULL) {
         // No display.
         return;
@@ -189,6 +195,12 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
             engine->app->savedStateSize = sizeof(struct saved_state);
             break;
         case APP_CMD_INIT_WINDOW:
+            if (app->window != NULL) {
+                int32_t width = ANativeWindow_getWidth(app->window);
+                int32_t height = ANativeWindow_getHeight(app->window);
+                ANativeWindow_setBuffersGeometry(app->window, width, height, 1);
+                LOGI("Window format is now %d",ANativeWindow_getFormat(app->window));
+            }
             // The window is being shown, get it ready.
             if (engine->app->window != NULL) {
                 engine_init_display(engine);
@@ -231,6 +243,24 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
 void android_main(struct android_app* state) {
     struct engine engine;
 
+    AAssetManager* assetManager = state->activity->assetManager;
+    AAsset* asset = AAssetManager_open(assetManager, "cturtle.vtk", AASSET_MODE_UNKNOWN);
+    if (asset == NULL) {
+        LOGW("could not open asset");
+    }
+    off_t len = AAsset_getLength(asset);
+    const char* input_string = static_cast<const char*>(AAsset_getBuffer(asset));
+    LOGI("length is %d", AAsset_getLength(asset));
+
+    vtkSmartPointer<vtkPolyDataReader> read = vtkSmartPointer<vtkPolyDataReader>::New ();
+    read->SetInputString (input_string, len);
+    read->ReadFromInputStringOn ();
+    read->Update ();
+    vtkPolyData *data = read->GetOutput ();
+    LOGI("number of points is %d", data->GetNumberOfPoints());
+
+    AAsset_close(asset);
+    
     // Make sure glue isn't stripped.
     app_dummy();
 

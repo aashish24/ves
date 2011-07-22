@@ -26,6 +26,10 @@
 #include <stdlib.h>
 #include <math.h>
 
+#include <vtkPolyDataReader.h>
+#include <vtkSmartPointer.h>
+#include <vtkPolyData.h>
+
 #define  LOG_TAG    "libgl2jni"
 #define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
 #define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
@@ -122,6 +126,11 @@ GLuint gProgram;
 GLuint gvPositionHandle;
 
 bool setupGraphics(int w, int h) {
+    vtkSmartPointer<vtkPolyDataReader> read = vtkSmartPointer<vtkPolyDataReader>::New ();
+    read->SetFileName ("cturtle.vtk");
+    read->Update ();
+    vtkPolyData *data = read->GetOutput ();
+
     printGLString("Version", GL_VERSION);
     printGLString("Vendor", GL_VENDOR);
     printGLString("Renderer", GL_RENDERER);

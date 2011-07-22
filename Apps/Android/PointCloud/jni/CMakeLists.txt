@@ -5,7 +5,7 @@ set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -pedantic -fPIC" )
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
 #set( LIBRARY_DEPS GLESv2 log android EGL)
-set( LIBRARY_DEPS GLESv1_CM log android EGL)
+set( LIBRARY_DEPS GLESv1_CM log android EGL native-activity )
 
 find_package(VTK REQUIRED)
 include(${VTK_USE_FILE})
@@ -22,7 +22,7 @@ set(MY_SRCS
     android_native_app_glue.c main.cpp #cpp files can be compiled to
     )
 
-add_library(gl2jni SHARED ${MY_SRCS} )
+add_library(native-activity SHARED ${MY_SRCS} )
 
 #link the module like any other
-target_link_libraries(gl2jni ${LIBRARY_DEPS} ${VTK_DEPS} ${VES_DEPS})
+target_link_libraries(native-activity ${LIBRARY_DEPS} ${VTK_DEPS} ${VES_DEPS})
