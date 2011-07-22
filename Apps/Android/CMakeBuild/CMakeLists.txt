@@ -73,6 +73,14 @@ macro(crosscompile_ves proj toolchain_file)
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
       -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_SOURCE_DIR}/cmake/${toolchain_file}
   )
+
+  ExternalProject_Add_Step(${proj} forcebuild
+    COMMAND ${CMAKE_COMMAND} -E remove ${base}/Stamp/${proj}/${proj}-build
+    DEPENDEES configure
+    DEPENDERS build
+    ALWAYS 1
+  )
+
 endmacro()
 
 crosscompile_ves(ves-android android.toolchain.cmake)
