@@ -1,68 +1,32 @@
-//
-//  vesGMTL.cpp
-//  kiwi
-//
-//  Created by kitware on 5/6/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
-//
-
 #include "vesGMTL.h"
 #include "gmtl/Generate.h"
 #include "gmtl/AxisAngle.h"
 
-//vesMatrix4x4f::vesMatrix4x4f()
-//{
-//  
-//}
-//
-//vesMatrix4x4f::vesMatrix4x4f(const vesMatrix4x4f& copy)
-//{
-//  *this = copy;
-//}
-//
-//vesMatrix4x4f vesMatrix4x4f::translate(vesVector3f vec)
-//{
-//  vesMatrix4x4f temp = *this;
-//  return temp * gmtl::makeTrans<vesMatrix4x4f >(vec);
-//}
-//
-//vesMatrix4x4f vesMatrix4x4f::rotate(float angle, float x, float y, float z)
-//{
-//  return (*this) * gmtl::makeRot<vesMatrix4x4f>(gmtl::AxisAngle<float>(angle,x,y,z));
-//  
-//}
-//
-//vesMatrix4x4f vesMatrix4x4f::scale(float scale)
-//{
-//  return (*this) * gmtl::makeScale<vesMatrix4x4f>(scale);
-//}
-//
-//vesMatrix4x4f vesMatrix4x4f::operator= (const vesMatrix4x4f& rhs)
-//{
-//  *this = rhs;
-//  return *this;
-//}
-
+// -------------------------------------------------------------------------fun
 vesMatrix4x4f makeScaleMatrix4x4(float x, float y ,float z)
 {
   return gmtl::makeScale<vesMatrix4x4f>(vesVector3f(x,y,z));
 }
 
+// -------------------------------------------------------------------------fun
 vesMatrix4x4f makeRotationMatrix4x4(float angle, float x, float y, float z)
 {
   return gmtl::makeRot<vesMatrix4x4f>(gmtl::AxisAngle<float>(angle,x,y,z));
 }
 
+// -------------------------------------------------------------------------fun
 vesMatrix4x4f makeTranslationMatrix4x4(vesVector3f trans)
 {
   return gmtl::makeTrans<vesMatrix4x4f>(trans);
 }
 
+// -------------------------------------------------------------------------fun
 vesVector3f makeTranslationVector3f(vesMatrix4x4f matrix)
 {
   return gmtl::makeTrans<vesVector3f>(matrix);
 }
 
+// -------------------------------------------------------------------------fun
 vesMatrix4x4f makeTransposeMatrix4x4(vesMatrix4x4f matrix)
 {
   vesMatrix4x4f mat = matrix;
@@ -70,6 +34,7 @@ vesMatrix4x4f makeTransposeMatrix4x4(vesMatrix4x4f matrix)
   return mat;
 }
 
+// -------------------------------------------------------------------------fun
 vesMatrix4x4f makeInverseMatrix4x4(vesMatrix4x4f matrix)
 {
   vesMatrix4x4f mat = matrix;
@@ -77,12 +42,12 @@ vesMatrix4x4f makeInverseMatrix4x4(vesMatrix4x4f matrix)
   return mat;
 }
 
-
-vesMatrix4x4f makeOrthoMatrix4x4(float left, 
-                                 float right, 
-                                 float bottom, 
-                                 float top, 
-                                 float near, 
+// -------------------------------------------------------------------------fun
+vesMatrix4x4f makeOrthoMatrix4x4(float left,
+                                 float right,
+                                 float bottom,
+                                 float top,
+                                 float near,
                                  float far)
 {
   vesMatrix4x4f mat;
@@ -99,6 +64,7 @@ vesMatrix4x4f makeOrthoMatrix4x4(float left,
   return mat;
 }
 
+// -------------------------------------------------------------------------fun
 vesMatrix4x4f vesFrustum(float left,
 			 float right,
 			 float bottom,
@@ -120,17 +86,19 @@ vesMatrix4x4f vesFrustum(float left,
   return mat;
 }
 
+// -------------------------------------------------------------------------fun
 vesMatrix3x3f makeNormalMatrix3x3f(vesMatrix4x4f matrix)
 {
   vesMatrix3x3f mat;
   for (int i = 0; i < 3; ++i) {
-		for (int j = 0; j < 3; ++j) {
-			mat[i][j] = matrix[i][j];
-		}
-	}
+    for (int j = 0; j < 3; ++j) {
+      mat[i][j] = matrix[i][j];
+    }
+  }
   return mat;
 }
 
+// -------------------------------------------------------------------------fun
 vesMatrix4x4f makeNormalizedMatrix4x4(vesMatrix4x4f matrix)
 {
   vesMatrix4x4f mat = matrix;
@@ -139,13 +107,13 @@ vesMatrix4x4f makeNormalizedMatrix4x4(vesMatrix4x4f matrix)
   mat[0][0] = mat[0][0] / length;
   mat[0][1] = mat[0][1] / length;
   mat[0][2] = mat[0][2] / length;
-  
+
   length = sqrt(mat[1][0]*mat[1][0] + mat[1][1]*mat[1][1]
                 + mat[1][2]*mat[1][2]);
   mat[1][0] = mat[1][0] / length;
   mat[1][1] = mat[1][1] / length;
   mat[1][2] = mat[1][2] / length;
-  
+
   length = sqrt(mat[2][0]*mat[2][0] + mat[2][1]*mat[2][1]
                 + mat[2][2]*mat[2][2]);
   mat[2][0] = mat[2][0] / length;
@@ -154,6 +122,7 @@ vesMatrix4x4f makeNormalizedMatrix4x4(vesMatrix4x4f matrix)
   return mat;
 }
 
+// -------------------------------------------------------------------------fun
 vtkPoint3f transformPoint3f(vesMatrix4x4f matrix, vtkPoint3f vec)
 {
   vtkPoint3f ret;

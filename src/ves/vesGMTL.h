@@ -1,11 +1,3 @@
-//
-//  vesGMTL.h
-//  kiwi
-//
-//  Created by kitware on 5/6/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
-//
-
 #ifndef __vesGMTL_h
 #define __vesGMTL_h
 
@@ -22,20 +14,6 @@ typedef gmtl::Vec4f vesVector4f;
 typedef gmtl::Point3f vtkPoint3f;
 typedef gmtl::Vec<unsigned short,3> vesVector3us;
 typedef gmtl::Vec<unsigned short, 2> vesVector2us;
-
-//class vesMatrix4x4f : public Matrix4x4f
-//{
-//public:
-//  vesMatrix4x4f();
-//  vesMatrix4x4f(const vesMatrix4x4f& copy);
-//  ~vesMatrix4x4f();
-//  void Set(vesMatrix4x4f mat)
-//  { *this = mat;}
-//  vesMatrix4x4f translate(vesVector3f vec);
-//  vesMatrix4x4f rotate(float angle, float x, float y, float z);
-//  vesMatrix4x4f scale(float scale);
-//  vesMatrix4x4f& operator= (const vesMatrix4x4f &rhs);
-//};
 
 vesMatrix4x4f makeScaleMatrix4x4(float x, float y, float z);
 vesMatrix4x4f makeRotationMatrix4x4(float angle, float x, float y, float z);
