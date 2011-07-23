@@ -3,18 +3,55 @@
 #include <iostream>
 #include "Painter.h"
 
+namespace {
+void PrintMatrix(std::string name, vesMatrix4x4f mv)
+{
+  std::cerr << name << ":" << std::endl;
+  for (int i = 0; i < 4; ++i)
+    {
+    std::cerr << mv[i][0] << "," << mv[i][1] << "," << mv[i][2] << "," << mv[i][3] << std::endl;
+    }
+  std::cerr << std::endl;
+}
+}
+
 // -----------------------------------------------------------------------cnstr
 vesCamera::vesCamera()
 {
+  this->FocalPoint[0] = 0.0;
+  this->FocalPoint[1] = 0.0;
+  this->FocalPoint[2] = 0.0;
+
+  this->Position[0] = 0.0;
+  this->Position[1] = 0.0;
+  this->Position[2] = 1.0;
+
+  this->ViewUp[0] = 0.0;
+  this->ViewUp[1] = 1.0;
+  this->ViewUp[2] = 0.0;
+
+  this->DirectionOfProjection[0] = 0.0;
+  this->DirectionOfProjection[1] = 0.0;
+  this->DirectionOfProjection[2] = 0.0;
+
+  this->ViewAngle = 30.0;
+  this->UseHorizontalViewAngle = 0;
+
+  this->ClippingRange[0] = 0.01;
+  this->ClippingRange[1] = 1000.01;
+
+  this->ParallelProjection = 0;
+  this->ParallelScale = 1.0;
+
+  this->WindowCenter[0] = 0.0;
+  this->WindowCenter[1] = 0.0;
 }
 
 // -----------------------------------------------------------------------destr
 vesCamera::~vesCamera()
 {
-
 }
 
-#if VTK
 // ----------------------------------------------------------------------public
 vesMatrix4x4f vesCamera::ComputeViewTransform()
 {
@@ -47,9 +84,13 @@ vesMatrix4x4f vesCamera::ComputeProjectionTransform(float aspect,
     double ymin = ( this->WindowCenter[1] - 1.0 ) * height;
     double ymax = ( this->WindowCenter[1] + 1.0 ) * height;
 
-    return matrix * vesOrtho( xmin, xmax, ymin, ymax,
-                              this->ClippingRange[0],
-                              this->ClippingRange[1] );
+    vesMatrix4x4f ortho = vesOrtho( xmin, xmax, ymin, ymax,
+                                   this->ClippingRange[0],
+                                   this->ClippingRange[1] );
+    PrintMatrix("matrix", matrix);
+    PrintMatrix("ortho", ortho);
+
+    return matrix * ortho;
     }
   else
     {
@@ -72,10 +113,19 @@ vesMatrix4x4f vesCamera::ComputeProjectionTransform(float aspect,
       double xmax = ( this->WindowCenter[0] + 1.0 ) * width;
       double ymin = ( this->WindowCenter[1] - 1.0 ) * height;
       double ymax = ( this->WindowCenter[1] + 1.0 ) * height;
+      
+      std::cerr << "w=" << width << ", h=" << height << ", tmp=" << tmp << ", aspect=" << aspect << std::endl;
+      std::cerr << "bounds:" <<  xmin << "," << xmax << "," << ymin << "," << ymax << std::endl;
+      std::cerr << "clipping: " << ClippingRange[0] << "," << ClippingRange[1] << std::endl;
 
-      return matrix*vesFrustum( xmin, xmax, ymin, ymax,
-      this->ClippingRange[0],
-      this->ClippingRange[1] );
+      vesMatrix4x4f frustum = vesFrustum( xmin, xmax, ymin, ymax,
+                                         this->ClippingRange[0],
+                                         this->ClippingRange[1] );
+      
+      PrintMatrix("matrix", matrix);
+      PrintMatrix("frustum", frustum);
+
+      return matrix*frustum;
     }
 }
 //----------------------------------------------------------------------------
@@ -91,7 +141,7 @@ void vesCamera::SetClippingRange(float near, float far)
   this->ClippingRange[0] = near;
   this->ClippingRange[1] = far;
 }
-#endif
+
 //----------------------------------------------------------------------------
 // This method must be called when the focal point or camera position changes
 void vesCamera::ComputeDistance()

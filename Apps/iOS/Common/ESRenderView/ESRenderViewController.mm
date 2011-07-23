@@ -180,7 +180,6 @@
     
 	if ([[event touchesForView:self.view] count] > 1 )//&& [[event touchesForView:self] count] <3) // Pinch gesture, possibly two-finger movement
 	{
-#if 1
 		CGPoint directionOfPanning = CGPointZero;
 		
 		// Two finger panning
@@ -191,61 +190,10 @@
     float newTouchDistance = [self distanceBetweenTouches:[event touchesForView:self.view]];
     // Scale using pinch gesture
 
-    [self->renderView.renderer _drawViewByRotatingAroundX:0.0 rotatingAroundY:0.0 scaling:(newTouchDistance / startingTouchDistance) / previousScale 
+    //[self->renderView.renderer _drawViewByRotatingAroundX:0.0 rotatingAroundY:0.0 scaling:(newTouchDistance /startingTouchDistance) / previousScale 
                             //translationInX:0 translationInY:0];
-      translationInX:directionOfPanning.x translationInY:directionOfPanning.y];
+      //translationInX:directionOfPanning.x translationInY:directionOfPanning.y];
     previousScale = (newTouchDistance / startingTouchDistance);
-#else
-		CGPoint directionOfPanning = CGPointZero;
-		
-		// Two finger panning
-		if ([touches count] > 1) // Check to make sure that both fingers are moving
-		{
-			directionOfPanning = [self commonDirectionOfTouches:touches];
-		}
-		
-		if ( (directionOfPanning.x != 0) || (directionOfPanning.y != 0) ) // Don't scale while doing the two-finger panning
-		{
-			if (pinchGestureUnderway)
-			{
-				
-				
-				if (sqrt(previousDirectionOfPanning.x * previousDirectionOfPanning.x + previousDirectionOfPanning.y * previousDirectionOfPanning.y) > 0.1 )
-				{
-					pinchGestureUnderway = NO;
-				}
-				previousDirectionOfPanning.x += directionOfPanning.x;
-				previousDirectionOfPanning.y += directionOfPanning.y;
-			}
-			if (!pinchGestureUnderway)
-			{
-				twoFingersAreMoving = YES;
-				[renderer _drawViewByRotatingAroundX:0.0f rotatingAroundY:0.0f scaling:1.0f translationInX:directionOfPanning.x translationInY:directionOfPanning.y];
-				previousDirectionOfPanning = CGPointZero;
-			}
-		}
-		else
-		{
-			float newTouchDistance = [self distanceBetweenTouches:[event touchesForView:self]];
-			if (twoFingersAreMoving)
-			{
-				// If fingers have moved more than 10% apart, start pinch gesture again
-				if ( fabs(1 - (newTouchDistance / startingTouchDistance) / previousScale) > 0.6 )
-				{
-					twoFingersAreMoving = NO;
-				}
-			}
-			if (!twoFingersAreMoving)
-			{
-				// Scale using pinch gesture
-				[renderer _drawViewByRotatingAroundX:0.0 rotatingAroundY:0.0 scaling:(newTouchDistance / startingTouchDistance) / previousScale 
-                              translationInX:0 translationInY:0];
-                              //translationInX:directionOfPanning.x translationInY:directionOfPanning.y];
-				previousScale = (newTouchDistance / startingTouchDistance);
-				pinchGestureUnderway = YES;
-			}
-		}
-#endif
 	}
 	else // Single-touch rotation of object
 	{
@@ -261,8 +209,8 @@
     lastMovementXYUnitDelta.x = lastMovementXYDelta.x / lastRotationMotionNorm;
     lastMovementXYUnitDelta.y = lastMovementXYDelta.y / lastRotationMotionNorm;
 
-		[self->renderView.renderer _drawViewByRotatingAroundX:(lastMovementXYDelta.x) rotatingAroundY:(lastMovementXYDelta.y) scaling:1.0f translationInX:0.0f translationInY:0.0f];
-		lastMovementPosition = currentMovementPosition;
+		//[self->renderView.renderer _drawViewByRotatingAroundX:(lastMovementXYDelta.x) rotatingAroundY:(lastMovementXYDelta.y) scaling:1.0f translationInX:0.0f translationInY:0.0f];
+		//lastMovementPosition = currentMovementPosition;
 	}
   
   [self->renderView drawView:nil];
@@ -281,11 +229,11 @@
       break;
     }
 
-    [self->renderView.renderer _drawViewByRotatingAroundX:(lastRotationMotionNorm*lastMovementXYUnitDelta.x) 
-                         rotatingAroundY:(lastRotationMotionNorm*lastMovementXYUnitDelta.y) 
-                                 scaling:1.0f 
-                          translationInX:0.0f 
-                          translationInY:0.0f];
+    //[self->renderView.renderer _drawViewByRotatingAroundX:(lastRotationMotionNorm*lastMovementXYUnitDelta.x) 
+    //                     rotatingAroundY:(lastRotationMotionNorm*lastMovementXYUnitDelta.y) 
+    //                             scaling:1.0f 
+    //                      translationInX:0.0f 
+    //                      translationInY:0.0f];
     [self->renderView drawView:nil];
     lastRotationMotionNorm -= velocityDelta;
   }

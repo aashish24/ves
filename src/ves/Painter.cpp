@@ -24,7 +24,15 @@
 #include "vesMultitouchWidget.h"
 
 // -----------------------------------------------------------------------macro
-
+namespace {
+void PrintMatrix(vesMatrix4x4f mv)
+{
+  for (int i = 0; i < 4; ++i)
+    {
+    std::cerr << mv[i][0] << "," << mv[i][1] << "," << mv[i][2] << "," << mv[i][3] << std::endl;
+    }
+}
+}
 
 // -----------------------------------------------------------------------cnstr
 Painter::Painter()
@@ -153,19 +161,27 @@ void Painter::visitShape(Shape* shape)
 
   vesMapper* mapper = (vesMapper*)shape->GetGeometry();
 
-  // Work out the appropriate matrices
-  vesMatrix4x4f mvp;
-  //mvp = _proj * _view * _model * (*mActor)();
-  vesMatrix4x4f mv;
-  mv = this->View * this->Model * this->Eval();
-  mvp = this->Projection * mv;
+  vesMatrix4x4f mv = this->Eval();
+  for (int i = 0; i < 4; ++i)
+    {
+    std::cerr << mv[i][0] << "," << mv[i][1] << "," << mv[i][2] << "," << mv[i][3] << std::endl;
+    }
+  std::cerr << std::endl;
+  vesVector4f x(-100, -200, 200, 1);
+  vesVector4f y;
+  for (int i = 0; i < 4; ++i)
+    {
+    y[i] = mv[i][0]*x[0] + mv[i][1]*x[1] + mv[i][2]*x[2] + mv[i][3]*x[3];
+    }
+  std::cerr << y[0] << "," << y[1] << "," << y[2] << "," << y[3] << std::endl;
+  std::cerr << std::endl;
 
   vesMatrix3x3f normal_matrix = makeNormalMatrix3x3f(makeTransposeMatrix4x4(makeInverseMatrix4x4 (mv)));
   //vesMatrix4x4f temp = makeNormalizedMatrix4x4(makeTransposeMatrix4x4(_vie);
   vtkPoint3f lightDir = vtkPoint3f(0.0,0.0,.650);
 
   vesVector3f light(lightDir.mData[0],lightDir.mData[1],lightDir.mData[2]);
-  program->SetUniformMatrix4x4f("u_mvpMatrix",mvp);
+  program->SetUniformMatrix4x4f("u_mvpMatrix",mv);
   program->SetUniformMatrix3x3f("u_normalMatrix",normal_matrix);
   program->SetUniformVector3f("u_ecLightDir",light);
 
@@ -243,10 +259,13 @@ vesMatrix4x4f Painter::Eval()
   vesMatrix4x4f temp;
   for (int i = 0; i < MatrixStack.size(); ++i)
     {
-      temp *= MatrixStack[i];
+    std::cerr << "Matrix " << i << ":" << std::endl;
+    PrintMatrix(MatrixStack[i]);
+    temp *= MatrixStack[i];
     }
   return temp;
 }
+
 
 void Painter::Camera(vesCamera *camera)
 {

@@ -6,8 +6,6 @@
 #include "vesSetGet.h"
 #include "vesActorCollection.h"
 
-#define VTK 0
-
 class vesCamera: public Transform
 {
 public:
@@ -23,7 +21,6 @@ public:
   vesGetMacro(Min, vesVector3f)
   vesGetMacro(Max, vesVector3f)
 
-#if VTK
   vesSetGetMacro(UseHorizontalViewAngle,bool)
   vesSetGetMacro(ViewPlaneNormal,vesVector3f)
   vesSetGetMacro(ViewAngle, float)
@@ -36,7 +33,7 @@ public:
   vesMatrix4x4f ComputeProjectionTransform(float aspect, float near, float far);
   void SetWindowCenter(double x, double y);
   void SetClippingRange(float near, float far);
-#endif
+  void Reset();
 
 private:
   float ViewAngle;
@@ -45,7 +42,6 @@ private:
   vesVector3f Position, FocalPoint,ViewUp;
   float ParallelScale;
   float ClippingRange[2];
-  void Reset();
   void ComputeDistance();
   void ComputeViewPlaneNormal();
   float Distance;

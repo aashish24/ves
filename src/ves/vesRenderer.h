@@ -25,6 +25,7 @@
 #endif
 
 #include <string>
+
 #include "vesGMTL.h"
 #include "vesMultitouchCamera.h"
 #include "vesShaderProgram.h"
@@ -38,41 +39,23 @@ class vesActorCollection;
 class vesRenderer
 {
 public:
-  vesRenderer(vesMultitouchCamera *camera);
+  vesRenderer();
   ~vesRenderer();
   void Render();
   void AddActor(vesActor* actor);
   void RemoveActor(vesActor* actor);
-  void Read();
-  void resetView();
-
-  void resize(int widht,int height, float scale);
-  vesCamera* GetActiveCamera();
-#if VTK
+  vesCamera* GetCamera() { return Camera; }
+  void Resize(int widht,int height, float scale);
   void ResetCamera();
+
 protected:
   void ResetCameraClippingRange(float bounds[6]);
-#endif
-
-protected:
-  void CopyCamera2Model();
 
 private:
-  vesMultitouchCamera* mCamera;
   vesActorCollection *Actor;
-  vesCamera *ActiveCamera;
-  Painter *_Painter;
-  // Runtime
-  vesMatrix4x4f _model;
-  vesMatrix4x4f _view;
-  vesMatrix4x4f _proj;
-  float _width,_height;
-
-  vesMatrix4x4f m_mv_matrix;
-  vesMatrix3x3f m_normal_matxrix;
-
-  float Aspect[2];
-  bool once;
+  Painter* Paint;
+  vesCamera* Camera;
+  double Aspect[2];
 };
 
 #endif

@@ -29,7 +29,7 @@ struct vesShaderProgram;
 struct vesFileReader;
 struct vesMapper;
 struct vesActor;
-struct vesMultitouchCamera;
+struct vesCamera;
 struct vesShader;
 
 
@@ -40,18 +40,15 @@ struct vesShader;
   NSString *filePath;
   vesShader *Shader;
   vesShaderProgram *shaderProgram;
-  vesMultitouchCamera *mCamera;
 	vesRenderer *renderer;
 }
 
 - (vesRenderer*) getRenderer;
 - (vesShader*) getShader;
-- (vesMultitouchCamera*) getCamera;
+- (vesCamera*) getCamera;
 - (void)render;
 - (void)resetView;
 - (BOOL)resizeFromLayer:(int)w height:(int) h;
-
-- (void)_drawViewByRotatingAroundX:(float)xRotation rotatingAroundY:(float)yRotation scaling:(float)scaleFactor translationInX:(float)xTranslation translationInY:(float)yTranslation;
 
 @end
 

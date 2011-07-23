@@ -135,25 +135,49 @@ float deg2Rad(float degree)
   return gmtl::Math::deg2Rad(degree);
 }
 
+void pv(std::string name, vesVector3f v)
+  {
+  std::cerr << name << ": (" << v[0] << "," << v[1] << "," << v[2] << ")" << std::endl;
+  }
+
 // ----------------------------------------------------------------------------
 vesMatrix4x4f vesLookAt( vesVector3f position,
 			 vesVector3f focalPoint,
 			 vesVector3f viewUp)
 {
+  pv("position", position);
+  pv("focalPoint", focalPoint);
+  pv("viewUp", viewUp);
+  
+  //double matrix[4][4];
+  //vtkMatrix4x4::Identity(*matrix);
   vesMatrix4x4f matrix;
   gmtl::identity(matrix);
 
+  // the view directions correspond to the rows of the rotation matrix,
+  // so we'll make the connection explicit
+  //double *viewSideways =    matrix[0];
+  //double *orthoViewUp =     matrix[1];
+  //double *viewPlaneNormal = matrix[2];
   gmtl::Vec3f viewSideways, orthoViewUp, viewPlaneNormal;
 
+  // set the view plane normal from the view vector
+  //viewPlaneNormal[0] = position[0] - focalPoint[0];
+  //viewPlaneNormal[1] = position[1] - focalPoint[1];
+  //viewPlaneNormal[2] = position[2] - focalPoint[2];
   viewPlaneNormal = position - focalPoint;
+  
+  //vtkMath::Normalize(viewPlaneNormal);
   gmtl::normalize(viewPlaneNormal);
 
   // orthogonalize viewUp and compute viewSideways
+  //vtkMath::Cross(viewUp,viewPlaneNormal,viewSideways);
+  //vtkMath::Normalize(viewSideways);
+  //vtkMath::Cross(viewPlaneNormal,viewSideways,orthoViewUp);
   viewSideways = gmtl::makeCross(viewUp,viewPlaneNormal);
   gmtl::normalize(viewSideways);
   orthoViewUp = gmtl::makeCross(viewPlaneNormal,viewSideways);
 
-  // the three vectors become the respective columns of rotation matrix
   matrix[0][0] = viewSideways[0];
   matrix[0][1] = viewSideways[1];
   matrix[0][2] = viewSideways[2];
@@ -167,12 +191,18 @@ vesMatrix4x4f vesLookAt( vesVector3f position,
   matrix[2][2] = viewPlaneNormal[2];
 
   // translate by the vector from the position to the origin
+  //double delta[4];
+  //delta[0] = -position[0];
+  //delta[1] = -position[1];
+  //delta[2] = -position[2];
+  //delta[3] = 0.0; // yes, this should be zero, not one
   vesVector4f delta;
   delta[0] = -position[0];
   delta[1] = -position[1];
   delta[2] = -position[2];
   delta[3] = 0.0; // yes, this should be zero, not one
 
+  //vtkMatrix4x4::MultiplyPoint(*matrix,delta,delta);
   gmtl::xform(delta, matrix,delta);
 
   matrix[0][3] = delta[0];

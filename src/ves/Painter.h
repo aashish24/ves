@@ -46,17 +46,13 @@ public:
   void ActorCollection(vesActorCollection *actor);
   void Camera(vesCamera *camera);
   void ShaderProgram(vesShaderProgram *shaderProg);
-  vesSetGetMacro(View,vesMatrix4x4f)
-  vesSetGetMacro(Model,vesMatrix4x4f)
-  vesSetGetMacro(Projection,vesMatrix4x4f)
-
-protected:
-  // ...........................................................protected-ivars
-  vesMatrix4x4f Projection,Model,View;
-  std::vector<vesMatrix4x4f> MatrixStack;
-  vesMatrix4x4f Eval();
   void Push(vesMatrix4x4f mat);
   void Pop();
+  
+protected:
+  // ...........................................................protected-ivars
+  std::vector<vesMatrix4x4f> MatrixStack;
+  vesMatrix4x4f Eval();
   float Aspect, NearZ, FarZ;
 protected:
 //BTX

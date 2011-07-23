@@ -18,7 +18,7 @@
 #include "vesRenderer.h"
 #include "vesShaderProgram.h"
 #include "vesShader.h"
-#include "vesMultitouchCamera.h"
+#include "vesCamera.h"
 
 
 @implementation ESRenderer
@@ -30,8 +30,7 @@
   if (self)
   {		
 		// Create a C++ renderer object
-		mCamera = new vesMultitouchCamera;
-    renderer = new vesRenderer(mCamera);
+    renderer = new vesRenderer();
     
     NSString *vertShaderPathname, *fragShaderPathname;
     GLchar* vertexSourceStr, *fragmentSourceStr;
@@ -75,9 +74,9 @@
   return self->Shader;
 }
 
-- (vesMultitouchCamera*) getCamera
+- (vesCamera*) getCamera
 {
-  return self->mCamera;
+  return renderer->GetCamera();
 }
 
 - (void) render
@@ -90,7 +89,7 @@
 
 - (BOOL) resizeFromLayer:(int) w height:(int) h
 {
-  renderer->resize(w,h,1.0);
+  renderer->Resize(w, h, 1.0f);
   return YES;
 }
 
@@ -105,22 +104,7 @@
 
 - (void)resetView
 {
-    renderer->resetView();
+    renderer->ResetCamera();
 }
-
-
-- (void)_drawViewByRotatingAroundX:(float)xRotation 
-                   rotatingAroundY:(float)yRotation 
-                           scaling:(float)scaleFactor 
-                    translationInX:(float)xTranslation 
-                    translationInY:(float)yTranslation
-{
-#if GMTL_CAMERA
-  mCamera->UpdateMatrixGMTL(xRotation,yRotation,scaleFactor,xTranslation,yTranslation);
-#else
-  mCamera->UpdateMatrix(xRotation,yRotation,scaleFactor,xTranslation,yTranslation); 
-#endif
-}
-
 
 @end
