@@ -13,10 +13,8 @@ public:
   ~vesCamera();
   bool Read();
   void Render(Painter *render);
-  void Normalize();
   void ComputeBounds();
   void AddActorCollection(vesActorCollection* actor);
-  vesMatrix4x4f Eval();
 
   vesGetMacro(Min, vesVector3f)
   vesGetMacro(Max, vesVector3f)
@@ -28,6 +26,10 @@ public:
   vesSetGetMacro(FocalPoint, vesVector3f)
   vesSetGetMacro(ViewUp, vesVector3f)
   vesSetGetMacro(ParallelScale, float)
+
+  void Azimuth(double angle);
+  void Elevation(double angle);
+  void OrthogonalizeViewUp();
 
   vesMatrix4x4f ComputeViewTransform();
   vesMatrix4x4f ComputeProjectionTransform(float aspect, float near, float far);
@@ -48,11 +50,5 @@ private:
   vesVector3f DirectionOfProjection;
   double WindowCenter[2];
   bool ParallelProjection;
-
-protected:
-  // ...........................................................protected-ivars
-
-  vesMatrix4x4f NormalizedMatrix;
-
 };
 #endif //__vesCamera_h

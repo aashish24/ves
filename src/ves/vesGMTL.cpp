@@ -79,6 +79,7 @@ vesMatrix4x4f vesFrustum(float left,
   float d = (top + bottom) / (top - bottom);
   float e = - (far + near) / (far - near);
   float f = -2 * far * near / (far - near);
+  std::cerr << "far: "<<far << ", near: " << near << ", f: " << f << std::endl;
   mat[0][ 0] = a; mat[0][ 1] = 0; mat[0][ 2] = c; mat[0][ 3] = 0;
   mat[1][ 0] = 0; mat[1][ 1] = b; mat[1][ 2] = d; mat[1][ 3] = 0;
   mat[2][ 0] = 0; mat[2][ 1] = 0; mat[2][ 2] = e; mat[2][ 3] = f;
@@ -203,11 +204,12 @@ vesMatrix4x4f vesLookAt( vesVector3f position,
   delta[3] = 0.0; // yes, this should be zero, not one
 
   //vtkMatrix4x4::MultiplyPoint(*matrix,delta,delta);
-  gmtl::xform(delta, matrix,delta);
+  vesVector4f d2;
+  gmtl::xform(d2, matrix,delta);
 
-  matrix[0][3] = delta[0];
-  matrix[1][3] = delta[1];
-  matrix[2][3] = delta[2];
+  matrix[0][3] = d2[0];
+  matrix[1][3] = d2[1];
+  matrix[2][3] = d2[2];
 
   return matrix;
 }

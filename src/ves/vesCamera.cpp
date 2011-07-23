@@ -2,6 +2,7 @@
 #include "vesGMTL.h"
 #include <iostream>
 #include "Painter.h"
+#include "gmtl/Generate.h"
 
 namespace {
 void PrintMatrix(std::string name, vesMatrix4x4f mv)
@@ -128,6 +129,46 @@ vesMatrix4x4f vesCamera::ComputeProjectionTransform(float aspect,
       return matrix*frustum;
     }
 }
+
+//----------------------------------------------------------------------------
+// Rotate the camera about the view up vector centered at the focal point.
+void vesCamera::Azimuth(double angle)
+{
+  vesVector3f fp = this->FocalPoint;
+  vesVector3f vu = this->ViewUp;
+  vesVector3f nfp(-fp[0], -fp[1], -fp[2]);
+  vesMatrix4x4f t1 = makeTranslationMatrix4x4(fp);
+  vesMatrix4x4f t2 = makeRotationMatrix4x4(deg2Rad(angle), vu[0], vu[1], vu[2]);
+  vesMatrix4x4f t3 = makeTranslationMatrix4x4(nfp);
+  vesMatrix4x4f t = t3 * t2 * t1;
+  
+  vesVector3f newPosition;
+  gmtl::xform(newPosition, t, this->Position);
+  this->Position = newPosition;
+}
+
+//----------------------------------------------------------------------------
+// Rotate the camera about the cross product of the negative of the
+// direction of projection and the view up vector centered on the focal point.
+void vesCamera::Elevation(double angle)
+{
+  vesMatrix4x4f view = this->ComputeViewTransform();
+  vesVector3f axis;
+  axis[0] = -view[0][0];
+  axis[1] = -view[0][1];
+  axis[2] = -view[0][2];
+  vesVector3f fp = this->FocalPoint;
+  vesVector3f nfp(-fp[0], -fp[1], -fp[2]);
+  vesMatrix4x4f t1 = makeTranslationMatrix4x4(fp);
+  vesMatrix4x4f t2 = makeRotationMatrix4x4(deg2Rad(angle), axis[0], axis[1], axis[2]);
+  vesMatrix4x4f t3 = makeTranslationMatrix4x4(nfp);
+  vesMatrix4x4f t = t3 * t2 * t1;
+
+  vesVector3f newPosition;
+  gmtl::xform(newPosition, t, this->Position);
+  this->Position = newPosition;
+}
+
 //----------------------------------------------------------------------------
 void vesCamera::SetWindowCenter(double x, double y)
 {
@@ -140,6 +181,16 @@ void vesCamera::SetClippingRange(float near, float far)
 {
   this->ClippingRange[0] = near;
   this->ClippingRange[1] = far;
+}
+
+//----------------------------------------------------------------------------
+void vesCamera::OrthogonalizeViewUp()
+{
+// the orthogonalized ViewUp is just the second row of the view matrix
+  vesMatrix4x4f view = this->ComputeViewTransform();
+  this->ViewUp[0] = view[1][0];
+  this->ViewUp[1] = view[1][1];
+  this->ViewUp[2] = view[1][2];
 }
 
 //----------------------------------------------------------------------------
@@ -221,17 +272,6 @@ void vesCamera::ComputeBounds()
 }
 
 // ----------------------------------------------------------------------public
-void vesCamera::Normalize()
-{
-  float r = GetBBoxRadius();
-  this->NormalizedMatrix =
-  makeScaleMatrix4x4(1/r,1/r,1/r)*
-  makeTranslationMatrix4x4(-GetBBoxCenter());
-  SetBBoxCenter(transformPoint3f(this->NormalizedMatrix, GetBBoxCenter()));
-  SetBBoxSize(transformPoint3f(this->NormalizedMatrix, GetBBoxSize()));
-}
-
-// ----------------------------------------------------------------------public
 bool vesCamera::Read()
 {
   for (int i =0; i<this->Children.size(); ++i)
@@ -247,9 +287,4 @@ void vesCamera::AddActorCollection(vesActorCollection* actor)
   std::vector<vsgChildNode*> actorList;
   actorList.push_back(actor);
   AddChildren(actorList);
-}
-
-vesMatrix4x4f vesCamera::Eval()
-{
-  return NormalizedMatrix*Transform::Eval();
 }

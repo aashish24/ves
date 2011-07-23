@@ -18,6 +18,8 @@
 #import "ESRenderViewController.h"
 #import "ESRenderView.h"
 #import "ESRenderer.h"
+#include <vesCamera.h>
+#include <vesRenderer.h>
 
 @implementation ESRenderViewController
 
@@ -209,8 +211,20 @@
     lastMovementXYUnitDelta.x = lastMovementXYDelta.x / lastRotationMotionNorm;
     lastMovementXYUnitDelta.y = lastMovementXYDelta.y / lastRotationMotionNorm;
 
+    double delta_elevation = -20.0 / 1000; // 1000 should be size[1]
+    double delta_azimuth = -20.0 / 1000; // 1000 should be size[0]
+    double motionFactor = 10.0;
+    
+    double rxf = lastMovementXYDelta.x * delta_azimuth * motionFactor;
+    double ryf = lastMovementXYDelta.y * delta_elevation * motionFactor;
+    
+    vesCamera *camera = [self->renderView.renderer getRenderer]->GetCamera();
+    camera->Azimuth(rxf);
+    //camera->Elevation(ryf);
+    camera->OrthogonalizeViewUp();
+    
 		//[self->renderView.renderer _drawViewByRotatingAroundX:(lastMovementXYDelta.x) rotatingAroundY:(lastMovementXYDelta.y) scaling:1.0f translationInX:0.0f translationInY:0.0f];
-		//lastMovementPosition = currentMovementPosition;
+		lastMovementPosition = currentMovementPosition;
 	}
   
   [self->renderView drawView:nil];

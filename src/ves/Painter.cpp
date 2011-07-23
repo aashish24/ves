@@ -178,7 +178,7 @@ void Painter::visitShape(Shape* shape)
 
   vesMatrix3x3f normal_matrix = makeNormalMatrix3x3f(makeTransposeMatrix4x4(makeInverseMatrix4x4 (mv)));
   //vesMatrix4x4f temp = makeNormalizedMatrix4x4(makeTransposeMatrix4x4(_vie);
-  vtkPoint3f lightDir = vtkPoint3f(0.0,0.0,.650);
+  vtkPoint3f lightDir = vtkPoint3f(0.0,0.0,-.650);
 
   vesVector3f light(lightDir.mData[0],lightDir.mData[1],lightDir.mData[2]);
   program->SetUniformMatrix4x4f("u_mvpMatrix",mv);

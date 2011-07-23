@@ -161,6 +161,7 @@ public:
   // set camera position to be [-100,-200,200] + X*[0,0,-1] so that the red cylinder is perpendicular to the view direction
   camera->SetFocalPoint(vesVector3f(-100, -200, 200));
   camera->SetPosition(vesVector3f(-100, -200, -200));
+  camera->SetViewUp(vesVector3f(-1, 0, 0));
 
   [self->renderView drawView:nil];
 }

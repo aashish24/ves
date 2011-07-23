@@ -70,7 +70,7 @@ void vesRenderer::Render()
   // Clear the buffers
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glEnable(GL_DEPTH_TEST);
-  vesMatrix4x4f proj = this->Camera->ComputeProjectionTransform(this->Aspect[0], 1, 2000);
+  vesMatrix4x4f proj = this->Camera->ComputeProjectionTransform(this->Aspect[0], -1, 1);
   vesMatrix4x4f view = this->Camera->ComputeViewTransform();
   PrintMatrix("proj", proj);
   PrintMatrix("view", view);
@@ -193,6 +193,7 @@ void vesRenderer::ResetCamera()
 // ----------------------------------------------------------------------public
 void vesRenderer::ResetCameraClippingRange(float bounds[6])
 {
+  /*
   vesVector3f  vn, position;
   float  a, b, c, d;
   double  range[2], dist;
@@ -248,4 +249,5 @@ void vesRenderer::ResetCameraClippingRange(float bounds[6])
     range[0] = NearClippingPlaneTolerance*range[1];
   }
   this->Camera->SetClippingRange( range[0],range[1] );
+  */
 }
