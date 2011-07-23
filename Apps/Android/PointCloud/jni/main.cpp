@@ -32,7 +32,7 @@
 #include <vtkPolyData.h>
 #include <vesPolyDataToTriangleData.h>
 
-#include <vesMultiTouchCamera.h>
+#include <vesMultitouchCamera.h>
 #include <vesRenderer.h>
 #include <vesShader.h>
 #include <vesShaderProgram.h>
