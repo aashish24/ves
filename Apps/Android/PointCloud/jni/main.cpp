@@ -66,6 +66,9 @@ struct engine {
     int32_t width;
     int32_t height;
     struct saved_state state;
+
+    float *points;
+    unsigned int nPoints;
 };
 
 /**
@@ -133,6 +136,12 @@ static int engine_init_display(struct engine* engine) {
     glShadeModel(GL_SMOOTH);
     glDisable(GL_DEPTH_TEST);
 
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrthof(-2.0, 2.0, -2.0, 2.0, -2.0, 2.0);
+    //glFrustumf(-2.0, 2.0, -2.0, 2.0, -2.0, 2.0);
+    
+
     return 0;
 }
 
@@ -140,16 +149,23 @@ static int engine_init_display(struct engine* engine) {
  * Just the current frame in the display.
  */
 static void engine_draw_frame(struct engine* engine) {
-    LOGI("engine_draw_frame");
+    LOGI("engine_draw_frame %d", engine->nPoints);
     if (engine->display == NULL) {
         // No display.
         return;
     }
 
     // Just fill the screen with a color.
-    glClearColor(((float)engine->state.x)/engine->width, engine->state.angle,
-            ((float)engine->state.y)/engine->height, 1);
+    glClearColor(0.0, 0.0, 0.0, 1);
     glClear(GL_COLOR_BUFFER_BIT);
+
+    static float vertices[] = { 0.0, 0.0, 0.0,
+                                0.5, 0.5, 0.0 };
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glPointSize(1.0);
+    glVertexPointer(3, GL_FLOAT, sizeof(float) * 3, engine->points);
+    glDrawArrays(GL_POINTS, 0, engine->nPoints);
+    glDisableClientState(GL_VERTEX_ARRAY);
 
     eglSwapBuffers(engine->display, engine->surface);
 }
@@ -256,17 +272,16 @@ void android_main(struct android_app* state) {
     }
     off_t len = AAsset_getLength(asset);
     const char* input_string = static_cast<const char*>(AAsset_getBuffer(asset));
-    LOGI("length is %d", AAsset_getLength(asset));
+    LOGI("\n**\nlength is %d", AAsset_getLength(asset));
 
     vtkSmartPointer<vtkPolyDataReader> read = vtkSmartPointer<vtkPolyDataReader>::New ();
     read->SetInputString (input_string, len);
     read->ReadFromInputStringOn ();
     read->Update ();
     vtkPolyData *data = read->GetOutput ();
-    LOGI("number of points is %d", data->GetNumberOfPoints());
+    LOGI("a: number of points is %d", data->GetNumberOfPoints());
     vesTriangleData* triangle_data = vesPolyDataToTriangleData::Convert (data);
-
-    
+    LOGI("b: number of points is %d\n**\n", triangle_data->GetPoints().size());
     
 		// Create a C++ renderer object
 		vesMultitouchCamera* camera = new vesMultitouchCamera;
@@ -306,6 +321,10 @@ void android_main(struct android_app* state) {
     state->onInputEvent = engine_handle_input;
     engine.app = state;
 
+    // Store the pointer to the points
+    engine.points = reinterpret_cast<float*>(&triangle_data->GetPoints()[0]);
+    engine.nPoints = triangle_data->GetPoints().size();
+
     // Prepare to monitor accelerometer
     engine.sensorManager = ASensorManager_getInstance();
     engine.accelerometerSensor = ASensorManager_getDefaultSensor(engine.sensorManager,
@@ -343,9 +362,9 @@ void android_main(struct android_app* state) {
                     ASensorEvent event;
                     while (ASensorEventQueue_getEvents(engine.sensorEventQueue,
                             &event, 1) > 0) {
-                        LOGI("accelerometer: x=%f y=%f z=%f",
-                                event.acceleration.x, event.acceleration.y,
-                                event.acceleration.z);
+                        //LOGI("accelerometer: x=%f y=%f z=%f",
+                        //        event.acceleration.x, event.acceleration.y,
+                        //        event.acceleration.z);
                     }
                 }
             }
