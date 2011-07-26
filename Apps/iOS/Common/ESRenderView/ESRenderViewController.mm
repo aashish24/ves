@@ -189,14 +189,9 @@
 			directionOfPanning = [self commonDirectionOfTouches:touches];
 		}
     float newTouchDistance = [self distanceBetweenTouches:[event touchesForView:self.view]];
-    // Scale using pinch gesture
 
-    //[self->renderView.renderer _drawViewByRotatingAroundX:0.0 rotatingAroundY:0.0 scaling:(newTouchDistance /startingTouchDistance) / previousScale 
-                            //translationInX:0 translationInY:0];
-      //translationInX:directionOfPanning.x translationInY:directionOfPanning.y];
     previousScale = (newTouchDistance / startingTouchDistance);
   
-    // Pan and zoom
     CGPoint currentLocationOfTouch1 = CGPointZero, currentLocationOfTouch2 = CGPointZero, previousLocationOfTouch1 = CGPointZero, previousLocationOfTouch2 = CGPointZero;
         
     int currentStage = 0;
@@ -214,6 +209,11 @@
         }
       ++currentStage;
       }
+
+    //
+    // Pan camera.
+    // Implemented based on vtkInteractorStyleTrackballCamera::Pan().
+    //
     
     vesRenderer* ren = [self->renderView.renderer getRenderer];
 
@@ -240,23 +240,37 @@
     vesVector3f newPickPoint = ren->ComputeDisplayToWorld(newPos);
     std::cout << "newPickPoint: " << newPickPoint[0] << "," << newPickPoint[1] << "," << newPickPoint[2] << std::endl;
     
-    // Has to recalc old mouse point since the viewport has moved,
-    // so can't move it outside the loop
     vesVector3f oldPos(previousLocation.x,
                        previousLocation.y,
                        focalDepth);
     vesVector3f oldPickPoint = ren->ComputeDisplayToWorld(oldPos);
     std::cout << "oldPickPoint: " << oldPickPoint[0] << "," << oldPickPoint[1] << "," << oldPickPoint[2] << std::endl;
     
-    // Camera motion is reversed
     vesVector3f motionVector = oldPickPoint - newPickPoint;
-    //motionVector[0] = -motionVector[0];
     
     vesVector3f viewPoint = camera->GetPosition();
     vesVector3f newViewFocus = motionVector + viewFocus;
     vesVector3f newViewPoint = motionVector + viewPoint;
     camera->SetFocalPoint(newViewFocus);
     camera->SetPosition(newViewPoint);
+
+    //
+    // Zoom camera.
+    // Implemented based on vkInteractorStyleTrackballCamera::Dolly().
+    //
+    
+    double previousDist = sqrt((previousLocationOfTouch1.x - previousLocationOfTouch2.x) *
+                               (previousLocationOfTouch1.x - previousLocationOfTouch2.x) + 
+                               (previousLocationOfTouch1.y - previousLocationOfTouch2.y) * 
+                               (previousLocationOfTouch1.y - previousLocationOfTouch2.y));
+    double currentDist = sqrt((currentLocationOfTouch1.x - currentLocationOfTouch2.x) *
+                              (currentLocationOfTouch1.x - currentLocationOfTouch2.x) + 
+                              (currentLocationOfTouch1.y - currentLocationOfTouch2.y) * 
+                              (currentLocationOfTouch1.y - currentLocationOfTouch2.y));
+    double dy = currentDist - previousDist;
+    double dyf = 10.0 * dy / (ren->GetHeight()/2.0);
+    double factor = pow(1.1, dyf);
+    camera->Dolly(factor);
   }
 	else // Single-touch rotation of object
 	{
@@ -271,6 +285,11 @@
                                    lastMovementXYDelta.y*lastMovementXYDelta.y);
     lastMovementXYUnitDelta.x = lastMovementXYDelta.x / lastRotationMotionNorm;
     lastMovementXYUnitDelta.y = lastMovementXYDelta.y / lastRotationMotionNorm;
+    
+    //
+    // Rotate camera
+    // Based on vtkInteractionStyleTrackballCamera::Rotate().
+    //
 
     double delta_elevation = -20.0 / 1000; // 1000 should be size[1]
     double delta_azimuth = -20.0 / 1000; // 1000 should be size[0]

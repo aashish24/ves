@@ -22,13 +22,15 @@ public:
   vesSetGetMacro(UseHorizontalViewAngle,bool)
   vesSetGetMacro(ViewPlaneNormal,vesVector3f)
   vesSetGetMacro(ViewAngle, float)
-  vesSetGetMacro(Position, vesVector3f)
+  void SetPosition(vesVector3f pos) { Position = pos; ComputeDistance(); }
+  vesVector3f GetPosition() { return Position; }
   vesSetGetMacro(FocalPoint, vesVector3f)
   vesSetGetMacro(ViewUp, vesVector3f)
   vesSetGetMacro(ParallelScale, float)
 
   void Azimuth(double angle);
   void Elevation(double angle);
+  void Dolly(double factor);
   void OrthogonalizeViewUp();
 
   vesMatrix4x4f ComputeViewTransform();
