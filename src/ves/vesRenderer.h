@@ -45,7 +45,9 @@ public:
   void AddActor(vesActor* actor);
   void RemoveActor(vesActor* actor);
   vesCamera* GetCamera() { return Camera; }
-  void Resize(int widht,int height, float scale);
+  void Resize(int width,int height, float scale);
+  int GetWidth() { return Width; }
+  int GetHeight() { return Height; }
   void ResetCamera();
   vesVector3f ComputeWorldToDisplay(vesVector3f world);
   vesVector3f ComputeDisplayToWorld(vesVector3f display);

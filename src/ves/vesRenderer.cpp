@@ -130,7 +130,7 @@ vesVector3f vesRenderer::ComputeWorldToDisplay(vesVector3f world)
   //
   // WorldToView
   //
-  vesMatrix4x4f proj_mat = this->Camera->ComputeProjectionTransform(this->Aspect[0], -1, 1);
+  vesMatrix4x4f proj_mat = this->Camera->ComputeProjectionTransform(this->Aspect[1], 0, 1);
   vesMatrix4x4f view_mat = this->Camera->ComputeViewTransform();
   vesMatrix4x4f mat = proj_mat*view_mat;
   vesVector4f world4(world[0], world[1], world[2], 1);
@@ -139,6 +139,8 @@ vesVector3f vesRenderer::ComputeWorldToDisplay(vesVector3f world)
   view[0] /= view[3];
   view[1] /= view[3];
   view[2] /= view[3];
+  
+  std::cerr << "WorldToView: " << view[0] << "," << view[1] << "," << view[2] << std::endl;
 
   //
   // ViewToDisplay
@@ -162,15 +164,25 @@ vesVector3f vesRenderer::ComputeDisplayToWorld(vesVector3f display)
   view[2] = display[2];
   view[3] = 1;
   
+  std::cerr << "DisplayToView: " << view[0] << "," << view[1] << "," << view[2] << std::endl;
+
   //
   // ViewToWorld
   //  
-  vesMatrix4x4f proj_mat = this->Camera->ComputeProjectionTransform(this->Aspect[0], -1, 1);
+  vesMatrix4x4f proj_mat = this->Camera->ComputeProjectionTransform(this->Aspect[1], 0, 1);
   vesMatrix4x4f view_mat = this->Camera->ComputeViewTransform();
   vesMatrix4x4f mat = proj_mat*view_mat;
-  gmtl::invert(mat);
+  vesMatrix4x4f inv;
+  gmtl::invertFull(inv, mat);
   vesVector4f world4;
-  gmtl::xform(world4, mat, view);
+  gmtl::xform(world4, inv, view);
+  std::cerr << "original: " << view[0]/view[3] << "," << view[1]/view[3] << "," << view[2]/view[3] << std::endl;
+  std::cerr << "inverted: " << world4[0]/world4[3] << "," << world4[1]/world4[3] << "," << world4[2]/world4[3] << std::endl;
+
+  vesVector4f view_test;
+  gmtl::xform(view_test, mat, world4);
+  std::cerr << "back: " << view_test[0]/view_test[3] << "," << view_test[1]/view_test[3] << "," << view_test[2]/view_test[3] << std::endl;
+
   vesVector3f world(world4[0]/world4[3], world4[1]/world4[3], world4[2]/world4[3]);
   return world;
 }

@@ -215,41 +215,48 @@
       ++currentStage;
       }
     
+    vesRenderer* ren = [self->renderView.renderer getRenderer];
+
+    // Average positions of current and previous two touches.
+    // Invert y since vesCamera expects y to go in opposite direction.
     CGPoint previousLocation = CGPointZero;
     previousLocation.x = (previousLocationOfTouch1.x + previousLocationOfTouch2.x)/2.0;
-    previousLocation.y = (previousLocationOfTouch1.y + previousLocationOfTouch2.y)/2.0;
+    previousLocation.y = ren->GetHeight() - (previousLocationOfTouch1.y + previousLocationOfTouch2.y)/2.0;
     CGPoint currentLocation = CGPointZero;
     currentLocation.x = (currentLocationOfTouch1.x + currentLocationOfTouch2.x)/2.0;
-    currentLocation.y = (currentLocationOfTouch1.y + currentLocationOfTouch2.y)/2.0;
+    currentLocation.y = ren->GetHeight() - (currentLocationOfTouch1.y + currentLocationOfTouch2.y)/2.0;
     
     // Calculate the focal depth since we'll be using it a lot   
-    vesRenderer* ren = [self->renderView.renderer getRenderer];
     vesCamera* camera = ren->GetCamera();
     vesVector3f viewFocus = camera->GetFocalPoint();
-    viewFocus = ren->ComputeWorldToDisplay(viewFocus);
-    float focalDepth = viewFocus[2];
+    vesVector3f viewFocusDisplay = ren->ComputeWorldToDisplay(viewFocus);
+    float focalDepth = viewFocusDisplay[2];
+    //float focalDepth = 0;
     std::cout << "viewFocus: " << viewFocus[0] << "," << viewFocus[1] << "," << viewFocus[2] << std::endl;
     
-    vesVector3f oldPos(currentLocation.x, // should be newposition.x
-                       currentLocation.y, // should be newposition.y
+    vesVector3f newPos(currentLocation.x,
+                       currentLocation.y,
                        focalDepth);
-    vesVector3f newPickPoint = ren->ComputeDisplayToWorld(oldPos);
+    vesVector3f newPickPoint = ren->ComputeDisplayToWorld(newPos);
     std::cout << "newPickPoint: " << newPickPoint[0] << "," << newPickPoint[1] << "," << newPickPoint[2] << std::endl;
     
     // Has to recalc old mouse point since the viewport has moved,
     // so can't move it outside the loop
-    vesVector3f newPos(previousLocation.x, // should be newposition.x
-                       previousLocation.y, // should be newposition.y
+    vesVector3f oldPos(previousLocation.x,
+                       previousLocation.y,
                        focalDepth);
-    vesVector3f oldPickPoint = ren->ComputeDisplayToWorld(newPos);
+    vesVector3f oldPickPoint = ren->ComputeDisplayToWorld(oldPos);
     std::cout << "oldPickPoint: " << oldPickPoint[0] << "," << oldPickPoint[1] << "," << oldPickPoint[2] << std::endl;
     
     // Camera motion is reversed
     vesVector3f motionVector = oldPickPoint - newPickPoint;
+    //motionVector[0] = -motionVector[0];
     
     vesVector3f viewPoint = camera->GetPosition();
-    camera->SetFocalPoint(motionVector + viewFocus);
-    camera->SetPosition(motionVector + viewPoint);
+    vesVector3f newViewFocus = motionVector + viewFocus;
+    vesVector3f newViewPoint = motionVector + viewPoint;
+    camera->SetFocalPoint(newViewFocus);
+    camera->SetPosition(newViewPoint);
   }
 	else // Single-touch rotation of object
 	{

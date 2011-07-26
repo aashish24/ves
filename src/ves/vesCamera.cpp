@@ -38,8 +38,10 @@ vesCamera::vesCamera()
   this->ViewAngle = 30.0;
   this->UseHorizontalViewAngle = 0;
 
-  this->ClippingRange[0] = 0.01;
-  this->ClippingRange[1] = 1000.01;
+  //this->ClippingRange[0] = 0.01;
+  //this->ClippingRange[1] = 1000.01;
+  this->ClippingRange[0] = 10.0;
+  this->ClippingRange[1] = 1010.0;
 
   this->ParallelProjection = 0;
   this->ParallelScale = 1.0;
