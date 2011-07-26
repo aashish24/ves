@@ -54,6 +54,7 @@
 - (float)distanceBetweenTouches:(NSSet *)touches;
 - (CGPoint)commonDirectionOfTouches:(NSSet *)touches;
 - (void)handleTouchesEnding:(NSSet *)touches withEvent:(UIEvent *)event;
+- (void)rotate: (CGPoint)delta;
 
 // inertia handling
 - (void)handleInertialRotation;

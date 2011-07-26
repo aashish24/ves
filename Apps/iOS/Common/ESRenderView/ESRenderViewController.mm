@@ -282,35 +282,40 @@
     lastMovementXYUnitDelta.x = lastMovementXYDelta.x / lastRotationMotionNorm;
     lastMovementXYUnitDelta.y = lastMovementXYDelta.y / lastRotationMotionNorm;
     
-    //
-    // Rotate camera
-    // Based on vtkInteractionStyleTrackballCamera::Rotate().
-    //
-
-    double delta_elevation = -20.0 / 1000; // 1000 should be size[1]
-    double delta_azimuth = -20.0 / 1000; // 1000 should be size[0]
-    double motionFactor = 10.0;
+    [self rotate:lastMovementXYDelta];
     
-    double rxf = lastMovementXYDelta.x * delta_azimuth * motionFactor;
-    double ryf = lastMovementXYDelta.y * delta_elevation * motionFactor;
-    
-    vesCamera *camera = [self->renderView.renderer getRenderer]->GetCamera();
-    camera->Azimuth(rxf);
-    camera->Elevation(ryf);
-    camera->OrthogonalizeViewUp();
-    
-		//[self->renderView.renderer _drawViewByRotatingAroundX:(lastMovementXYDelta.x) rotatingAroundY:(lastMovementXYDelta.y) scaling:1.0f translationInX:0.0f translationInY:0.0f];
-		lastMovementPosition = currentMovementPosition;
+    lastMovementPosition = currentMovementPosition;
 	}
-  
   [self->renderView drawView:nil];
+}
+
+- (void)rotate: (CGPoint)delta
+{
+  //
+  // Rotate camera
+  // Based on vtkInteractionStyleTrackballCamera::Rotate().
+  //
+
+  vesRenderer* ren = [self->renderView.renderer getRenderer];
+  
+  double delta_elevation = -20.0 / ren->GetHeight();
+  double delta_azimuth = -20.0 / ren->GetWidth();
+  double motionFactor = 10.0;
+  
+  double rxf = delta.x * delta_azimuth * motionFactor;
+  double ryf = delta.y * delta_elevation * motionFactor;
+  
+  vesCamera *camera = [self->renderView.renderer getRenderer]->GetCamera();
+  camera->Azimuth(rxf);
+  camera->Elevation(ryf);
+  camera->OrthogonalizeViewUp();  
 }
 
 - (void)handleInertialRotation
 {
   NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-  float velocityDelta = 4.5;
-  while (lastRotationMotionNorm > velocityDelta)
+  CGPoint delta;
+  while (lastRotationMotionNorm > 0.5)
   {
     [NSThread sleepForTimeInterval:1/30.0];
     
@@ -318,14 +323,13 @@
     {
       break;
     }
+    
+    delta.x = lastRotationMotionNorm*lastMovementXYUnitDelta.x;
+    delta.y = lastRotationMotionNorm*lastMovementXYUnitDelta.y;
+    [self rotate:delta];
 
-    //[self->renderView.renderer _drawViewByRotatingAroundX:(lastRotationMotionNorm*lastMovementXYUnitDelta.x) 
-    //                     rotatingAroundY:(lastRotationMotionNorm*lastMovementXYUnitDelta.y) 
-    //                             scaling:1.0f 
-    //                      translationInX:0.0f 
-    //                      translationInY:0.0f];
     [self->renderView drawView:nil];
-    lastRotationMotionNorm -= velocityDelta;
+    lastRotationMotionNorm *= 0.8;
   }
   lastRotationMotionNorm = 0;
   [pool release];
@@ -371,7 +375,7 @@
 		lastMovementPosition = [[remainingTouches anyObject] locationInView:self.view];
 	}	
   
-  if ([remainingTouches count] == 0 && lastRotationMotionNorm > 0.0f)
+  if ([remainingTouches count] == 0 && lastRotationMotionNorm > 4.0f)
   {
     inertialRotationThread = [[NSThread alloc] initWithTarget:self selector:@selector(handleInertialRotation) object:nil];
     [inertialRotationThread start];
