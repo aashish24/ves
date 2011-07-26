@@ -183,7 +183,6 @@
 	if ([[event touchesForView:self.view] count] > 1 )//&& [[event touchesForView:self] count] <3) // Pinch gesture, possibly two-finger movement
 	{
 		CGPoint directionOfPanning = CGPointZero;
-		
 		// Two finger panning
 		if ([touches count] > 1 )//&& [touches count] <3) // Check to make sure that both fingers are moving
 		{
@@ -196,7 +195,62 @@
                             //translationInX:0 translationInY:0];
       //translationInX:directionOfPanning.x translationInY:directionOfPanning.y];
     previousScale = (newTouchDistance / startingTouchDistance);
-	}
+  
+    // Pan and zoom
+    CGPoint currentLocationOfTouch1 = CGPointZero, currentLocationOfTouch2 = CGPointZero, previousLocationOfTouch1 = CGPointZero, previousLocationOfTouch2 = CGPointZero;
+        
+    int currentStage = 0;
+    for (UITouch *currentTouch in touches)
+      {
+      if (currentStage == 0)
+        {
+        previousLocationOfTouch1 = [currentTouch previousLocationInView:self.view];
+        currentLocationOfTouch1 = [currentTouch locationInView:self.view];
+        }
+      if (currentStage == 1)
+        {
+        previousLocationOfTouch2 = [currentTouch previousLocationInView:self.view];
+        currentLocationOfTouch2 = [currentTouch locationInView:self.view];
+        }
+      ++currentStage;
+      }
+    
+    CGPoint previousLocation = CGPointZero;
+    previousLocation.x = (previousLocationOfTouch1.x + previousLocationOfTouch2.x)/2.0;
+    previousLocation.y = (previousLocationOfTouch1.y + previousLocationOfTouch2.y)/2.0;
+    CGPoint currentLocation = CGPointZero;
+    currentLocation.x = (currentLocationOfTouch1.x + currentLocationOfTouch2.x)/2.0;
+    currentLocation.y = (currentLocationOfTouch1.y + currentLocationOfTouch2.y)/2.0;
+    
+    // Calculate the focal depth since we'll be using it a lot   
+    vesRenderer* ren = [self->renderView.renderer getRenderer];
+    vesCamera* camera = ren->GetCamera();
+    vesVector3f viewFocus = camera->GetFocalPoint();
+    viewFocus = ren->ComputeWorldToDisplay(viewFocus);
+    float focalDepth = viewFocus[2];
+    std::cout << "viewFocus: " << viewFocus[0] << "," << viewFocus[1] << "," << viewFocus[2] << std::endl;
+    
+    vesVector3f oldPos(currentLocation.x, // should be newposition.x
+                       currentLocation.y, // should be newposition.y
+                       focalDepth);
+    vesVector3f newPickPoint = ren->ComputeDisplayToWorld(oldPos);
+    std::cout << "newPickPoint: " << newPickPoint[0] << "," << newPickPoint[1] << "," << newPickPoint[2] << std::endl;
+    
+    // Has to recalc old mouse point since the viewport has moved,
+    // so can't move it outside the loop
+    vesVector3f newPos(previousLocation.x, // should be newposition.x
+                       previousLocation.y, // should be newposition.y
+                       focalDepth);
+    vesVector3f oldPickPoint = ren->ComputeDisplayToWorld(newPos);
+    std::cout << "oldPickPoint: " << oldPickPoint[0] << "," << oldPickPoint[1] << "," << oldPickPoint[2] << std::endl;
+    
+    // Camera motion is reversed
+    vesVector3f motionVector = oldPickPoint - newPickPoint;
+    
+    vesVector3f viewPoint = camera->GetPosition();
+    camera->SetFocalPoint(motionVector + viewFocus);
+    camera->SetPosition(motionVector + viewPoint);
+  }
 	else // Single-touch rotation of object
 	{
 		CGPoint currentMovementPosition = [[touches anyObject] locationInView:self.view];
@@ -220,7 +274,7 @@
     
     vesCamera *camera = [self->renderView.renderer getRenderer]->GetCamera();
     camera->Azimuth(rxf);
-    //camera->Elevation(ryf);
+    camera->Elevation(ryf);
     camera->OrthogonalizeViewUp();
     
 		//[self->renderView.renderer _drawViewByRotatingAroundX:(lastMovementXYDelta.x) rotatingAroundY:(lastMovementXYDelta.y) scaling:1.0f translationInX:0.0f translationInY:0.0f];

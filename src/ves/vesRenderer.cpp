@@ -20,6 +20,8 @@
 #include "vesActorCollection.h"
 #include "vesCamera.h"
 #include "vesGMTL.h"
+#include "gmtl/Generate.h"
+#include "gmtl/AxisAngle.h"
 #include <iostream>
 #include <string>
 
@@ -42,6 +44,8 @@ vesRenderer::vesRenderer()
   this->Paint = new Painter();
   this->Camera = new vesCamera();
   this->Aspect[0] = this->Aspect[1] = 1.0;
+  this->Width = 100.0f;
+  this->Height = 100.0f;
 }
 
 // -----------------------------------------------------------------------destr
@@ -70,7 +74,9 @@ void vesRenderer::Render()
   // Clear the buffers
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glEnable(GL_DEPTH_TEST);
-  vesMatrix4x4f proj = this->Camera->ComputeProjectionTransform(this->Aspect[0], -1, 1);
+  std::cerr << "this->Aspect[0] = " << this->Aspect[0] << std::endl;
+  std::cerr << "this->Aspect[1] = " << this->Aspect[1] << std::endl;
+  vesMatrix4x4f proj = this->Camera->ComputeProjectionTransform(this->Aspect[1], -1, 1);
   vesMatrix4x4f view = this->Camera->ComputeViewTransform();
   PrintMatrix("proj", proj);
   PrintMatrix("view", view);
@@ -82,13 +88,13 @@ void vesRenderer::Render()
 // ----------------------------------------------------------------------public
 void vesRenderer::Resize(int width, int height, float scale)
 {
-  width = (width > 0) ? width : 1;
-  height = (height > 0) ? height : 1;
+  this->Width = (width > 0) ? width : 1;
+  this->Height = (height > 0) ? height : 1;
   const GLfloat nearp = .1, fov = deg2Rad(45);
   float aspect, left, right, bottom, top;
-  if (width > height)
+  if (this->Width > this->Height)
     {
-    aspect = width/height;
+    aspect = static_cast<double>(this->Width)/this->Height;
     top = tan(fov) * nearp;
     bottom = -top;
     left = aspect * bottom;
@@ -96,16 +102,16 @@ void vesRenderer::Resize(int width, int height, float scale)
     }
   else
     {
-    aspect = height/width;
+    aspect = static_cast<double>(this->Height)/this->Width;
     right = tan(fov) * nearp;
     left = -right;
     bottom = aspect * left;
     top = aspect * right;
     }
 
-  std::cerr << "resize w=" << width << ", h=" << height << std::endl;
-  this->Aspect[0] = static_cast<double>(width)/height;
-  this->Aspect[1] = static_cast<double>(height)/width;
+  std::cerr << "resize w=" << this->Width << ", h=" << this->Height << std::endl;
+  this->Aspect[0] = static_cast<double>(this->Height)/this->Width;
+  this->Aspect[1] = static_cast<double>(this->Width)/this->Height;
 
   //_proj= vesOrtho(left, right, bottom, top, nearp, farp);
   //_proj= vesFrustum(left, right, bottom, top, nearp, farp);
@@ -119,12 +125,64 @@ void vesRenderer::Resize(int width, int height, float scale)
 }
 
 // ----------------------------------------------------------------------public
+vesVector3f vesRenderer::ComputeWorldToDisplay(vesVector3f world)
+{
+  //
+  // WorldToView
+  //
+  vesMatrix4x4f proj_mat = this->Camera->ComputeProjectionTransform(this->Aspect[0], -1, 1);
+  vesMatrix4x4f view_mat = this->Camera->ComputeViewTransform();
+  vesMatrix4x4f mat = proj_mat*view_mat;
+  vesVector4f world4(world[0], world[1], world[2], 1);
+  vesVector4f view;
+  gmtl::xform(view, mat, world4);
+  view[0] /= view[3];
+  view[1] /= view[3];
+  view[2] /= view[3];
+
+  //
+  // ViewToDisplay
+  //
+  vesVector3f display;
+  display[0] = (view[0] + 1.0f) * this->Width / 2.0f;
+  display[1] = (view[1] + 1.0f) * this->Height / 2.0f;
+  display[2] = view[2];
+  return display;
+}
+
+// ----------------------------------------------------------------------public
+vesVector3f vesRenderer::ComputeDisplayToWorld(vesVector3f display)
+{
+  //
+  // DisplayToView
+  //
+  vesVector4f view;
+  view[0] = 2.0f * display[0] / this->Width - 1.0f;
+  view[1] = 2.0f * display[1] / this->Height - 1.0f;
+  view[2] = display[2];
+  view[3] = 1;
+  
+  //
+  // ViewToWorld
+  //  
+  vesMatrix4x4f proj_mat = this->Camera->ComputeProjectionTransform(this->Aspect[0], -1, 1);
+  vesMatrix4x4f view_mat = this->Camera->ComputeViewTransform();
+  vesMatrix4x4f mat = proj_mat*view_mat;
+  gmtl::invert(mat);
+  vesVector4f world4;
+  gmtl::xform(world4, mat, view);
+  vesVector3f world(world4[0]/world4[3], world4[1]/world4[3], world4[2]/world4[3]);
+  return world;
+}
+
+// ----------------------------------------------------------------------public
 void vesRenderer::ResetCamera()
 {
   std::cerr << "ResetCamera" << std::endl;
   this->Actor->Read();
   this->Actor->ComputeBounds();
   vesVector3f center = this->Actor->GetBBoxCenter();
+  std::cerr << "center: " << center[0] << "," << center[1] << "," << center[2] << std::endl;
 
   double distance;
   vesVector3f vn, vup;
@@ -138,6 +196,7 @@ void vesRenderer::ResetCamera()
     return;
   }
   double radius = this->Actor->GetBBoxRadius();
+  std::cerr << "radius: " << radius << std::endl;
   radius = (radius==0)?(.5):(radius);
 
   double angle=deg2Rad(this->Camera->GetViewAngle());

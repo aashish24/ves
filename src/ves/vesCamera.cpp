@@ -46,6 +46,8 @@ vesCamera::vesCamera()
 
   this->WindowCenter[0] = 0.0;
   this->WindowCenter[1] = 0.0;
+  
+  this->ComputeDistance();
 }
 
 // -----------------------------------------------------------------------destr
@@ -135,16 +137,21 @@ vesMatrix4x4f vesCamera::ComputeProjectionTransform(float aspect,
 void vesCamera::Azimuth(double angle)
 {
   vesVector3f fp = this->FocalPoint;
+  std::cerr << "focal point: " << fp[0] << "," << fp[1] << "," << fp[2] << std::endl;
   vesVector3f vu = this->ViewUp;
   vesVector3f nfp(-fp[0], -fp[1], -fp[2]);
   vesMatrix4x4f t1 = makeTranslationMatrix4x4(fp);
   vesMatrix4x4f t2 = makeRotationMatrix4x4(deg2Rad(angle), vu[0], vu[1], vu[2]);
   vesMatrix4x4f t3 = makeTranslationMatrix4x4(nfp);
-  vesMatrix4x4f t = t3 * t2 * t1;
+  vesMatrix4x4f t = t1 * t2 * t3;
   
-  vesVector3f newPosition;
-  gmtl::xform(newPosition, t, this->Position);
-  this->Position = newPosition;
+  vesVector4f oldPosition(this->Position[0], this->Position[1], this->Position[2], 1);
+  vesVector4f newPosition;
+  gmtl::xform(newPosition, t, oldPosition);
+  this->Position[0] = newPosition[0] / newPosition[3];
+  this->Position[1] = newPosition[1] / newPosition[3];
+  this->Position[2] = newPosition[2] / newPosition[3];
+  this->ComputeDistance();
 }
 
 //----------------------------------------------------------------------------
@@ -160,13 +167,17 @@ void vesCamera::Elevation(double angle)
   vesVector3f fp = this->FocalPoint;
   vesVector3f nfp(-fp[0], -fp[1], -fp[2]);
   vesMatrix4x4f t1 = makeTranslationMatrix4x4(fp);
-  vesMatrix4x4f t2 = makeRotationMatrix4x4(deg2Rad(angle), axis[0], axis[1], axis[2]);
+  vesMatrix4x4f t2 = makeRotationMatrix4x4(-deg2Rad(angle), axis[0], axis[1], axis[2]);
   vesMatrix4x4f t3 = makeTranslationMatrix4x4(nfp);
-  vesMatrix4x4f t = t3 * t2 * t1;
+  vesMatrix4x4f t = t1 * t2 * t3;
 
-  vesVector3f newPosition;
-  gmtl::xform(newPosition, t, this->Position);
-  this->Position = newPosition;
+  vesVector4f oldPosition(this->Position[0], this->Position[1], this->Position[2], 1);
+  vesVector4f newPosition;
+  gmtl::xform(newPosition, t, oldPosition);
+  this->Position[0] = newPosition[0] / newPosition[3];
+  this->Position[1] = newPosition[1] / newPosition[3];
+  this->Position[2] = newPosition[2] / newPosition[3];
+  this->ComputeDistance();
 }
 
 //----------------------------------------------------------------------------

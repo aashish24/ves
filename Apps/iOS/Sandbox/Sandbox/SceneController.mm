@@ -150,8 +150,6 @@ public:
   // reset the camera
   [self->renderView.renderer getRenderer]->ResetCamera();
 
-  vesCamera* camera = [self->renderView.renderer getCamera];
-
   // set the camera orientation
   //double angleAxis[4] = {-M_PI_2, 0, 0, 1};
   //camera->RotateAngleAxis(angleAxis[0], angleAxis[1], angleAxis[2], angleAxis[3]);
@@ -159,6 +157,7 @@ public:
   // todo-
   // set camera focal point to [-100,-200,200] so the green sphere is centered in the view
   // set camera position to be [-100,-200,200] + X*[0,0,-1] so that the red cylinder is perpendicular to the view direction
+  vesCamera* camera = [self->renderView.renderer getCamera];
   camera->SetFocalPoint(vesVector3f(-100, -200, 200));
   camera->SetPosition(vesVector3f(-100, -200, -200));
   camera->SetViewUp(vesVector3f(-1, 0, 0));

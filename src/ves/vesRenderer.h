@@ -47,6 +47,8 @@ public:
   vesCamera* GetCamera() { return Camera; }
   void Resize(int widht,int height, float scale);
   void ResetCamera();
+  vesVector3f ComputeWorldToDisplay(vesVector3f world);
+  vesVector3f ComputeDisplayToWorld(vesVector3f display);
 
 protected:
   void ResetCameraClippingRange(float bounds[6]);
@@ -56,6 +58,8 @@ private:
   Painter* Paint;
   vesCamera* Camera;
   double Aspect[2];
+  int Width;
+  int Height;
 };
 
 #endif
