@@ -49,6 +49,7 @@ public:
   int GetWidth() { return Width; }
   int GetHeight() { return Height; }
   void ResetCamera();
+  void ResetCameraClippingRange();
   vesVector3f ComputeWorldToDisplay(vesVector3f world);
   vesVector3f ComputeDisplayToWorld(vesVector3f display);
 

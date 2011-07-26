@@ -84,6 +84,7 @@
   glClearColor(63/255.0f, 96/255.0f, 144/255.0, 1.0f);
   // Use shader program
   shaderProgram->Use();
+  renderer->ResetCameraClippingRange();
   renderer->Render();
 }
 

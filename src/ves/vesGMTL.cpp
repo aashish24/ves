@@ -79,7 +79,6 @@ vesMatrix4x4f vesFrustum(float left,
   float d = (top + bottom) / (top - bottom);
   float e = - (far + near) / (far - near);
   float f = -2 * far * near / (far - near);
-  std::cerr << "far: "<<far << ", near: " << near << ", f: " << f << std::endl;
   mat[0][ 0] = a; mat[0][ 1] = 0; mat[0][ 2] = c; mat[0][ 3] = 0;
   mat[1][ 0] = 0; mat[1][ 1] = b; mat[1][ 2] = d; mat[1][ 3] = 0;
   mat[2][ 0] = 0; mat[2][ 1] = 0; mat[2][ 2] = e; mat[2][ 3] = f;
@@ -136,45 +135,17 @@ float deg2Rad(float degree)
   return gmtl::Math::deg2Rad(degree);
 }
 
-void pv(std::string name, vesVector3f v)
-  {
-  std::cerr << name << ": (" << v[0] << "," << v[1] << "," << v[2] << ")" << std::endl;
-  }
-
 // ----------------------------------------------------------------------------
 vesMatrix4x4f vesLookAt( vesVector3f position,
 			 vesVector3f focalPoint,
 			 vesVector3f viewUp)
 {
-  pv("position", position);
-  pv("focalPoint", focalPoint);
-  pv("viewUp", viewUp);
-  
-  //double matrix[4][4];
-  //vtkMatrix4x4::Identity(*matrix);
   vesMatrix4x4f matrix;
   gmtl::identity(matrix);
 
-  // the view directions correspond to the rows of the rotation matrix,
-  // so we'll make the connection explicit
-  //double *viewSideways =    matrix[0];
-  //double *orthoViewUp =     matrix[1];
-  //double *viewPlaneNormal = matrix[2];
   gmtl::Vec3f viewSideways, orthoViewUp, viewPlaneNormal;
-
-  // set the view plane normal from the view vector
-  //viewPlaneNormal[0] = position[0] - focalPoint[0];
-  //viewPlaneNormal[1] = position[1] - focalPoint[1];
-  //viewPlaneNormal[2] = position[2] - focalPoint[2];
-  viewPlaneNormal = position - focalPoint;
-  
-  //vtkMath::Normalize(viewPlaneNormal);
+  viewPlaneNormal = position - focalPoint;  
   gmtl::normalize(viewPlaneNormal);
-
-  // orthogonalize viewUp and compute viewSideways
-  //vtkMath::Cross(viewUp,viewPlaneNormal,viewSideways);
-  //vtkMath::Normalize(viewSideways);
-  //vtkMath::Cross(viewPlaneNormal,viewSideways,orthoViewUp);
   viewSideways = gmtl::makeCross(viewUp,viewPlaneNormal);
   gmtl::normalize(viewSideways);
   orthoViewUp = gmtl::makeCross(viewPlaneNormal,viewSideways);
@@ -191,19 +162,12 @@ vesMatrix4x4f vesLookAt( vesVector3f position,
   matrix[2][1] = viewPlaneNormal[1];
   matrix[2][2] = viewPlaneNormal[2];
 
-  // translate by the vector from the position to the origin
-  //double delta[4];
-  //delta[0] = -position[0];
-  //delta[1] = -position[1];
-  //delta[2] = -position[2];
-  //delta[3] = 0.0; // yes, this should be zero, not one
   vesVector4f delta;
   delta[0] = -position[0];
   delta[1] = -position[1];
   delta[2] = -position[2];
   delta[3] = 0.0; // yes, this should be zero, not one
 
-  //vtkMatrix4x4::MultiplyPoint(*matrix,delta,delta);
   vesVector4f d2;
   gmtl::xform(d2, matrix,delta);
 

@@ -231,20 +231,16 @@
     vesVector3f viewFocus = camera->GetFocalPoint();
     vesVector3f viewFocusDisplay = ren->ComputeWorldToDisplay(viewFocus);
     float focalDepth = viewFocusDisplay[2];
-    //float focalDepth = 0;
-    std::cout << "viewFocus: " << viewFocus[0] << "," << viewFocus[1] << "," << viewFocus[2] << std::endl;
     
     vesVector3f newPos(currentLocation.x,
                        currentLocation.y,
                        focalDepth);
     vesVector3f newPickPoint = ren->ComputeDisplayToWorld(newPos);
-    std::cout << "newPickPoint: " << newPickPoint[0] << "," << newPickPoint[1] << "," << newPickPoint[2] << std::endl;
     
     vesVector3f oldPos(previousLocation.x,
                        previousLocation.y,
                        focalDepth);
     vesVector3f oldPickPoint = ren->ComputeDisplayToWorld(oldPos);
-    std::cout << "oldPickPoint: " << oldPickPoint[0] << "," << oldPickPoint[1] << "," << oldPickPoint[2] << std::endl;
     
     vesVector3f motionVector = oldPickPoint - newPickPoint;
     

@@ -74,14 +74,12 @@ void vesRenderer::Render()
   // Clear the buffers
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glEnable(GL_DEPTH_TEST);
-  std::cerr << "this->Aspect[0] = " << this->Aspect[0] << std::endl;
-  std::cerr << "this->Aspect[1] = " << this->Aspect[1] << std::endl;
   vesMatrix4x4f proj = this->Camera->ComputeProjectionTransform(this->Aspect[1], -1, 1);
   vesMatrix4x4f view = this->Camera->ComputeViewTransform();
-  PrintMatrix("proj", proj);
-  PrintMatrix("view", view);
-  this->Paint->Push(proj*view);
+  this->Paint->Push(proj);
+  this->Paint->Push(view);
   this->Actor->Render(this->Paint);
+  this->Paint->Pop();
   this->Paint->Pop();
 }
 
@@ -90,38 +88,8 @@ void vesRenderer::Resize(int width, int height, float scale)
 {
   this->Width = (width > 0) ? width : 1;
   this->Height = (height > 0) ? height : 1;
-  const GLfloat nearp = .1, fov = deg2Rad(45);
-  float aspect, left, right, bottom, top;
-  if (this->Width > this->Height)
-    {
-    aspect = static_cast<double>(this->Width)/this->Height;
-    top = tan(fov) * nearp;
-    bottom = -top;
-    left = aspect * bottom;
-    right = aspect * top;
-    }
-  else
-    {
-    aspect = static_cast<double>(this->Height)/this->Width;
-    right = tan(fov) * nearp;
-    left = -right;
-    bottom = aspect * left;
-    top = aspect * right;
-    }
-
-  std::cerr << "resize w=" << this->Width << ", h=" << this->Height << std::endl;
   this->Aspect[0] = static_cast<double>(this->Height)/this->Width;
   this->Aspect[1] = static_cast<double>(this->Width)/this->Height;
-
-  //_proj= vesOrtho(left, right, bottom, top, nearp, farp);
-  //_proj= vesFrustum(left, right, bottom, top, nearp, farp);
-  //_proj = vesPerspective(60,aspect,0,1000);
-  //this->_Painter->SetProjection(_proj);
-  //glViewport(0, 0, width, height);
-  //glClearColor(63/255.0f, 96/255.0f, 144/255.0, 1.0f);
-  //this->ActiveCamera->Read();
-  //this->ActiveCamera->ComputeBounds();
-  //this->ActiveCamera->Normalize();
 }
 
 // ----------------------------------------------------------------------public
@@ -140,8 +108,6 @@ vesVector3f vesRenderer::ComputeWorldToDisplay(vesVector3f world)
   view[1] /= view[3];
   view[2] /= view[3];
   
-  std::cerr << "WorldToView: " << view[0] << "," << view[1] << "," << view[2] << std::endl;
-
   //
   // ViewToDisplay
   //
@@ -163,8 +129,6 @@ vesVector3f vesRenderer::ComputeDisplayToWorld(vesVector3f display)
   view[1] = 2.0f * display[1] / this->Height - 1.0f;
   view[2] = display[2];
   view[3] = 1;
-  
-  std::cerr << "DisplayToView: " << view[0] << "," << view[1] << "," << view[2] << std::endl;
 
   //
   // ViewToWorld
@@ -176,12 +140,6 @@ vesVector3f vesRenderer::ComputeDisplayToWorld(vesVector3f display)
   gmtl::invertFull(inv, mat);
   vesVector4f world4;
   gmtl::xform(world4, inv, view);
-  std::cerr << "original: " << view[0]/view[3] << "," << view[1]/view[3] << "," << view[2]/view[3] << std::endl;
-  std::cerr << "inverted: " << world4[0]/world4[3] << "," << world4[1]/world4[3] << "," << world4[2]/world4[3] << std::endl;
-
-  vesVector4f view_test;
-  gmtl::xform(view_test, mat, world4);
-  std::cerr << "back: " << view_test[0]/view_test[3] << "," << view_test[1]/view_test[3] << "," << view_test[2]/view_test[3] << std::endl;
 
   vesVector3f world(world4[0]/world4[3], world4[1]/world4[3], world4[2]/world4[3]);
   return world;
@@ -190,11 +148,9 @@ vesVector3f vesRenderer::ComputeDisplayToWorld(vesVector3f display)
 // ----------------------------------------------------------------------public
 void vesRenderer::ResetCamera()
 {
-  std::cerr << "ResetCamera" << std::endl;
   this->Actor->Read();
   this->Actor->ComputeBounds();
   vesVector3f center = this->Actor->GetBBoxCenter();
-  std::cerr << "center: " << center[0] << "," << center[1] << "," << center[2] << std::endl;
 
   double distance;
   vesVector3f vn, vup;
@@ -208,7 +164,6 @@ void vesRenderer::ResetCamera()
     return;
   }
   double radius = this->Actor->GetBBoxRadius();
-  std::cerr << "radius: " << radius << std::endl;
   radius = (radius==0)?(.5):(radius);
 
   double angle=deg2Rad(this->Camera->GetViewAngle());
@@ -262,9 +217,24 @@ void vesRenderer::ResetCamera()
 }
 
 // ----------------------------------------------------------------------public
+void vesRenderer::ResetCameraClippingRange()
+{
+  this->Actor->Read();
+  this->Actor->ComputeBounds();  
+  float bounds[6];
+  bounds[0] = this->Actor->GetMin()[0];
+  bounds[1] = this->Actor->GetMax()[0];
+  bounds[2] = this->Actor->GetMin()[1];
+  bounds[3] = this->Actor->GetMax()[1];
+  bounds[4] = this->Actor->GetMin()[2];
+  bounds[5] = this->Actor->GetMax()[2];
+
+  this->ResetCameraClippingRange(bounds);
+}
+
+// ----------------------------------------------------------------------
 void vesRenderer::ResetCameraClippingRange(float bounds[6])
 {
-  /*
   vesVector3f  vn, position;
   float  a, b, c, d;
   double  range[2], dist;
@@ -320,5 +290,4 @@ void vesRenderer::ResetCameraClippingRange(float bounds[6])
     range[0] = NearClippingPlaneTolerance*range[1];
   }
   this->Camera->SetClippingRange( range[0],range[1] );
-  */
 }

@@ -52,7 +52,7 @@ public:
 protected:
   // ...........................................................protected-ivars
   std::vector<vesMatrix4x4f> MatrixStack;
-  vesMatrix4x4f Eval();
+  vesMatrix4x4f Eval(int startIndex);
   float Aspect, NearZ, FarZ;
 protected:
 //BTX

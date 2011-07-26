@@ -92,9 +92,6 @@ vesMatrix4x4f vesCamera::ComputeProjectionTransform(float aspect,
     vesMatrix4x4f ortho = vesOrtho( xmin, xmax, ymin, ymax,
                                    this->ClippingRange[0],
                                    this->ClippingRange[1] );
-    PrintMatrix("matrix", matrix);
-    PrintMatrix("ortho", ortho);
-
     return matrix * ortho;
     }
   else
@@ -119,17 +116,10 @@ vesMatrix4x4f vesCamera::ComputeProjectionTransform(float aspect,
       double ymin = ( this->WindowCenter[1] - 1.0 ) * height;
       double ymax = ( this->WindowCenter[1] + 1.0 ) * height;
       
-      std::cerr << "w=" << width << ", h=" << height << ", tmp=" << tmp << ", aspect=" << aspect << std::endl;
-      std::cerr << "bounds:" <<  xmin << "," << xmax << "," << ymin << "," << ymax << std::endl;
-      std::cerr << "clipping: " << ClippingRange[0] << "," << ClippingRange[1] << std::endl;
-
       vesMatrix4x4f frustum = vesFrustum( xmin, xmax, ymin, ymax,
                                          this->ClippingRange[0],
                                          this->ClippingRange[1] );
       
-      PrintMatrix("matrix", matrix);
-      PrintMatrix("frustum", frustum);
-
       return matrix*frustum;
     }
 }
@@ -139,7 +129,6 @@ vesMatrix4x4f vesCamera::ComputeProjectionTransform(float aspect,
 void vesCamera::Azimuth(double angle)
 {
   vesVector3f fp = this->FocalPoint;
-  std::cerr << "focal point: " << fp[0] << "," << fp[1] << "," << fp[2] << std::endl;
   vesVector3f vu = this->ViewUp;
   vesVector3f nfp(-fp[0], -fp[1], -fp[2]);
   vesMatrix4x4f t1 = makeTranslationMatrix4x4(fp);
