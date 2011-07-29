@@ -38,6 +38,8 @@ public:
   vesVector3f GetMax();
   void SetHasNormals(bool b) { this->HasNormals = b; }
   void ComputeNormals();
+  void SetHasBounds(bool b) { this->HasBounds = b; }
+  void ComputeBounds();
 protected:
   std::vector<vtkVertex3f> Points;
   std::vector<vesVector3us> Triangles;
@@ -46,7 +48,6 @@ protected:
   vesVector3f Max;
   bool HasBounds;
   bool HasNormals;
-  void ComputeBounds();
 };
 
 #endif

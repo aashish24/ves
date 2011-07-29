@@ -56,6 +56,8 @@ void vesPolyDataToTriangleData::ConvertTriangles(vtkPolyData* input, vesTriangle
     output->SetHasNormals(false);
     output->ComputeNormals();
   }
+  output->SetHasBounds(false);
+  output->ComputeBounds();
 }
 
 vesTriangleData* vesPolyDataToTriangleData::Convert(vtkPolyData* input)
