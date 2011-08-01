@@ -14,7 +14,10 @@
  *
  * @section DESCRIPTION
  *
- * X3DBindableNode is the abstract base type for all bindable children nodes, including Background, TextureBackground, Fog, NavigationInfo and Viewpoint. For complete discussion of bindable behaviors, see 7.2.2 Bindable children nodes.
+ * X3DBindableNode is the abstract base type for all bindable children nodes,
+ * including Background, TextureBackground, Fog, NavigationInfo and
+ * Viewpoint. For complete discussion of bindable behaviors, see 7.2.2 Bindable
+ * children nodes.
  *
  * @author nikhil shetty <nikhil.shetty@kitware.com>
  */
