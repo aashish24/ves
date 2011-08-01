@@ -29,24 +29,21 @@
 #include "vsg/Utility/vsgTypes.h"
 #include "vsg/Core/vsgBindableNode.h"
 
-namespace vsg {
-  // -------------------------------------------------------------pre-defines
+// -------------------------------------------------------------pre-defines
 
-  // -------------------------------------------------------------------class
-  class vsgBackgroundNode: public vsgBindableNode
-  {
-  public:
-    // ........................................................public-methods
-    vsgBackgroundNode();
-    virtual ~vsgBackgroundNode();
-    InOutMF(groundAngle,MFFloat)
-    InOutMF(groundColor,MFColor)
-    InOutMF(skyAngle,MFFloat)
-    InOutMF(skyColor,MFColor)
-    InOutSF(transparency,SFFloat)
+// -------------------------------------------------------------------class
+class vsgBackgroundNode: public vsgBindableNode
+{
+public:
+  // ........................................................public-methods
+  vsgBackgroundNode();
+  virtual ~vsgBackgroundNode();
+  InOutMF(groundAngle,MFFloat)
+  InOutMF(groundColor,MFColor)
+  InOutMF(skyAngle,MFFloat)
+  InOutMF(skyColor,MFColor)
+  InOutSF(transparency,SFFloat)
   protected:
-    // .......................................................protected-ivars
-
-  };
-}
+  // .......................................................protected-ivars
+};
 #endif // __vsgBackgroundNode_h
