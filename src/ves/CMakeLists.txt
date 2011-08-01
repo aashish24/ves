@@ -68,7 +68,7 @@ set(sources
   vsg/Rendering/IndexedTriangleSet.cpp
   vsg/Rendering/Normal.cpp
 
-  # ------------------------------------------------------------------Rendering
+  # ---------------------------------------------------------------------Shader
   vsg/Shader/vsgProgrammableShaderObject.cpp
   vsg/Shader/vsgShaderNode.cpp
   vsg/Shader/vsgVertexAttributeNode.cpp
@@ -79,6 +79,7 @@ set(sources
   #  vsg/Shader/ProgramShader.cpp
   vsg/Shader/ShaderPart.cpp
   #  vsg/Shader/ShaderProgram.cpp
+
   # --------------------------------------------------------------------Texture
   vsg/Texture/vsgTextureCoordinateNode.cpp
 
