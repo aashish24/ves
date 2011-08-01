@@ -53,6 +53,7 @@ set(sources
   vsg/Navigation/vsgViewpointNode.cpp
 
   # ------------------------------------------------------------------Rendering
+  vsg/Rendering/vsgColorNode.cpp
   vsg/Rendering/vsgGeometricPropertyNode.cpp
   vsg/Rendering/vsgGeometryNode.cpp
 
