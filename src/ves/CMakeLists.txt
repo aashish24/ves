@@ -70,6 +70,7 @@ set(sources
 
   # -----------------------------------------------------------------EnvEffects
   vsg/EnvEffects/vsgBackgroundNode.cpp
+  vsg/EnvEffects/TextureBackground.cpp
 
   # ---------------------------------------------------------------------Shader
   vsg/Shader/vsgProgrammableShaderObject.cpp
