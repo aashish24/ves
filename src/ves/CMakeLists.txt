@@ -71,6 +71,7 @@ set(sources
   # ------------------------------------------------------------------Rendering
   vsg/Shader/vsgProgrammableShaderObject.cpp
   vsg/Shader/vsgShaderNode.cpp
+  vsg/Shader/vsgVertexAttributeNode.cpp
 
   # --------------------------------------------------------------------Texture
   vsg/Texture/vsgTextureCoordinateNode.cpp
