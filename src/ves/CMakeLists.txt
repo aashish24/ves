@@ -28,7 +28,7 @@ set(sources
 
 
 
-  vsg/Shape/vsgAppearanceNode.cpp
+
   vsg/Grouping/vsgBoundedObject.cpp
 
   vsg/Grouping/Transform.cpp
@@ -82,6 +82,7 @@ set(sources
 
   # ----------------------------------------------------------------------Shape
   vsg/Shape/vsgAppearanceChildNode.cpp
+  vsg/Shape/vsgAppearanceNode.cpp
 
   # --------------------------------------------------------------------Texture
   vsg/Texture/vsgTextureCoordinateNode.cpp
