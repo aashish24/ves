@@ -27,7 +27,7 @@
 #include "vsg/Rendering/ClipPlane.h"
 #include "vsg/Rendering/Color.h"
 #include "vsg/Rendering/ColorRGBA.h"
-// #include "vsg/Render/Coordinate.h"
+#include "vsg/Rendering/Coordinate.h"
 // #include "vsg/Render/IndexedTriangleSet.h"
 // #include "vsg/Render/Normal.h"
 
@@ -58,7 +58,7 @@ public:
   virtual bool visitClipPlane(vsg::ClipPlane* clipPlane);
   virtual bool visitColor(vsg::Color* color);
   virtual bool visitColorRGBA(vsg::ColorRGBA* colorRGBA);
-  // virtual bool visitCoordinate(vsg::Coordinate* coordinate);
+  virtual bool visitCoordinate(vsg::Coordinate* coordinate);
   // virtual bool visitIndexedTriangleSet(vsg::IndexedTriangleSet* indexedTriangleSet);
   // virtual bool visitNormal(vsg::Normal* normal);
 

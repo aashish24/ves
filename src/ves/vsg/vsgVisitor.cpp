@@ -105,13 +105,12 @@ bool vsgVisitor::visitColorRGBA(vsg::ColorRGBA* colorRGBA)
   return true;
 }
 
-// // ----------------------------------------------------------------------public
-// bool vsgVisitor::visitCoordinate(vsg::Coordinate* coordinate)
-// {
-//   std::cout << "Visiting: Coordinate" << std::endl;
-
-// return true;
-// }
+// ----------------------------------------------------------------------public
+bool vsgVisitor::visitCoordinate(vsg::Coordinate* coordinate)
+{
+  std::cout << "Visiting: Coordinate" << std::endl;
+  return true;
+}
 
 
 // // ---------------------------------------------------------------------public
