@@ -26,7 +26,7 @@ set(sources
   vesSTLReader.cpp
   vesTriangleData.cpp
   vsg/Core/vsgNode.cpp
-  vsg/Core/vsgSensorNode.cpp
+
   vsg/Navigation/Viewpoint.cpp
   vsg/Navigation/vsgViewpointNode.cpp
   vsg/Shape/vsgAppearanceChildNode.cpp
@@ -45,6 +45,7 @@ set(sources
   # Core
   vsg/Core/vsgBindableNode.cpp
   vsg/Core/vsgChildNode.cpp
+  vsg/Core/vsgSensorNode.cpp
 
   vsg/Texture/vsgTextureCoordinateNode.cpp
   vsg/Rendering/vsgGeometricPropertyNode.cpp

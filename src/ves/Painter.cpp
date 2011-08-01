@@ -100,7 +100,7 @@ void Painter::Actor(vesActor * actor)
   //std::cout << "Render: Actor" <<std::endl;
   if(actor->GetSensor())
     {
-      if(actor->GetWidget()->IsActive())
+      if(actor->GetWidget()->isActive())
         {
           //std::cout<<"translating the widget" <<std::endl;
           actor->SetTranslation(actor->GetWidget()->GetTranslation());
@@ -164,7 +164,7 @@ void Painter::visitShape(Shape* shape)
   // Model-view matrix is everything except the top level matrix (the projection matrix).
   // This is needed for normal calculation.
   vesMatrix4x4f mv = this->Eval(1);
-  
+
   // The model-view-projection matrix includes everything.
   vesMatrix4x4f mvp = this->Eval(0);
 

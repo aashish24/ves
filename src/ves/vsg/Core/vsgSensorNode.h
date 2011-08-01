@@ -1,26 +1,30 @@
-/*=========================================================================
-
-  Program:   Visualization Toolkit
-  Module:    vsgSensorNode.h
-
-  Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
-  All rights reserved.
-  See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
-
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-     PURPOSE.  See the above copyright notice for more information.
-
-=========================================================================*/
-// .NAME vsgSensorNode -
-// .SECTION Description
-// vsgSensorNode
-
+// ============================================================================
+/**
+ * @file   vsgSensorNode.h
+ *
+ * @section COPYRIGHT
+ *
+ * Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
+ * All rights reserved.
+ * See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
+ *
+ *   This software is distributed WITHOUT ANY WARRANTY; without even
+ *   the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ *   PURPOSE.  See the above copyright notice for more information.
+ *
+ * @section DESCRIPTION
+ *
+ * Abstract base class
+ *
+ * @author nikhil shetty <nikhil.shetty@kitware.com>
+ */
+// ============================================================================
 #ifndef __vsgSensorNode_h
 #define __vsgSensorNode_h
 // --------------------------------------------------------------------includes
-#include "vsgChildNode.h"
-#include "vesSetGet.h"
+# include "vsgMacro.h"
+# include "vsgTypes.h"
+# include "vsgChildNode.h"
 
 // -----------------------------------------------------------------pre-defines
 
@@ -31,21 +35,11 @@ public:
   // ............................................................public-methods
   vsgSensorNode();
   ~vsgSensorNode();
-  bool IsActive();
-  vesSetGetMacro(Enabled,bool)
-protected:
+  SFBool isActive();
+  InOutSF(enabled,SFBool)
 
+  protected:
   // ...........................................................protected-ivars
-  bool Enabled;
-protected:
-//BTX
-  // .......................................................................BTX
-
-private:
-//ETX
-  // .......................................................................ETX
-
-
 };
 
 #endif // __vsgSensorNode_h
