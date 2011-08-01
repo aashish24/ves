@@ -15,7 +15,7 @@
  * @author nikhil shetty <nikhil.shetty@kitware.com>
  */
 // ============================================================================
-# include "vsg/vsg/vsgBackgroundNode.h"
+#include "vsg/EnvEffects/vsgBackgroundNode.h"
 // --------------------------------------------------------------------includes
 
 // -------------------------------------------------------------------macro

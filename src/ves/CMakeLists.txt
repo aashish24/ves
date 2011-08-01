@@ -69,6 +69,7 @@ set(sources
   vsg/Navigation/vsgViewpointNode.cpp
 
   # -----------------------------------------------------------------EnvEffects
+  vsg/EnvEffects/vsgBackgroundNode.cpp
 
   # ---------------------------------------------------------------------Shader
   vsg/Shader/vsgProgrammableShaderObject.cpp
@@ -90,6 +91,7 @@ include_directories( vsg
                      vsg/Rendering
                      vsg/Shader
                      vsg/Shape
+                     vsg/EnvEffects
                      vsg/Utility )
 
 include_directories(${CMAKE_SOURCE_DIR})
