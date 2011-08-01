@@ -40,8 +40,8 @@ vesActor::vesActor(vesShader *shader,vesMapper* mapper,vesMultitouchWidget *widg
   this->_shape = new Shape();
   this->_appearance = new Appearance();
   this->_appearance->SetShader(shader);
-  this->_shape->SetGeometry(mapper);
-  this->_shape->SetAppearance(this->_appearance);
+  this->_shape->set_geometry(mapper);
+  this->_shape->set_appearance(this->_appearance);
   this->Mapper = mapper;        // This is used to make the actor visible again
   AddShapeChild(this->_shape);
   if(widget)
@@ -124,11 +124,11 @@ bool vesActor::SetVisible(bool value)
 {
   if(value)
     {
-      this->_shape->SetGeometry(this->Mapper);
+      this->_shape->set_geometry(this->Mapper);
     }
   else
     {
-      this->_shape->SetGeometry(NULL);
+      this->_shape->set_geometry(NULL);
     }
   this->Visible = value;
   return true;

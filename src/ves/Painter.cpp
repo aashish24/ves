@@ -140,10 +140,10 @@ void Painter::ActorCollection(vesActorCollection *actor)
 void Painter::visitShape(Shape* shape)
 {
   //std::cout << "Render: Shape" <<std::endl;
-  shape->GetAppearance() -> Render(this);
-  if(shape->GetGeometry())
+  shape->get_appearance() -> Render(this);
+  if(shape->get_geometry())
     {
-    shape->GetGeometry() -> Render(this);
+    shape->get_geometry() -> Render(this);
     }
   else
     {
@@ -152,14 +152,14 @@ void Painter::visitShape(Shape* shape)
 
   std::vector<vesShaderProgram*> temp;
   vesShaderProgram * program;
-  Appearance *appear = (Appearance*) shape->GetAppearance();
+  Appearance *appear = (Appearance*) shape->get_appearance();
   ProgramShader *prog = (ProgramShader*) appear->GetShader();
   if(prog->GetPrograms(&temp))
     {
       program = temp[0]; // currently we are only using one shader
     }
 
-  vesMapper* mapper = (vesMapper*)shape->GetGeometry();
+  vesMapper* mapper = (vesMapper*)shape->get_geometry();
 
   // Model-view matrix is everything except the top level matrix (the projection matrix).
   // This is needed for normal calculation.

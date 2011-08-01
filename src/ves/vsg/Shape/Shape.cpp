@@ -45,10 +45,10 @@ Shape::~Shape()
 bool Shape::Read()
 {
   //std::cout << "Read: Shape" <<std::endl;
-  GetAppearance() -> Read();
-  if (GetGeometry()) 
+  get_appearance() -> Read();
+  if (get_geometry())
   {
-    GetGeometry() -> Read();
+    get_geometry() -> Read();
   }
   return true;
 }
@@ -60,7 +60,7 @@ void Shape::Render(Painter* render)
 
 void Shape::ComputeBounds()
 {
-  vesMapper* mapper = (vesMapper*) GetGeometry();
+  vesMapper* mapper = (vesMapper*) get_geometry();
   if(mapper)
   {
   mapper->ComputeBounds();

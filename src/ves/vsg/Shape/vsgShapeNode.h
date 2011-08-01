@@ -1,56 +1,45 @@
-/*=========================================================================
-
-  Program:   Visualization Toolkit
-  Module:    vsgShapeNode.h
-
-  Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
-  All rights reserved.
-  See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
-
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-     PURPOSE.  See the above copyright notice for more information.
-
-=========================================================================*/
-// .NAME vsgShapeNode - A basic viewable object
-// .SECTION Description
-// vsgShapeNode describes a basic viewable object.
-
+// ============================================================================
+/**
+ * @file   vsgShapeNode.h
+ *
+ * @section COPYRIGHT
+ *
+ * Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
+ * All rights reserved.
+ * See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
+ *
+ *   This software is distributed WITHOUT ANY WARRANTY; without even
+ *   the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ *   PURPOSE.  See the above copyright notice for more information.
+ *
+ * @section DESCRIPTION
+ *
+ * This is the base node type for all Shape nodes.
+ *
+ * @author nikhil shetty <nikhil.shetty@kitware.com>
+ */
+// ============================================================================
 #ifndef __vsgShapeNode_h
 #define __vsgShapeNode_h
 // --------------------------------------------------------------------includes
-#include "vsgChildNode.h"
-#include "vsgBoundedObject.h"
-#include "vesSetGet.h"
+#include "vsg/Utility/vsgMacro.h"
+#include "vsg/Utility/vsgTypes.h"
+#include "vsg/Core/vsgChildNode.h"
+#include "vsg/Grouping/vsgBoundedObject.h"
 
-// -----------------------------------------------------------------pre-defines
-class vsgShapeNodeInternal;
-class vsgAppearanceNode;
-class vsgGeometryNode;
+    // -------------------------------------------------------------pre-defines
 
-// -----------------------------------------------------------------------class
-class vsgShapeNode : public vsgChildNode, public vsgBoundedObject
-{
-public:
-  // ............................................................public-methods
-  vsgShapeNode();
-  ~vsgShapeNode();
-  vesSetGetMacro(Appearance,vsgAppearanceNode*)
-  vesSetGetMacro(Geometry,vsgGeometryNode*)
-protected:
-  // ...........................................................protected-ivars
-  vsgAppearanceNode * Appearance;
-  vsgGeometryNode *Geometry;
+    // -------------------------------------------------------------------class
+    class vsgShapeNode: public vsgChildNode, public vsgBoundedObject
+    {
+      public:
+      // ........................................................public-methods
+      vsgShapeNode();
+      virtual ~vsgShapeNode();
+      InOutSF(appearance,SFNode)
+      InOutSF(geometry,SFNode)
+      protected:
+      // .......................................................protected-ivars
 
-//BTX
-  // .......................................................................BTX
-private:
-  vsgShapeNodeInternal *Internal;
-  // vsgShapeNode(const vsgShapeNode&); // Not implemented.
-  // void operator=(const vsgShapeNode&); // Not implemented.
-//ETX
-  // .......................................................................ETX
-};
-
-#endif // __ShapeNode_h
-
+    };
+#endif // __vsgShapeNode_h
