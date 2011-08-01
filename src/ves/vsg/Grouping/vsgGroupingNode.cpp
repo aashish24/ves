@@ -1,63 +1,73 @@
-//
-//  vsgGroupingNode.cpp
-//  kiwi
-//
-//  Created by kitware on 6/10/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
-//
+// ============================================================================
+/**
+ * @file   vsgGroupingNode.cpp
+ *
+ * @section COPYRIGHT
+ *
+ * Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
+ * All rights reserved.
+ * See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
+ *
+ *   This software is distributed WITHOUT ANY WARRANTY; without even
+ *   the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ *   PURPOSE.  See the above copyright notice for more information.
+ *
+ * @author nikhil shetty <nikhil.shetty@kitware.com>
+ */
+// ============================================================================
+# include "vsgGroupingNode.h"
+// --------------------------------------------------------------------includes
 
-#include "vsgGroupingNode.h"
-
-
+// -----------------------------------------------------------------------cnstr
 vsgGroupingNode::vsgGroupingNode()
 {
-
 }
 
+// -----------------------------------------------------------------------destr
 vsgGroupingNode::~vsgGroupingNode()
 {
-
 }
 
-void vsgGroupingNode::AddChildren(const std::vector<vsgChildNode*> &children)
+// ----------------------------------------------------------------------public
+void vsgGroupingNode::addChildren(MFNode &children)
 {
   for (int i=0; i<children.size(); i++)
-  {
-    vsgChildNode *current = children[i];
-    bool present = false;
-    for (int j =0; j< this->Children.size(); j++)
     {
-      if(current == this->Children[j])
-      {
-        present = true;
-        break;
-      }
+      vsgChildNode *current = (vsgChildNode*) children[i];
+      bool present = false;
+      for (int j =0; j< _children.size(); j++)
+        {
+          if(current == _children[j])
+            {
+              present = true;
+              break;
+            }
+        }
+      if(!present)
+        {
+          _children.push_back(current);
+        }
     }
-    if(!present)
-    {
-      this->Children.push_back(current);
-    }
-  }
 }
 
-void vsgGroupingNode::RemoveChildren(const std::vector<vsgChildNode*> &children)
+// ----------------------------------------------------------------------public
+void vsgGroupingNode::removeChildren(MFNode &children)
 {
   for (int i=0; i<children.size(); i++)
-  {
-    vsgChildNode *current = children[i];
-    bool present = false;
-    int j;
-    for (j =0; j< this->Children.size(); j++) {
-      if(current == this->Children[j])
-      {
-        present = true;
-        break;
-      }
-    }
-    if(present)
     {
-      this->Children.erase(this->Children.begin()+j);
+      vsgChildNode *current = (vsgChildNode*) children[i];
+      bool present = false;
+      int j;
+      for (j =0; j< _children.size(); j++) {
+        if(current == _children[j])
+          {
+            present = true;
+            break;
+          }
+      }
+      if(present)
+        {
+          _children.erase(_children.begin()+j);
+        }
     }
-  }
 }
-

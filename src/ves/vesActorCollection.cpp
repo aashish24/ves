@@ -45,26 +45,26 @@ vesActorCollection::~vesActorCollection()
 // ----------------------------------------------------------------------public
 void vesActorCollection::AddItem(vesActor* a)
 {
-  std::vector<vsgChildNode*> actorList;
+  MFNode actorList;
   actorList.push_back(a);
-  AddChildren(actorList);
+  addChildren(actorList);
 }
 
 // ----------------------------------------------------------------------public
 void vesActorCollection::RemoveItem(vesActor* a)
 {
-  std::vector<vsgChildNode*> actorList;
+  MFNode actorList;
   actorList.push_back(a);
-  RemoveChildren(actorList);
+  removeChildren(actorList);
 }
 
 bool vesActorCollection::Read()
 {
   //std::cout << "Read: Actor Collection" <<std::endl;
 
-  for (int i =0; i<this->Children.size(); ++i)
+  for (int i =0; i<this->get_children().size(); ++i)
   {
-    vesActor* child = (vesActor*) this->Children[i];
+    vesActor* child = (vesActor*) this->get_children()[i];
     child->Read();
   }
   return true;
@@ -85,9 +85,9 @@ void vesActorCollection::ComputeBounds()
   vesVector3f allMin(0,0,0);
   vesVector3f allMax(0,0,0);
 
-  for (int i =0; i<this->Children.size(); ++i)
+  for (int i =0; i<this->get_children().size(); ++i)
     {
-    vesActor* child = (vesActor*) this->Children[i];
+    vesActor* child = (vesActor*) this->get_children()[i];
     child->ComputeBounds();
     vesVector3f min = child->GetMin();
     vesVector3f max = child->GetMax();

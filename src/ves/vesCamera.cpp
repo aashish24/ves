@@ -48,7 +48,7 @@ vesCamera::vesCamera()
 
   this->WindowCenter[0] = 0.0;
   this->WindowCenter[1] = 0.0;
-  
+
   this->ComputeDistance();
 }
 
@@ -115,11 +115,11 @@ vesMatrix4x4f vesCamera::ComputeProjectionTransform(float aspect,
       double xmax = ( this->WindowCenter[0] + 1.0 ) * width;
       double ymin = ( this->WindowCenter[1] - 1.0 ) * height;
       double ymax = ( this->WindowCenter[1] + 1.0 ) * height;
-      
+
       vesMatrix4x4f frustum = vesFrustum( xmin, xmax, ymin, ymax,
                                          this->ClippingRange[0],
                                          this->ClippingRange[1] );
-      
+
       return matrix*frustum;
     }
 }
@@ -135,7 +135,7 @@ void vesCamera::Azimuth(double angle)
   vesMatrix4x4f t2 = makeRotationMatrix4x4(deg2Rad(angle), vu[0], vu[1], vu[2]);
   vesMatrix4x4f t3 = makeTranslationMatrix4x4(nfp);
   vesMatrix4x4f t = t1 * t2 * t3;
-  
+
   vesVector4f oldPosition(this->Position[0], this->Position[1], this->Position[2], 1);
   vesVector4f newPosition;
   gmtl::xform(newPosition, t, oldPosition);
@@ -260,9 +260,9 @@ void vesCamera::ComputeBounds()
   vesVector3f allMin(0,0,0);
   vesVector3f allMax(0,0,0);
 
-  for (int i =0; i<this->Children.size(); ++i)
+  for (int i =0; i<this->get_children().size(); ++i)
     {
-    vesActorCollection* child = (vesActorCollection*) this->Children[i];
+      vesActorCollection* child = (vesActorCollection*) this->get_children()[i];
     child->ComputeBounds();
     vesVector3f min = child->GetMin();
     vesVector3f max = child->GetMax();
@@ -293,9 +293,9 @@ void vesCamera::ComputeBounds()
 // ----------------------------------------------------------------------public
 bool vesCamera::Read()
 {
-  for (int i =0; i<this->Children.size(); ++i)
+  for (int i =0; i<this->get_children().size(); ++i)
   {
-    vesActorCollection* child = (vesActorCollection*) this->Children[i];
+    vesActorCollection* child = (vesActorCollection*) this->get_children()[i];
     child->Read();
   }
   return true;
@@ -303,7 +303,7 @@ bool vesCamera::Read()
 
 void vesCamera::AddActorCollection(vesActorCollection* actor)
 {
-  std::vector<vsgChildNode*> actorList;
+  MFNode actorList;
   actorList.push_back(actor);
-  AddChildren(actorList);
+  addChildren(actorList);
 }

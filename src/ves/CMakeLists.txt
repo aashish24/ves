@@ -32,7 +32,7 @@ set(sources
   vsg/Shape/vsgAppearanceChildNode.cpp
   vsg/Shape/vsgAppearanceNode.cpp
   vsg/Grouping/vsgBoundedObject.cpp
-  vsg/Grouping/vsgGroupingNode.cpp
+
   vsg/Grouping/Transform.cpp
   vsg/Rendering/vsgGeometryNode.cpp
   vsg/Shader/vsgProgrammableShaderObject.cpp
@@ -48,7 +48,7 @@ set(sources
   vsg/Core/vsgSensorNode.cpp
 
   # -------------------------------------------------------------------Grouping
-
+  vsg/Grouping/vsgGroupingNode.cpp
 
   vsg/Texture/vsgTextureCoordinateNode.cpp
   vsg/Rendering/vsgGeometricPropertyNode.cpp

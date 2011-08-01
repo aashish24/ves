@@ -109,8 +109,8 @@ void Painter::Actor(vesActor * actor)
         }
     }
   this->Push(actor->Eval());
-  vector<vsgChildNode *> temp;
-  actor->GetChildren(&temp);
+  MFNode temp;
+  temp = actor->get_children();
   temp[0]->Render(this);
   this->Pop();
 }
@@ -123,8 +123,8 @@ void Painter::ActorCollection(vesActorCollection *actor)
   this->Push(actor->Eval());
 
   // If there are children nodes then tternate through and render
-  std::vector<vsgChildNode*> children;
-  if (actor->GetChildren(&children))
+  MFNode children = actor->get_children();;
+  if (children.size())
     {
     for (int i = 0; i < children.size(); ++i)
       {
@@ -264,8 +264,8 @@ void Painter::Camera(vesCamera *camera)
  this->Push(camera->Eval());
 
   // If there are children nodes then tternate through and render
-  std::vector<vsgChildNode*> children;
-  if (camera->GetChildren(&children))
+ MFNode children = camera->get_children();
+ if (children.size())
     {
     for (int i = 0; i < children.size(); ++i)
       {

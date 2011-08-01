@@ -88,9 +88,9 @@ vesMatrix4x4f vesActor::Eval()
 bool vesActor::Read()
 {
   //std::cout << "Read: Actor" <<std::endl;
-  for (int i = 0; i < this->Children.size(); ++i)
+  for (int i = 0; i < this->get_children().size(); ++i)
     {
-      this->Children[i]->Read();
+      this->get_children()[i]->Read();
     }
   return true;
 }
@@ -104,9 +104,9 @@ void vesActor::Render(Painter* render)
 // ----------------------------------------------------------------------public
 void vesActor::AddShapeChild(Shape* shape)
 {
-  std::vector<vsgChildNode*> temp;
+  MFNode temp;
   temp.push_back(shape);
-  SetChildren(temp);
+  set_children(temp);
 }
 
 // ----------------------------------------------------------------------public
