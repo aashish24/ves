@@ -58,6 +58,7 @@ set(sources
   vsg/Rendering/vsgCoordinateNode.cpp
   vsg/Rendering/vsgGeometricPropertyNode.cpp
   vsg/Rendering/vsgGeometryNode.cpp
+  vsg/Rendering/vsgNormalNode.cpp
 
   # --------------------------------------------------------------------Texture
   vsg/Texture/vsgTextureCoordinateNode.cpp
