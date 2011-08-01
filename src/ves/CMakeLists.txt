@@ -25,7 +25,6 @@ set(sources
   vesShaderProgram.cpp
   vesSTLReader.cpp
   vesTriangleData.cpp
-  vsg/Core/vsgChildNode.cpp
   vsg/Core/vsgNode.cpp
   vsg/Core/vsgSensorNode.cpp
   vsg/Navigation/Viewpoint.cpp
@@ -45,6 +44,8 @@ set(sources
   # Brought in from cleaner repo -nix
   # Core
   vsg/Core/vsgBindableNode.cpp
+  vsg/Core/vsgChildNode.cpp
+
   vsg/Texture/vsgTextureCoordinateNode.cpp
   vsg/Rendering/vsgGeometricPropertyNode.cpp
 )
