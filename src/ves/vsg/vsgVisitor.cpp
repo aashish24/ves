@@ -126,37 +126,37 @@ bool vsgVisitor::visitNormal(vsg::Normal* normal)
   return true;
 }
 
-// // ----------------------------------------------------------------------public
-// bool vsgVisitor::visitComposedShader(vsg::ComposedShader* composedShader)
-// {
-//   std::cout << "Visiting: ComposedShader" << std::endl;
+// ----------------------------------------------------------------------public
+bool vsgVisitor::visitComposedShader(vsg::ComposedShader* composedShader)
+{
+  std::cout << "Visiting: ComposedShader" << std::endl;
 
-// return true;
-// }
+return true;
+}
 
-// // ----------------------------------------------------------------------public
-// bool vsgVisitor::visitFloatVertexAttribute(vsg::FloatVertexAttribute * data)
-// {
-//   std::cout << "Visiting: FloatVertexAttribute" << std::endl;
+// ----------------------------------------------------------------------public
+bool vsgVisitor::visitFloatVertexAttribute(vsg::FloatVertexAttribute * data)
+{
+  std::cout << "Visiting: FloatVertexAttribute" << std::endl;
 
-// return true;
-// }
+return true;
+}
 
-// // ----------------------------------------------------------------------public
-// bool vsgVisitor::visitMatrix3VertexAttribute(vsg::Matrix3VertexAttribute* data)
-// {
-//   std::cout << "Visiting: Matrix3VertexAttribute" << std::endl;
+// ----------------------------------------------------------------------public
+bool vsgVisitor::visitMatrix3VertexAttribute(vsg::Matrix3VertexAttribute* data)
+{
+  std::cout << "Visiting: Matrix3VertexAttribute" << std::endl;
 
-// return true;
-// }
+return true;
+}
 
-// // ----------------------------------------------------------------------public
-// bool vsgVisitor::visitMatrix4VertexAttribute(vsg::Matrix4VertexAttribute* data)
-// {
-//   std::cout << "Visiting: MatrixVertexAttribute" << std::endl;
+// ----------------------------------------------------------------------public
+bool vsgVisitor::visitMatrix4VertexAttribute(vsg::Matrix4VertexAttribute* data)
+{
+  std::cout << "Visiting: MatrixVertexAttribute" << std::endl;
 
-// return true;
-// }
+return true;
+}
 
 // // ----------------------------------------------------------------------public
 // bool vsgVisitor::visitProgramShader(vsg::ProgramShader *programShader)
@@ -172,12 +172,12 @@ bool vsgVisitor::visitNormal(vsg::Normal* normal)
 //   return true;
 // }
 
-// // ----------------------------------------------------------------------public
-// bool vsgVisitor::visitShaderPart(vsg::ShaderPart* shaderPart)
-// {
-//   std::cout << "Visiting: ShaderPart" << std::endl;
-//   return true;
-// }
+// ----------------------------------------------------------------------public
+bool vsgVisitor::visitShaderPart(vsg::ShaderPart* shaderPart)
+{
+  std::cout << "Visiting: ShaderPart" << std::endl;
+  return true;
+}
 
 // #if 0
 // // ---------------------------------------------------------------------public

@@ -31,12 +31,12 @@
 #include "vsg/Rendering/IndexedTriangleSet.h"
 #include "vsg/Rendering/Normal.h"
 
-// #include "vsg/Shader/ComposedShader.h"
-// #include "vsg/Shader/FloatVertexAttribute.h"
-// #include "vsg/Shader/Matrix3VertexAttribute.h"
-// #include "vsg/Shader/Matrix4VertexAttribute.h"
+#include "vsg/Shader/ComposedShader.h"
+#include "vsg/Shader/FloatVertexAttribute.h"
+#include "vsg/Shader/Matrix3VertexAttribute.h"
+#include "vsg/Shader/Matrix4VertexAttribute.h"
 // #include "vsg/Shader/ProgramShader.h"
-// #include "vsg/Shader/ShaderPart.h"
+#include "vsg/Shader/ShaderPart.h"
 // #include "vsg/Shader/ShaderProgram.h"
 
 // -----------------------------------------------------------------pre-defines
@@ -62,12 +62,12 @@ public:
   virtual bool visitIndexedTriangleSet(vsg::IndexedTriangleSet* indexedTriangleSet);
   virtual bool visitNormal(vsg::Normal* normal);
 
-  // virtual bool visitComposedShader(vsg::ComposedShader* composedShader);
-  // virtual bool visitFloatVertexAttribute(vsg::FloatVertexAttribute * data);
-  // virtual bool visitMatrix3VertexAttribute(vsg::Matrix3VertexAttribute* data);
-  // virtual bool visitMatrix4VertexAttribute(vsg::Matrix4VertexAttribute* data);
+  virtual bool visitComposedShader(vsg::ComposedShader* composedShader);
+  virtual bool visitFloatVertexAttribute(vsg::FloatVertexAttribute * data);
+  virtual bool visitMatrix3VertexAttribute(vsg::Matrix3VertexAttribute* data);
+  virtual bool visitMatrix4VertexAttribute(vsg::Matrix4VertexAttribute* data);
   // virtual bool visitProgramShader(vsg::ProgramShader *programShader);
-  // virtual bool visitShaderPart(vsg::ShaderPart* shaderPart);
+  virtual bool visitShaderPart(vsg::ShaderPart* shaderPart);
   // virtual bool visitShaderProgram(ShaderProgram *shaderProgram);
 protected:
   // ...........................................................protected-ivars

@@ -72,7 +72,13 @@ set(sources
   vsg/Shader/vsgProgrammableShaderObject.cpp
   vsg/Shader/vsgShaderNode.cpp
   vsg/Shader/vsgVertexAttributeNode.cpp
-
+  vsg/Shader/ComposedShader.cpp
+  vsg/Shader/FloatVertexAttribute.cpp
+  vsg/Shader/Matrix3VertexAttribute.cpp
+  vsg/Shader/Matrix4VertexAttribute.cpp
+  #  vsg/Shader/ProgramShader.cpp
+  vsg/Shader/ShaderPart.cpp
+  #  vsg/Shader/ShaderProgram.cpp
   # --------------------------------------------------------------------Texture
   vsg/Texture/vsgTextureCoordinateNode.cpp
 
