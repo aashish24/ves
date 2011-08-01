@@ -39,10 +39,6 @@ set(sources
   vsg/Grouping/vsgGroupingNode.cpp
   vsg/Grouping/Transform.cpp
 
-  # -----------------------------------------------------------------Navigation
-  vsg/Navigation/Viewpoint.cpp
-  vsg/Navigation/vsgViewpointNode.cpp
-
   # ------------------------------------------------------------------Rendering
   vsg/Rendering/vsgColorNode.cpp
   vsg/Rendering/vsgComposedGeometryNode.cpp
@@ -57,6 +53,23 @@ set(sources
   vsg/Rendering/IndexedTriangleSet.cpp
   vsg/Rendering/Normal.cpp
 
+  # ----------------------------------------------------------------------Shape
+  vsg/Shape/vsgAppearanceChildNode.cpp
+  vsg/Shape/vsgAppearanceNode.cpp
+  vsg/Shape/vsgMaterialNode.cpp
+  vsg/Shape/vsgShapeNode.cpp
+  vsg/Shape/Appearance.cpp
+  vsg/Shape/Shape.cpp
+
+  # --------------------------------------------------------------------Texture
+  vsg/Texture/vsgTextureCoordinateNode.cpp
+
+  # -----------------------------------------------------------------Navigation
+  vsg/Navigation/Viewpoint.cpp
+  vsg/Navigation/vsgViewpointNode.cpp
+
+  # -----------------------------------------------------------------EnvEffects
+
   # ---------------------------------------------------------------------Shader
   vsg/Shader/vsgProgrammableShaderObject.cpp
   vsg/Shader/vsgShaderNode.cpp
@@ -68,17 +81,6 @@ set(sources
   #  vsg/Shader/ProgramShader.cpp
   vsg/Shader/ShaderPart.cpp
   #  vsg/Shader/ShaderProgram.cpp
-
-  # ----------------------------------------------------------------------Shape
-  vsg/Shape/vsgAppearanceChildNode.cpp
-  vsg/Shape/vsgAppearanceNode.cpp
-  vsg/Shape/vsgMaterialNode.cpp
-  vsg/Shape/vsgShapeNode.cpp
-  vsg/Shape/Appearance.cpp
-  vsg/Shape/Shape.cpp
-
-  # --------------------------------------------------------------------Texture
-  vsg/Texture/vsgTextureCoordinateNode.cpp
 )
 
 include_directories( vsg
