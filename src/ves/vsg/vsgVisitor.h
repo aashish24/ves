@@ -24,7 +24,7 @@
 // #include "vsg/Shape/Shape.h"
 // #include "vsg/Shape/Appearance.h"
 
-// #include "vsg/Render/ClipPlane.h"
+#include "vsg/Rendering/ClipPlane.h"
 // #include "vsg/Render/Color.h"
 // #include "vsg/Render/ColorRGBA.h"
 // #include "vsg/Render/Coordinate.h"
@@ -55,7 +55,7 @@ public:
   // virtual bool visitShape(vsg::Shape *shape);
   // virtual bool visitAppearance(vsg::Appearance *appearance);
 
-  // virtual bool visitClipPlane(vsg::ClipPlane* clipPlane);
+  virtual bool visitClipPlane(vsg::ClipPlane* clipPlane);
   // virtual bool visitColor(vsg::Color* color);
   // virtual bool visitColorRGBA(vsg::ColorRGBA* colorRGBA);
   // virtual bool visitCoordinate(vsg::Coordinate* coordinate);

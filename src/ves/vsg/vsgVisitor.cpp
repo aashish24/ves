@@ -84,13 +84,12 @@ vsgVisitor::~vsgVisitor()
 //   return true;
 // }
 
-// // ----------------------------------------------------------------------public
-// bool vsgVisitor::visitClipPlane(vsg::ClipPlane* clipPlane)
-// {
-//   std::cout << "Visiting: ClipPlane" << std::endl;
-
-// return true;
-// }
+// ----------------------------------------------------------------------public
+bool vsgVisitor::visitClipPlane(vsg::ClipPlane* clipPlane)
+{
+  std::cout << "Visiting: ClipPlane" << std::endl;
+  return true;
+}
 
 // // ----------------------------------------------------------------------public
 // bool vsgVisitor::visitColor(vsg::Color* color)
