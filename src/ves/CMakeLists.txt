@@ -41,12 +41,14 @@ set(sources
   vsg/Shape/Appearance.cpp
   vsg/Shape/Shape.cpp
 
-  # Brought in from cleaner repo -nix
-  # Core
+  # -----------------------------------------------------------------------Core
   vsg/Core/vsgBindableNode.cpp
   vsg/Core/vsgChildNode.cpp
   vsg/Core/vsgNode.cpp
   vsg/Core/vsgSensorNode.cpp
+
+  # -------------------------------------------------------------------Grouping
+
 
   vsg/Texture/vsgTextureCoordinateNode.cpp
   vsg/Rendering/vsgGeometricPropertyNode.cpp
