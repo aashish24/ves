@@ -66,6 +66,7 @@ set(sources
   vsg/Rendering/Color.cpp
   vsg/Rendering/ColorRGBA.cpp
   vsg/Rendering/Coordinate.cpp
+  vsg/Rendering/IndexedTriangleSet.cpp
 
   # --------------------------------------------------------------------Texture
   vsg/Texture/vsgTextureCoordinateNode.cpp

@@ -28,7 +28,7 @@
 #include "vsg/Rendering/Color.h"
 #include "vsg/Rendering/ColorRGBA.h"
 #include "vsg/Rendering/Coordinate.h"
-// #include "vsg/Render/IndexedTriangleSet.h"
+#include "vsg/Rendering/IndexedTriangleSet.h"
 // #include "vsg/Render/Normal.h"
 
 // #include "vsg/Shader/ComposedShader.h"
@@ -59,7 +59,7 @@ public:
   virtual bool visitColor(vsg::Color* color);
   virtual bool visitColorRGBA(vsg::ColorRGBA* colorRGBA);
   virtual bool visitCoordinate(vsg::Coordinate* coordinate);
-  // virtual bool visitIndexedTriangleSet(vsg::IndexedTriangleSet* indexedTriangleSet);
+  virtual bool visitIndexedTriangleSet(vsg::IndexedTriangleSet* indexedTriangleSet);
   // virtual bool visitNormal(vsg::Normal* normal);
 
   // virtual bool visitComposedShader(vsg::ComposedShader* composedShader);

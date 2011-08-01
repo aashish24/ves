@@ -112,14 +112,12 @@ bool vsgVisitor::visitCoordinate(vsg::Coordinate* coordinate)
   return true;
 }
 
-
-// // ---------------------------------------------------------------------public
-// bool vsgVisitor::visitIndexedTriangleSet(vsg::IndexedTriangleSet* indexedTriangleSet)
-// {
-//   std::cout << "Visiting: IndexedTriangleSet" <<std::endl;
-//   return true;
-// }
-
+// ---------------------------------------------------------------------public
+bool vsgVisitor::visitIndexedTriangleSet(vsg::IndexedTriangleSet* indexedTriangleSet)
+{
+  std::cout << "Visiting: IndexedTriangleSet" <<std::endl;
+  return true;
+}
 
 // // ----------------------------------------------------------------------public
 // bool vsgVisitor::visitNormal(vsg::Normal* normal)
