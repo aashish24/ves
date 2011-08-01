@@ -105,6 +105,7 @@ SFMatrix4f Transform::eval()
   return _internal->Eval();
 }
 
+// ----------------------------------------------------------------------public
 bool Transform::accept(vsgVisitor* vsgVisitor)
   {
     return vsgVisitor->visitTransform(this);
