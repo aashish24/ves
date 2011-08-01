@@ -54,6 +54,7 @@ set(sources
 
   # ------------------------------------------------------------------Rendering
   vsg/Rendering/vsgColorNode.cpp
+  vsg/Rendering/vsgComposedGeometryNode.cpp
   vsg/Rendering/vsgGeometricPropertyNode.cpp
   vsg/Rendering/vsgGeometryNode.cpp
 
