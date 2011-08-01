@@ -23,6 +23,7 @@
 #include "vesShaderProgram.h"
 #include "vsg/Grouping/Transform.h"
 #include "vsg/Shape/Shape.h"
+#include "vsg/Shape/Appearance.h"
 #include "vesSetGet.h"
 #include <list>
 
@@ -30,7 +31,6 @@
 class vesActorInternal;
 class vesShader;
 class vesMapper;
-class Appearance;
 class vesMultitouchWidget;
 
 // -----------------------------------------------------------------------class
@@ -56,7 +56,7 @@ public:
 
 protected:
   // ...........................................................protected-ivars
-  Appearance *_appearance;
+  vsg::Appearance *_appearance;
   vsg::Shape *_shape;
   bool Sensor;
   vesMultitouchWidget* Widget;

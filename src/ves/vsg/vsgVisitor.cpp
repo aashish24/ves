@@ -166,18 +166,18 @@ bool vsgVisitor::visitShape(vsg::Shape* shape)
   return true;
 }
 
-// // ---------------------------------------------------------------------public
-// bool vsgVisitor::visitAppearance(vsg::Appearance *appearance)
-// {
-//   std::cout << "Visiting: Appearance" << std::endl;
-//   MFNode shaders = appearance->get_shaders();
-//   for(int i =0; i< shaders.size(); ++i)
-//   {
-//     shaders[i]->accept(this);
-//   }
+// ---------------------------------------------------------------------public
+bool vsgVisitor::visitAppearance(vsg::Appearance *appearance)
+{
+  std::cout << "Visiting: Appearance" << std::endl;
+  MFNode shaders = appearance->get_shaders();
+  for(int i =0; i< shaders.size(); ++i)
+  {
+    shaders[i]->accept(this);
+  }
 
-//   return true;
-// }
+  return true;
+}
 
 // #if 0
 // // ---------------------------------------------------------------------public

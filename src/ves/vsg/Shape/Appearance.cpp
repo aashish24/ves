@@ -1,54 +1,68 @@
-/*=========================================================================
-
-  Program:   Visualization Toolkit
-  Module:    Appearance.cxx
-
-  Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
-  All rights reserved.
-  See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
-
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-     PURPOSE.  See the above copyright notice for more information.
-
-=========================================================================*/
-#include "Appearance.h"
-#include <iostream>
-
+// ============================================================================
+/**
+ * @file   Appearance.cpp
+ *
+ * @section COPYRIGHT
+ *
+ * Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
+ * All rights reserved.
+ * See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
+ *
+ *   This software is distributed WITHOUT ANY WARRANTY; without even
+ *   the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ *   PURPOSE.  See the above copyright notice for more information.
+ *
+ * @author nikhil shetty <nikhil.shetty@kitware.com>
+ */
+// ============================================================================
+#include "vsg/Shape/Appearance.h"
 // --------------------------------------------------------------------includes
-#include "vsgShaderNode.h"
+#include "vsg/vsgVisitor.h"
+#include "Painter.h"
 
-// -----------------------------------------------------------------------macro
+namespace vsg {
+    // -------------------------------------------------------------------macro
 
-// --------------------------------------------------------------------internal
-// IMPORTANT: Make sure that this struct has no pointers.  All pointers should
-// be put in the class declaration. For all newly defined pointers make sure to
-// update constructor and destructor methods.
-struct AppearanceInternal
-{
-  double value; // sample
-};
+    // ................................................................internal
+    // IMPORTANT: Make sure that this struct has no pointers.  All pointers should
+    // be put in the class declaration. For all newly defined pointers make sure
+    // to update constructor and destructor methods.
+    struct AppearanceInternal
+    {
+      double value; // sample
 
-// -----------------------------------------------------------------------cnstr
-Appearance::Appearance()
-{
-  this->Internal = new AppearanceInternal();
+    };
+    // ................................................................internal
+
+    // -------------------------------------------------------------------cnstr
+    Appearance::Appearance()
+       {
+         _internal = new AppearanceInternal();
+       }
+
+    // -------------------------------------------------------------------destr
+    Appearance::~Appearance()
+       {
+         delete _internal;
+       }
+
+    // ------------------------------------------------------------------public
+    // -----------------------------------------------------------------private
 }
 
-// -----------------------------------------------------------------------destr
-Appearance::~Appearance()
+bool vsg::Appearance::accept(vsgVisitor* vsgVisitor)
 {
-  delete this->Internal;
+  return vsgVisitor->visitAppearance(this);
 }
 
-void Appearance::Render(Painter* render)
+void vsg::Appearance::Render(Painter* render)
 {
-  this->Shader->Render(render);
+  this->_shaders[0]->Render(render);
 }
 
-bool Appearance::Read()
+bool vsg::Appearance::Read()
 {
-  this->Shader->Read();
+  this->_shaders[0]->Read();
   return true;
 }
 

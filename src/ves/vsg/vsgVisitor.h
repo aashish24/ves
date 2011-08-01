@@ -37,7 +37,7 @@
 // #include "vsg/Shader/ShaderProgram.h"
 
 #include "vsg/Shape/Shape.h"
-// #include "vsg/Shape/Appearance.h"
+#include "vsg/Shape/Appearance.h"
 
 // -----------------------------------------------------------------pre-defines
 class vsgVisitorInternal;
@@ -68,7 +68,7 @@ public:
   // virtual bool visitShaderProgram(ShaderProgram *shaderProgram);
 
   virtual bool visitShape(vsg::Shape *shape);
-  // virtual bool visitAppearance(vsg::Appearance *appearance);
+  virtual bool visitAppearance(vsg::Appearance *appearance);
 
 protected:
   // ...........................................................protected-ivars

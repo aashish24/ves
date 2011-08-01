@@ -20,7 +20,7 @@
 #include <vector>
 #include "vsgChildNode.h"
 #include "vsgGeometryNode.h"
-#include "Appearance.h"
+#include "vsg/Shape/Appearance.h"
 #include "vesMultitouchWidget.h"
 
 // -----------------------------------------------------------------------macro
@@ -152,8 +152,8 @@ void Painter::visitShape(vsg::Shape* shape)
 
   std::vector<vesShaderProgram*> temp;
   vesShaderProgram * program;
-  Appearance *appear = (Appearance*) shape->get_appearance();
-  ProgramShader *prog = (ProgramShader*) appear->GetShader();
+  vsg::Appearance *appear = (vsg::Appearance*) shape->get_appearance();
+  ProgramShader *prog = (ProgramShader*) appear->get_shaders()[0];
   if(prog->GetPrograms(&temp))
     {
       program = temp[0]; // currently we are only using one shader
