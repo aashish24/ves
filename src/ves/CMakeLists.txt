@@ -27,7 +27,7 @@ set(sources
   vesTriangleData.cpp
 
 
-  vsg/Shape/vsgAppearanceChildNode.cpp
+
   vsg/Shape/vsgAppearanceNode.cpp
   vsg/Grouping/vsgBoundedObject.cpp
 
@@ -79,6 +79,9 @@ set(sources
   #  vsg/Shader/ProgramShader.cpp
   vsg/Shader/ShaderPart.cpp
   #  vsg/Shader/ShaderProgram.cpp
+
+  # ----------------------------------------------------------------------Shape
+  vsg/Shape/vsgAppearanceChildNode.cpp
 
   # --------------------------------------------------------------------Texture
   vsg/Texture/vsgTextureCoordinateNode.cpp
