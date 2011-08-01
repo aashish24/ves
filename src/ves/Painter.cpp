@@ -103,8 +103,8 @@ void Painter::Actor(vesActor * actor)
       if(actor->GetWidget()->isActive())
         {
           //std::cout<<"translating the widget" <<std::endl;
-          actor->SetTranslation(actor->GetWidget()->GetTranslation());
-          actor->SetRotation(actor->GetWidget()->GetRotation());
+          // actor->set_translation(actor->GetWidget()->GetTranslation());
+          // actor->set_rotation(actor->GetWidget()->GetRotation());
           //actor->SetScale(actor->GetWidget()->GetScale());
         }
     }
@@ -261,7 +261,7 @@ void Painter::Camera(vesCamera *camera)
   // View = camera->ComputeViewTransform();
   // Projection = camera->ComputeProjectionTransform(this->Aspect,this->NearZ, this->FarZ);
 
- this->Push(camera->Eval());
+ this->Push(camera->eval());
 
   // If there are children nodes then tternate through and render
  MFNode children = camera->get_children();

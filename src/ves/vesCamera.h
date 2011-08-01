@@ -2,11 +2,11 @@
 #define __vesCamera_h
 
 #include "vesGMTL.h"
-#include "Transform.h"
+#include "vsg/Grouping/Transform.h"
 #include "vesSetGet.h"
 #include "vesActorCollection.h"
 
-class vesCamera: public Transform
+class vesCamera: public vsg::Transform
 {
 public:
   vesCamera();

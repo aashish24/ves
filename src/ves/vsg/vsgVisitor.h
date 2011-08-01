@@ -19,10 +19,7 @@
 #ifndef __vsgVisitor_h
 #define __vsgVisitor_h
 // --------------------------------------------------------------------includes
-// #include "vsg/Group/Transform.h"
-
-// #include "vsg/Shape/Shape.h"
-// #include "vsg/Shape/Appearance.h"
+#include "vsg/Grouping/Transform.h"
 
 #include "vsg/Rendering/ClipPlane.h"
 #include "vsg/Rendering/Color.h"
@@ -39,6 +36,9 @@
 #include "vsg/Shader/ShaderPart.h"
 // #include "vsg/Shader/ShaderProgram.h"
 
+// #include "vsg/Shape/Shape.h"
+// #include "vsg/Shape/Appearance.h"
+
 // -----------------------------------------------------------------pre-defines
 class vsgVisitorInternal;
 
@@ -50,10 +50,7 @@ public:
   vsgVisitor();
   ~vsgVisitor();
 
-  // virtual bool visitTransform(vsg::Transform* transform);
-
-  // virtual bool visitShape(vsg::Shape *shape);
-  // virtual bool visitAppearance(vsg::Appearance *appearance);
+  virtual bool visitTransform(vsg::Transform* transform);
 
   virtual bool visitClipPlane(vsg::ClipPlane* clipPlane);
   virtual bool visitColor(vsg::Color* color);
@@ -69,6 +66,10 @@ public:
   // virtual bool visitProgramShader(vsg::ProgramShader *programShader);
   virtual bool visitShaderPart(vsg::ShaderPart* shaderPart);
   // virtual bool visitShaderProgram(ShaderProgram *shaderProgram);
+
+  // virtual bool visitShape(vsg::Shape *shape);
+  // virtual bool visitAppearance(vsg::Appearance *appearance);
+
 protected:
   // ...........................................................protected-ivars
 

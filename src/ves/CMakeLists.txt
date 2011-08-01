@@ -26,7 +26,7 @@ set(sources
   vesTriangleData.cpp
 
   vsg/Grouping/vsgBoundedObject.cpp
-  vsg/Grouping/Transform.cpp
+
 
   vsg/Shape/Appearance.cpp
   vsg/Shape/Shape.cpp
@@ -42,6 +42,7 @@ set(sources
 
   # -------------------------------------------------------------------Grouping
   vsg/Grouping/vsgGroupingNode.cpp
+  vsg/Grouping/Transform.cpp
 
   # -----------------------------------------------------------------Navigation
   vsg/Navigation/Viewpoint.cpp

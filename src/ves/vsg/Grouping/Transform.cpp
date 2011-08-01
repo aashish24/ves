@@ -1,104 +1,107 @@
-
+// ============================================================================
+/**
+ * @file   Transform.cpp
+ *
+ * @section COPYRIGHT
+ *
+ * Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
+ * All rights reserved.
+ * See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
+ *
+ *   This software is distributed WITHOUT ANY WARRANTY; without even
+ *   the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ *   PURPOSE.  See the above copyright notice for more information.
+ *
+ * @author nikhil shetty <nikhil.shetty@kitware.com>
+ */
+// ============================================================================
+# include "Transform.h"
 // --------------------------------------------------------------------includes
-#include "Transform.h"
-#include "vesGMTL.h"
-#include "Painter.h"
+#include "vsg/vsgVisitor.h"
 
-// --------------------------------------------------------------------internal
-class TransformInternals
+namespace vsg{
+// ....................................................................internal
+// IMPORTANT: Make sure that this struct has no pointers.  All pointers should
+// be put in the class declaration. For all newly defined pointers make sure to
+// update constructor and destructor methods.
+class TransformInternal
 {
-  vesMatrix4x4f T;
-  vesMatrix4x4f C;
-  vesMatrix4x4f R;
-  vesMatrix4x4f SR;
-  vesMatrix4x4f S;
-  vesMatrix4x4f SRI;
-  vesMatrix4x4f CI;
+private:
+  vesMatrix4x4f T,C,R,SR,S,_SR,_C;
 public:
+  // ..................................................................internal
   vesMatrix4x4f Eval()
-  {
-    return T * C * R * SR * S * SRI * CI;
-  }
-
-  void SetTranslation(vesVector3f trans)
-  {
-    T = makeTranslationMatrix4x4(trans);
-  }
-  void SetCenter(vesVector3f center)
-  {
-    C = makeTranslationMatrix4x4(center);
-    CI = makeInverseMatrix4x4(C);
-  }
-  void SetRotation(vesVector4f rot)
-  {
-    R = makeRotationMatrix4x4(rot[3], rot[0], rot[1], rot[2]);
-  }
-
-  void SetScaleOrientation(vesVector4f sr)
-  {
-    SR = makeRotationMatrix4x4(sr[3], sr[0], sr[1], sr[2]);
-    SRI = makeInverseMatrix4x4(SR);
-  }
-
-  void SetScale(vesVector3f scale)
-  {
-    S = makeScaleMatrix4x4(scale[0],scale[1],scale[2]);
-  }
+    {
+      return T * C * R * SR * S * _SR * _C;
+    }
+  // ..................................................................internal
+  void SetTranslation(SFVec3f trans)
+    {
+      T = makeTranslationMatrix4x4(trans);
+    }
+  // .................................................................internal
+  void SetCenter(SFVec3f center)
+    {
+      C = makeTranslationMatrix4x4(center);
+      _C = makeInverseMatrix4x4(C);
+    }
+  // ..................................................................internal
+  void SetRotation(SFRotation rot)
+    {
+      R = makeRotationMatrix4x4(rot[3], rot[0], rot[1], rot[2]);
+    }
+  // ..................................................................internal
+  void SetScaleOrientation(SFVec4f sr)
+    {
+      SR = makeRotationMatrix4x4(sr[3], sr[0], sr[1], sr[2]);
+      _SR = makeInverseMatrix4x4(SR);
+    }
+  // ..................................................................internal
+  void SetScale(SFVec3f scale)
+    {
+      S = makeScaleMatrix4x4(scale[0],scale[1],scale[2]);
+    }
 };
+
 
 // -----------------------------------------------------------------------cnstr
 Transform::Transform()
 {
-  this->Internals = new TransformInternals;
-  vesVector3f center(0,0,0);
-  vesVector4f rotation(0,0,1,0);
-  vesVector3f scale(1,1,1);
-  vesVector4f scaleOrientation(0,0,1,0);
-  vesVector3f translation(0,0,0);
-  this->Center = center;
-  this->Rotation = rotation;
-  this->Scale = scale;
-  this->ScaleOrientation = scaleOrientation;
-  this->Translation = translation;
+  _internal = new TransformInternal();
 }
 
 // -----------------------------------------------------------------------destr
 Transform::~Transform()
 {
-  delete this->Internals;
-}
-
-// ----------------------------------------------------------------------public
-vesMatrix4x4f Transform::Eval()
-{
-  this->SetInternals();
-  return this->Internals->Eval();
-}
-
-// ----------------------------------------------------------------------public
-// void Transform::Render(Painter *render)
-// {
-//   render->Transform(this);
-// }
-
-// ---------------------------------------------------------------------private
-vesMatrix4x4f Transform::ComputeTransform()
-{
-  this->SetInternals();
-  return this->Internals->Eval();
+  delete _internal;
 }
 
 // ---------------------------------------------------------------------private
-void Transform::SetInternals()
+void Transform::setInternals()
 {
-  this->Internals->SetTranslation(this->Translation);
-  this->Internals->SetCenter(this->Center);
-  this->Internals->SetRotation(this->Rotation);
-  this->Internals->SetScaleOrientation(this->ScaleOrientation);
-  this->Internals->SetScale(this->Scale);
+  _internal->SetTranslation(_translation);
+  _internal->SetCenter(_center);
+  _internal->SetRotation(_rotation);
+  _internal->SetScaleOrientation(_scaleOrientation);
+  _internal->SetScale(_scale);
 }
 
-// void Transform::Handle(vesController *handle)
-// {
-//   handle->Transform(this);
-// }
+// ---------------------------------------------------------------------private
+SFMatrix4f Transform::computeTransform()
+{
+  setInternals();
+  return _internal->Eval();
+}
+
+// ----------------------------------------------------------------------public
+SFMatrix4f Transform::eval()
+{
+  setInternals();
+  return _internal->Eval();
+}
+  
+bool Transform::accept(vsgVisitor* vsgVisitor)
+  {
+    return vsgVisitor->visitTransform(this);
+  }
+}

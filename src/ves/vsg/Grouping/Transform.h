@@ -1,35 +1,56 @@
+// ============================================================================
+/**
+ * @file   Transform.h
+ *
+ * @section COPYRIGHT
+ *
+ * Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
+ * All rights reserved.
+ * See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
+ *
+ *   This software is distributed WITHOUT ANY WARRANTY; without even
+ *   the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ *   PURPOSE.  See the above copyright notice for more information.
+ *
+ * @section DESCRIPTION
+ *
+ *
+ *
+ * @author nikhil shetty <nikhil.shetty@kitware.com>
+ */
+// ============================================================================
 #ifndef __Transform_h
 #define __Transform_h
+// --------------------------------------------------------------------includes
+# include "vsgMacro.h"
+# include "vsgTypes.h"
+# include "vsgGroupingNode.h"
+namespace vsg{
+// -------------------------------------------------------------pre-defines
+class TransformInternal;
 
-#include "vsgGroupingNode.h"
-
-class TransformInternals;
-
-class Transform: public vsgGroupingNode
+// -------------------------------------------------------------------class
+class Transform : public vsgGroupingNode
 {
 public:
+  // ........................................................public-methods
   Transform();
   virtual ~Transform();
-  //void Handle(vesController *handle);
-  //void Render(Painter *render);
-  vesMatrix4x4f Eval();
-  vesSetGetMacro(Center,vesVector3f)
-  vesSetGetMacro(Rotation, vesVector4f)
-  vesSetGetMacro(Scale, vesVector3f)
-  vesSetGetMacro(ScaleOrientation, vesVector4f)
-  vesSetGetMacro(Translation,vesVector3f)
+  InOutSF(center,SFVec3f)
+  InOutSF(rotation,SFRotation)
+  InOutSF(scale,SFVec3f)
+  InOutSF(scaleOrientation,SFVec4f)
+  InOutSF(translation,SFVec3f)
+  SFMatrix4f eval();
+  bool accept(vsgVisitor* vsgVisitor);
+protected:
+  // .......................................................protected-ivars
 
 private:
-  void SetInternals();
-  vesMatrix4x4f ComputeTransform();
-
-protected:
-  vesVector3f Center;
-  vesVector4f Rotation;
-  vesVector3f Scale;
-  vesVector4f ScaleOrientation;
-  vesVector3f Translation;
-  TransformInternals *Internals;
+  // .........................................................private-ivars
+  TransformInternal *_internal;
+  void setInternals();
+  SFMatrix4f computeTransform();
 };
-
-#endif
+}
+#endif // __Transform_h

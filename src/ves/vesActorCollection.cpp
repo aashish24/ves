@@ -72,7 +72,7 @@ bool vesActorCollection::Read()
 
  vesMatrix4x4f vesActorCollection::Eval()
  {
-   return Transform::Eval();
+   return Transform::eval();
  }
 
 void vesActorCollection::Render(Painter *render)

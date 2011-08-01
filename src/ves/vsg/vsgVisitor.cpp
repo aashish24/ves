@@ -47,20 +47,20 @@ vsgVisitor::~vsgVisitor()
 }
 
 // // ---------------------------------------------------------------------public
-// bool vsgVisitor::visitTransform(vsg::Transform* transform)
-// {
-//   std::cout << "Visiting: Transform" << std::endl;
-//   // If there are children nodes then iternate through and render
-//   MFNode children = transform->get_children();
-//   if (children.size())
-//   {
-//     for (int i = 0; i < children.size(); ++i)
-//     {
-//       children[i]->accept(this);
-//     }
-//   }
-//   return true;
-// }
+bool vsgVisitor::visitTransform(vsg::Transform* transform)
+{
+  std::cout << "Visiting: Transform" << std::endl;
+  // If there are children nodes then iternate through and render
+  MFNode children = transform->get_children();
+  if (children.size())
+  {
+    for (int i = 0; i < children.size(); ++i)
+    {
+      children[i]->accept(this);
+    }
+  }
+  return true;
+}
 
 // // ---------------------------------------------------------------------public
 // bool vsgVisitor::visitShape(vsg::Shape* shape)

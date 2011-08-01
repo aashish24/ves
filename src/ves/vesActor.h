@@ -21,7 +21,7 @@
 // --------------------------------------------------------------------includes
 #include "vesGMTL.h"
 #include "vesShaderProgram.h"
-#include "Transform.h"
+#include "vsg/Grouping/Transform.h"
 #include "Shape.h"
 #include "vesSetGet.h"
 #include <list>
@@ -34,7 +34,7 @@ class Appearance;
 class vesMultitouchWidget;
 
 // -----------------------------------------------------------------------class
-class vesActor : public Transform
+class vesActor : public vsg::Transform
 {
 public:
   // ............................................................public-methods

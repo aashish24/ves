@@ -36,7 +36,7 @@ public:
   // ............................................................public-methods
   vsgNode();
   ~vsgNode();
-  //virtual bool accept(vsgVisitor *vsgVisitor)=0;
+  virtual bool accept(vsgVisitor *vsgVisitor);
   virtual bool Read() = 0;
   virtual void Render(Painter * render) =0;
 protected:

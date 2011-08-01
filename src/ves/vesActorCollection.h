@@ -19,14 +19,14 @@
 #ifndef __vesActorCollection_h
 #define __vesActorCollection_h
 // --------------------------------------------------------------------includes
-#include "Transform.h"
+#include "vsg/Grouping/Transform.h"
 
 // -----------------------------------------------------------------pre-defines
 class vesActorCollectionInternal;
 class vesActor;
 
 // -----------------------------------------------------------------------class
-class vesActorCollection : public Transform
+class vesActorCollection : public vsg::Transform
 {
 public:
   // ............................................................public-methods

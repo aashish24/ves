@@ -81,7 +81,7 @@ void vesActor::SetColor(float r, float g, float b, float a)
 // ----------------------------------------------------------------------public
 vesMatrix4x4f vesActor::Eval()
 {
-  return this->Transform::Eval();
+  return this->Transform::eval();
 }
 
 // ----------------------------------------------------------------------public
