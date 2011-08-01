@@ -28,7 +28,7 @@
 // --------------------------------------------------------------------includes
 #include "vsg/Utility/vsgMacro.h"
 #include "vsg/Utility/vsgTypes.h"
-#include "vsg/Render/vsgGeometricPropertyNode.h"
+#include "vsg/Rendering/vsgGeometricPropertyNode.h"
 
 // -----------------------------------------------------------------pre-defines
 
