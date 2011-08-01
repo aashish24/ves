@@ -10,7 +10,6 @@ set(sources
   vesByteSwap.cpp
   vesCamera.cpp
   vesCameraSensor.cpp
-  vesController.cpp
   vesFileReader.cpp
   vesGMTL.cpp
   vesLegacyReader.cpp
