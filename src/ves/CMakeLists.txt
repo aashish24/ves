@@ -42,6 +42,8 @@ set(sources
   vsg/Shape/vsgShapeNode.cpp
   vsg/Shape/Appearance.cpp
   vsg/Shape/Shape.cpp
+  vsg/Texture/vsgTextureCoordinateNode.cpp
+  vsg/Rendering/vsgGeometricPropertyNode.cpp
 )
 
 include_directories( vsg
