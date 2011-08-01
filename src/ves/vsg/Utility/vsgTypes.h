@@ -38,7 +38,7 @@ typedef gmtl::Matrix<double,3,3> SFMatrix3d;
 typedef gmtl::Matrix<float,3,3> SFMatrix3f;
 typedef gmtl::Matrix<double,4,4> SFMatrix4d;
 typedef gmtl::Matrix<float,4,4> SFMatrix4f;
-typedef gmtl::Vec3f SFRotation;
+typedef gmtl::Vec4f SFRotation;
 typedef std::string SFString;
 typedef gmtl::Vec2f SFVec2f;
 typedef gmtl::Vec2d SFVec2d;

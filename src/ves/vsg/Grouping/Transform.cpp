@@ -68,6 +68,11 @@ public:
 Transform::Transform()
 {
   _internal = new TransformInternal();
+  _center = SFVec3f (0,0,0);
+  _rotation = SFRotation(0,0,1,0);
+  _scale = SFVec3f(1,1,1);
+  _scaleOrientation =  SFVec4f(0,0,1,0);
+  _translation = SFVec3f(0,0,0);
 }
 
 // -----------------------------------------------------------------------destr
@@ -99,7 +104,7 @@ SFMatrix4f Transform::eval()
   setInternals();
   return _internal->Eval();
 }
-  
+
 bool Transform::accept(vsgVisitor* vsgVisitor)
   {
     return vsgVisitor->visitTransform(this);
