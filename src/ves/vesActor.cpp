@@ -115,10 +115,10 @@ void vesActor::AddShapeChild(vsg::Shape* shape)
 void vesActor::ComputeBounds()
 {
   _shape->ComputeBounds();
-  vesVector3f min = transformPoint3f(this->Eval(), _shape->GetMin());
-  vesVector3f max = transformPoint3f(this->Eval(), _shape->GetMax());
-  SetBBoxCenter(min,max);
-  SetBBoxSize(min,max);
+  vesVector3f min = transformPoint3f(this->Eval(), _shape->get_min());
+  vesVector3f max = transformPoint3f(this->Eval(), _shape->get_max());
+  set_BBoxCenter(min,max);
+  set_BBoxSize(min,max);
 }
 
 // ----------------------------------------------------------------------public

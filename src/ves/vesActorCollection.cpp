@@ -89,8 +89,8 @@ void vesActorCollection::ComputeBounds()
     {
     vesActor* child = (vesActor*) this->get_children()[i];
     child->ComputeBounds();
-    vesVector3f min = child->GetMin();
-    vesVector3f max = child->GetMax();
+    vesVector3f min = child->get_min();
+    vesVector3f max = child->get_max();
 
     if (i == 0)
       {
@@ -111,6 +111,6 @@ void vesActorCollection::ComputeBounds()
       }
     }
 
-  SetBBoxCenter(allMin, allMax);
-  SetBBoxSize(allMin, allMax);
+  set_BBoxCenter(allMin, allMax);
+  set_BBoxSize(allMin, allMax);
 }

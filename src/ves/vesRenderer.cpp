@@ -107,7 +107,7 @@ vesVector3f vesRenderer::ComputeWorldToDisplay(vesVector3f world)
   view[0] /= view[3];
   view[1] /= view[3];
   view[2] /= view[3];
-  
+
   //
   // ViewToDisplay
   //
@@ -132,7 +132,7 @@ vesVector3f vesRenderer::ComputeDisplayToWorld(vesVector3f display)
 
   //
   // ViewToWorld
-  //  
+  //
   vesMatrix4x4f proj_mat = this->Camera->ComputeProjectionTransform(this->Aspect[1], 0, 1);
   vesMatrix4x4f view_mat = this->Camera->ComputeViewTransform();
   vesMatrix4x4f mat = proj_mat*view_mat;
@@ -150,7 +150,7 @@ void vesRenderer::ResetCamera()
 {
   this->Actor->Read();
   this->Actor->ComputeBounds();
-  vesVector3f center = this->Actor->GetBBoxCenter();
+  vesVector3f center = this->Actor->get_BBoxCenter();
 
   double distance;
   vesVector3f vn, vup;
@@ -204,12 +204,12 @@ void vesRenderer::ResetCamera()
   this->Camera->SetPosition(temp);
 
   float bounds[6];
-  bounds[0] = this->Actor->GetMin()[0];
-  bounds[1] = this->Actor->GetMax()[0];
-  bounds[2] = this->Actor->GetMin()[1];
-  bounds[3] = this->Actor->GetMax()[1];
-  bounds[4] = this->Actor->GetMin()[2];
-  bounds[5] = this->Actor->GetMax()[2];
+  bounds[0] = this->Actor->get_min()[0];
+  bounds[1] = this->Actor->get_max()[0];
+  bounds[2] = this->Actor->get_min()[1];
+  bounds[3] = this->Actor->get_max()[1];
+  bounds[4] = this->Actor->get_min()[2];
+  bounds[5] = this->Actor->get_max()[2];
 
   this->ResetCameraClippingRange(bounds);
   // setup default parallel scale
@@ -220,14 +220,14 @@ void vesRenderer::ResetCamera()
 void vesRenderer::ResetCameraClippingRange()
 {
   this->Actor->Read();
-  this->Actor->ComputeBounds();  
+  this->Actor->ComputeBounds();
   float bounds[6];
-  bounds[0] = this->Actor->GetMin()[0];
-  bounds[1] = this->Actor->GetMax()[0];
-  bounds[2] = this->Actor->GetMin()[1];
-  bounds[3] = this->Actor->GetMax()[1];
-  bounds[4] = this->Actor->GetMin()[2];
-  bounds[5] = this->Actor->GetMax()[2];
+  bounds[0] = this->Actor->get_min()[0];
+  bounds[1] = this->Actor->get_max()[0];
+  bounds[2] = this->Actor->get_min()[1];
+  bounds[3] = this->Actor->get_max()[1];
+  bounds[4] = this->Actor->get_min()[2];
+  bounds[5] = this->Actor->get_max()[2];
 
   this->ResetCameraClippingRange(bounds);
 }

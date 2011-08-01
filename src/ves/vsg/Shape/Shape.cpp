@@ -76,8 +76,8 @@ void vsg::Shape::ComputeBounds()
   if(mapper)
     {
       mapper->ComputeBounds();
-      SetBBoxCenter(mapper->GetMin(),mapper->GetMax());
-      SetBBoxSize(mapper->GetMin(),mapper->GetMax());
+      set_BBoxCenter(mapper->get_min(),mapper->get_max());
+      set_BBoxSize(mapper->get_min(),mapper->get_max());
     }
 }
 

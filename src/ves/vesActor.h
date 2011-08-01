@@ -47,8 +47,6 @@ public:
   void Render(Painter* render);
   vesSetGetMacro(Sensor,bool)
   vesSetGetMacro(Widget,vesMultitouchWidget*);
-  vesGetMacro(Min, vesVector3f)
-  vesGetMacro(Max, vesVector3f)
   bool SetVisible(bool value);
   bool isVisible();
   vesMapper* GetMapper();

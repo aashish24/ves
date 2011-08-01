@@ -59,8 +59,6 @@ namespace vsg {
     bool Read();                // Should be deleted
     void Render(Painter* render); // Should be deleted
     void ComputeBounds();         // Should be deleted
-    vesGetMacro(Min, vesVector3f) // Should be deleted
-    vesGetMacro(Max, vesVector3f) // Should be deleted
 
     protected:
     // .......................................................protected-ivars

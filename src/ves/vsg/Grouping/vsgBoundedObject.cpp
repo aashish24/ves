@@ -1,66 +1,68 @@
-/*=========================================================================
-
-  Program:   Visualization Toolkit
-  Module:    vsgBoundedObject.cxx
-
-  Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
-  All rights reserved.
-  See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
-
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-     PURPOSE.  See the above copyright notice for more information.
-
-=========================================================================*/
-#include "vsgBoundedObject.h"
+// ============================================================================
+/**
+ * @file   vsgBoundedObject.cpp
+ *
+ * @section COPYRIGHT
+ *
+ * Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
+ * All rights reserved.
+ * See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
+ *
+ *   This software is distributed WITHOUT ANY WARRANTY; without even
+ *   the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ *   PURPOSE.  See the above copyright notice for more information.
+ *
+ * @author nikhil shetty <nikhil.shetty@kitware.com>
+ */
+// ============================================================================
+# include "vsgBoundedObject.h"
 
 // -----------------------------------------------------------------------cnstr
 vsgBoundedObject::vsgBoundedObject()
 {
-  this->BBoxCenter[0] = 0;
-  this->BBoxCenter[1] = 0;
-  this->BBoxCenter[2] = 0;
-  this->BBoxSize[0] = -1;
-  this->BBoxSize[1] = -1;
-  this->BBoxSize[2] = -1;
-  this->Min[0] = 0;
-  this->Min[1] = 0;
-  this->Min[2] = 0;
-  this->Max[0] = 0;
-  this->Max[1] = 0;
-  this->Max[2] = 0;
+  this->_BBoxCenter[0] = 0;
+  this->_BBoxCenter[1] = 0;
+  this->_BBoxCenter[2] = 0;
+  this->_BBoxSize[0] = -1;
+  this->_BBoxSize[1] = -1;
+  this->_BBoxSize[2] = -1;
+  this->_min[0] = 0;
+  this->_min[1] = 0;
+  this->_min[2] = 0;
+  this->_max[0] = 0;
+  this->_max[1] = 0;
+  this->_max[2] = 0;
 }
 
 // -----------------------------------------------------------------------destr
 vsgBoundedObject::~vsgBoundedObject()
 {
-
 }
 
-void vsgBoundedObject::SetBBoxCenter(vesVector3f min, vesVector3f max)
+void vsgBoundedObject::set_BBoxCenter(vesVector3f min, vesVector3f max)
 {
-  this->Min = (min);
-  this->Max = (max);
-  this->BBoxCenter = max + min;
-  this->BBoxCenter /= 2.0f;
+  this->_min = (min);
+  this->_max = (max);
+  this->_BBoxCenter = max + min;
+  this->_BBoxCenter /= 2.0f;
 }
 
-void vsgBoundedObject::SetBBoxSize(vesVector3f min, vesVector3f max)
+void vsgBoundedObject::set_BBoxSize(vesVector3f min, vesVector3f max)
 {
-  this->Min = (min);
-  this->Max = (max);
-  this->BBoxSize = max-min;
+  this->_min = (min);
+  this->_max = (max);
+  this->_BBoxSize = max-min;
   for (int i=0; i<3; ++i) {
-    if(this->BBoxSize[i]<0)
+    if(this->_BBoxSize[i]<0)
     {
-      this->BBoxSize *= -1;
+      this->_BBoxSize *= -1;
     }
   }
 }
 
 float vsgBoundedObject::GetBBoxRadius()
 {
-  vesVector3f temp = this->BBoxSize;
+  vesVector3f temp = this->_BBoxSize;
   return sqrt(temp[0]*temp[0]+
               temp[1]*temp[1]+
               temp[2]*temp[2]);

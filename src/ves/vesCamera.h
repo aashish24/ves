@@ -16,9 +16,6 @@ public:
   void ComputeBounds();
   void AddActorCollection(vesActorCollection* actor);
 
-  vesGetMacro(Min, vesVector3f)
-  vesGetMacro(Max, vesVector3f)
-
   vesSetGetMacro(UseHorizontalViewAngle,bool)
   vesSetGetMacro(ViewPlaneNormal,vesVector3f)
   vesSetGetMacro(ViewAngle, float)

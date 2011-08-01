@@ -25,8 +25,6 @@ set(sources
   vesSTLReader.cpp
   vesTriangleData.cpp
 
-  vsg/Grouping/vsgBoundedObject.cpp
-
   # ------------------------------------------------------------------------vsg
   vsg/vsgVisitor.cpp
 
@@ -37,6 +35,7 @@ set(sources
   vsg/Core/vsgSensorNode.cpp
 
   # -------------------------------------------------------------------Grouping
+  vsg/Grouping/vsgBoundedObject.cpp  
   vsg/Grouping/vsgGroupingNode.cpp
   vsg/Grouping/Transform.cpp
 

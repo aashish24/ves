@@ -39,8 +39,6 @@ public:
   vesMatrix4x4f Eval();
   void Render(Painter *render);
   void ComputeBounds();
-  vesGetMacro(Min, vesVector3f)
-  vesGetMacro(Max, vesVector3f)
 protected:
   // ...........................................................protected-ivars
 protected:
