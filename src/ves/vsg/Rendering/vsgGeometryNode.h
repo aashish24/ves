@@ -1,52 +1,43 @@
-/*=========================================================================
-
-  Program:   Visualization Toolkit
-  Module:    vsgGeometryNode.h
-
-  Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
-  All rights reserved.
-  See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
-
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-     PURPOSE.  See the above copyright notice for more information.
-
-=========================================================================*/
-// .NAME vsgGeometryNode - describes geometry
-// .SECTION Description
-// vsgGeometryNode describes geometry
-
+// ============================================================================
+/**
+ * @file   vsgGeometryNode.h
+ *
+ * @section COPYRIGHT
+ *
+ * Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
+ * All rights reserved.
+ * See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
+ *
+ *   This software is distributed WITHOUT ANY WARRANTY; without even
+ *   the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ *   PURPOSE.  See the above copyright notice for more information.
+ *
+ * @section DESCRIPTION
+ *
+ * Base node for all geometry
+ *
+ * @author nikhil shetty <nikhil.shetty@kitware.com>
+ */
+// ============================================================================
 #ifndef __vsgGeometryNode_h
 #define __vsgGeometryNode_h
 // --------------------------------------------------------------------includes
-#include "vsgNode.h"
-#include "vesGMTL.h"
-// -----------------------------------------------------------------pre-defines
-class vsgGeometryNodeInternal;
+# include "vsgMacro.h"
+# include "vsgTypes.h"
+# include "vsgNode.h"
 
-// -----------------------------------------------------------------------class
-class vsgGeometryNode : public vsgNode
-{
-public:
-  // ............................................................public-methods
-  vsgGeometryNode();
-  ~vsgGeometryNode();
-  
-protected:
-  // ...........................................................protected-ivars
+    // -------------------------------------------------------------pre-defines
 
-protected:
-//BTX
-  // .......................................................................BTX
+    // -------------------------------------------------------------------class
+    class vsgGeometryNode: public vsgNode
+    {
+      public:
+      // ........................................................public-methods
+      vsgGeometryNode();
+      virtual ~vsgGeometryNode();
 
-private:
-  vsgGeometryNodeInternal *Internal;
-  // vsgGeometryNode(const vsgGeometryNode&); // Not implemented.
-  // void operator=(const vsgGeometryNode&); // Not implemented.
-//ETX
-  // .......................................................................ETX
+      protected:
+      // .......................................................protected-ivars
 
-
-};
-
+    };
 #endif // __vsgGeometryNode_h

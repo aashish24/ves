@@ -32,7 +32,7 @@ set(sources
   vsg/Grouping/vsgBoundedObject.cpp
 
   vsg/Grouping/Transform.cpp
-  vsg/Rendering/vsgGeometryNode.cpp
+
   vsg/Shader/vsgProgrammableShaderObject.cpp
   vsg/Shader/vsgShaderNode.cpp
   vsg/Shape/vsgShapeNode.cpp
@@ -52,8 +52,13 @@ set(sources
   vsg/Navigation/Viewpoint.cpp
   vsg/Navigation/vsgViewpointNode.cpp
 
-  vsg/Texture/vsgTextureCoordinateNode.cpp
+  # ------------------------------------------------------------------Rendering
   vsg/Rendering/vsgGeometricPropertyNode.cpp
+  vsg/Rendering/vsgGeometryNode.cpp
+
+  # --------------------------------------------------------------------Texture
+  vsg/Texture/vsgTextureCoordinateNode.cpp
+
 )
 
 include_directories( vsg
