@@ -26,14 +26,8 @@ set(sources
   vesSTLReader.cpp
   vesTriangleData.cpp
 
-
-
-
   vsg/Grouping/vsgBoundedObject.cpp
-
   vsg/Grouping/Transform.cpp
-
-  
 
   vsg/Shape/Appearance.cpp
   vsg/Shape/Shape.cpp
@@ -88,7 +82,6 @@ set(sources
 
   # --------------------------------------------------------------------Texture
   vsg/Texture/vsgTextureCoordinateNode.cpp
-
 )
 
 include_directories( vsg
