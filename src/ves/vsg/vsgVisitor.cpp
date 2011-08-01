@@ -119,13 +119,12 @@ bool vsgVisitor::visitIndexedTriangleSet(vsg::IndexedTriangleSet* indexedTriangl
   return true;
 }
 
-// // ----------------------------------------------------------------------public
-// bool vsgVisitor::visitNormal(vsg::Normal* normal)
-// {
-//   std::cout << "Visiting: Normal" << std::endl;
-
-// return true;
-// }
+// ----------------------------------------------------------------------public
+bool vsgVisitor::visitNormal(vsg::Normal* normal)
+{
+  std::cout << "Visiting: Normal" << std::endl;
+  return true;
+}
 
 // // ----------------------------------------------------------------------public
 // bool vsgVisitor::visitComposedShader(vsg::ComposedShader* composedShader)
