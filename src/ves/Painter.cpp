@@ -137,7 +137,7 @@ void Painter::ActorCollection(vesActorCollection *actor)
 }
 
 // ----------------------------------------------------------------------public
-void Painter::visitShape(Shape* shape)
+void Painter::visitShape(vsg::Shape* shape)
 {
   //std::cout << "Render: Shape" <<std::endl;
   shape->get_appearance() -> Render(this);

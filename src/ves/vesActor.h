@@ -22,7 +22,7 @@
 #include "vesGMTL.h"
 #include "vesShaderProgram.h"
 #include "vsg/Grouping/Transform.h"
-#include "Shape.h"
+#include "vsg/Shape/Shape.h"
 #include "vesSetGet.h"
 #include <list>
 
@@ -57,7 +57,7 @@ public:
 protected:
   // ...........................................................protected-ivars
   Appearance *_appearance;
-  Shape *_shape;
+  vsg::Shape *_shape;
   bool Sensor;
   vesMultitouchWidget* Widget;
   vesMapper *Mapper;
@@ -65,7 +65,7 @@ protected:
 protected:
 //BTX
   // .......................................................................BTX
-  void AddShapeChild(Shape* shape);
+  void AddShapeChild(vsg::Shape* shape);
 private:
   vesActorInternal *Internal;
 //ETX

@@ -27,9 +27,7 @@ set(sources
 
   vsg/Grouping/vsgBoundedObject.cpp
 
-
   vsg/Shape/Appearance.cpp
-  vsg/Shape/Shape.cpp
 
   # ------------------------------------------------------------------------vsg
   vsg/vsgVisitor.cpp
@@ -79,6 +77,7 @@ set(sources
   vsg/Shape/vsgAppearanceNode.cpp
   vsg/Shape/vsgMaterialNode.cpp
   vsg/Shape/vsgShapeNode.cpp
+  vsg/Shape/Shape.cpp
 
   # --------------------------------------------------------------------Texture
   vsg/Texture/vsgTextureCoordinateNode.cpp

@@ -37,7 +37,7 @@ class vesActorInternal
 vesActor::vesActor(vesShader *shader,vesMapper* mapper,vesMultitouchWidget *widget)
 {
   this->Internal = new vesActorInternal();
-  this->_shape = new Shape();
+  this->_shape = new vsg::Shape();
   this->_appearance = new Appearance();
   this->_appearance->SetShader(shader);
   this->_shape->set_geometry(mapper);
@@ -102,7 +102,7 @@ void vesActor::Render(Painter* render)
 }
 
 // ----------------------------------------------------------------------public
-void vesActor::AddShapeChild(Shape* shape)
+void vesActor::AddShapeChild(vsg::Shape* shape)
 {
   MFNode temp;
   temp.push_back(shape);

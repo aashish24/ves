@@ -20,7 +20,7 @@
 #define __Painter_h
 // --------------------------------------------------------------------includes
 // #include "Transform.h"
-# include "Shape.h"
+# include "vsg/Shape/Shape.h"
 # include "vesActorCollection.h"
 # include "vesActor.h"
 # include "vesShader.h"
@@ -39,7 +39,7 @@ public:
   Painter();
   ~Painter();
   // void Transform(Transform* transform);
-  void visitShape(Shape* shape);
+  void visitShape(vsg::Shape* shape);
   void Shader(vesShader * shader);
   void Mapper(vesMapper *mapper);
   void Actor(vesActor * actor);

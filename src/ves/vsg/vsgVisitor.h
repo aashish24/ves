@@ -36,7 +36,7 @@
 #include "vsg/Shader/ShaderPart.h"
 // #include "vsg/Shader/ShaderProgram.h"
 
-// #include "vsg/Shape/Shape.h"
+#include "vsg/Shape/Shape.h"
 // #include "vsg/Shape/Appearance.h"
 
 // -----------------------------------------------------------------pre-defines
@@ -67,7 +67,7 @@ public:
   virtual bool visitShaderPart(vsg::ShaderPart* shaderPart);
   // virtual bool visitShaderProgram(ShaderProgram *shaderProgram);
 
-  // virtual bool visitShape(vsg::Shape *shape);
+  virtual bool visitShape(vsg::Shape *shape);
   // virtual bool visitAppearance(vsg::Appearance *appearance);
 
 protected:

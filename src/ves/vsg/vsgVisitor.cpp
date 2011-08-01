@@ -62,28 +62,6 @@ bool vsgVisitor::visitTransform(vsg::Transform* transform)
   return true;
 }
 
-// // ---------------------------------------------------------------------public
-// bool vsgVisitor::visitShape(vsg::Shape* shape)
-// {
-//   std::cout << "Visiting: Shape" <<std::endl;
-//   shape->get_appearance()->accept(this);
-//   shape->get_geometry()->accept(this);
-//   return true;
-// }
-
-// // ---------------------------------------------------------------------public
-// bool vsgVisitor::visitAppearance(vsg::Appearance *appearance)
-// {
-//   std::cout << "Visiting: Appearance" << std::endl;
-//   MFNode shaders = appearance->get_shaders();
-//   for(int i =0; i< shaders.size(); ++i)
-//   {
-//     shaders[i]->accept(this);
-//   }
-
-//   return true;
-// }
-
 // ----------------------------------------------------------------------public
 bool vsgVisitor::visitClipPlane(vsg::ClipPlane* clipPlane)
 {
@@ -178,6 +156,28 @@ bool vsgVisitor::visitShaderPart(vsg::ShaderPart* shaderPart)
   std::cout << "Visiting: ShaderPart" << std::endl;
   return true;
 }
+
+// ---------------------------------------------------------------------public
+bool vsgVisitor::visitShape(vsg::Shape* shape)
+{
+  std::cout << "Visiting: Shape" <<std::endl;
+  shape->get_appearance()->accept(this);
+  shape->get_geometry()->accept(this);
+  return true;
+}
+
+// // ---------------------------------------------------------------------public
+// bool vsgVisitor::visitAppearance(vsg::Appearance *appearance)
+// {
+//   std::cout << "Visiting: Appearance" << std::endl;
+//   MFNode shaders = appearance->get_shaders();
+//   for(int i =0; i< shaders.size(); ++i)
+//   {
+//     shaders[i]->accept(this);
+//   }
+
+//   return true;
+// }
 
 // #if 0
 // // ---------------------------------------------------------------------public
