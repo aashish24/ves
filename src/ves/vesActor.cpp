@@ -37,11 +37,13 @@ class vesActorInternal
 vesActor::vesActor(vesShader *shader,vesMapper* mapper,vesMultitouchWidget *widget)
 {
   this->Internal = new vesActorInternal();
-  this->_shape = new Shape();
-  this->_appearance = new Appearance();
-  this->_appearance->SetShader(shader);
-  this->_shape->SetGeometry(mapper);
-  this->_shape->SetAppearance(this->_appearance);
+  this->_shape = new vsg::Shape();
+  this->_appearance = new vsg::Appearance();
+  MFNode shaders;
+  shaders.push_back(shader);
+  this->_appearance->set_shaders(shaders);
+  this->_shape->set_geometry(mapper);
+  this->_shape->set_appearance(this->_appearance);
   this->Mapper = mapper;        // This is used to make the actor visible again
   AddShapeChild(this->_shape);
   if(widget)
@@ -81,16 +83,16 @@ void vesActor::SetColor(float r, float g, float b, float a)
 // ----------------------------------------------------------------------public
 vesMatrix4x4f vesActor::Eval()
 {
-  return this->Transform::Eval();
+  return this->Transform::eval();
 }
 
 // ----------------------------------------------------------------------public
 bool vesActor::Read()
 {
   //std::cout << "Read: Actor" <<std::endl;
-  for (int i = 0; i < this->Children.size(); ++i)
+  for (int i = 0; i < this->get_children().size(); ++i)
     {
-      this->Children[i]->Read();
+      this->get_children()[i]->Read();
     }
   return true;
 }
@@ -102,21 +104,21 @@ void vesActor::Render(Painter* render)
 }
 
 // ----------------------------------------------------------------------public
-void vesActor::AddShapeChild(Shape* shape)
+void vesActor::AddShapeChild(vsg::Shape* shape)
 {
-  std::vector<vsgChildNode*> temp;
+  MFNode temp;
   temp.push_back(shape);
-  SetChildren(temp);
+  set_children(temp);
 }
 
 // ----------------------------------------------------------------------public
 void vesActor::ComputeBounds()
 {
   _shape->ComputeBounds();
-  vesVector3f min = transformPoint3f(this->Eval(), _shape->GetMin());
-  vesVector3f max = transformPoint3f(this->Eval(), _shape->GetMax());
-  SetBBoxCenter(min,max);
-  SetBBoxSize(min,max);
+  vesVector3f min = transformPoint3f(this->Eval(), _shape->get_min());
+  vesVector3f max = transformPoint3f(this->Eval(), _shape->get_max());
+  set_BBoxCenter(min,max);
+  set_BBoxSize(min,max);
 }
 
 // ----------------------------------------------------------------------public
@@ -124,11 +126,11 @@ bool vesActor::SetVisible(bool value)
 {
   if(value)
     {
-      this->_shape->SetGeometry(this->Mapper);
+      this->_shape->set_geometry(this->Mapper);
     }
   else
     {
-      this->_shape->SetGeometry(NULL);
+      this->_shape->set_geometry(NULL);
     }
   this->Visible = value;
   return true;
@@ -139,5 +141,3 @@ bool vesActor::isVisible()
 {
   return true;
 }
-
-

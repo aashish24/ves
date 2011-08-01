@@ -90,8 +90,8 @@ void vesMapper::ComputeBounds()
 {
   vesVector3f min = this->Data->GetMin();
   vesVector3f max = this->Data->GetMax();
-  SetBBoxSize(min,max);
-  SetBBoxCenter(min, max);
+  set_BBoxSize(min,max);
+  set_BBoxCenter(min, max);
   /*
   std::cout<< "BBoxSize = [ ";
   for (int i =0 ; i<3; ++i) {
@@ -112,9 +112,9 @@ void vesMapper::Normalize()
   float r = GetBBoxRadius();
   this->NormalizedMatrix =
   makeScaleMatrix4x4(1/r,1/r,1/r)*
-  makeTranslationMatrix4x4(-GetBBoxCenter());
-  SetBBoxCenter(transformPoint3f(this->NormalizedMatrix, GetBBoxCenter()));
-  SetBBoxSize(transformPoint3f(this->NormalizedMatrix, GetBBoxSize()));
+  makeTranslationMatrix4x4(-get_BBoxCenter());
+  set_BBoxCenter(transformPoint3f(this->NormalizedMatrix, get_BBoxCenter()));
+  set_BBoxSize(transformPoint3f(this->NormalizedMatrix, get_BBoxSize()));
   /*
   std::cout<< "BBoxSize = [ ";
   for (int i =0 ; i<3; ++i) {

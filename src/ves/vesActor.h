@@ -21,8 +21,9 @@
 // --------------------------------------------------------------------includes
 #include "vesGMTL.h"
 #include "vesShaderProgram.h"
-#include "Transform.h"
-#include "Shape.h"
+#include "vsg/Grouping/Transform.h"
+#include "vsg/Shape/Shape.h"
+#include "vsg/Shape/Appearance.h"
 #include "vesSetGet.h"
 #include <list>
 
@@ -30,11 +31,10 @@
 class vesActorInternal;
 class vesShader;
 class vesMapper;
-class Appearance;
 class vesMultitouchWidget;
 
 // -----------------------------------------------------------------------class
-class vesActor : public Transform
+class vesActor : public vsg::Transform
 {
 public:
   // ............................................................public-methods
@@ -47,8 +47,6 @@ public:
   void Render(Painter* render);
   vesSetGetMacro(Sensor,bool)
   vesSetGetMacro(Widget,vesMultitouchWidget*);
-  vesGetMacro(Min, vesVector3f)
-  vesGetMacro(Max, vesVector3f)
   bool SetVisible(bool value);
   bool isVisible();
   vesMapper* GetMapper();
@@ -56,8 +54,8 @@ public:
 
 protected:
   // ...........................................................protected-ivars
-  Appearance *_appearance;
-  Shape *_shape;
+  vsg::Appearance *_appearance;
+  vsg::Shape *_shape;
   bool Sensor;
   vesMultitouchWidget* Widget;
   vesMapper *Mapper;
@@ -65,7 +63,7 @@ protected:
 protected:
 //BTX
   // .......................................................................BTX
-  void AddShapeChild(Shape* shape);
+  void AddShapeChild(vsg::Shape* shape);
 private:
   vesActorInternal *Internal;
 //ETX

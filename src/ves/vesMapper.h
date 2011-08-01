@@ -27,8 +27,6 @@ public:
   vesTriangleData* GetTriangleData();
   vesTriangleData* GetData();
   void ComputeBounds();
-  vesGetMacro(Min, vesVector3f)
-  vesGetMacro(Max, vesVector3f)
   void SetColor(float r, float g, float b, float a);
   vesGetMacro(Red, float)
   vesGetMacro(Green, float)

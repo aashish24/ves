@@ -20,7 +20,7 @@
 #include <vector>
 #include "vsgChildNode.h"
 #include "vsgGeometryNode.h"
-#include "Appearance.h"
+#include "vsg/Shape/Appearance.h"
 #include "vesMultitouchWidget.h"
 
 // -----------------------------------------------------------------------macro
@@ -100,17 +100,17 @@ void Painter::Actor(vesActor * actor)
   //std::cout << "Render: Actor" <<std::endl;
   if(actor->GetSensor())
     {
-      if(actor->GetWidget()->IsActive())
+      if(actor->GetWidget()->isActive())
         {
           //std::cout<<"translating the widget" <<std::endl;
-          actor->SetTranslation(actor->GetWidget()->GetTranslation());
-          actor->SetRotation(actor->GetWidget()->GetRotation());
+          // actor->set_translation(actor->GetWidget()->GetTranslation());
+          // actor->set_rotation(actor->GetWidget()->GetRotation());
           //actor->SetScale(actor->GetWidget()->GetScale());
         }
     }
   this->Push(actor->Eval());
-  vector<vsgChildNode *> temp;
-  actor->GetChildren(&temp);
+  MFNode temp;
+  temp = actor->get_children();
   temp[0]->Render(this);
   this->Pop();
 }
@@ -123,8 +123,8 @@ void Painter::ActorCollection(vesActorCollection *actor)
   this->Push(actor->Eval());
 
   // If there are children nodes then tternate through and render
-  std::vector<vsgChildNode*> children;
-  if (actor->GetChildren(&children))
+  MFNode children = actor->get_children();;
+  if (children.size())
     {
     for (int i = 0; i < children.size(); ++i)
       {
@@ -137,13 +137,13 @@ void Painter::ActorCollection(vesActorCollection *actor)
 }
 
 // ----------------------------------------------------------------------public
-void Painter::visitShape(Shape* shape)
+void Painter::visitShape(vsg::Shape* shape)
 {
   //std::cout << "Render: Shape" <<std::endl;
-  shape->GetAppearance() -> Render(this);
-  if(shape->GetGeometry())
+  shape->get_appearance() -> Render(this);
+  if(shape->get_geometry())
     {
-    shape->GetGeometry() -> Render(this);
+    shape->get_geometry() -> Render(this);
     }
   else
     {
@@ -152,19 +152,19 @@ void Painter::visitShape(Shape* shape)
 
   std::vector<vesShaderProgram*> temp;
   vesShaderProgram * program;
-  Appearance *appear = (Appearance*) shape->GetAppearance();
-  ProgramShader *prog = (ProgramShader*) appear->GetShader();
+  vsg::Appearance *appear = (vsg::Appearance*) shape->get_appearance();
+  ProgramShader *prog = (ProgramShader*) appear->get_shaders()[0];
   if(prog->GetPrograms(&temp))
     {
       program = temp[0]; // currently we are only using one shader
     }
 
-  vesMapper* mapper = (vesMapper*)shape->GetGeometry();
+  vesMapper* mapper = (vesMapper*)shape->get_geometry();
 
   // Model-view matrix is everything except the top level matrix (the projection matrix).
   // This is needed for normal calculation.
   vesMatrix4x4f mv = this->Eval(1);
-  
+
   // The model-view-projection matrix includes everything.
   vesMatrix4x4f mvp = this->Eval(0);
 
@@ -261,11 +261,11 @@ void Painter::Camera(vesCamera *camera)
   // View = camera->ComputeViewTransform();
   // Projection = camera->ComputeProjectionTransform(this->Aspect,this->NearZ, this->FarZ);
 
- this->Push(camera->Eval());
+ this->Push(camera->eval());
 
   // If there are children nodes then tternate through and render
-  std::vector<vsgChildNode*> children;
-  if (camera->GetChildren(&children))
+ MFNode children = camera->get_children();
+ if (children.size())
     {
     for (int i = 0; i < children.size(); ++i)
       {
