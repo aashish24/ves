@@ -48,7 +48,7 @@ public:
   void ShaderProgram(vesShaderProgram *shaderProg);
   void Push(vesMatrix4x4f mat);
   void Pop();
-  
+
 protected:
   // ...........................................................protected-ivars
   std::vector<vesMatrix4x4f> MatrixStack;

@@ -2,11 +2,9 @@ project(ves)
 cmake_minimum_required(VERSION 2.8)
 
 set(sources
-  Appearance.cpp
+
   Painter.cpp
   ProgramShader.cpp
-  Shape.cpp
-  Transform.cpp
   vesActor.cpp
   vesActorCollection.cpp
   vesByteSwap.cpp
@@ -33,17 +31,28 @@ set(sources
   vsg/Core/vsgSensorNode.cpp
   vsg/Navigation/Viewpoint.cpp
   vsg/Navigation/vsgViewpointNode.cpp
-  vsgAppearanceChildNode.cpp
-  vsgAppearanceNode.cpp
-  vsgBoundedObject.cpp
-  vsgGeometryNode.cpp
-  vsgGroupingNode.cpp
-  vsgProgrammableShaderObject.cpp
-  vsgShaderNode.cpp
-  vsgShapeNode.cpp
+  vsg/Shape/vsgAppearanceChildNode.cpp
+  vsg/Shape/vsgAppearanceNode.cpp
+  vsg/Grouping/vsgBoundedObject.cpp
+  vsg/Grouping/vsgGroupingNode.cpp
+  vsg/Grouping/Transform.cpp
+  vsg/Rendering/vsgGeometryNode.cpp
+  vsg/Shader/vsgProgrammableShaderObject.cpp
+  vsg/Shader/vsgShaderNode.cpp
+  vsg/Shape/vsgShapeNode.cpp
+  vsg/Shape/Appearance.cpp
+  vsg/Shape/Shape.cpp
 )
 
-include_directories(vsg vsg/Core vsg/Navigation vsg/Utility)
+include_directories( vsg
+                     vsg/Core
+                     vsg/Grouping
+                     vsg/Navigation
+                     vsg/Rendering
+                     vsg/Shader
+                     vsg/Shape
+                     vsg/Utility )
+
 include_directories(${CMAKE_SOURCE_DIR})
 include_directories(${CMAKE_SOURCE_DIR}/..)
 add_library(ves ${sources})
