@@ -362,6 +362,7 @@
 					../../../src/ves/vsg/Rendering,
 					../../../src/ves/vsg/Shader,
 					../../../src/ves/vsg/Shape,
+					../../../src/ves/vsg/Texture,
 					../../../src/ves/vsg/Utility,
 					"../CMakeBuild/build/CMakeExternals/Install/vtkmodular-device/include/vtk",
 				);
@@ -399,6 +400,7 @@
 					../../../src/ves/vsg/Rendering,
 					../../../src/ves/vsg/Shader,
 					../../../src/ves/vsg/Shape,
+					../../../src/ves/vsg/Texture,
 					../../../src/ves/vsg/Utility,
 					"../CMakeBuild/build/CMakeExternals/Install/vtkmodular-device/include/vtk",
 				);
