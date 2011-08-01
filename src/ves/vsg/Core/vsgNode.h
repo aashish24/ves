@@ -1,22 +1,50 @@
-//
-//  vsgNode.h
-//  kiwi
-//
-//  Created by kitware on 6/10/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
-//
+// ============================================================================
+/**
+ * @file   vsgNode.h
+ *
+ * @section COPYRIGHT
+ *
+ * Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
+ * All rights reserved.
+ * See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
+ *
+ *   This software is distributed WITHOUT ANY WARRANTY; without even
+ *   the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+ *   PURPOSE.  See the above copyright notice for more information.
+ *
+ * @section DESCRIPTION
+ *
+ * Abstract base class
+ *
+ * @author nikhil shetty <nikhil.shetty@kitware.com>
+ */
+// ============================================================================
 #ifndef __vsgNode_h
 #define __vsgNode_h
+// --------------------------------------------------------------------includes
+# include "vsgMacro.h"
+# include "vsgTypes.h"
+# include <vector>
 
-//#include "Painter.h"
+// -----------------------------------------------------------------pre-defines
+// class vsgVisitor;
 class Painter;
+// -----------------------------------------------------------------------class
 class vsgNode
 {
 public:
+  // ............................................................public-methods
   vsgNode();
-  virtual ~vsgNode();
-  virtual bool Read()=0;
-  //virtual void Handle(vesController *handle) = 0;
-  virtual void Render(Painter *render)=0;
+  ~vsgNode();
+  //virtual bool accept(vsgVisitor *vsgVisitor)=0;
+  virtual bool Read() = 0;
+  virtual void Render(Painter * render) =0;
+protected:
+  // ...........................................................protected-ivars
+
 };
-#endif
+
+typedef vsgNode* SFNode;
+typedef std::vector<SFNode> MFNode;
+
+#endif // __vsgNode_h
