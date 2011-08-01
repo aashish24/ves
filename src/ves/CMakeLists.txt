@@ -34,7 +34,6 @@ set(sources
   vsg/Grouping/Transform.cpp
 
   
-  vsg/Shader/vsgShaderNode.cpp
   vsg/Shape/vsgShapeNode.cpp
   vsg/Shape/Appearance.cpp
   vsg/Shape/Shape.cpp
@@ -71,6 +70,7 @@ set(sources
 
   # ------------------------------------------------------------------Rendering
   vsg/Shader/vsgProgrammableShaderObject.cpp
+  vsg/Shader/vsgShaderNode.cpp
 
   # --------------------------------------------------------------------Texture
   vsg/Texture/vsgTextureCoordinateNode.cpp
