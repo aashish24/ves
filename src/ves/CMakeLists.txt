@@ -63,6 +63,7 @@ set(sources
   vsg/Rendering/vsgGeometryNode.cpp
   vsg/Rendering/vsgNormalNode.cpp
   vsg/Rendering/ClipPlane.cpp
+  vsg/Rendering/Color.cpp
 
   # --------------------------------------------------------------------Texture
   vsg/Texture/vsgTextureCoordinateNode.cpp

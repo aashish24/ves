@@ -25,7 +25,7 @@
 // #include "vsg/Shape/Appearance.h"
 
 #include "vsg/Rendering/ClipPlane.h"
-// #include "vsg/Render/Color.h"
+#include "vsg/Rendering/Color.h"
 // #include "vsg/Render/ColorRGBA.h"
 // #include "vsg/Render/Coordinate.h"
 // #include "vsg/Render/IndexedTriangleSet.h"
@@ -56,7 +56,7 @@ public:
   // virtual bool visitAppearance(vsg::Appearance *appearance);
 
   virtual bool visitClipPlane(vsg::ClipPlane* clipPlane);
-  // virtual bool visitColor(vsg::Color* color);
+  virtual bool visitColor(vsg::Color* color);
   // virtual bool visitColorRGBA(vsg::ColorRGBA* colorRGBA);
   // virtual bool visitCoordinate(vsg::Coordinate* coordinate);
   // virtual bool visitIndexedTriangleSet(vsg::IndexedTriangleSet* indexedTriangleSet);
