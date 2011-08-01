@@ -83,6 +83,7 @@ set(sources
   # ----------------------------------------------------------------------Shape
   vsg/Shape/vsgAppearanceChildNode.cpp
   vsg/Shape/vsgAppearanceNode.cpp
+  vsg/Shape/vsgMaterialNode.cpp
 
   # --------------------------------------------------------------------Texture
   vsg/Texture/vsgTextureCoordinateNode.cpp
