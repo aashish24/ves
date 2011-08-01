@@ -27,7 +27,7 @@
 # include <vector>
 
 // -----------------------------------------------------------------pre-defines
-// class vsgVisitor;
+class vsgVisitor;
 class Painter;
 // -----------------------------------------------------------------------class
 class vsgNode

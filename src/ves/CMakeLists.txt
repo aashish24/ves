@@ -39,6 +39,9 @@ set(sources
   vsg/Shape/Appearance.cpp
   vsg/Shape/Shape.cpp
 
+  # ------------------------------------------------------------------------vsg
+  vsg/vsgVisitor.cpp
+
   # -----------------------------------------------------------------------Core
   vsg/Core/vsgBindableNode.cpp
   vsg/Core/vsgChildNode.cpp
