@@ -20,12 +20,14 @@
 #define __Painter_h
 // --------------------------------------------------------------------includes
 // #include "Transform.h"
-# include "vsg/Shape/Shape.h"
-# include "vesActorCollection.h"
-# include "vesActor.h"
-# include "vesShader.h"
-# include "vesMapper.h"
-# include "vesCamera.h"
+#include "vsg/Shape/Shape.h"
+#include "vesActorCollection.h"
+#include "vesActor.h"
+#include "vesShader.h"
+#include "vesMapper.h"
+#include "vesCamera.h"
+#include "vesTexture.h"
+#include "vsg/EnvEffects/TextureBackground.h"
 
 #include <vector>
 // -----------------------------------------------------------------pre-defines
@@ -39,6 +41,7 @@ public:
   Painter();
   ~Painter();
   // void Transform(Transform* transform);
+  void Texture(vesTexture* textureBackground);
   void visitShape(vsg::Shape* shape);
   void Shader(vesShader * shader);
   void Mapper(vesMapper *mapper);
@@ -54,6 +57,8 @@ protected:
   std::vector<vesMatrix4x4f> MatrixStack;
   vesMatrix4x4f Eval(int startIndex);
   float Aspect, NearZ, FarZ;
+  vesTexture* _textureBackground;
+
 protected:
 //BTX
   // .......................................................................BTX

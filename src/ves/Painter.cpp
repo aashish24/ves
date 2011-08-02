@@ -47,8 +47,15 @@ Painter::~Painter()
 }
 
 // ----------------------------------------------------------------------public
+void Painter::Texture(vesTexture* textureBackground)
+{
+
+}
+
+// ----------------------------------------------------------------------public
 void Painter::Camera(vesCamera *camera)
 {
+  this->Texture(_textureBackground);
   this->Push(camera->eval());
   // If there are children nodes then tternate through and render
   MFNode children = camera->get_children();
@@ -101,7 +108,7 @@ void Painter::Actor(vesActor * actor)
           //std::cout<<"translating the widget" <<std::endl;
           // actor->set_translation(actor->GetWidget()->GetTranslation());
           // actor->set_rotation(actor->GetWidget()->GetRotation());
-          //actor->SetScale(actor->GetWidget()->GetScale());
+          // actor->SetScale(actor->GetWidget()->GetScale());
         }
     }
   this->Push(actor->Eval());
