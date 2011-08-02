@@ -21,6 +21,7 @@ set(sources
   vesSceneElement.cpp
   vesSceneRender.cpp
   vesShader.cpp
+  vesTexture.cpp
   vesShaderProgram.cpp
   vesSTLReader.cpp
   vesTriangleData.cpp
