@@ -31,6 +31,7 @@ struct vesMapper;
 struct vesActor;
 struct vesCamera;
 struct vesShader;
+struct vesTexture;
 
 
 @interface ESRenderer : NSObject
@@ -40,6 +41,8 @@ struct vesShader;
   NSString *filePath;
   vesShader *Shader;
   vesShaderProgram *shaderProgram;
+  vesShaderProgram *backgroundShaderProgram;
+  vesTexture *backgroundTexture;
 	vesRenderer *renderer;
 }
 

@@ -19,7 +19,7 @@
 #include "vesShaderProgram.h"
 #include "vesShader.h"
 #include "vesCamera.h"
-
+#include "vesTexture.h"
 
 @implementation ESRenderer
 
@@ -57,8 +57,26 @@
     //renderer->SetProgram(shaderProgram);
     self->Shader = new vesShader(shaderProgram);
     
-
-		
+    vertShaderPathname = [[NSBundle mainBundle] pathForResource:@"BackgroundTexture" ofType:@"vsh"];
+    fragShaderPathname = [[NSBundle mainBundle] pathForResource:@"BackgroundTexture" ofType:@"fsh"];
+    
+    vertexSourceStr = (GLchar *)[[NSString stringWithContentsOfFile:vertShaderPathname 
+                                                           encoding:NSUTF8StringEncoding 
+                                                              error:nil] UTF8String];
+    fragmentSourceStr = (GLchar *)[[NSString stringWithContentsOfFile:fragShaderPathname 
+                                                             encoding:NSUTF8StringEncoding 
+                                                                error:nil] UTF8String];
+    
+		backgroundShaderProgram = new vesShaderProgram(vertexSourceStr,
+                                         fragmentSourceStr,
+                                         (_uni("u_mvpMatrix"),
+                                          _uni("u_normalMatrix"),
+                                          _uni("u_ecLightDir")),
+                                         (_att("a_vertex"),
+                                          _att("a_normal"),
+                                          _att("a_texcoord"))
+                                         );
+    self->backgroundTexture = new vesTexture(backgroundShaderprogram);
     }
   
   return self;

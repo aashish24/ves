@@ -39,6 +39,8 @@
 		43D6026A13CD05830077C8B7 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 43D6026913CD05830077C8B7 /* main.m */; };
 		43D6026D13CD05830077C8B7 /* SandboxAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 43D6026C13CD05830077C8B7 /* SandboxAppDelegate.m */; };
 		43D6027013CD05830077C8B7 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 43D6026E13CD05830077C8B7 /* MainWindow.xib */; };
+		6FD7B71013E856EC000FB649 /* BackgroundTexture.vsh in Sources */ = {isa = PBXBuildFile; fileRef = 6FD7B70F13E856EC000FB649 /* BackgroundTexture.vsh */; };
+		6FD7B71313E856F6000FB649 /* BackgroundTexture.fsh in Sources */ = {isa = PBXBuildFile; fileRef = 6FD7B71213E856F6000FB649 /* BackgroundTexture.fsh */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -84,6 +86,8 @@
 		43D6026B13CD05830077C8B7 /* SandboxAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SandboxAppDelegate.h; sourceTree = "<group>"; };
 		43D6026C13CD05830077C8B7 /* SandboxAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SandboxAppDelegate.m; sourceTree = "<group>"; };
 		43D6026F13CD05830077C8B7 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainWindow.xib; sourceTree = "<group>"; };
+		6FD7B70F13E856EC000FB649 /* BackgroundTexture.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = BackgroundTexture.vsh; path = ../../../../src/shaders/BackgroundTexture.vsh; sourceTree = "<group>"; };
+		6FD7B71213E856F6000FB649 /* BackgroundTexture.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = BackgroundTexture.fsh; path = ../../../../src/shaders/BackgroundTexture.fsh; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -202,6 +206,8 @@
 		43D6026313CD05830077C8B7 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				6FD7B71213E856F6000FB649 /* BackgroundTexture.fsh */,
+				6FD7B70F13E856EC000FB649 /* BackgroundTexture.vsh */,
 				4334F0AC13CD0C2D0053A32A /* Shader.fsh */,
 				4334F0AD13CD0C2D0053A32A /* Shader.vsh */,
 				43D6026413CD05830077C8B7 /* Sandbox-Info.plist */,
@@ -285,6 +291,8 @@
 				4385FDA013CE8F0500BCE998 /* SceneController.mm in Sources */,
 				4325001213CE9F5300D41D42 /* RootViewController.m in Sources */,
 				43657DF913D9D92E0016FBC1 /* vesPolyDataToTriangleData.cpp in Sources */,
+				6FD7B71013E856EC000FB649 /* BackgroundTexture.vsh in Sources */,
+				6FD7B71313E856F6000FB649 /* BackgroundTexture.fsh in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
