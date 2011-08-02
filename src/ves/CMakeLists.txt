@@ -64,6 +64,7 @@ set(sources
   # --------------------------------------------------------------------Texture
   vsg/Texture/vsgTextureCoordinateNode.cpp
   vsg/Texture/vsgTextureNode.cpp
+  vsg/Texture/vsgTexture2DNode.cpp
 
   # -----------------------------------------------------------------Navigation
   vsg/Navigation/Viewpoint.cpp
