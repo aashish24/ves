@@ -47,25 +47,21 @@ Painter::~Painter()
 }
 
 // ----------------------------------------------------------------------public
-// void Painter::Transform(Transform* transform)
-// {
-//   // Push the transformation
-//   this->Internal->Push(transform->Eval());
-
-//   // If there are children nodes then tternate through and render
-//   std::vector<vsgChildNode*> children;
-//   if (transform->GetChildren(&children))
-//     {
-//     for (int i = 0; i < children.size(); ++i)
-//       {
-//       children[i]->Render(this);
-//       }
-//     }
-
-//   // Pop the transformation
-//   this->Internal->Pop();
-// }
-
+void Painter::Camera(vesCamera *camera)
+{
+  this->Push(camera->eval());
+  // If there are children nodes then tternate through and render
+  MFNode children = camera->get_children();
+  if (children.size())
+    {
+      for (int i = 0; i < children.size(); ++i)
+        {
+          children[i]->Render(this);
+        }
+    }
+  // Pop the transformation
+  this->Pop();
+}
 
 // ----------------------------------------------------------------------public
 void Painter::Shader(vesShader * shader)
@@ -231,16 +227,13 @@ void Painter::visitShape(vsg::Shape* shape)
 // --------------------------------------------------------------------internal
 void Painter::Push(vesMatrix4x4f mat)
 {
-  //std::cout << "Pushed Matrix" <<std::endl;
   MatrixStack.push_back(mat);
 }
 
 // --------------------------------------------------------------------internal
 void Painter::Pop()
 {
-  //std::cout << "Popped Matrix" << std::endl;
   MatrixStack.pop_back();
-
 }
 
 
@@ -253,27 +246,4 @@ vesMatrix4x4f Painter::Eval(int startIndex)
     temp *= MatrixStack[i];
     }
   return temp;
-}
-
-
-void Painter::Camera(vesCamera *camera)
-{
-  // View = camera->ComputeViewTransform();
-  // Projection = camera->ComputeProjectionTransform(this->Aspect,this->NearZ, this->FarZ);
-
- this->Push(camera->eval());
-
-  // If there are children nodes then tternate through and render
- MFNode children = camera->get_children();
- if (children.size())
-    {
-    for (int i = 0; i < children.size(); ++i)
-      {
-      children[i]->Render(this);
-      }
-    }
-
-  // Pop the transformation
-  this->Pop();
-
 }
