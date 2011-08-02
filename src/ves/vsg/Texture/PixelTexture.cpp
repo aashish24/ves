@@ -36,6 +36,10 @@ namespace vsg {
   PixelTexture::PixelTexture()
   {
     _internal = new PixelTextureInternal();
+    _image.width = 0;
+    _image.height = 0;
+    _image.component = SFImage::ZERO;
+    _image.data = NULL;
   }
 
   // -------------------------------------------------------------------destr
