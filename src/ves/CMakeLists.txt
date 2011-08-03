@@ -21,6 +21,7 @@ set(sources
   vesSceneElement.cpp
   vesSceneRender.cpp
   vesShader.cpp
+  vesTexture.cpp
   vesShaderProgram.cpp
   vesSTLReader.cpp
   vesTriangleData.cpp
@@ -39,10 +40,6 @@ set(sources
   vsg/Grouping/vsgGroupingNode.cpp
   vsg/Grouping/Transform.cpp
 
-  # -----------------------------------------------------------------Navigation
-  vsg/Navigation/Viewpoint.cpp
-  vsg/Navigation/vsgViewpointNode.cpp
-
   # ------------------------------------------------------------------Rendering
   vsg/Rendering/vsgColorNode.cpp
   vsg/Rendering/vsgComposedGeometryNode.cpp
@@ -57,6 +54,28 @@ set(sources
   vsg/Rendering/IndexedTriangleSet.cpp
   vsg/Rendering/Normal.cpp
 
+  # ----------------------------------------------------------------------Shape
+  vsg/Shape/vsgAppearanceChildNode.cpp
+  vsg/Shape/vsgAppearanceNode.cpp
+  vsg/Shape/vsgMaterialNode.cpp
+  vsg/Shape/vsgShapeNode.cpp
+  vsg/Shape/Appearance.cpp
+  vsg/Shape/Shape.cpp
+
+  # --------------------------------------------------------------------Texture
+  vsg/Texture/vsgTextureCoordinateNode.cpp
+  vsg/Texture/vsgTextureNode.cpp
+  vsg/Texture/vsgTexture2DNode.cpp
+  vsg/Texture/PixelTexture.cpp
+
+  # -----------------------------------------------------------------Navigation
+  vsg/Navigation/Viewpoint.cpp
+  vsg/Navigation/vsgViewpointNode.cpp
+
+  # -----------------------------------------------------------------EnvEffects
+  vsg/EnvEffects/vsgBackgroundNode.cpp
+  vsg/EnvEffects/TextureBackground.cpp
+
   # ---------------------------------------------------------------------Shader
   vsg/Shader/vsgProgrammableShaderObject.cpp
   vsg/Shader/vsgShaderNode.cpp
@@ -68,17 +87,6 @@ set(sources
   #  vsg/Shader/ProgramShader.cpp
   vsg/Shader/ShaderPart.cpp
   #  vsg/Shader/ShaderProgram.cpp
-
-  # ----------------------------------------------------------------------Shape
-  vsg/Shape/vsgAppearanceChildNode.cpp
-  vsg/Shape/vsgAppearanceNode.cpp
-  vsg/Shape/vsgMaterialNode.cpp
-  vsg/Shape/vsgShapeNode.cpp
-  vsg/Shape/Appearance.cpp
-  vsg/Shape/Shape.cpp
-
-  # --------------------------------------------------------------------Texture
-  vsg/Texture/vsgTextureCoordinateNode.cpp
 )
 
 include_directories( vsg
@@ -88,6 +96,7 @@ include_directories( vsg
                      vsg/Rendering
                      vsg/Shader
                      vsg/Shape
+                     vsg/EnvEffects
                      vsg/Utility )
 
 include_directories(${CMAKE_SOURCE_DIR})

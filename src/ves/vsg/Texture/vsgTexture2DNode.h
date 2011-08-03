@@ -1,6 +1,6 @@
 // ============================================================================
 /**
- * @file   vsgBindableNode.h
+ * @file   vsgTexture2DNode.h
  *
  * @section COPYRIGHT
  *
@@ -14,34 +14,32 @@
  *
  * @section DESCRIPTION
  *
- * X3DBindableNode is the abstract base type for all bindable children nodes,
- * including Background, TextureBackground, Fog, NavigationInfo and
- * Viewpoint. For complete discussion of bindable behaviors, see 7.2.2 Bindable
- * children nodes.
+ * This abstract node type is the base type for all node types which specify 2D
+ * sources for texture images.
  *
  * @author nikhil shetty <nikhil.shetty@kitware.com>
  */
 // ============================================================================
-#ifndef __vsgBindableNode_h
-#define __vsgBindableNode_h
+#ifndef __vsgTexture2DNode_h
+#define __vsgTexture2DNode_h
 // --------------------------------------------------------------------includes
 #include "vsg/Utility/vsgMacro.h"
 #include "vsg/Utility/vsgTypes.h"
-#include "vsg/Core/vsgChildNode.h"
-
+#include "vsg/Texture/vsgTextureNode.h"
 // -------------------------------------------------------------pre-defines
 
 // -------------------------------------------------------------------class
-class vsgBindableNode: public vsgChildNode
+class vsgTexture2DNode: public vsgTextureNode
 {
 public:
   // ........................................................public-methods
-  vsgBindableNode();
-  virtual ~vsgBindableNode();
-  InOnlySF(bind, SFBool)
-  OutOnlySF(bindTime,SFTime);
-  SFBool isBound();
+  vsgTexture2DNode();
+  vsgTexture2DNode(bool repeatS, bool repeatT , SFNode textureProperties);
+  virtual ~vsgTexture2DNode();
 protected:
   // .......................................................protected-ivars
+  bool _repeatS;
+  bool _repeatT;
+  SFNode _textureProperties;
 };
-#endif // __vsgBindableNode_h
+#endif // __vsgTexture2dNode_h

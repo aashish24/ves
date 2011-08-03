@@ -291,3 +291,8 @@ void vesRenderer::ResetCameraClippingRange(float bounds[6])
   }
   this->Camera->SetClippingRange( range[0],range[1] );
 }
+
+void vesRenderer::SetBackground(vesTexture* background)
+{
+  this->Paint->SetBackgroundTexture(background);
+}

@@ -1,6 +1,6 @@
 // ============================================================================
 /**
- * @file   vsgBindableNode.h
+ * @file   vesTexture.h
  *
  * @section COPYRIGHT
  *
@@ -14,34 +14,38 @@
  *
  * @section DESCRIPTION
  *
- * X3DBindableNode is the abstract base type for all bindable children nodes,
- * including Background, TextureBackground, Fog, NavigationInfo and
- * Viewpoint. For complete discussion of bindable behaviors, see 7.2.2 Bindable
- * children nodes.
+ *
  *
  * @author nikhil shetty <nikhil.shetty@kitware.com>
  */
 // ============================================================================
-#ifndef __vsgBindableNode_h
-#define __vsgBindableNode_h
+#ifndef __vesTexture_h
+#define __vesTexture_h
 // --------------------------------------------------------------------includes
 #include "vsg/Utility/vsgMacro.h"
 #include "vsg/Utility/vsgTypes.h"
-#include "vsg/Core/vsgChildNode.h"
 
 // -------------------------------------------------------------pre-defines
+class vesTextureInternal;
+class vesShaderProgram;
 
 // -------------------------------------------------------------------class
-class vsgBindableNode: public vsgChildNode
+class vesTexture
 {
 public:
   // ........................................................public-methods
-  vsgBindableNode();
-  virtual ~vsgBindableNode();
-  InOnlySF(bind, SFBool)
-  OutOnlySF(bindTime,SFTime);
-  SFBool isBound();
+  vesTexture(vesShaderProgram *program, SFImage image);
+  virtual ~vesTexture();
+  void Render();
 protected:
   // .......................................................protected-ivars
+
+private:
+  // .........................................................private-ivars
+  vesTextureInternal *_internal;
+  vesShaderProgram *ShaderProgram;
+  SFImage Image;
+  unsigned int texID;
+  bool loaded;
 };
-#endif // __vsgBindableNode_h
+#endif // __vesTexture_h

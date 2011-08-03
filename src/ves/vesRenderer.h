@@ -50,6 +50,7 @@ public:
   int GetHeight() { return Height; }
   void ResetCamera();
   void ResetCameraClippingRange();
+  void SetBackground(vesTexture* background);
   vesVector3f ComputeWorldToDisplay(vesVector3f world);
   vesVector3f ComputeDisplayToWorld(vesVector3f display);
 

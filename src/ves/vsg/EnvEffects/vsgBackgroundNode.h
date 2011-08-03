@@ -1,6 +1,6 @@
 // ============================================================================
 /**
- * @file   vsgBindableNode.h
+ * @file   vsgBackgroundNode.h
  *
  * @section COPYRIGHT
  *
@@ -14,34 +14,36 @@
  *
  * @section DESCRIPTION
  *
- * X3DBindableNode is the abstract base type for all bindable children nodes,
- * including Background, TextureBackground, Fog, NavigationInfo and
- * Viewpoint. For complete discussion of bindable behaviors, see 7.2.2 Bindable
- * children nodes.
+ * X3DBackgroundNode is the abstract type from which all backgrounds
+ * inherit. X3DBackgroundNode is a bindable node that, when bound, defines the
+ * panoramic background for the scene. For complete information on backgrounds,
+ * see 24.2.1 Backgrounds.
  *
  * @author nikhil shetty <nikhil.shetty@kitware.com>
  */
 // ============================================================================
-#ifndef __vsgBindableNode_h
-#define __vsgBindableNode_h
+#ifndef __vsgBackgroundNode_h
+#define __vsgBackgroundNode_h
 // --------------------------------------------------------------------includes
 #include "vsg/Utility/vsgMacro.h"
 #include "vsg/Utility/vsgTypes.h"
-#include "vsg/Core/vsgChildNode.h"
+#include "vsg/Core/vsgBindableNode.h"
 
 // -------------------------------------------------------------pre-defines
 
 // -------------------------------------------------------------------class
-class vsgBindableNode: public vsgChildNode
+class vsgBackgroundNode: public vsgBindableNode
 {
 public:
   // ........................................................public-methods
-  vsgBindableNode();
-  virtual ~vsgBindableNode();
-  InOnlySF(bind, SFBool)
-  OutOnlySF(bindTime,SFTime);
-  SFBool isBound();
-protected:
+  vsgBackgroundNode();
+  virtual ~vsgBackgroundNode();
+  InOutMF(groundAngle,MFFloat)
+  InOutMF(groundColor,MFColor)
+  InOutMF(skyAngle,MFFloat)
+  InOutMF(skyColor,MFColor)
+  InOutSF(transparency,SFFloat)
+  protected:
   // .......................................................protected-ivars
 };
-#endif // __vsgBindableNode_h
+#endif // __vsgBackgroundNode_h

@@ -37,7 +37,7 @@ void PrintMatrix(vesMatrix4x4f mv)
 // -----------------------------------------------------------------------cnstr
 Painter::Painter()
 {
-
+  this->_textureBackground = NULL;
 }
 
 // -----------------------------------------------------------------------destr
@@ -47,25 +47,27 @@ Painter::~Painter()
 }
 
 // ----------------------------------------------------------------------public
-// void Painter::Transform(Transform* transform)
-// {
-//   // Push the transformation
-//   this->Internal->Push(transform->Eval());
+void Painter::Texture(vesTexture* textureBackground)
+{
+  textureBackground->Render();
+}
 
-//   // If there are children nodes then tternate through and render
-//   std::vector<vsgChildNode*> children;
-//   if (transform->GetChildren(&children))
-//     {
-//     for (int i = 0; i < children.size(); ++i)
-//       {
-//       children[i]->Render(this);
-//       }
-//     }
-
-//   // Pop the transformation
-//   this->Internal->Pop();
-// }
-
+// ----------------------------------------------------------------------public
+void Painter::Camera(vesCamera *camera)
+{
+  this->Push(camera->eval());
+  // If there are children nodes then tternate through and render
+  MFNode children = camera->get_children();
+  if (children.size())
+    {
+      for (int i = 0; i < children.size(); ++i)
+        {
+          children[i]->Render(this);
+        }
+    }
+  // Pop the transformation
+  this->Pop();
+}
 
 // ----------------------------------------------------------------------public
 void Painter::Shader(vesShader * shader)
@@ -105,7 +107,7 @@ void Painter::Actor(vesActor * actor)
           //std::cout<<"translating the widget" <<std::endl;
           // actor->set_translation(actor->GetWidget()->GetTranslation());
           // actor->set_rotation(actor->GetWidget()->GetRotation());
-          //actor->SetScale(actor->GetWidget()->GetScale());
+          // actor->SetScale(actor->GetWidget()->GetScale());
         }
     }
   this->Push(actor->Eval());
@@ -118,6 +120,11 @@ void Painter::Actor(vesActor * actor)
 // ----------------------------------------------------------------------public
 void Painter::ActorCollection(vesActorCollection *actor)
 {
+  if(this->_textureBackground)
+    {
+    this->Texture(_textureBackground);
+    }
+
   //std::cout << "Render: ActorCollection" <<std::endl;
   // Push the transformation
   this->Push(actor->Eval());
@@ -231,16 +238,13 @@ void Painter::visitShape(vsg::Shape* shape)
 // --------------------------------------------------------------------internal
 void Painter::Push(vesMatrix4x4f mat)
 {
-  //std::cout << "Pushed Matrix" <<std::endl;
   MatrixStack.push_back(mat);
 }
 
 // --------------------------------------------------------------------internal
 void Painter::Pop()
 {
-  //std::cout << "Popped Matrix" << std::endl;
   MatrixStack.pop_back();
-
 }
 
 
@@ -255,25 +259,8 @@ vesMatrix4x4f Painter::Eval(int startIndex)
   return temp;
 }
 
-
-void Painter::Camera(vesCamera *camera)
+// ----------------------------------------------------------------------public
+void Painter::SetBackgroundTexture(vesTexture* background)
 {
-  // View = camera->ComputeViewTransform();
-  // Projection = camera->ComputeProjectionTransform(this->Aspect,this->NearZ, this->FarZ);
-
- this->Push(camera->eval());
-
-  // If there are children nodes then tternate through and render
- MFNode children = camera->get_children();
- if (children.size())
-    {
-    for (int i = 0; i < children.size(); ++i)
-      {
-      children[i]->Render(this);
-      }
-    }
-
-  // Pop the transformation
-  this->Pop();
-
+  this->_textureBackground = background;
 }

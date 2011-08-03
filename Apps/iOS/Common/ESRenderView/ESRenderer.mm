@@ -19,7 +19,7 @@
 #include "vesShaderProgram.h"
 #include "vesShader.h"
 #include "vesCamera.h"
-
+#include "vesTexture.h"
 
 @implementation ESRenderer
 
@@ -54,11 +54,43 @@
                                     _att("a_normal"),
                                     _att("a_texcoord"))
                                    );
-    //renderer->SetProgram(shaderProgram);
     self->Shader = new vesShader(shaderProgram);
     
-
-		
+    // Creating background shader
+    NSString *vertShaderPathname1, *fragShaderPathname1;
+    GLchar* vertexSourceStr1, *fragmentSourceStr1;
+    
+    vertShaderPathname1 = [[NSBundle mainBundle] pathForResource:@"BackgroundTexture" ofType:@"vsh"];
+    fragShaderPathname1 = [[NSBundle mainBundle] pathForResource:@"BackgroundTexture" ofType:@"fsh"];
+    
+    vertexSourceStr1 = (GLchar *)[[NSString stringWithContentsOfFile:vertShaderPathname1 
+                                                           encoding:NSUTF8StringEncoding 
+                                                              error:nil] UTF8String];
+    fragmentSourceStr1 = (GLchar *)[[NSString stringWithContentsOfFile:fragShaderPathname1 
+                                                             encoding:NSUTF8StringEncoding 
+                                                                error:nil] UTF8String];
+    
+		backgroundShaderProgram = new vesShaderProgram(vertexSourceStr1,
+                                         fragmentSourceStr1,
+                                         (_uni("u_ortho"),
+                                          _uni("u_null1")),
+                                         (_att("a_position"),
+                                          _att("a_texCoord"))
+                                         );
+    
+    // Getting image
+    SFImage image;
+    NSString *imagePathname;
+    imagePathname = [[NSBundle mainBundle] pathForResource:@"Kitware" ofType:@"png"];
+    UIImage* uiImage = [UIImage imageWithContentsOfFile:imagePathname];
+    CGImageRef cgImage = uiImage.CGImage;
+    image.width = CGImageGetWidth(cgImage);
+    image.height = CGImageGetHeight(cgImage);
+    image.data = (void*) CFDataGetBytePtr(CGDataProviderCopyData(CGImageGetDataProvider(cgImage)));
+    
+    // Create background texture
+    self->backgroundTexture = new vesTexture(backgroundShaderProgram,image);
+    renderer->SetBackground(self->backgroundTexture);
     }
   
   return self;
@@ -83,7 +115,7 @@
 {
   glClearColor(63/255.0f, 96/255.0f, 144/255.0, 1.0f);
   // Use shader program
-  shaderProgram->Use();
+  //shaderProgram->Use();
   renderer->ResetCameraClippingRange();
   renderer->Render();
 }
