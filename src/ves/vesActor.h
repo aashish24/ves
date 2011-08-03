@@ -45,6 +45,10 @@ public:
   bool Read();
   void ComputeBounds();
   void Render(Painter* render);
+  void SetTranslation(vesVector3f translation);
+  void SetRotation(vesVector4f rotation);
+  vesVector3f GetTranslation();
+  vesVector4f GetRotation();
   vesSetGetMacro(Sensor,bool)
   vesSetGetMacro(Widget,vesMultitouchWidget*);
   bool SetVisible(bool value);
