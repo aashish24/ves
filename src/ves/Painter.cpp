@@ -105,9 +105,9 @@ void Painter::Actor(vesActor * actor)
       if(actor->GetWidget()->isActive())
         {
           //std::cout<<"translating the widget" <<std::endl;
-          // actor->set_translation(actor->GetWidget()->GetTranslation());
-          // actor->set_rotation(actor->GetWidget()->GetRotation());
-          // actor->SetScale(actor->GetWidget()->GetScale());
+          actor->set_translation(actor->GetWidget()->GetTranslation());
+          actor->set_rotation(actor->GetWidget()->GetRotation());
+          actor->set_scale(actor->GetWidget()->GetScale());
         }
     }
   this->Push(actor->Eval());
