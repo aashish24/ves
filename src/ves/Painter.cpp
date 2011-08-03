@@ -49,7 +49,7 @@ Painter::~Painter()
 // ----------------------------------------------------------------------public
 void Painter::Texture(vesTexture* textureBackground)
 {
-
+  textureBackground->Render();
 }
 
 // ----------------------------------------------------------------------public

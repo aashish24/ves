@@ -36,7 +36,7 @@ public:
   // ........................................................public-methods
   vesTexture(vesShaderProgram *program, SFImage image);
   virtual ~vesTexture();
-
+  void Render();
 protected:
   // .......................................................protected-ivars
 
@@ -45,5 +45,7 @@ private:
   vesTextureInternal *_internal;
   vesShaderProgram *ShaderProgram;
   SFImage Image;
+  unsigned int texID;
+  bool loaded;
 };
 #endif // __vesTexture_h
