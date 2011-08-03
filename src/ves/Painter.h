@@ -51,7 +51,7 @@ public:
   void ShaderProgram(vesShaderProgram *shaderProg);
   void Push(vesMatrix4x4f mat);
   void Pop();
-
+  void SetBackgroundTexture(vesTexture* background);
 protected:
   // ...........................................................protected-ivars
   std::vector<vesMatrix4x4f> MatrixStack;

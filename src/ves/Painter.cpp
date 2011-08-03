@@ -37,7 +37,7 @@ void PrintMatrix(vesMatrix4x4f mv)
 // -----------------------------------------------------------------------cnstr
 Painter::Painter()
 {
-
+  this->_textureBackground = NULL;
 }
 
 // -----------------------------------------------------------------------destr
@@ -55,7 +55,6 @@ void Painter::Texture(vesTexture* textureBackground)
 // ----------------------------------------------------------------------public
 void Painter::Camera(vesCamera *camera)
 {
-  this->Texture(_textureBackground);
   this->Push(camera->eval());
   // If there are children nodes then tternate through and render
   MFNode children = camera->get_children();
@@ -121,6 +120,11 @@ void Painter::Actor(vesActor * actor)
 // ----------------------------------------------------------------------public
 void Painter::ActorCollection(vesActorCollection *actor)
 {
+  if(this->_textureBackground)
+    {
+    this->Texture(_textureBackground);
+    }
+
   //std::cout << "Render: ActorCollection" <<std::endl;
   // Push the transformation
   this->Push(actor->Eval());
@@ -253,4 +257,10 @@ vesMatrix4x4f Painter::Eval(int startIndex)
     temp *= MatrixStack[i];
     }
   return temp;
+}
+
+// ----------------------------------------------------------------------public
+void Painter::SetBackgroundTexture(vesTexture* background)
+{
+  this->_textureBackground = background;
 }
