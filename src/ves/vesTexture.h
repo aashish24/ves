@@ -34,7 +34,7 @@ class vesTexture
 {
 public:
   // ........................................................public-methods
-  vesTexture(vesShaderProgram *program);
+  vesTexture(vesShaderProgram *program, SFImage image);
   virtual ~vesTexture();
 
 protected:
@@ -44,5 +44,6 @@ private:
   // .........................................................private-ivars
   vesTextureInternal *_internal;
   vesShaderProgram *ShaderProgram;
+  SFImage Image;
 };
 #endif // __vesTexture_h

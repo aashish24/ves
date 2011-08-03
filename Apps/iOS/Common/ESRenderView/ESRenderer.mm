@@ -76,7 +76,7 @@
                                           _att("a_normal"),
                                           _att("a_texcoord"))
                                          );
-    self->backgroundTexture = new vesTexture(backgroundShaderprogram);
+    self->backgroundTexture = new vesTexture(backgroundShaderProgram,image);
     }
   
   return self;

@@ -33,10 +33,12 @@ struct vesTextureInternal
 // ................................................................internal
 
 // -------------------------------------------------------------------cnstr
-vesTexture::vesTexture(vesShaderProgram *shader)
+vesTexture::vesTexture(vesShaderProgram *shader,
+                       SFImage image)
 {
   _internal = new vesTextureInternal();
   this->ShaderProgram = shader;
+  this->Image = image;
 }
 
 // -------------------------------------------------------------------destr
