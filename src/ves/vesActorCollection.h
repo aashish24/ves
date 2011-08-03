@@ -34,6 +34,11 @@ public:
   ~vesActorCollection();
   void AddItem(vesActor* a);
   void RemoveItem(vesActor* a);
+  void SetTranslation(vesVector3f translation);
+  void SetRotation(vesVector4f rotation);
+  vesVector3f GetTranslation();
+  vesVector4f GetRotation();
+
   //void Handle(vesController *handle);
   bool Read();
   vesMatrix4x4f Eval();
