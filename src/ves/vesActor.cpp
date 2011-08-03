@@ -141,3 +141,23 @@ bool vesActor::isVisible()
 {
   return true;
 }
+
+void vesActor::SetTranslation(vesVector3f translation)
+{
+  set_translation(translation);
+}
+
+void vesActor::SetRotation(vesVector4f rotation)
+{
+  set_rotation(rotation);
+}
+
+vesVector3f vesActor::GetTranslation()
+{
+  return get_translation();
+}
+
+vesVector4f vesActor::GetRotation()
+{
+  return get_rotation();
+}
