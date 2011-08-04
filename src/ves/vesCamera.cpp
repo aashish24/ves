@@ -188,6 +188,19 @@ void vesCamera::Dolly(double factor)
   this->ComputeDistance();
 }
 
+//-----------------------------------------------------------------------public
+void vesCamera::Roll(double angle)
+{
+  // rotate ViewUp about the Direction of Projection
+  vesMatrix4x4f t = makeRotationMatrix4x4(-deg2Rad(angle),
+                                          this->DirectionOfProjection[0],
+                                          this->DirectionOfProjection[1],
+                                          this->DirectionOfProjection[2]);
+  vesVector3f newViewUp;
+  gmtl::xform(newViewUp, t, this->ViewUp);
+  this->SetViewUp(newViewUp);
+}
+
 //----------------------------------------------------------------------------
 void vesCamera::SetWindowCenter(double x, double y)
 {

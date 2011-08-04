@@ -267,6 +267,23 @@
     double dyf = 10.0 * dy / (ren->GetHeight()/2.0);
     double factor = pow(1.1, dyf);
     camera->Dolly(factor);
+    
+    //
+    // Roll camera.
+    // Implemented based on vkInteractorStyleTrackballCamera::Spin().
+    //
+    
+    double pi = 3.14159265358979;
+    double newAngle = atan2(currentLocationOfTouch1.y - currentLocationOfTouch2.y,
+                            currentLocationOfTouch1.x - currentLocationOfTouch2.x);
+    newAngle *= 180.0/pi;
+    
+    double oldAngle = atan2(previousLocationOfTouch1.y - previousLocationOfTouch2.y,
+                            previousLocationOfTouch1.x - previousLocationOfTouch2.x);
+    oldAngle *= 180.0/pi;
+    
+    camera->Roll(newAngle - oldAngle);
+    camera->OrthogonalizeViewUp();
   }
 	else // Single-touch rotation of object
 	{

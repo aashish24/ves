@@ -28,6 +28,7 @@ public:
   void Azimuth(double angle);
   void Elevation(double angle);
   void Dolly(double factor);
+  void Roll(double angle);
   void OrthogonalizeViewUp();
 
   vesMatrix4x4f ComputeViewTransform();
