@@ -115,22 +115,22 @@ void vesActorCollection::ComputeBounds()
   set_BBoxSize(allMin, allMax);
 }
 
-void vesActor::SetTranslation(vesVector3f translation)
+void vesActorCollection::SetTranslation(vesVector3f translation)
 {
   set_translation(translation);
 }
 
-void vesActor::SetRotation(vesVector4f rotation)
+void vesActorCollection::SetRotation(vesVector4f rotation)
 {
   set_rotation(rotation);
 }
 
-vesVector3f vesActor::GetTranslation()
+vesVector3f vesActorCollection::GetTranslation()
 {
   return get_translation();
 }
 
-vesVector4f vesActor::GetRotation()
+vesVector4f vesActorCollection::GetRotation()
 {
   return get_rotation();
 }
