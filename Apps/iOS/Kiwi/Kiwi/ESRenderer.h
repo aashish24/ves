@@ -24,11 +24,11 @@
 - (void)resetView;
 - (BOOL)resizeFromLayer:(int)w height:(int) h;
 - (void)setFilePath:(NSString*)fpath;
-- (void)_drawViewByRotatingAroundX:(float)xRotation 
-                   rotatingAroundY:(float)yRotation 
-                           scaling:(float)scaleFactor 
-                    translationInX:(float)xTranslation 
-                    translationInY:(float)yTranslation;
+
+- (struct vesRenderer*) getRenderer;
+- (struct vesShader*) getShader;
+- (struct vesCamera*) getCamera;
+
 - (int)getNumberOfFacetsForCurrentModel;
 - (int)getNumberOfLinesForCurrentModel;
 - (int)getNumberOfVerticesForCurrentModel;

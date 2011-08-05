@@ -16,7 +16,51 @@
 #import "EAGLView.h"
 #import "ES2Renderer.h"
 
+#import "vesCamera.h"
+#import "vesRenderer.h"
+
 #define USE_DEPTH_BUFFER 1
+
+@interface kwGestureDelegate : NSObject <UIGestureRecognizerDelegate>{
+  
+}
+@end
+
+@implementation kwGestureDelegate
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
+{
+  return YES;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+  BOOL rotating2D = 
+  [gestureRecognizer isMemberOfClass:[UIRotationGestureRecognizer class]] ||
+  [otherGestureRecognizer isMemberOfClass:[UIRotationGestureRecognizer class]];
+  
+  BOOL pinching = 
+  [gestureRecognizer isMemberOfClass:[UIPinchGestureRecognizer class]] ||
+  [otherGestureRecognizer isMemberOfClass:[UIPinchGestureRecognizer class]];
+  
+  BOOL panning = 
+  [gestureRecognizer numberOfTouches] == 2 &&
+  ([gestureRecognizer isMemberOfClass:[UIPanGestureRecognizer class]] ||
+   [otherGestureRecognizer isMemberOfClass:[UIPanGestureRecognizer class]]);
+  
+  if ((pinching && panning) ||
+      (pinching && rotating2D) ||
+      (panning && rotating2D))
+  {
+    return YES;
+  }
+  return NO;
+}
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
+{
+  return YES;
+}
+@end
 
 @interface EAGLView ()
 @property (nonatomic, retain) EAGLContext *context;
@@ -64,28 +108,16 @@
 			[self release];
 			return nil;
     }
-    
-    //delegate =nil;
+
+    [self createGestureRecognizers];
     self.multipleTouchEnabled = YES;
-		
-		// Initialize values for the touch interaction
-		previousScale = 1.f;
-		instantObjectScale = .01f;
-		instantXRotation = 1.0f;
-		instantYRotation = 0.0f;
-		instantXTranslation = 0.0f;
-		instantYTranslation = 0.0f;
-		instantZTranslation = 0.0f;
-		twoFingersAreMoving = NO;
-		pinchGestureUnderway = NO;
-		// stepsSinceLastRotation = 0;
-		scalingForMovement = .0009f;//.00085f;//85.0f;
   }
   
   return self;
 }
 
-- (void)layoutSubviews {
+- (void)layoutSubviews 
+{
   [EAGLContext setCurrentContext:context];
   [self destroyFramebuffer];
   [self createFramebuffer];
@@ -93,8 +125,8 @@
   [self drawView:nil];
 }
 
-- (BOOL)createFramebuffer {
-  
+- (BOOL)createFramebuffer 
+{  
   glGenFramebuffers(1, &viewFramebuffer);
   glGenRenderbuffers(1, &viewRenderbuffer);
   
@@ -122,8 +154,8 @@
 }
 
 
-- (void)destroyFramebuffer {
-  
+- (void)destroyFramebuffer 
+{  
   glDeleteFramebuffers(1, &viewFramebuffer);
   viewFramebuffer = 0;
   glDeleteRenderbuffers(1, &viewRenderbuffer);
@@ -156,8 +188,6 @@
   [super dealloc];
 }
 
-
-
 - (void)resetView
 {
   [self stopInertialMotion]; 
@@ -177,198 +207,237 @@
 #pragma mark -
 #pragma mark Touch handling
 
-- (float)distanceBetweenTouches:(NSSet *)touches;
+- (void) createGestureRecognizers
 {
-	int currentStage = 0;
-	CGPoint point1 = CGPointZero;
-	CGPoint point2 = CGPointZero;
-	
-	
-	for (UITouch *currentTouch in touches)
-	{
-		if (currentStage == 0)
-		{
-			point1 = [currentTouch locationInView:self];
-			currentStage++;
-		}
-		else if (currentStage == 1) 
-		{
-			point2 = [currentTouch locationInView:self];
-			currentStage++;
-		}
-		else
-		{
-		}
-	}
-	return (sqrt((point1.x - point2.x) * (point1.x - point2.x) + (point1.y - point2.y) * (point1.y - point2.y)));
+  UIPanGestureRecognizer *singleFingerPanGesture = [[UIPanGestureRecognizer alloc]
+                                                    initWithTarget:self action:@selector(handleSingleFingerPanGesture:)];
+  singleFingerPanGesture.maximumNumberOfTouches = 1;
+  singleFingerPanGesture.minimumNumberOfTouches = 1;
+  [self addGestureRecognizer:singleFingerPanGesture];
+  [singleFingerPanGesture release];
+  
+  UIPanGestureRecognizer *doubleFingerPanGesture = [[UIPanGestureRecognizer alloc]
+                                                    initWithTarget:self action:@selector(handleDoubleFingerPanGesture:)];
+  doubleFingerPanGesture.maximumNumberOfTouches = 2;
+  doubleFingerPanGesture.minimumNumberOfTouches = 2;
+  [self addGestureRecognizer:doubleFingerPanGesture];
+  [doubleFingerPanGesture release];
+  
+  UIPinchGestureRecognizer *pinchGesture = [[UIPinchGestureRecognizer alloc]
+                                            initWithTarget:self action:@selector(handlePinchGesture:)];
+  [self addGestureRecognizer:pinchGesture];
+  [pinchGesture release];
+  
+  UIRotationGestureRecognizer *rotate2DGesture = [[UIRotationGestureRecognizer alloc]
+                                                  initWithTarget:self action:@selector(handle2DRotationGesture:)];
+  [self addGestureRecognizer:rotate2DGesture];
+  [rotate2DGesture release];
+  
+  UIRotationGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]
+                                             initWithTarget:self action:@selector(handleTapGesture:)];
+  // this is needed so that the buttons on top of the render view will 
+  // work since this is the first responder---is this the best way to 
+  // fix this problem?
+  tapGesture.cancelsTouchesInView = NO;
+  [self addGestureRecognizer:tapGesture];
+  [tapGesture release];
+  
+  //
+  // allow two-finger gestures to work simultaneously
+  kwGestureDelegate* gestureDelegate = [[kwGestureDelegate alloc] init];
+  [rotate2DGesture setDelegate:gestureDelegate];
+  [pinchGesture setDelegate:gestureDelegate];
+  [doubleFingerPanGesture setDelegate:gestureDelegate];
 }
 
-- (CGPoint)commonDirectionOfTouches:(NSSet *)touches;
+- (IBAction)handleDoubleFingerPanGesture:(UIPanGestureRecognizer *)sender
 {
-	// Check to make sure that both fingers are moving in the same direction
-	
-	int currentStage = 0;
-	CGPoint currentLocationOfTouch1 = CGPointZero, currentLocationOfTouch2 = CGPointZero, previousLocationOfTouch1 = CGPointZero, previousLocationOfTouch2 = CGPointZero;
-	
-	
-	for (UITouch *currentTouch in touches)
-	{
-		if (currentStage == 0)
-		{
-			previousLocationOfTouch1 = [currentTouch previousLocationInView:self];
-			currentLocationOfTouch1 = [currentTouch locationInView:self];
-			currentStage++;
-		}
-		else if (currentStage == 1) 
-		{
-			previousLocationOfTouch2 = [currentTouch previousLocationInView:self];
-			currentLocationOfTouch2 = [currentTouch locationInView:self];
-			currentStage++;
-		}
-		else
-		{
-		}
-	}
-	
-	CGPoint directionOfTouch1, directionOfTouch2, commonDirection;
-	// The sign of the Y touches is inverted, due to the inverted coordinate system of the iPhone
-	directionOfTouch1.x = currentLocationOfTouch1.x - previousLocationOfTouch1.x;
-	directionOfTouch1.y = previousLocationOfTouch1.y - currentLocationOfTouch1.y;
-	directionOfTouch2.x = currentLocationOfTouch2.x - previousLocationOfTouch2.x;
-	directionOfTouch2.y = previousLocationOfTouch2.y - currentLocationOfTouch2.y;	
-	
-	// A two-finger movement should result in the direction of both touches being positive or negative at the same time in X and Y
-	if (!( ((directionOfTouch1.x <= 0) && (directionOfTouch2.x <= 0)) || ((directionOfTouch1.x >= 0) && (directionOfTouch2.x >= 0)) ))
-		return CGPointZero;
-	if (!( ((directionOfTouch1.y <= 0) && (directionOfTouch2.y <= 0)) || ((directionOfTouch1.y >= 0) && (directionOfTouch2.y >= 0)) ))
-		return CGPointZero;
-	
-	// The movement ranges are averaged out 
-	commonDirection.x = ((directionOfTouch1.x + directionOfTouch2.x) / 2.0f) * scalingForMovement;
-	commonDirection.y = ((directionOfTouch1.y + directionOfTouch2.y) / 2.0f) * scalingForMovement;
-	
-	
-	return commonDirection;
+  if (sender.state == UIGestureRecognizerStateEnded ||
+      sender.state == UIGestureRecognizerStateCancelled)
+  {
+    // start inertial pan?
+    return;
+  }
+  
+  if (sender.state == UIGestureRecognizerStateBegan)
+  {
+    [self stopInertialMotion];
+  }
+  
+  //
+  // get current translation and (then zero it out so it won't accumulate)
+  CGPoint currentLocation = [sender locationInView:self];
+  CGPoint currentTranslation = [sender translationInView:self];
+  [sender setTranslation:CGPointZero inView:self];
+  
+  //
+  // compute the previous location (have to flip y)
+  CGPoint previousLocation;
+  previousLocation.x = currentLocation.x - currentTranslation.x;
+  previousLocation.y = currentLocation.y + currentTranslation.y;
+  
+  //
+  // calculate the focal depth so we'll know how far to move
+  vesRenderer* ren = [self->renderer getRenderer];
+  vesCamera* camera = ren->GetCamera();
+  vesVector3f viewFocus = camera->GetFocalPoint();
+  vesVector3f viewFocusDisplay = ren->ComputeWorldToDisplay(viewFocus);
+  float focalDepth = viewFocusDisplay[2];
+  
+  //
+  // map change into world coordinates
+  vesVector3f newPickPoint = ren->ComputeDisplayToWorld(vesVector3f(currentLocation.x,
+                                                                    currentLocation.y,
+                                                                    focalDepth));
+  vesVector3f oldPickPoint = ren->ComputeDisplayToWorld(vesVector3f(previousLocation.x,
+                                                                    previousLocation.y,
+                                                                    focalDepth));
+  
+  vesVector3f motionVector = oldPickPoint - newPickPoint;
+  
+  vesVector3f viewPoint = camera->GetPosition();
+  vesVector3f newViewFocus = motionVector + viewFocus;
+  vesVector3f newViewPoint = motionVector + viewPoint;
+  camera->SetFocalPoint(newViewFocus);
+  camera->SetPosition(newViewPoint);
+  // simultaneious with pinch temporarily remove draw request
+  // evenutally this should be a "schedule render" and not a 
+  // "force render" call
+  //[self drawView:nil];
 }
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
-{
+- (IBAction)handleSingleFingerPanGesture:(UIPanGestureRecognizer *)sender
+{ 
+  if (sender.state == UIGestureRecognizerStateEnded ||
+      sender.state == UIGestureRecognizerStateCancelled)
+  {
+    if (lastRotationMotionNorm > 4.0f)
+    {
+      self->inertialRotationThread = [[NSThread alloc] initWithTarget:self selector:@selector(handleInertialRotation) object:nil];
+      [inertialRotationThread start];
+    }
+    return;
+  }
+  
+  if (sender.state == UIGestureRecognizerStateBegan)
+  {
+    [self stopInertialMotion];
+  }
+  
+  //
+  // get current translation and (then zero it out so it won't accumulate)
+  CGPoint currentTranslation = [sender translationInView:self];
+  [sender setTranslation:CGPointZero inView:self];
+  
+  // 
+  // update data for inertial rotation
+  self->lastRotationMotionNorm = sqrtf(currentTranslation.x*currentTranslation.x + 
+                                       currentTranslation.y*currentTranslation.y);
+  if (self->lastRotationMotionNorm > 0)
+  {
+    self->lastMovementXYUnitDelta.x = currentTranslation.x / lastRotationMotionNorm;
+    self->lastMovementXYUnitDelta.y = currentTranslation.y / lastRotationMotionNorm;
+    
+    //
+    // apply the rotation and rerender
+    [self rotate:currentTranslation];
+    [self drawView:nil];
+  }
+  else
+  {
+    self->lastMovementXYUnitDelta.x = 0.0f;
+    self->lastMovementXYUnitDelta.y = 0.0f;
+  }
+}
+
+- (IBAction)handlePinchGesture:(UIPinchGestureRecognizer *)sender
+{  
+  if (sender.state == UIGestureRecognizerStateEnded ||
+      sender.state == UIGestureRecognizerStateCancelled)
+  {
+    return;
+  }
+  
+  if (sender.state == UIGestureRecognizerStateBegan)
+  {
+    [self stopInertialMotion];
+  }
+  
+  //
+  // apply dolly
+  vesRenderer* ren = [self->renderer getRenderer];
+  vesCamera* camera = ren->GetCamera();
+  camera->Dolly(sender.scale);
+  
+  //
+  // reset scale so it won't accumulate
+  sender.scale = 1.0;
+  
+  [self drawView:nil];
+}
+
+- (IBAction)handle2DRotationGesture:(UIRotationGestureRecognizer *)sender
+{  
+  if (sender.state == UIGestureRecognizerStateEnded ||
+      sender.state == UIGestureRecognizerStateCancelled)
+  {
+    return;
+  }
+  
+  if (sender.state == UIGestureRecognizerStateBegan)
+  {
+    [self stopInertialMotion];
+  }
+  
+  //
+  // apply roll
+  vesRenderer* ren = [self->renderer getRenderer];
+  vesCamera* camera = ren->GetCamera();
+  camera->Roll(sender.rotation * 180.0 / M_PI);
+  camera->OrthogonalizeViewUp();
+  
+  //
+  // reset rotation so it won't accumulate
+  [sender setRotation:0.0];
+  
+  // simultaneious with pinch temporarily remove draw request
+  // evenutally this should be a "schedule render" and not a 
+  // "force render" call
+  //[self drawView:nil];
+}
+
+- (IBAction)handleTapGesture:(UITapGestureRecognizer *)sender
+{ 
   [self stopInertialMotion];
-
-  NSMutableSet *currentTouches = [[[event touchesForView:self] mutableCopy] autorelease];
-  [currentTouches minusSet:touches];
-	  
-	// New touches are not yet included in the current touches for the view
-	NSSet *totalTouches = [touches setByAddingObjectsFromSet:[event touchesForView:self]];
-	if ([totalTouches count] > 1)
-	{
-		startingTouchDistance = [self distanceBetweenTouches:totalTouches];
-		previousScale = 1.0f;
-		twoFingersAreMoving = NO;
-		pinchGestureUnderway = NO;
-		previousDirectionOfPanning = CGPointZero;
-	}
-	else
-	{
-		lastMovementPosition = [[touches anyObject] locationInView:self];
-	}
 }
 
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event;
+- (void)rotate: (CGPoint)delta
 {
-	if ([[event touchesForView:self] count] > 1 )//&& [[event touchesForView:self] count] <3) // Pinch gesture, possibly two-finger movement
-	{
-#if 1
-		CGPoint directionOfPanning = CGPointZero;
-		
-		// Two finger panning
-		if ([touches count] > 1 )//&& [touches count] <3) // Check to make sure that both fingers are moving
-		{
-			directionOfPanning = [self commonDirectionOfTouches:touches];
-		}
-    float newTouchDistance = [self distanceBetweenTouches:[event touchesForView:self]];
-    // Scale using pinch gesture
-    [renderer _drawViewByRotatingAroundX:0.0 rotatingAroundY:0.0 scaling:(newTouchDistance / startingTouchDistance) / previousScale 
-                            //translationInX:0 translationInY:0];
-      translationInX:directionOfPanning.x translationInY:directionOfPanning.y];
-    previousScale = (newTouchDistance / startingTouchDistance);
-#else
-		CGPoint directionOfPanning = CGPointZero;
-		
-		// Two finger panning
-		if ([touches count] > 1) // Check to make sure that both fingers are moving
-		{
-			directionOfPanning = [self commonDirectionOfTouches:touches];
-		}
-		
-		if ( (directionOfPanning.x != 0) || (directionOfPanning.y != 0) ) // Don't scale while doing the two-finger panning
-		{
-			if (pinchGestureUnderway)
-			{
-				
-				
-				if (sqrt(previousDirectionOfPanning.x * previousDirectionOfPanning.x + previousDirectionOfPanning.y * previousDirectionOfPanning.y) > 0.1 )
-				{
-					pinchGestureUnderway = NO;
-				}
-				previousDirectionOfPanning.x += directionOfPanning.x;
-				previousDirectionOfPanning.y += directionOfPanning.y;
-			}
-			if (!pinchGestureUnderway)
-			{
-				twoFingersAreMoving = YES;
-				[renderer _drawViewByRotatingAroundX:0.0f rotatingAroundY:0.0f scaling:1.0f translationInX:directionOfPanning.x translationInY:directionOfPanning.y];
-				previousDirectionOfPanning = CGPointZero;
-			}
-		}
-		else
-		{
-			float newTouchDistance = [self distanceBetweenTouches:[event touchesForView:self]];
-			if (twoFingersAreMoving)
-			{
-				// If fingers have moved more than 10% apart, start pinch gesture again
-				if ( fabs(1 - (newTouchDistance / startingTouchDistance) / previousScale) > 0.6 )
-				{
-					twoFingersAreMoving = NO;
-				}
-			}
-			if (!twoFingersAreMoving)
-			{
-				// Scale using pinch gesture
-				[renderer _drawViewByRotatingAroundX:0.0 rotatingAroundY:0.0 scaling:(newTouchDistance / startingTouchDistance) / previousScale 
-                              translationInX:0 translationInY:0];
-                              //translationInX:directionOfPanning.x translationInY:directionOfPanning.y];
-				previousScale = (newTouchDistance / startingTouchDistance);
-				pinchGestureUnderway = YES;
-			}
-		}
-#endif
-	}
-	else // Single-touch rotation of object
-	{
-		CGPoint currentMovementPosition = [[touches anyObject] locationInView:self];
-    
-    CGPoint lastMovementXYDelta;
-    lastMovementXYDelta.x = currentMovementPosition.x - lastMovementPosition.x;
-    lastMovementXYDelta.y = currentMovementPosition.y - lastMovementPosition.y;
-
-    // compute unit delta so that we can easily compute inertia later
-    lastRotationMotionNorm = sqrtf(lastMovementXYDelta.x*lastMovementXYDelta.x + 
-                                   lastMovementXYDelta.y*lastMovementXYDelta.y);
-    lastMovementXYUnitDelta.x = lastMovementXYDelta.x / lastRotationMotionNorm;
-    lastMovementXYUnitDelta.y = lastMovementXYDelta.y / lastRotationMotionNorm;
-    
-		[renderer _drawViewByRotatingAroundX:(lastMovementXYDelta.x) rotatingAroundY:(lastMovementXYDelta.y) scaling:1.0f translationInX:0.0f translationInY:0.0f];
-		lastMovementPosition = currentMovementPosition;
-	}
-	 [self drawView:nil];
+  //
+  // Rotate camera
+  // Based on vtkInteractionStyleTrackballCamera::Rotate().
+  //
+  
+  vesRenderer* ren = [self->renderer getRenderer];
+  
+  double delta_elevation = -20.0 / ren->GetHeight();
+  double delta_azimuth = -20.0 / ren->GetWidth();
+  double motionFactor = 10.0;
+  
+  double rxf = delta.x * delta_azimuth * motionFactor;
+  double ryf = delta.y * delta_elevation * motionFactor;
+  
+  vesCamera *camera = [self->renderer getRenderer]->GetCamera();
+  camera->Azimuth(rxf);
+  camera->Elevation(ryf);
+  camera->OrthogonalizeViewUp();  
 }
 
 - (void)handleInertialRotation
 {
   NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-  float velocityDelta = 4.5;
-  while (lastRotationMotionNorm > velocityDelta)
+  CGPoint delta;
+  while (lastRotationMotionNorm > 0.5)
   {
     [NSThread sleepForTimeInterval:1/30.0];
     
@@ -377,13 +446,12 @@
       break;
     }
     
-    [renderer _drawViewByRotatingAroundX:(lastRotationMotionNorm*lastMovementXYUnitDelta.x) 
-                         rotatingAroundY:(lastRotationMotionNorm*lastMovementXYUnitDelta.y) 
-                                 scaling:1.0f 
-                          translationInX:0.0f 
-                          translationInY:0.0f];
+    delta.x = lastRotationMotionNorm*lastMovementXYUnitDelta.x;
+    delta.y = lastRotationMotionNorm*lastMovementXYUnitDelta.y;
+    [self rotate:delta];
+    
     [self drawView:nil];
-    lastRotationMotionNorm -= velocityDelta;
+    lastRotationMotionNorm *= 0.8;
   }
   lastRotationMotionNorm = 0;
   [pool release];
@@ -411,35 +479,9 @@
   }
 }
 
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event 
-{
-	[self handleTouchesEnding:touches withEvent:event];
-}
+#pragma mark -
+#pragma mark Model information
 
-- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event 
-{
-	[self handleTouchesEnding:touches withEvent:event];
-}
-
-- (void)handleTouchesEnding:(NSSet *)touches withEvent:(UIEvent *)event
-{
-    NSMutableSet *remainingTouches = [[[event touchesForView:self] mutableCopy] autorelease];
-    [remainingTouches minusSet:touches];
-	if ([remainingTouches count] < 2)
-	{
-		twoFingersAreMoving = NO;
-		pinchGestureUnderway = NO;
-		previousDirectionOfPanning = CGPointZero;
-		
-		lastMovementPosition = [[remainingTouches anyObject] locationInView:self];
-	}	
-  
-  if ([remainingTouches count] == 0 && lastRotationMotionNorm > 0.0f)
-  {
-    inertialRotationThread = [[NSThread alloc] initWithTarget:self selector:@selector(handleInertialRotation) object:nil];
-    [inertialRotationThread start];
-  }
-}
 
 -(int) getNumberOfFacetsForCurrentModel
 {

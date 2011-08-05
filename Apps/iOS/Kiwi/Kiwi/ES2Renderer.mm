@@ -17,7 +17,7 @@
 #import "DataReader.h"
 
 #include "vesRenderer.h"
-#include "vesMultitouchCamera.h"
+#include "vesCamera.h"
 #include "vesShader.h"
 #include "vesShaderProgram.h"
 #include "vesTriangleData.h"
@@ -34,8 +34,7 @@
   {		
   
   		// Create a C++ renderer object
-		mCamera = new vesMultitouchCamera;
-    renderer = new vesRenderer(mCamera);
+    renderer = new vesRenderer();
     
     NSString *vertShaderPathname, *fragShaderPathname;
     GLchar* vertexSourceStr, *fragmentSourceStr;
@@ -74,17 +73,33 @@
   return self;
 }
 
+- (vesRenderer*) getRenderer
+{
+  return self->renderer;
+}
+
+- (vesShader*) getShader
+{
+  return self->Shader;
+}
+
+- (vesCamera*) getCamera
+{
+  return renderer->GetCamera();
+}
+
 - (void) render
 {
   glClearColor(63/255.0f, 96/255.0f, 144/255.0, 1.0f);
   // Use shader program
   shaderProgram->Use();
+  renderer->ResetCameraClippingRange();
   renderer->Render();
 }
 
 - (BOOL) resizeFromLayer:(int) w height:(int) h
 {
-  renderer->resize(w,h,1.0);
+  renderer->Resize(w,h,1.0f);
   return YES;
 }
 
@@ -98,8 +113,27 @@
 }
 
 - (void)resetView
-{
-    renderer->resetView();
+{  
+  //
+  // this is just confusing...
+  // We want to set the direction to look from and view up
+  // then we want to dolly the camera so that the surface takes up
+  // a reasonable portion of the screen.
+  // the ResetCamera function will overwrite view up
+  // so we have to call things in this strange order.
+  
+  // 
+  // set direction to look from
+  renderer->GetCamera()->SetViewPlaneNormal(vesVector3f(0.0, 0.0, 1.0));
+
+  //
+  // dolly so that scene fits window
+  renderer->ResetCamera();
+  
+  // 
+  // now set the view plane normal
+  renderer->GetCamera()->SetViewUp(vesVector3f(0.0, 1.0, 0.0));
+  renderer->GetCamera()->OrthogonalizeViewUp();
 }
 
 - (void) setFilePath :(NSString *) fpath
@@ -144,19 +178,6 @@
   mMapper->SetTriangleData(newData);
   mActor->Read();
   [readerAlert dismissWithClickedButtonIndex:0 animated:YES];
-}
-
-- (void)_drawViewByRotatingAroundX:(float)xRotation 
-                   rotatingAroundY:(float)yRotation 
-                           scaling:(float)scaleFactor 
-                    translationInX:(float)xTranslation 
-                    translationInY:(float)yTranslation
-{
-#if GMTL_CAMERA
-  mCamera->UpdateMatrixGMTL(xRotation,yRotation,scaleFactor,xTranslation,yTranslation);
-#else
-  mCamera->UpdateMatrix(xRotation,yRotation,scaleFactor,xTranslation,yTranslation); 
-#endif
 }
 
 -(int) getNumberOfFacetsForCurrentModel

@@ -41,35 +41,25 @@
   id <ESRenderer> renderer;
   NSString *filePath;
 	
-	// Touch-handling 
-	float startingTouchDistance;
-  float previousScale;
-	float instantObjectScale; 
-  float instantXRotation;
-  float instantYRotation;
-  float instantXTranslation;
-  float instantYTranslation;
-  float instantZTranslation;
-	CGPoint lastMovementPosition;
+	// inertia handling 
   CGPoint lastMovementXYUnitDelta;
-  float lastRotationMotionNorm;
-  CGPoint previousDirectionOfPanning;
-	BOOL twoFingersAreMoving;
-  BOOL pinchGestureUnderway;
-	float scalingForMovement;
-  
+  float lastRotationMotionNorm;  
   NSThread* inertialRotationThread;
 }
 
-//- (void)setDelegate:(kiwiAppDelegate*)d;
 - (void)drawView:(id)sender;
 - (void)resetView;
 - (void)setFilePath:(NSString*)fpath;
 
 // Touch handling
-- (float)distanceBetweenTouches:(NSSet *)touches;
-- (CGPoint)commonDirectionOfTouches:(NSSet *)touches;
-- (void)handleTouchesEnding:(NSSet *)touches withEvent:(UIEvent *)event;
+- (void) createGestureRecognizers;
+- (IBAction)handleSingleFingerPanGesture:(UIPanGestureRecognizer *)sender;
+- (IBAction)handleDoubleFingerPanGesture:(UIPanGestureRecognizer *)sender;
+- (IBAction)handlePinchGesture:(UIPinchGestureRecognizer *)sender;
+- (IBAction)handle2DRotationGesture:(UIRotationGestureRecognizer *)sender;
+- (IBAction)handleTapGesture:(UITapGestureRecognizer *)sender;
+
+- (void)rotate: (CGPoint)delta;
 
 // inertia handling
 - (void)handleInertialRotation;

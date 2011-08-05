@@ -23,7 +23,7 @@ struct vesShaderProgram;
 struct vesShader;
 struct vesMapper;
 struct vesActor;
-struct vesMultitouchCamera;
+struct vesCamera;
 
 @interface ES2Renderer : NSObject <ESRenderer>
 {
@@ -32,16 +32,18 @@ struct vesMultitouchCamera;
   vesShader *Shader;
   vesShaderProgram *shaderProgram;
 	vesRenderer *renderer;
-  vesMultitouchCamera *mCamera;
   vesMapper* mMapper;
   vesActor* mActor;
 }
+
+- (struct vesRenderer*) getRenderer;
+- (struct vesShader*) getShader;
+- (struct vesCamera*) getCamera;
 
 - (void)render;
 - (void)resetView;
 - (BOOL)resizeFromLayer:(int)w height:(int) h;
 - (void)setFilePath:(NSString*)fpath;
-- (void)_drawViewByRotatingAroundX:(float)xRotation rotatingAroundY:(float)yRotation scaling:(float)scaleFactor translationInX:(float)xTranslation translationInY:(float)yTranslation;
 
 - (int)getNumberOfFacetsForCurrentModel;
 - (int)getNumberOfLinesForCurrentModel;
