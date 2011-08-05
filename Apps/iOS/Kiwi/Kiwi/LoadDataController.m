@@ -51,7 +51,8 @@
   [_exampleData addObject:@"Sphere"];
   [_exampleData addObject:@"Utah Teapot"];
   [_exampleData addObject:@"Stanford Bunny"];
-  [_exampleData addObject:@"UNC Old Well"];
+  // there are some problems with this mesh
+  //[_exampleData addObject:@"UNC Old Well"];
   [_exampleData addObject:@"NLM Visible Woman Hand"];
   [_exampleData addObject:@"NAMIC Knee Atlas"];
   [_exampleData addObject:@"Mount St. Helens"];
@@ -163,40 +164,40 @@
       else if (label == @"Utah Teapot") {
         [_delegate dataSelected:[NSURL fileURLWithPath:[[NSBundle mainBundle] 
                                                         pathForResource:@"teapot" 
-                                                        ofType:@"vtk"]]];
+                                                        ofType:@"vtp"]]];
       }
       else if (label == @"Stanford Bunny") {
         [_delegate dataSelected:[NSURL fileURLWithPath:[[NSBundle mainBundle] 
                                                         pathForResource:@"bunny" 
-                                                        ofType:@"vtk"]]];
+                                                        ofType:@"vtp"]]];
       }
       else if (label == @"UNC Old Well") {
         [_delegate dataSelected:[NSURL fileURLWithPath:[[NSBundle mainBundle] 
                                                         pathForResource:@"old_well" 
-                                                        ofType:@"vtk"]]];
+                                                        ofType:@"vtp"]]];
       }
       else if (label == @"NLM Visible Woman Hand") {
         [_delegate dataSelected:[NSURL fileURLWithPath:[[NSBundle mainBundle] 
                                                         pathForResource:@"visible-woman-hand" 
-                                                        ofType:@"vtk"]]];
+                                                        ofType:@"vtp"]]];
       }
       else if (label == @"NAMIC Knee Atlas")
       {
         [_delegate dataSelected:[NSURL fileURLWithPath:[[NSBundle mainBundle] 
                                                         pathForResource:@"AppendedKneeData" 
-                                                        ofType:@"vtk"]]];
+                                                        ofType:@"vtp"]]];
       }
       else if (label == @"Mount St. Helens")
       {
         [_delegate dataSelected:[NSURL fileURLWithPath:[[NSBundle mainBundle] 
                                                         pathForResource:@"MountStHelen" 
-                                                        ofType:@"vtk"]]];
+                                                        ofType:@"vtp"]]];
       }
       else if (label == @"Space Shuttle")
       {
         [_delegate dataSelected:[NSURL fileURLWithPath:[[NSBundle mainBundle] 
-                                                        pathForResource:@"shuttle-ascii" 
-                                                        ofType:@"vtk"]]];
+                                                        pathForResource:@"shuttle" 
+                                                        ofType:@"vtp"]]];
       }
     }
     else if (indexPath.section == 1) {

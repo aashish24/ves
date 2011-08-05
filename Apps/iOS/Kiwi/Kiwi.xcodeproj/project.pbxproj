@@ -45,16 +45,16 @@
 		6F41B5C01360C0CA00D0079D /* InfoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F41B5BE1360C0CA00D0079D /* InfoView.m */; };
 		6F43A8AE138AC01D0053899E /* Kiwi_K.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F43A8AD138AC01D0053899E /* Kiwi_K.png */; };
 		6F5CF7A313103D7700BB1195 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F5CF7A213103D7700BB1195 /* CoreGraphics.framework */; };
-		70298AEA138D3BB200ED02AB /* MountStHelen.vtk in Resources */ = {isa = PBXBuildFile; fileRef = 70298AE9138D3BB200ED02AB /* MountStHelen.vtk */; };
+		7027670513EC41640089945A /* teapot.vtp in Resources */ = {isa = PBXBuildFile; fileRef = 7027670413EC41640089945A /* teapot.vtp */; };
+		7027670713EC41D30089945A /* bunny.vtp in Resources */ = {isa = PBXBuildFile; fileRef = 7027670613EC41D30089945A /* bunny.vtp */; };
+		7027670913EC425A0089945A /* old_well.vtp in Resources */ = {isa = PBXBuildFile; fileRef = 7027670813EC425A0089945A /* old_well.vtp */; };
+		7027670B13EC439C0089945A /* visible-woman-hand.vtp in Resources */ = {isa = PBXBuildFile; fileRef = 7027670A13EC439C0089945A /* visible-woman-hand.vtp */; };
+		7027670D13EC44DE0089945A /* AppendedKneeData.vtp in Resources */ = {isa = PBXBuildFile; fileRef = 7027670C13EC44DE0089945A /* AppendedKneeData.vtp */; };
+		7027670F13EC45590089945A /* shuttle.vtp in Resources */ = {isa = PBXBuildFile; fileRef = 7027670E13EC45590089945A /* shuttle.vtp */; };
+		7027671113EC46620089945A /* MountStHelen.vtp in Resources */ = {isa = PBXBuildFile; fileRef = 7027671013EC46620089945A /* MountStHelen.vtp */; };
 		70398015138551CE00E579C2 /* LoadDataController.m in Sources */ = {isa = PBXBuildFile; fileRef = 70398014138551CE00E579C2 /* LoadDataController.m */; };
-		70398018138576D200E579C2 /* AppendedKneeData.vtk in Resources */ = {isa = PBXBuildFile; fileRef = 70398017138576D200E579C2 /* AppendedKneeData.vtk */; };
-		706F0E44138C677000B575F4 /* bunny.vtk in Resources */ = {isa = PBXBuildFile; fileRef = 706F0E43138C677000B575F4 /* bunny.vtk */; };
-		706F0E46138C678300B575F4 /* old_well.vtk in Resources */ = {isa = PBXBuildFile; fileRef = 706F0E45138C678300B575F4 /* old_well.vtk */; };
-		706F0E48138C679300B575F4 /* teapot.vtk in Resources */ = {isa = PBXBuildFile; fileRef = 706F0E47138C679300B575F4 /* teapot.vtk */; };
 		706F0E4A138C691E00B575F4 /* fullscreen_32.png in Resources */ = {isa = PBXBuildFile; fileRef = 706F0E49138C691E00B575F4 /* fullscreen_32.png */; };
 		706F0E4C138C693100B575F4 /* opendata_32.png in Resources */ = {isa = PBXBuildFile; fileRef = 706F0E4B138C693100B575F4 /* opendata_32.png */; };
-		70A9B9E1139412CD00C7DEE0 /* shuttle-ascii.vtk in Resources */ = {isa = PBXBuildFile; fileRef = 70A9B9E0139412CD00C7DEE0 /* shuttle-ascii.vtk */; };
-		70A9B9E5139421D300C7DEE0 /* visible-woman-hand.vtk in Resources */ = {isa = PBXBuildFile; fileRef = 70A9B9E4139421D300C7DEE0 /* visible-woman-hand.vtk */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -105,17 +105,17 @@
 		6F41B5BE1360C0CA00D0079D /* InfoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InfoView.m; sourceTree = "<group>"; };
 		6F43A8AD138AC01D0053899E /* Kiwi_K.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Kiwi_K.png; sourceTree = "<group>"; };
 		6F5CF7A213103D7700BB1195 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		70298AE9138D3BB200ED02AB /* MountStHelen.vtk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = MountStHelen.vtk; sourceTree = "<group>"; };
+		7027670413EC41640089945A /* teapot.vtp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = teapot.vtp; sourceTree = "<group>"; };
+		7027670613EC41D30089945A /* bunny.vtp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bunny.vtp; sourceTree = "<group>"; };
+		7027670813EC425A0089945A /* old_well.vtp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = old_well.vtp; sourceTree = "<group>"; };
+		7027670A13EC439C0089945A /* visible-woman-hand.vtp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "visible-woman-hand.vtp"; sourceTree = "<group>"; };
+		7027670C13EC44DE0089945A /* AppendedKneeData.vtp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AppendedKneeData.vtp; sourceTree = "<group>"; };
+		7027670E13EC45590089945A /* shuttle.vtp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = shuttle.vtp; sourceTree = "<group>"; };
+		7027671013EC46620089945A /* MountStHelen.vtp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = MountStHelen.vtp; sourceTree = "<group>"; };
 		70398013138551CE00E579C2 /* LoadDataController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoadDataController.h; sourceTree = "<group>"; };
 		70398014138551CE00E579C2 /* LoadDataController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadDataController.m; sourceTree = "<group>"; };
-		70398017138576D200E579C2 /* AppendedKneeData.vtk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AppendedKneeData.vtk; sourceTree = "<group>"; };
-		706F0E43138C677000B575F4 /* bunny.vtk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bunny.vtk; sourceTree = "<group>"; };
-		706F0E45138C678300B575F4 /* old_well.vtk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = old_well.vtk; sourceTree = "<group>"; };
-		706F0E47138C679300B575F4 /* teapot.vtk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = teapot.vtk; sourceTree = "<group>"; };
 		706F0E49138C691E00B575F4 /* fullscreen_32.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fullscreen_32.png; sourceTree = "<group>"; };
 		706F0E4B138C693100B575F4 /* opendata_32.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = opendata_32.png; sourceTree = "<group>"; };
-		70A9B9E0139412CD00C7DEE0 /* shuttle-ascii.vtk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "shuttle-ascii.vtk"; sourceTree = "<group>"; };
-		70A9B9E4139421D300C7DEE0 /* visible-woman-hand.vtk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "visible-woman-hand.vtk"; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Kiwi-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Kiwi-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -255,13 +255,13 @@
 		6F25E6F2137D88DD00BF4BCA /* Data */ = {
 			isa = PBXGroup;
 			children = (
-				70A9B9E4139421D300C7DEE0 /* visible-woman-hand.vtk */,
-				70A9B9E0139412CD00C7DEE0 /* shuttle-ascii.vtk */,
-				70298AE9138D3BB200ED02AB /* MountStHelen.vtk */,
-				706F0E47138C679300B575F4 /* teapot.vtk */,
-				706F0E45138C678300B575F4 /* old_well.vtk */,
-				706F0E43138C677000B575F4 /* bunny.vtk */,
-				70398017138576D200E579C2 /* AppendedKneeData.vtk */,
+				7027671013EC46620089945A /* MountStHelen.vtp */,
+				7027670E13EC45590089945A /* shuttle.vtp */,
+				7027670C13EC44DE0089945A /* AppendedKneeData.vtp */,
+				7027670A13EC439C0089945A /* visible-woman-hand.vtp */,
+				7027670813EC425A0089945A /* old_well.vtp */,
+				7027670613EC41D30089945A /* bunny.vtp */,
+				7027670413EC41640089945A /* teapot.vtp */,
 				6F25E720137DEA5400BF4BCA /* current.stl */,
 				1FBD34E2132163C300738902 /* current.vtk */,
 			);
@@ -339,21 +339,21 @@
 				1FBD34E3132163C300738902 /* current.vtk in Resources */,
 				1F4C1BF4137D970E0052301B /* InfoView.xib in Resources */,
 				6F25E721137DEA5400BF4BCA /* current.stl in Resources */,
-				70398018138576D200E579C2 /* AppendedKneeData.vtk in Resources */,
 				6F43A8AE138AC01D0053899E /* Kiwi_K.png in Resources */,
-				706F0E44138C677000B575F4 /* bunny.vtk in Resources */,
-				706F0E46138C678300B575F4 /* old_well.vtk in Resources */,
-				706F0E48138C679300B575F4 /* teapot.vtk in Resources */,
 				706F0E4A138C691E00B575F4 /* fullscreen_32.png in Resources */,
 				706F0E4C138C693100B575F4 /* opendata_32.png in Resources */,
-				70298AEA138D3BB200ED02AB /* MountStHelen.vtk in Resources */,
-				70A9B9E1139412CD00C7DEE0 /* shuttle-ascii.vtk in Resources */,
-				70A9B9E5139421D300C7DEE0 /* visible-woman-hand.vtk in Resources */,
 				436B34B413C802D500C5726C /* Default-Landscape~ipad.png in Resources */,
 				436B34B513C802D500C5726C /* Default-Portrait~ipad.png in Resources */,
 				436B34B613C802D500C5726C /* icon.png in Resources */,
 				436B34B713C802D500C5726C /* iTunesArtwork in Resources */,
 				436B34B813C802D500C5726C /* Kiwi_Splash_72.png in Resources */,
+				7027670513EC41640089945A /* teapot.vtp in Resources */,
+				7027670713EC41D30089945A /* bunny.vtp in Resources */,
+				7027670913EC425A0089945A /* old_well.vtp in Resources */,
+				7027670B13EC439C0089945A /* visible-woman-hand.vtp in Resources */,
+				7027670D13EC44DE0089945A /* AppendedKneeData.vtp in Resources */,
+				7027670F13EC45590089945A /* shuttle.vtp in Resources */,
+				7027671113EC46620089945A /* MountStHelen.vtp in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
