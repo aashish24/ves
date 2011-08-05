@@ -393,10 +393,7 @@
 				HEADER_SEARCH_PATHS = (
 					"../CMakeBuild/build/CMakeExternals/Install/vtkmodular-device/include/vtk",
 					../../../src,
-					../../../src/ves,
-					../../../src/ves/vsg,
-					../../../src/ves/vsg/Core,
-					../../../src/ves/vsg/Utility,
+					"../../../src/ves/**",
 				);
 				INFOPLIST_FILE = "Kiwi/Kiwi-Info.plist";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
@@ -432,10 +429,7 @@
 				HEADER_SEARCH_PATHS = (
 					"../CMakeBuild/build/CMakeExternals/Install/vtkmodular-device/include/vtk",
 					../../../src,
-					../../../src/ves,
-					../../../src/ves/vsg,
-					../../../src/ves/vsg/Core,
-					../../../src/ves/vsg/Utility,
+					"../../../src/ves/**",
 				);
 				INFOPLIST_FILE = "Kiwi/Kiwi-Info.plist";
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
