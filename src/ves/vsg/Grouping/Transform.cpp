@@ -27,12 +27,12 @@ namespace vsg{
 class TransformInternal
 {
 private:
-  vesMatrix4x4f T,C,R,SR,S,_SR,_C;
+  vesMatrix4x4f T,C,R,SR,S,SRinv,Cinv;
 public:
   // ..................................................................internal
   vesMatrix4x4f Eval()
     {
-      return T * C * R * SR * S * _SR * _C;
+      return T * C * R * SR * S * SRinv * Cinv;
     }
   // ..................................................................internal
   void SetTranslation(SFVec3f trans)
@@ -43,7 +43,7 @@ public:
   void SetCenter(SFVec3f center)
     {
       C = makeTranslationMatrix4x4(center);
-      _C = makeInverseMatrix4x4(C);
+      Cinv = makeInverseMatrix4x4(C);
     }
   // ..................................................................internal
   void SetRotation(SFRotation rot)
@@ -54,7 +54,7 @@ public:
   void SetScaleOrientation(SFVec4f sr)
     {
       SR = makeRotationMatrix4x4(sr[3], sr[0], sr[1], sr[2]);
-      _SR = makeInverseMatrix4x4(SR);
+      SRinv = makeInverseMatrix4x4(SR);
     }
   // ..................................................................internal
   void SetScale(SFVec3f scale)
