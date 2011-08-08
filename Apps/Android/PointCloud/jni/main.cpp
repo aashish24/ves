@@ -20,7 +20,9 @@
 #include <errno.h>
 
 #include <EGL/egl.h>
+/*
 #include <GLES/gl.h>
+*/
 
 #include <android/sensor.h>
 #include <android/log.h>
@@ -39,6 +41,7 @@
 
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "native-activity", __VA_ARGS__))
 #define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "native-activity", __VA_ARGS__))
+#define LOGE(...) ((void)__android_log_print(ANDROID_LOG_WARN, "native-activity", __VA_ARGS__))
 
 /**
  * Our saved state data.
@@ -69,6 +72,7 @@ struct engine {
 
     float *points;
     unsigned int nPoints;
+    vesRenderer* renderer;
 };
 
 /**
@@ -87,6 +91,11 @@ static int engine_init_display(struct engine* engine) {
             EGL_BLUE_SIZE, 8,
             EGL_GREEN_SIZE, 8,
             EGL_RED_SIZE, 8,
+            EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
+            EGL_NONE
+    };
+    const EGLint context_attribs[] = {
+            EGL_CONTEXT_CLIENT_VERSION, 2,
             EGL_NONE
     };
     EGLint w, h, dummy, format;
@@ -113,24 +122,31 @@ static int engine_init_display(struct engine* engine) {
     ANativeWindow_setBuffersGeometry(engine->app->window, 0, 0, format);
 
     surface = eglCreateWindowSurface(display, config, engine->app->window, NULL);
-    context = eglCreateContext(display, config, NULL, NULL);
+    context = eglCreateContext(display, config, NULL, context_attribs);
 
     if (eglMakeCurrent(display, surface, surface, context) == EGL_FALSE) {
         LOGW("Unable to eglMakeCurrent");
         return -1;
     }
 
+    engine->renderer = new vesRenderer();
+    
     eglQuerySurface(display, surface, EGL_WIDTH, &w);
     eglQuerySurface(display, surface, EGL_HEIGHT, &h);
-
+    LOGI("Width %d, Height %d", w, h);
     engine->display = display;
     engine->context = context;
     engine->surface = surface;
     engine->width = w;
     engine->height = h;
     engine->state.angle = 0;
-
+    engine->state.x = 0;
+    engine->state.y = 0;
+    engine->renderer->Resize(w, h, 1.0f);
+    
     // Initialize GL state.
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+#if 0
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
     glEnable(GL_CULL_FACE);
     glShadeModel(GL_SMOOTH);
@@ -141,7 +157,53 @@ static int engine_init_display(struct engine* engine) {
     glOrthof(-2.0, 2.0, -2.0, 2.0, -2.0, 2.0);
     //glFrustumf(-2.0, 2.0, -2.0, 2.0, -2.0, 2.0);
     
+#endif
+    
+    AAssetManager* assetManager = engine->app->activity->assetManager;
+    AAsset* asset = AAssetManager_open(assetManager, "bunny.vtk", AASSET_MODE_UNKNOWN);
+    if (asset == NULL) {
+        LOGW("could not open asset");
+    }
+    off_t len = AAsset_getLength(asset);
+    const char* input_string = static_cast<const char*>(AAsset_getBuffer(asset));
+    LOGI("\n**\nlength is %d", AAsset_getLength(asset));
 
+    vtkSmartPointer<vtkPolyDataReader> read = vtkSmartPointer<vtkPolyDataReader>::New ();
+    read->SetInputString (input_string, len);
+    read->ReadFromInputStringOn ();
+    read->Update ();
+    vtkPolyData *data = read->GetOutput ();
+    LOGI("a: number of points is %d", data->GetNumberOfPoints());
+    vesTriangleData* triangle_data = vesPolyDataToTriangleData::Convert (data);
+    LOGI("b: number of points is %d\n**\n", triangle_data->GetPoints().size());
+    
+    AAsset* vertex_asset = AAssetManager_open(assetManager, "Shader.vsh", AASSET_MODE_UNKNOWN);
+    AAsset* fragment_asset = AAssetManager_open(assetManager, "Shader.fsh", AASSET_MODE_UNKNOWN);
+    
+    std::string vertex_source = std::string(static_cast<const char*>(AAsset_getBuffer(vertex_asset)), AAsset_getLength(vertex_asset));
+    std::string fragment_source = std::string(static_cast<const char*>(AAsset_getBuffer(fragment_asset)), AAsset_getLength(fragment_asset));
+    LOGI("vertex_source: %s\n", vertex_source.c_str());
+    LOGI("fragment_source: %s\n", fragment_source.c_str());
+    
+    vesShaderProgram* shader_program = new vesShaderProgram(
+                                   const_cast<char*>(vertex_source.c_str()),
+                                   const_cast<char*>(fragment_source.c_str()),
+                                   (_uni("u_mvpMatrix"),
+                                    _uni("u_normalMatrix"),
+                                    _uni("u_ecLightDir")),
+                                   (_att("a_vertex"),
+                                    _att("a_normal"),
+                                    _att("a_texcoord"))
+                                   );
+    vesShader* shader = new vesShader(shader_program);    
+    vesMapper* mapper = new vesMapper();
+    mapper->SetTriangleData(triangle_data);
+    vesActor* actor = new vesActor(shader, mapper);
+    engine->renderer->AddActor(actor);
+    engine->renderer->ResetCamera();
+    
+    AAsset_close(asset);
+    
     return 0;
 }
 
@@ -149,23 +211,8 @@ static int engine_init_display(struct engine* engine) {
  * Just the current frame in the display.
  */
 static void engine_draw_frame(struct engine* engine) {
-    LOGI("engine_draw_frame %d", engine->nPoints);
-    if (engine->display == NULL) {
-        // No display.
-        return;
-    }
-
-    // Just fill the screen with a color.
-    glClearColor(0.0, 0.0, 0.0, 1);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    static float vertices[] = { 0.0, 0.0, 0.0,
-                                0.5, 0.5, 0.0 };
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glPointSize(1.0);
-    glVertexPointer(3, GL_FLOAT, sizeof(float) * 3, engine->points);
-    glDrawArrays(GL_POINTS, 0, engine->nPoints);
-    glDisableClientState(GL_VERTEX_ARRAY);
+    engine->renderer->ResetCameraClippingRange();
+    engine->renderer->Render();
 
     eglSwapBuffers(engine->display, engine->surface);
 }
@@ -197,8 +244,26 @@ static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) 
     struct engine* engine = (struct engine*)app->userData;
     if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
         engine->animating = 1;
-        engine->state.x = AMotionEvent_getX(event, 0);
-        engine->state.y = AMotionEvent_getY(event, 0);
+        float x = AMotionEvent_getX(event, 0);
+        float y = AMotionEvent_getY(event, 0);
+        float dx = x - engine->state.x;
+        float dy = y - engine->state.y;
+        engine->state.x = x;
+        engine->state.y = y;
+
+        vesRenderer* ren = engine->renderer;
+        double delta_elevation = -20.0 / ren->GetHeight();
+        double delta_azimuth = -20.0 / ren->GetWidth();
+        double motionFactor = 10.0;
+        
+        double rxf = dx * delta_azimuth * motionFactor;
+        double ryf = dy * delta_elevation * motionFactor;
+        
+        vesCamera *camera = ren->GetCamera();
+        camera->Azimuth(rxf);
+        camera->Elevation(ryf);
+        camera->OrthogonalizeViewUp();
+        //ren->Render();
         return 1;
     }
     return 0;
@@ -264,53 +329,6 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
  */
 void android_main(struct android_app* state) {
     struct engine engine;
-
-    AAssetManager* assetManager = state->activity->assetManager;
-    AAsset* asset = AAssetManager_open(assetManager, "cturtle.vtk", AASSET_MODE_UNKNOWN);
-    if (asset == NULL) {
-        LOGW("could not open asset");
-    }
-    off_t len = AAsset_getLength(asset);
-    const char* input_string = static_cast<const char*>(AAsset_getBuffer(asset));
-    LOGI("\n**\nlength is %d", AAsset_getLength(asset));
-
-    vtkSmartPointer<vtkPolyDataReader> read = vtkSmartPointer<vtkPolyDataReader>::New ();
-    read->SetInputString (input_string, len);
-    read->ReadFromInputStringOn ();
-    read->Update ();
-    vtkPolyData *data = read->GetOutput ();
-    LOGI("a: number of points is %d", data->GetNumberOfPoints());
-    vesTriangleData* triangle_data = vesPolyDataToTriangleData::Convert (data);
-    LOGI("b: number of points is %d\n**\n", triangle_data->GetPoints().size());
-    
-		// Create a C++ renderer object
-		vesMultitouchCamera* camera = new vesMultitouchCamera;
-    vesRenderer* renderer = new vesRenderer(camera);
-    
-    AAsset* vertex_asset = AAssetManager_open(assetManager, "Shader.vsh", AASSET_MODE_UNKNOWN);
-    AAsset* fragment_asset = AAssetManager_open(assetManager, "Shader.fsh", AASSET_MODE_UNKNOWN);
-    
-    std::string vertex_source = std::string(static_cast<const char*>(AAsset_getBuffer(vertex_asset)), AAsset_getLength(vertex_asset));
-    std::string fragment_source = std::string(static_cast<const char*>(AAsset_getBuffer(fragment_asset)), AAsset_getLength(fragment_asset));
-    
-    vesShaderProgram* shader_program = new vesShaderProgram(
-                                   const_cast<char*>(vertex_source.c_str()),
-                                   const_cast<char*>(fragment_source.c_str()),
-                                   (_uni("u_mvpMatrix"),
-                                    _uni("u_normalMatrix"),
-                                    _uni("u_ecLightDir")),
-                                   (_att("a_vertex"),
-                                    _att("a_normal"),
-                                    _att("a_texcoord"))
-                                   );
-    vesShader* shader = new vesShader(shader_program);    
-    
-    vesMapper* mapper = new vesMapper();
-    mapper->SetTriangleData(triangle_data);
-    vesActor* actor = new vesActor(shader, mapper);
-    renderer->AddActor(actor);
-    
-    AAsset_close(asset);
     
     // Make sure glue isn't stripped.
     app_dummy();
@@ -320,10 +338,6 @@ void android_main(struct android_app* state) {
     state->onAppCmd = engine_handle_cmd;
     state->onInputEvent = engine_handle_input;
     engine.app = state;
-
-    // Store the pointer to the points
-    engine.points = reinterpret_cast<float*>(&triangle_data->GetPoints()[0]);
-    engine.nPoints = triangle_data->GetPoints().size();
 
     // Prepare to monitor accelerometer
     engine.sensorManager = ASensorManager_getInstance();

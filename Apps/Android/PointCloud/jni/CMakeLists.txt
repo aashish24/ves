@@ -19,7 +19,10 @@ link_directories(${VES_LIBRARY_DIR})
 message("VES_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../../../src/ves")
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../../../src/ves ${CMAKE_CURRENT_SOURCE_DIR}/../../../../src
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../../src/ves/vsg/Core
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../../src/ves/vsg/Grouping
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../../src/ves/vsg/Navigation
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../../src/ves/vsg/Rendering
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../../src/ves/vsg/Shader
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../../src/ves/vsg/Utility
 )
 
