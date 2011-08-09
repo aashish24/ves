@@ -40,10 +40,13 @@ public:
   void ComputeNormals();
   void SetHasBounds(bool b) { this->HasBounds = b; }
   void ComputeBounds();
+  std::vector<float>& GetPointScalars() { return this->PointScalars; }
+  vesVector2f GetPointScalarRange();
 protected:
   std::vector<vtkVertex3f> Points;
   std::vector<vesVector3us> Triangles;
   std::vector<vesVector2us> Lines;
+  std::vector<float> PointScalars;
   vesVector3f Min;
   vesVector3f Max;
   bool HasBounds;

@@ -9,6 +9,7 @@
 
 typedef gmtl::Matrix<float,4,4> vesMatrix4x4f;
 typedef gmtl::Matrix<float,3,3> vesMatrix3x3f;
+typedef gmtl::Vec2f vesVector2f;
 typedef gmtl::Vec3f vesVector3f;
 typedef gmtl::Vec4f vesVector4f;
 typedef gmtl::Point3f vtkPoint3f;

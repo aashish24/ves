@@ -56,7 +56,12 @@ void vesShaderProgram::SetUniformMatrix3x3f(string str, vesMatrix3x3f& mat)
   glUniformMatrix3fv(this->GetUniform(str), 1, GL_FALSE, mat.mData);
 }
 
-void vesShaderProgram::SetUniformVector3f(string str, vesVector3f& point)
+void vesShaderProgram::SetUniformVector3f(string str, vesVector3f point)
+{
+  glUniform3fv(this->GetUniform(str), 1, point.mData);
+}
+
+void vesShaderProgram::SetUniformVector2f(string str, vesVector2f point)
 {
   glUniform3fv(this->GetUniform(str), 1, point.mData);
 }

@@ -41,6 +41,23 @@ vesVector3f vesTriangleData::GetMax()
   return this->Max;
 }
 
+vesVector2f vesTriangleData::GetPointScalarRange()
+{
+  vesVector2f range(0, 1);
+  for (size_t i = 0; i < this->PointScalars.size(); ++i)
+    {
+    float v = this->PointScalars[i];
+    if (i == 0)
+      {
+      range[0] = v;
+      range[1] = v;
+      }
+    if (v < range[0]) range[0] = v;
+    if (v > range[1]) range[1] = v;
+    }
+  return range;
+}
+
 void vesTriangleData::ComputeBounds()
 {
   if (this->HasBounds)

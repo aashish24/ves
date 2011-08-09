@@ -32,6 +32,8 @@ public:
   vesGetMacro(Green, float)
   vesGetMacro(Blue, float)
   vesGetMacro(Alpha, float)
+  vesGetMacro(DrawPoints, bool)
+  vesSetMacro(DrawPoints, bool)
 private:
   void Normalize();
   vesMatrix4x4f NormalizedMatrix;
@@ -40,6 +42,7 @@ protected:
   bool mIsNew;
   vesTriangleData *Data;
   bool m_initialized;
+  bool DrawPoints;
 
   // unsigned int mMapperVBO[2];
 };

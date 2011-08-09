@@ -16,33 +16,29 @@
 uniform mat4   u_mvpMatrix;     // model-view-projection matrix
 uniform mat3   u_normalMatrix;  // normal matrix
 uniform vec3   u_ecLightDir;     // light direction in eye coordinates
+uniform vec2   u_scalarRange;
 
 attribute vec4 a_vertex;         // vertex position
 attribute vec3 a_normal;         // vertex normal
 attribute vec4 a_texcoord;       // texture coordinates
+attribute float a_scalar;
 
-//varying float v_diffuse;
-varying vec4  v_texcoord;
+varying vec4 v_texcoord;
+varying vec2 v_tcoord;
+//varying vec2 screenPos;
 
 void main()
 {
-  // put vertex normal into eye coords
-  vec3 ec_normal = normalize(u_normalMatrix * a_normal);
+  //vec3 ec_normal = normalize(u_normalMatrix * a_normal);
+  //float v_diffuse  = max(dot(u_ecLightDir,ec_normal),0.0);
+  //vec3 outColor = vec3(.25,.25,.25)+v_diffuse * a_texcoord.xyz ;
 
-  // emit diffuse scale factor, texcoord and position
-  float v_diffuse  = max(dot(u_ecLightDir,ec_normal),0.0);
-
-  //vec3 light = normalize(vec3(0.0, 0.0, -1.0));
-  //vec3 eye = vec3(0, 0, 1);
-  //vec3 EL = normalize(light + eye);
-
-  //float df = max(0.0, dot(ec_normal, light));
-  //float sf = max(0.01, dot(ec_normal, EL));
-  //sf = pow(sf, 5.0)
-
-  vec3 outColor = vec3(.25,.25,.25)+v_diffuse * a_texcoord.xyz ;// + sf * vec3(0.9, 0.9, 0.9);
-
-  v_texcoord = vec4(outColor, a_texcoord.a);
-  //v_texcoord = a_texcoord;
+  //v_texcoord = vec4(outColor, a_texcoord.a);
+  float val = (a_scalar - u_scalarRange.x) / (u_scalarRange.y - u_scalarRange.x);
+  //v_texcoord = vec4(a_scalar, a_scalar, a_scalar, 1);
+  v_tcoord = vec2(a_scalar, 0.5);
   gl_Position = u_mvpMatrix * a_vertex;
+  gl_PointSize = 1.0;
+  //vec2 halfsize = vec2(480.0, 854.0) * 0.5;
+  //screenPos = halfsize + ((gl_Position.xy / gl_Position.w) * halfsize);  
 }

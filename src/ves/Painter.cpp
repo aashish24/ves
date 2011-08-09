@@ -215,17 +215,35 @@ void Painter::visitShape(vsg::Shape* shape)
                         6 * sizeof(float),
                         mapper->GetData()->GetPoints()[0].normal.mData);
 
-  // draw triangles
-  glDrawElements(GL_TRIANGLES,
-                 mapper->GetData()->GetTriangles().size() * 3,
-                 GL_UNSIGNED_SHORT,
-                 &mapper->GetData()->GetTriangles()[0]);
+  // draw vertices
+  if (mapper->GetDrawPoints())
+    {
+    program->SetUniformVector2f("u_scalarRange", mapper->GetData()->GetPointScalarRange());
+    program->EnableVertexArray("a_scalar");
+    glVertexAttribPointer(program->GetAttribute("a_scalar"),
+                          1,
+                          GL_FLOAT,
+                          0,
+                          sizeof(float),
+                          &(mapper->GetData()->GetPointScalars()[0]));
 
-  // draw lines
-  glDrawElements(GL_LINES,
-                 mapper->GetData()->GetLines().size() * 2,
-                 GL_UNSIGNED_SHORT,
-                 &mapper->GetData()->GetLines()[0]);
+    glDrawArrays(GL_POINTS, 0, mapper->GetData()->GetPoints().size());  
+    }
+  else
+    {
+    // draw triangles
+    glDrawElements(GL_TRIANGLES,
+                   mapper->GetData()->GetTriangles().size() * 3,
+                   GL_UNSIGNED_SHORT,
+                   &mapper->GetData()->GetTriangles()[0]);
+  
+    // draw lines
+    glDrawElements(GL_LINES,
+                   mapper->GetData()->GetLines().size() * 2,
+                   GL_UNSIGNED_SHORT,
+                   &mapper->GetData()->GetLines()[0]);
+    }
+
   glDisable(GL_CULL_FACE);
   glDisable(GL_BLEND);
   //glBindBuffer(GL_ARRAY_BUFFER, 0);

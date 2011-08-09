@@ -32,6 +32,9 @@
 #include <vtkPolyDataReader.h>
 #include <vtkSmartPointer.h>
 #include <vtkPolyData.h>
+#include <vtkNew.h>
+#include <vtkLookupTable.h>
+
 #include <vesPolyDataToTriangleData.h>
 
 #include <vesMultitouchCamera.h>
@@ -48,8 +51,10 @@
  */
 struct saved_state {
     float angle;
-    int32_t x;
-    int32_t y;
+    int32_t x0;
+    int32_t y0;
+    int32_t x1;
+    int32_t y1;
 };
 
 /**
@@ -74,6 +79,92 @@ struct engine {
     unsigned int nPoints;
     vesRenderer* renderer;
 };
+
+
+static void checkGlError(const char* op) {
+    for (GLint error = glGetError(); error; error
+            = glGetError()) {
+        LOGI("after %s() glError (0x%x)\n", op, error);
+    }
+}
+
+static const char gVertexShader[] = 
+    "attribute vec4 vPosition;\n"
+    "void main() {\n"
+    "  gl_Position = vPosition;\n"
+    "}\n";
+
+static const char gFragmentShader[] = 
+    "precision mediump float;\n"
+    "void main() {\n"
+    "  gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);\n"
+    "}\n";
+
+GLuint loadShader(GLenum shaderType, const char* pSource) {
+    GLuint shader = glCreateShader(shaderType);
+    if (shader) {
+        glShaderSource(shader, 1, &pSource, NULL);
+        glCompileShader(shader);
+        GLint compiled = 0;
+        glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
+        if (!compiled) {
+            GLint infoLen = 0;
+            glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLen);
+            if (infoLen) {
+                char* buf = (char*) malloc(infoLen);
+                if (buf) {
+                    glGetShaderInfoLog(shader, infoLen, NULL, buf);
+                    LOGE("Could not compile shader %d:\n%s\n",
+                            shaderType, buf);
+                    free(buf);
+                }
+                glDeleteShader(shader);
+                shader = 0;
+            }
+        }
+    }
+    return shader;
+}
+
+GLuint createProgram(const char* pVertexSource, const char* pFragmentSource) {
+    GLuint vertexShader = loadShader(GL_VERTEX_SHADER, pVertexSource);
+    if (!vertexShader) {
+        return 0;
+    }
+
+    GLuint pixelShader = loadShader(GL_FRAGMENT_SHADER, pFragmentSource);
+    if (!pixelShader) {
+        return 0;
+    }
+
+    GLuint program = glCreateProgram();
+    if (program) {
+        glAttachShader(program, vertexShader);
+        checkGlError("glAttachShader");
+        glAttachShader(program, pixelShader);
+        checkGlError("glAttachShader");
+        glLinkProgram(program);
+        GLint linkStatus = GL_FALSE;
+        glGetProgramiv(program, GL_LINK_STATUS, &linkStatus);
+        if (linkStatus != GL_TRUE) {
+            GLint bufLength = 0;
+            glGetProgramiv(program, GL_INFO_LOG_LENGTH, &bufLength);
+            if (bufLength) {
+                char* buf = (char*) malloc(bufLength);
+                if (buf) {
+                    glGetProgramInfoLog(program, bufLength, NULL, buf);
+                    LOGE("Could not link program:\n%s\n", buf);
+                    free(buf);
+                }
+            }
+            glDeleteProgram(program);
+            program = 0;
+        }
+    }
+    return program;
+}
+
+
 
 /**
  * Initialize an EGL context for the current display.
@@ -140,12 +231,14 @@ static int engine_init_display(struct engine* engine) {
     engine->width = w;
     engine->height = h;
     engine->state.angle = 0;
-    engine->state.x = 0;
-    engine->state.y = 0;
+    engine->state.x0 = 0;
+    engine->state.y0 = 0;
+    engine->state.x1 = 0;
+    engine->state.y1 = 0;
     engine->renderer->Resize(w, h, 1.0f);
     
     // Initialize GL state.
-    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 #if 0
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
     glEnable(GL_CULL_FACE);
@@ -160,7 +253,7 @@ static int engine_init_display(struct engine* engine) {
 #endif
     
     AAssetManager* assetManager = engine->app->activity->assetManager;
-    AAsset* asset = AAssetManager_open(assetManager, "bunny.vtk", AASSET_MODE_UNKNOWN);
+    AAsset* asset = AAssetManager_open(assetManager, "cturtle.vtk", AASSET_MODE_UNKNOWN);
     if (asset == NULL) {
         LOGW("could not open asset");
     }
@@ -176,6 +269,8 @@ static int engine_init_display(struct engine* engine) {
     LOGI("a: number of points is %d", data->GetNumberOfPoints());
     vesTriangleData* triangle_data = vesPolyDataToTriangleData::Convert (data);
     LOGI("b: number of points is %d\n**\n", triangle_data->GetPoints().size());
+    vesVector2f range = triangle_data->GetPointScalarRange();
+    LOGI("scalar range: %f, %f\n", range[0], range[1]);
     
     AAsset* vertex_asset = AAssetManager_open(assetManager, "Shader.vsh", AASSET_MODE_UNKNOWN);
     AAsset* fragment_asset = AAssetManager_open(assetManager, "Shader.fsh", AASSET_MODE_UNKNOWN);
@@ -185,19 +280,50 @@ static int engine_init_display(struct engine* engine) {
     LOGI("vertex_source: %s\n", vertex_source.c_str());
     LOGI("fragment_source: %s\n", fragment_source.c_str());
     
+    createProgram(vertex_source.c_str(), fragment_source.c_str());
+    
     vesShaderProgram* shader_program = new vesShaderProgram(
                                    const_cast<char*>(vertex_source.c_str()),
                                    const_cast<char*>(fragment_source.c_str()),
                                    (_uni("u_mvpMatrix"),
                                     _uni("u_normalMatrix"),
-                                    _uni("u_ecLightDir")),
+                                    _uni("u_ecLightDir"),
+                                    _uni("u_scalarRange"),
+                                    _uni("s_texture")),
                                    (_att("a_vertex"),
                                     _att("a_normal"),
-                                    _att("a_texcoord"))
+                                    _att("a_texcoord"),
+                                    _att("a_scalar"))
                                    );
     vesShader* shader = new vesShader(shader_program);    
     vesMapper* mapper = new vesMapper();
     mapper->SetTriangleData(triangle_data);
+    mapper->SetDrawPoints(true);
+    
+    vtkNew<vtkLookupTable> lookupTable;
+    lookupTable->Build();
+    unsigned char* lookupImage = lookupTable->GetPointer(0);
+    glEnable(GL_TEXTURE_2D);
+    unsigned int lookupTableID;
+    glGenTextures(1,&lookupTableID);
+    glBindTexture(GL_TEXTURE_2D, lookupTableID);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    glTexImage2D(GL_TEXTURE_2D,
+                 0,
+                 GL_RGBA,
+                 lookupTable->GetNumberOfTableValues(),
+                 1,
+                 0,
+                 GL_RGBA,
+                 GL_UNSIGNED_BYTE,
+                 lookupImage);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, lookupTableID);
+    
     vesActor* actor = new vesActor(shader, mapper);
     engine->renderer->AddActor(actor);
     engine->renderer->ResetCamera();
@@ -243,27 +369,125 @@ static void engine_term_display(struct engine* engine) {
 static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) {
     struct engine* engine = (struct engine*)app->userData;
     if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
+        if (AMotionEvent_getAction(event) == AMOTION_EVENT_ACTION_DOWN) {
+            engine->state.x0 = AMotionEvent_getX(event, 0);
+            engine->state.y0 = AMotionEvent_getY(event, 0);
+            if (AMotionEvent_getPointerCount(event) > 1) {
+                engine->state.x1 = AMotionEvent_getX(event, 1);
+                engine->state.y1 = AMotionEvent_getY(event, 1);
+            }
+            return 1;
+        }
         engine->animating = 1;
-        float x = AMotionEvent_getX(event, 0);
-        float y = AMotionEvent_getY(event, 0);
-        float dx = x - engine->state.x;
-        float dy = y - engine->state.y;
-        engine->state.x = x;
-        engine->state.y = y;
+        float px0 = engine->state.x0;
+        float py0 = engine->state.y0;
+        float px1 = engine->state.x1;
+        float py1 = engine->state.y1;
+        float x0 = AMotionEvent_getX(event, 0);
+        float y0 = AMotionEvent_getY(event, 0);
+        float x1 = x0;
+        float y1 = y0;
+        if (AMotionEvent_getPointerCount(event) > 1) {
+            x1 = AMotionEvent_getX(event, 1);
+            y1 = AMotionEvent_getY(event, 1);
+        }
 
         vesRenderer* ren = engine->renderer;
-        double delta_elevation = -20.0 / ren->GetHeight();
-        double delta_azimuth = -20.0 / ren->GetWidth();
-        double motionFactor = 10.0;
-        
-        double rxf = dx * delta_azimuth * motionFactor;
-        double ryf = dy * delta_elevation * motionFactor;
-        
         vesCamera *camera = ren->GetCamera();
-        camera->Azimuth(rxf);
-        camera->Elevation(ryf);
-        camera->OrthogonalizeViewUp();
-        //ren->Render();
+        
+        if (AMotionEvent_getPointerCount(event) == 1) {
+            float dx0 = x0 - px0;
+            float dy0 = y0 - py0;
+            
+            double delta_elevation = -20.0 / ren->GetHeight();
+            double delta_azimuth = -20.0 / ren->GetWidth();
+            double motionFactor = 10.0;
+            
+            double rxf = dx0 * delta_azimuth * motionFactor;
+            double ryf = dy0 * delta_elevation * motionFactor;
+            
+            camera->Azimuth(rxf);
+            camera->Elevation(ryf);
+            camera->OrthogonalizeViewUp();
+        } else {
+          //
+          // Pan camera.
+          // Implemented based on vtkInteractorStyleTrackballCamera::Pan().
+          //
+      
+          // Average positions of current and previous two touches.
+          // Invert y since vesCamera expects y to go in opposite direction.
+          float pcx = (px0 + px1)/2.0;
+          float pcy = ren->GetHeight() - (py0 + py1)/2.0;
+          float cx = (x0 + x1)/2.0;
+          float cy = ren->GetHeight() - (y0 + y1)/2.0;
+          
+          // Calculate the focal depth since we'll be using it a lot   
+          vesVector3f viewFocus = camera->GetFocalPoint();
+          vesVector3f viewFocusDisplay = ren->ComputeWorldToDisplay(viewFocus);
+          float focalDepth = viewFocusDisplay[2];
+          
+          vesVector3f newPos(cx,
+                             cy,
+                             focalDepth);
+          vesVector3f newPickPoint = ren->ComputeDisplayToWorld(newPos);
+          
+          vesVector3f oldPos(pcx,
+                             pcy,
+                             focalDepth);
+          vesVector3f oldPickPoint = ren->ComputeDisplayToWorld(oldPos);
+          
+          vesVector3f motionVector = oldPickPoint - newPickPoint;
+          
+          vesVector3f viewPoint = camera->GetPosition();
+          vesVector3f newViewFocus = motionVector + viewFocus;
+          vesVector3f newViewPoint = motionVector + viewPoint;
+          camera->SetFocalPoint(newViewFocus);
+          camera->SetPosition(newViewPoint);
+
+          //
+          // Zoom camera.
+          // Implemented based on vkInteractorStyleTrackballCamera::Dolly().
+          //
+          
+          double previousDist = sqrt((px0 - px1) *
+                                     (px0 - px1) + 
+                                     (py0 - py1) * 
+                                     (py0 - py1));
+          double currentDist = sqrt((x0 - x1) *
+                                    (x0 - x1) + 
+                                    (y0 - y1) * 
+                                    (y0 - y1));
+          double dy = currentDist - previousDist;
+          double dyf = 10.0 * dy / (ren->GetHeight()/2.0);
+          double factor = pow(1.1, dyf);
+          camera->Dolly(factor);
+          
+          //
+          // Roll camera.
+          // Implemented based on vkInteractorStyleTrackballCamera::Spin().
+          //
+          
+          double pi = 3.14159265358979;
+          double newAngle = atan2(y0 - y1,
+                                  x0 - x1);
+          newAngle *= 180.0/pi;
+          
+          double oldAngle = atan2(py0 - py1,
+                                  px0 - px1);
+          oldAngle *= 180.0/pi;
+          
+          camera->Roll(newAngle - oldAngle);
+          camera->OrthogonalizeViewUp();
+        }
+        
+        engine->state.x0 = x0;
+        engine->state.y0 = y0;
+        if (AMotionEvent_getPointerCount(event) > 1) {
+            engine->state.x1 = x1;
+            engine->state.y1 = y1;
+        }
+
         return 1;
     }
     return 0;

@@ -146,6 +146,15 @@ vesTriangleData* vesPolyDataToTriangleData::Convert(vtkPolyData* input)
     } else {
         output->ComputeNormals();
     }
+    
+    if (input->GetPointData()->GetScalars())
+      {
+      vtkDataArray* scalars = input->GetPointData()->GetScalars();
+      for (int i = 0; i < input->GetNumberOfPoints(); ++i)
+        {
+        output->GetPointScalars().push_back(static_cast<float>(scalars->GetTuple1(i)));
+        }
+      }
     //cerr << "done with conversion" << endl;
     return output;
 }
