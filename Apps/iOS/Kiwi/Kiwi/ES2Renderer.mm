@@ -175,6 +175,11 @@
     return;
     }
 
+  if (mMapper->GetTriangleData())
+  {
+    delete mMapper->GetTriangleData();
+  }
+  
   mMapper->SetTriangleData(newData);
   mActor->Read();
   [readerAlert dismissWithClickedButtonIndex:0 animated:YES];
