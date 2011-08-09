@@ -59,7 +59,8 @@
   [_exampleData addObject:@"Space Shuttle"];
   
   self.helpStrings = [NSMutableArray array];
-  [_helpStrings addObject:@"from the web."];
+  // not ready for prime time...
+  //[_helpStrings addObject:@"from the web."];
   [_helpStrings addObject:@"from DropBox."];
   [_helpStrings addObject:@"from email."];
 }
