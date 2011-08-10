@@ -451,7 +451,7 @@
     [self rotate:delta];
     
     [self drawView:nil];
-    lastRotationMotionNorm *= 0.8;
+    lastRotationMotionNorm *= 0.9;
   }
   lastRotationMotionNorm = 0;
   [pool release];
