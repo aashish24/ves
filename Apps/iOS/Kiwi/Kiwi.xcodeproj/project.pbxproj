@@ -420,7 +420,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Kiwi/Kiwi-Prefix.pch";
@@ -452,6 +452,120 @@
 			};
 			name = Release;
 		};
+		7001CD6813F2BCE900346099 /* AppStoreDistributionConfiguration */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Kiwi/Kiwi-Prefix.pch";
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = "Kiwi/Kiwi-Info.plist";
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				PRODUCT_NAME = kiwi;
+				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = AppStoreDistributionConfiguration;
+		};
+		7001CD6913F2BCE900346099 /* AppStoreDistributionConfiguration */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Kitware Inc.";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				COPY_PHASE_STRIP = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Kiwi/Kiwi-Prefix.pch";
+				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				HEADER_SEARCH_PATHS = (
+					"../CMakeBuild/build/CMakeExternals/Install/vtkmodular-device/include/vtk",
+					../../../src,
+					"../../../src/ves/**",
+				);
+				INFOPLIST_FILE = "Kiwi/Kiwi-Info.plist";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				"LIBRARY_SEARCH_PATHS[sdk=iphoneos*][arch=*]" = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Install/vtkmodular-device/lib\"",
+					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Build/ves-device\"",
+				);
+				"LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*][arch=*]" = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Install/vtkmodular-simulator/lib\"",
+					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Build/ves-simulator\"",
+				);
+				PRODUCT_NAME = kiwi;
+				PROVISIONING_PROFILE = "B8AED505-0041-4D2F-BA3C-8E3073226432";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				TARGETED_DEVICE_FAMILY = 2;
+				USER_HEADER_SEARCH_PATHS = "";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = AppStoreDistributionConfiguration;
+		};
+		7001CD6A13F2BDDE00346099 /* RelWithDebug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_C_LANGUAGE_STANDARD = c99;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Kiwi/Kiwi-Prefix.pch";
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = "Kiwi/Kiwi-Info.plist";
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				PRODUCT_NAME = kiwi;
+				SCAN_ALL_SOURCE_FILES_FOR_INCLUDES = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = RelWithDebug;
+		};
+		7001CD6B13F2BDDE00346099 /* RelWithDebug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Kiwi/Kiwi-Prefix.pch";
+				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				HEADER_SEARCH_PATHS = (
+					"../CMakeBuild/build/CMakeExternals/Install/vtkmodular-device/include/vtk",
+					../../../src,
+					"../../../src/ves/**",
+				);
+				INFOPLIST_FILE = "Kiwi/Kiwi-Info.plist";
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				"LIBRARY_SEARCH_PATHS[sdk=iphoneos*][arch=*]" = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Install/vtkmodular-device/lib\"",
+					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Build/ves-device\"",
+				);
+				"LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*][arch=*]" = (
+					"$(inherited)",
+					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Install/vtkmodular-simulator/lib\"",
+					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Build/ves-simulator\"",
+				);
+				PRODUCT_NAME = kiwi;
+				PROVISIONING_PROFILE = "";
+				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
+				TARGETED_DEVICE_FAMILY = 2;
+				USER_HEADER_SEARCH_PATHS = "";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = RelWithDebug;
+		};
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -475,7 +589,7 @@
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -500,6 +614,8 @@
 			buildConfigurations = (
 				1D6058940D05DD3E006BFB54 /* Debug */,
 				1D6058950D05DD3E006BFB54 /* Release */,
+				7001CD6B13F2BDDE00346099 /* RelWithDebug */,
+				7001CD6913F2BCE900346099 /* AppStoreDistributionConfiguration */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -509,6 +625,8 @@
 			buildConfigurations = (
 				C01FCF4F08A954540054247B /* Debug */,
 				C01FCF5008A954540054247B /* Release */,
+				7001CD6A13F2BDDE00346099 /* RelWithDebug */,
+				7001CD6813F2BCE900346099 /* AppStoreDistributionConfiguration */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
