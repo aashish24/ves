@@ -211,15 +211,15 @@
 {
   UIPanGestureRecognizer *singleFingerPanGesture = [[UIPanGestureRecognizer alloc]
                                                     initWithTarget:self action:@selector(handleSingleFingerPanGesture:)];
-  singleFingerPanGesture.maximumNumberOfTouches = 1;
-  singleFingerPanGesture.minimumNumberOfTouches = 1;
+  [singleFingerPanGesture setMinimumNumberOfTouches:1];
+  [singleFingerPanGesture setMaximumNumberOfTouches:1];
   [self addGestureRecognizer:singleFingerPanGesture];
   [singleFingerPanGesture release];
   
   UIPanGestureRecognizer *doubleFingerPanGesture = [[UIPanGestureRecognizer alloc]
                                                     initWithTarget:self action:@selector(handleDoubleFingerPanGesture:)];
-  doubleFingerPanGesture.maximumNumberOfTouches = 2;
-  doubleFingerPanGesture.minimumNumberOfTouches = 2;
+  [doubleFingerPanGesture setMinimumNumberOfTouches:2];
+  [doubleFingerPanGesture setMaximumNumberOfTouches:2];
   [self addGestureRecognizer:doubleFingerPanGesture];
   [doubleFingerPanGesture release];
   
