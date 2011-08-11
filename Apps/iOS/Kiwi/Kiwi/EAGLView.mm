@@ -259,11 +259,8 @@
     return;
   }
   
-  if (sender.state == UIGestureRecognizerStateBegan)
-  {
-    [self stopInertialMotion];
-  }
-  
+  [self stopInertialMotion];
+    
   //
   // get current translation and (then zero it out so it won't accumulate)
   CGPoint currentLocation = [sender locationInView:self];
@@ -319,10 +316,7 @@
     return;
   }
   
-  if (sender.state == UIGestureRecognizerStateBegan)
-  {
-    [self stopInertialMotion];
-  }
+  [self stopInertialMotion];
   
   //
   // get current translation and (then zero it out so it won't accumulate)
@@ -358,10 +352,7 @@
     return;
   }
   
-  if (sender.state == UIGestureRecognizerStateBegan)
-  {
-    [self stopInertialMotion];
-  }
+  [self stopInertialMotion];
   
   //
   // apply dolly
@@ -384,10 +375,7 @@
     return;
   }
   
-  if (sender.state == UIGestureRecognizerStateBegan)
-  {
     [self stopInertialMotion];
-  }
   
   //
   // apply roll
