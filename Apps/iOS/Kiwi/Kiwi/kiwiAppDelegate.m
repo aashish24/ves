@@ -79,7 +79,7 @@
                          animated:NO];
  // [popover  setPopoverContentSize:<#(CGSize)#> animated:<#(BOOL)#>
   //[popover  dismissPopoverAnimated:YES];
-	[popover setPopoverContentSize:CGSizeMake(300,200) animated:NO];
+	[popover setPopoverContentSize:CGSizeMake(300,225) animated:NO];
   //[popover setContentViewController:infoView animated:NO];
 }
 
