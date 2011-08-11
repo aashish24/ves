@@ -37,7 +37,12 @@
   GLuint viewRenderbuffer;
   GLuint depthRenderbuffer;
   GLuint viewFramebuffer;
-
+  
+  // animation loop
+  BOOL shouldRender;
+  CADisplayLink* displayLink;
+  NSMutableArray* recentRenderFPS;
+  
   id <ESRenderer> renderer;
   NSString *filePath;
 	
@@ -47,7 +52,13 @@
   NSThread* inertialRotationThread;
 }
 
+// animation loop
 - (void)drawView:(id)sender;
+- (void)scheduleRender;
+- (void)forceRender;
+- (void)updateRefreshRate:(float) lastRenderFPS;
+- (int)currentRefreshRate;
+
 - (void)resetView;
 - (void)setFilePath:(NSString*)fpath;
 

@@ -113,6 +113,9 @@
     self.multipleTouchEnabled = YES;
   }
   
+  self->shouldRender = NO;
+  self->recentRenderFPS = [NSMutableArray new];
+  
   return self;
 }
 
@@ -122,7 +125,13 @@
   [self destroyFramebuffer];
   [self createFramebuffer];
   [renderer resizeFromLayer:backingWidth height:backingHeight];
-  [self drawView:nil];
+  
+  //
+  // set up animation loop
+  self->displayLink = [self.window.screen displayLinkWithTarget:self selector:@selector(drawView:)];
+  [self->displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+  
+  [self forceRender];
 }
 
 - (BOOL)createFramebuffer 
@@ -153,7 +162,6 @@
   return YES;
 }
 
-
 - (void)destroyFramebuffer 
 {  
   glDeleteFramebuffers(1, &viewFramebuffer);
@@ -167,15 +175,83 @@
   }
 }
 
-- (void)drawView:(id) sender {  
-  [EAGLContext setCurrentContext:context];
-  glBindFramebuffer(GL_FRAMEBUFFER, viewFramebuffer);
-  glViewport(0, 0, backingWidth, backingHeight);
-  [renderer render];
-  glBindRenderbuffer(GL_RENDERBUFFER, viewRenderbuffer);
-  [context presentRenderbuffer:GL_RENDERBUFFER];
+- (void) updateRefreshRate:(float)lastRenderFPS
+{
+  //
+  // ignore the call if there is no animation loop
+  if (!self->displayLink)
+  {
+    return;
+  }
+  
+  //
+  // keep track of the last few rendering speeds
+  const unsigned int maxWindowSize = 20;
+  [self->recentRenderFPS addObject:[NSNumber numberWithFloat:lastRenderFPS]];
+  if ([self->recentRenderFPS count] > maxWindowSize)
+  {
+    [self->recentRenderFPS removeObjectAtIndex:0];
+  }
+  float sumFPS = 0.0;
+  for (NSNumber* n in self->recentRenderFPS)
+  {
+      sumFPS += n.floatValue;
+  }
+  float meanFPS = sumFPS / maxWindowSize;
+
+  //
+  // set forward refresh rate to match current rendering speed
+  // (round up to be conservative)
+  int desiredFrameInterval = static_cast<int>(60.0 / meanFPS) + 1;
+
+  //
+  // clamp to 10Hz or higher
+  desiredFrameInterval = desiredFrameInterval > 6 ? 6 : desiredFrameInterval;
+  
+  if (desiredFrameInterval != self->displayLink.frameInterval)
+  {
+    //NSLog(@"Changing frame interval to %d", desiredFrameInterval);
+    [self->displayLink setFrameInterval:desiredFrameInterval];
+  }
 }
 
+- (int)currentRefreshRate
+{
+  if (!self->displayLink)
+  {
+    return 0;
+  }
+  return 60 / self->displayLink.frameInterval;
+}
+
+- (void) scheduleRender
+{
+  self->shouldRender = YES;
+}
+
+- (void) forceRender
+{
+  [self scheduleRender];
+  [self drawView:nil];
+}
+
+- (void)drawView:(id) sender {  
+  
+  if (self->shouldRender)
+  {
+    NSDate* startRenderDate = [NSDate date];
+    [EAGLContext setCurrentContext:context];
+    glBindFramebuffer(GL_FRAMEBUFFER, viewFramebuffer);
+    glViewport(0, 0, backingWidth, backingHeight);
+    [renderer render];
+    glBindRenderbuffer(GL_RENDERBUFFER, viewRenderbuffer);
+    [context presentRenderbuffer:GL_RENDERBUFFER];
+    self->shouldRender = NO;
+    float currentFPS = 1.0 / [[NSDate date] timeIntervalSinceDate:startRenderDate];
+    //NSLog(@"Render @ %4.1f fps", currentFPS);
+    [self updateRefreshRate:currentFPS];
+  }
+}
 
 - (void)dealloc
 {
@@ -192,7 +268,7 @@
 {
   [self stopInertialMotion]; 
   [renderer resetView];
-  [self drawView:nil];
+  [self scheduleRender];
 }
 
 - (void) setFilePath :(NSString *) fpath
@@ -297,10 +373,8 @@
   vesVector3f newViewPoint = motionVector + viewPoint;
   camera->SetFocalPoint(newViewFocus);
   camera->SetPosition(newViewPoint);
-  // simultaneious with pinch temporarily remove draw request
-  // evenutally this should be a "schedule render" and not a 
-  // "force render" call
-  //[self drawView:nil];
+
+  [self scheduleRender];
 }
 
 - (IBAction)handleSingleFingerPanGesture:(UIPanGestureRecognizer *)sender
@@ -335,7 +409,7 @@
     //
     // apply the rotation and rerender
     [self rotate:currentTranslation];
-    [self drawView:nil];
+    [self scheduleRender];
   }
   else
   {
@@ -364,7 +438,7 @@
   // reset scale so it won't accumulate
   sender.scale = 1.0;
   
-  [self drawView:nil];
+  [self scheduleRender];
 }
 
 - (IBAction)handle2DRotationGesture:(UIRotationGestureRecognizer *)sender
@@ -388,10 +462,7 @@
   // reset rotation so it won't accumulate
   [sender setRotation:0.0];
   
-  // simultaneious with pinch temporarily remove draw request
-  // evenutally this should be a "schedule render" and not a 
-  // "force render" call
-  //[self drawView:nil];
+  [self scheduleRender];
 }
 
 - (IBAction)handleTapGesture:(UITapGestureRecognizer *)sender
@@ -438,7 +509,7 @@
     delta.y = lastRotationMotionNorm*lastMovementXYUnitDelta.y;
     [self rotate:delta];
     
-    [self drawView:nil];
+    [self scheduleRender];
     lastRotationMotionNorm *= 0.9;
   }
   lastRotationMotionNorm = 0;

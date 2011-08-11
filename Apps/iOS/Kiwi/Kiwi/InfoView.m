@@ -28,9 +28,9 @@
   
 }
 
-- (void)updateModelInfoLabelWithNumFacets:(int)numFacets withNumLines:(int)numLines withNumVertices:(int)numVertices
+- (void)updateModelInfoLabelWithNumFacets:(int)numFacets withNumLines:(int)numLines withNumVertices:(int)numVertices withCurrentRefreshRate:(int)refreshRate
 {
-  modelInfoLabel.text = [NSString stringWithFormat:@"Current Mesh:\n   Triangles: %i\n   Lines: %i\n   Vertices: %i", numFacets, numLines, numVertices];
+  modelInfoLabel.text = [NSString stringWithFormat:@"Current Mesh:\n   Triangles: %i\n   Lines: %i\n   Vertices: %i\n   Drawing @ %dHz", numFacets, numLines, numVertices, refreshRate];
 }
 
 - (void)dealloc

@@ -67,7 +67,8 @@
   // need to get the info from the renderer
   [infoView updateModelInfoLabelWithNumFacets:[self.glView getNumberOfFacetsForCurrentModel]
                                  withNumLines:[self.glView getNumberOfLinesForCurrentModel]
-                              withNumVertices:[self.glView getNumberOfVerticesForCurrentModel]];
+                              withNumVertices:[self.glView getNumberOfVerticesForCurrentModel]
+                                withCurrentRefreshRate:[self.glView currentRefreshRate]];
   [popover presentPopoverFromRect:CGRectMake(570,785,300,200) 
                            inView:self.glView 
          permittedArrowDirections:(//UIPopoverArrowDirectionUp

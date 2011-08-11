@@ -15,7 +15,8 @@
 @property (nonatomic, retain) IBOutlet UILabel *modelInfoLabel;
 -(void)updateModelInfoLabelWithNumFacets:(int)numFacets 
                             withNumLines:(int)numLines
-                         withNumVertices:(int)numVertices;
+                         withNumVertices:(int)numVertices
+                  withCurrentRefreshRate:(int)refreshRate;
 -(IBAction)kitwareDotCom:(UIButton*)sender;
 
 @end
