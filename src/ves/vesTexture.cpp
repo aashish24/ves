@@ -63,7 +63,6 @@ vesTexture::~vesTexture()
 // ------------------------------------------------------------------public
 void vesTexture::Render()
 {
-  glEnable(GL_TEXTURE_2D);
 
   if(!loaded)
     {
