@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>English</string>
 	<key>CFBundleDisplayName</key>
-	<string>Kiwi Viewer</string>
+	<string>KiwiViewer</string>
 	<key>CFBundleDocumentTypes</key>
 	<array>
 		<dict>
@@ -76,19 +76,21 @@
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIconFile</key>
-	<string>icon.png</string>
+	<string>Kiwi_Splash_72.png</string>
 	<key>CFBundleIconFiles</key>
 	<array>
 		<string>Kiwi_Splash_72.png</string>
 	</array>
 	<key>CFBundleIdentifier</key>
-	<string>com.kitware.${PRODUCT_NAME:rfc1034identifier}</string>
+	<string>com.kitware.kiwiviewer</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
 	<string>${PRODUCT_NAME}</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>0.0.1</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleURLTypes</key>
@@ -103,7 +105,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>1.0</string>
+	<string>2011081201</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSMainNibFile</key>
