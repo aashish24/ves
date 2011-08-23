@@ -12,24 +12,24 @@ set(build_prefix ${base}/Build)
 set(install_prefix ${base}/Install)
 
 set(module_defaults
-  -DModule_CommonComputationalGeometry:BOOL=OFF
-  -DModule_CommonCore:BOOL=OFF
-  -DModule_CommonDataModel:BOOL=OFF
-  -DModule_CommonMath:BOOL=OFF
-  -DModule_CommonMisc:BOOL=OFF
-  -DModule_CommonSystem:BOOL=OFF
-  -DModule_CommonTransforms:BOOL=OFF
-  -DModule_FiltersCutter:BOOL=ON
-  -DModule_FiltersParallelStatistics:BOOL=OFF
-  -DModule_FiltersStatistics:BOOL=OFF
-  -DModule_IOCore:BOOL=OFF
-  -DModule_IOGeometry:BOOL=ON
-  -DModule_IOMySQL:BOOL=OFF
-  -DModule_IOODBC:BOOL=OFF
-  -DModule_IOPostgreSQL:BOOL=OFF
-  -DModule_IOSQL:BOOL=OFF
-  -DModule_IOXML:BOOL=ON
-  -DModule_ParallelCore:BOOL=OFF
+  -DModule_vtkCommonComputationalGeometry:BOOL=OFF
+  -DModule_vtkCommonCore:BOOL=OFF
+  -DModule_vtkCommonDataModel:BOOL=OFF
+  -DModule_vtkCommonMath:BOOL=OFF
+  -DModule_vtkCommonMisc:BOOL=OFF
+  -DModule_vtkCommonSystem:BOOL=OFF
+  -DModule_vtkCommonTransforms:BOOL=OFF
+  -DModule_vtkFiltersCutter:BOOL=ON
+  -DModule_vtkFiltersParallelStatistics:BOOL=OFF
+  -DModule_vtkFiltersStatistics:BOOL=OFF
+  -DModule_vtkIOCore:BOOL=OFF
+  -DModule_vtkIOGeometry:BOOL=ON
+  -DModule_vtkIOMySQL:BOOL=OFF
+  -DModule_vtkIOODBC:BOOL=OFF
+  -DModule_vtkIOPostgreSQL:BOOL=OFF
+  -DModule_vtkIOSQL:BOOL=OFF
+  -DModule_vtkIOXML:BOOL=ON
+  -DModule_vtkParallelCore:BOOL=OFF
 )
 
 
