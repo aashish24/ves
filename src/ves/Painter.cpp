@@ -1,17 +1,22 @@
-/*=========================================================================
+/*========================================================================
+  VES --- VTK OpenGL ES Rendering Toolkit
 
-  Program:   Visualization Toolkit
-  Module:    Painter.cxx
+      http://www.kitware.com/ves
 
-  Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
-  All rights reserved.
-  See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
+  Copyright 2011 Kitware, Inc.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-     PURPOSE.  See the above copyright notice for more information.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
 
-=========================================================================*/
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ ========================================================================*/
 #include "Painter.h"
 
 // --------------------------------------------------------------------includes
@@ -28,9 +33,9 @@ namespace {
 void PrintMatrix(vesMatrix4x4f mv)
 {
   for (int i = 0; i < 4; ++i)
-    {
+  {
     std::cerr << mv[i][0] << "," << mv[i][1] << "," << mv[i][2] << "," << mv[i][3] << std::endl;
-    }
+  }
 }
 }
 
@@ -59,12 +64,12 @@ void Painter::Camera(vesCamera *camera)
   // If there are children nodes then tternate through and render
   MFNode children = camera->get_children();
   if (children.size())
+  {
+    for (int i = 0; i < children.size(); ++i)
     {
-      for (int i = 0; i < children.size(); ++i)
-        {
-          children[i]->Render(this);
-        }
+      children[i]->Render(this);
     }
+  }
   // Pop the transformation
   this->Pop();
 }
@@ -75,12 +80,12 @@ void Painter::Shader(vesShader * shader)
   //std::cout << "Render: Shader" <<std::endl;
   std::vector<vesShaderProgram*> temp;
   if(shader->GetPrograms(&temp))
+  {
+    for (int i = 0; i < temp.size(); ++i)
     {
-      for (int i = 0; i < temp.size(); ++i)
-        {
-          temp[i]->Render(this);
-        }
+      temp[i]->Render(this);
     }
+  }
 }
 
 // ----------------------------------------------------------------------public
@@ -101,15 +106,15 @@ void Painter::Actor(vesActor * actor)
 {
   //std::cout << "Render: Actor" <<std::endl;
   if(actor->GetSensor())
+  {
+    if(actor->GetWidget()->isActive())
     {
-      if(actor->GetWidget()->isActive())
-        {
-          //std::cout<<"translating the widget" <<std::endl;
-          actor->set_translation(actor->GetWidget()->GetTranslation());
-          actor->set_rotation(actor->GetWidget()->GetRotation());
-          actor->set_scale(actor->GetWidget()->GetScale());
-        }
+      //std::cout<<"translating the widget" <<std::endl;
+      actor->set_translation(actor->GetWidget()->GetTranslation());
+      actor->set_rotation(actor->GetWidget()->GetRotation());
+      actor->set_scale(actor->GetWidget()->GetScale());
     }
+  }
   this->Push(actor->Eval());
   MFNode temp;
   temp = actor->get_children();
@@ -121,9 +126,9 @@ void Painter::Actor(vesActor * actor)
 void Painter::ActorCollection(vesActorCollection *actor)
 {
   if(this->_textureBackground)
-    {
+  {
     this->Texture(_textureBackground);
-    }
+  }
 
   //std::cout << "Render: ActorCollection" <<std::endl;
   // Push the transformation
@@ -132,12 +137,12 @@ void Painter::ActorCollection(vesActorCollection *actor)
   // If there are children nodes then tternate through and render
   MFNode children = actor->get_children();;
   if (children.size())
-    {
+  {
     for (int i = 0; i < children.size(); ++i)
-      {
+    {
       children[i]->Render(this);
-      }
     }
+  }
 
   // Pop the transformation
   this->Pop();
@@ -149,22 +154,22 @@ void Painter::visitShape(vsg::Shape* shape)
   //std::cout << "Render: Shape" <<std::endl;
   shape->get_appearance() -> Render(this);
   if(shape->get_geometry())
-    {
+  {
     shape->get_geometry() -> Render(this);
-    }
+  }
   else
-    {
+  {
     return;
-    }
+  }
 
   std::vector<vesShaderProgram*> temp;
   vesShaderProgram * program;
   vsg::Appearance *appear = (vsg::Appearance*) shape->get_appearance();
   ProgramShader *prog = (ProgramShader*) appear->get_shaders()[0];
   if(prog->GetPrograms(&temp))
-    {
-      program = temp[0]; // currently we are only using one shader
-    }
+  {
+    program = temp[0]; // currently we are only using one shader
+  }
 
   vesMapper* mapper = (vesMapper*)shape->get_geometry();
 
@@ -184,8 +189,8 @@ void Painter::visitShape(vsg::Shape* shape)
   program->SetUniformVector3f("u_ecLightDir",light);
 
   // Clear the buffers
-//  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-//  glEnable(GL_DEPTH_TEST);
+  //  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  //  glEnable(GL_DEPTH_TEST);
   glEnable(GL_CULL_FACE);
   glCullFace(GL_BACK);
   glEnable(GL_BLEND);
@@ -195,7 +200,7 @@ void Painter::visitShape(vsg::Shape* shape)
   program->EnableVertexArray("a_vertex");
   program->EnableVertexArray("a_normal");
 
-//  glVertexAttrib4f(program->GetAttribute("a_texcoord"), 0.8, 0.8, 0.8, 1.0);
+  //  glVertexAttrib4f(program->GetAttribute("a_texcoord"), 0.8, 0.8, 0.8, 1.0);
   glVertexAttrib4f(program->GetAttribute("a_texcoord"),
                    mapper->GetRed(),
                    mapper->GetGreen(),
@@ -217,7 +222,7 @@ void Painter::visitShape(vsg::Shape* shape)
 
   // draw vertices
   if (mapper->GetDrawPoints())
-    {
+  {
     program->SetUniformVector2f("u_scalarRange", mapper->GetData()->GetPointScalarRange());
     program->EnableVertexArray("a_scalar");
     glVertexAttribPointer(program->GetAttribute("a_scalar"),
@@ -227,22 +232,22 @@ void Painter::visitShape(vsg::Shape* shape)
                           sizeof(float),
                           &(mapper->GetData()->GetPointScalars()[0]));
 
-    glDrawArrays(GL_POINTS, 0, mapper->GetData()->GetPoints().size());  
-    }
+    glDrawArrays(GL_POINTS, 0, mapper->GetData()->GetPoints().size());
+  }
   else
-    {
+  {
     // draw triangles
     glDrawElements(GL_TRIANGLES,
                    mapper->GetData()->GetTriangles().size() * 3,
                    GL_UNSIGNED_SHORT,
                    &mapper->GetData()->GetTriangles()[0]);
-  
+
     // draw lines
     glDrawElements(GL_LINES,
                    mapper->GetData()->GetLines().size() * 2,
                    GL_UNSIGNED_SHORT,
                    &mapper->GetData()->GetLines()[0]);
-    }
+  }
 
   glDisable(GL_CULL_FACE);
   glDisable(GL_BLEND);
@@ -271,9 +276,9 @@ vesMatrix4x4f Painter::Eval(int startIndex)
 {
   vesMatrix4x4f temp;
   for (int i = startIndex; i < MatrixStack.size(); ++i)
-    {
+  {
     temp *= MatrixStack[i];
-    }
+  }
   return temp;
 }
 

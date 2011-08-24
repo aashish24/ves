@@ -1,10 +1,22 @@
-//
-//  vesMapper.cpp
-//  kiwi
-//
-//  Created by kitware on 5/9/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
-//
+/*========================================================================
+  VES --- VTK OpenGL ES Rendering Toolkit
+
+      http://www.kitware.com/ves
+
+  Copyright 2011 Kitware, Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ ========================================================================*/
 
 #include "vesMapper.h"
 #include "Painter.h"
@@ -22,7 +34,7 @@ vesMapper::~vesMapper()
 {
   // Release our VBOs before the context is destroyed
   if (m_initialized) {
-      //glDeleteBuffers(2, mMapperVBO);
+    //glDeleteBuffers(2, mMapperVBO);
   }
 }
 
@@ -43,8 +55,8 @@ vesMatrix4x4f vesMapper::Eval()
 {
   vesMatrix4x4f temp;
   return temp;
-//  vesMatrix4x4f temp= makeTransposeMatrix4x4(makeTransposeMatrix4x4(this->NormalizedMatrix));
-//  return temp;
+  //  vesMatrix4x4f temp= makeTransposeMatrix4x4(makeTransposeMatrix4x4(this->NormalizedMatrix));
+  //  return temp;
 }
 
 bool vesMapper::Read()
@@ -112,8 +124,8 @@ void vesMapper::Normalize()
 {
   float r = GetBBoxRadius();
   this->NormalizedMatrix =
-  makeScaleMatrix4x4(1/r,1/r,1/r)*
-  makeTranslationMatrix4x4(-get_BBoxCenter());
+      makeScaleMatrix4x4(1/r,1/r,1/r)*
+      makeTranslationMatrix4x4(-get_BBoxCenter());
   set_BBoxCenter(transformPoint3f(this->NormalizedMatrix, get_BBoxCenter()));
   set_BBoxSize(transformPoint3f(this->NormalizedMatrix, get_BBoxSize()));
   /*

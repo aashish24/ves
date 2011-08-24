@@ -1,25 +1,28 @@
-/*=========================================================================
+/*========================================================================
+  VES --- VTK OpenGL ES Rendering Toolkit
 
-  Program:   Visualization Toolkit
-  Module:    vesShader.cxx
+      http://www.kitware.com/ves
 
-  Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
-  All rights reserved.
-  See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
+  Copyright 2011 Kitware, Inc.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-     PURPOSE.  See the above copyright notice for more information.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
 
-=========================================================================*/
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ ========================================================================*/
+
 #include "vesShader.h"
 
-// --------------------------------------------------------------------includes
 #include "vesShaderProgram.h"
 #include "Painter.h"
 #include <vector>
-
-// -----------------------------------------------------------------------macro
 
 // --------------------------------------------------------------------internal
 // IMPORTANT: Make sure that this struct has no pointers.  All pointers should
@@ -30,7 +33,6 @@ struct vesShaderInternal
   double value; // sample
 };
 
-// -----------------------------------------------------------------------cnstr
 vesShader::vesShader(vesShaderProgram* shader)
 {
   std::vector<vesShaderProgram*> temp;
@@ -39,22 +41,18 @@ vesShader::vesShader(vesShaderProgram* shader)
   this->Internal = new vesShaderInternal();
 }
 
-// -----------------------------------------------------------------------destr
 vesShader::~vesShader()
 {
   delete this->Internal;
 }
 
-// ----------------------------------------------------------------------public
 bool vesShader::Read()
 {
   //std::cout << "Read: Shader" <<std::endl;
   return true;
 }
 
-// ----------------------------------------------------------------------public
 void vesShader::Render(Painter *render)
 {
   render->Shader(this);
 }
-

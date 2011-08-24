@@ -1,34 +1,39 @@
-/*=========================================================================
- 
- Program:   Visualization Toolkit
- Module:    vesLegacyReader.cpp
- 
- Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
- All rights reserved.
- See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
- 
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notice for more information.
- 
- =========================================================================*/
+/*========================================================================
+  VES --- VTK OpenGL ES Rendering Toolkit
+
+      http://www.kitware.com/ves
+
+  Copyright 2011 Kitware, Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ ========================================================================*/
 
 #include "vesLegacyReader.h"
 
 vesTriangleData* vesLegacyReader::Read()
-{  
+{
   mHasError = false;
-  
+
   std::ifstream fileStream(mFileName.c_str());
   if (!fileStream) {
     mHasError = true;
     return false;
   }
-  
+
   bool hasPoints = false;
   bool hasPolygons = false;
   bool hasLines = false;
-  
+
   vesTriangleData* t = new vesTriangleData();
   while (!fileStream.eof()) {
     std::string str;
@@ -83,7 +88,7 @@ vesTriangleData* vesLegacyReader::Read()
         mHasError = true;
         break;
       }
-      
+
       while (!fileStream.eof() && str != "float")
       {
         fileStream >> str;
@@ -93,7 +98,7 @@ vesTriangleData* vesLegacyReader::Read()
         mHasError = true;
         break;
       }
-      
+
       if (n == t->GetPoints().size()) {
         readNormals(fileStream, &t->GetPoints()[0],  n);
         t->SetHasNormals(true);
@@ -110,9 +115,9 @@ vesTriangleData* vesLegacyReader::Read()
 
 void vesLegacyReader::readPoints(std::ifstream &file, vtkVertex3f *v, int n)
 {
-	for (int i = 0; i < n; ++i, ++v){
-		file >> v->point[0] >> v->point[1] >> v->point[2];
-	}
+  for (int i = 0; i < n; ++i, ++v){
+    file >> v->point[0] >> v->point[1] >> v->point[2];
+  }
 }
 
 void vesLegacyReader::readNormals(std::ifstream &file, vtkVertex3f *v, int n)
@@ -125,10 +130,10 @@ void vesLegacyReader::readPolygons(std::ifstream &file, std::vector<vesVector3us
 {
   unsigned short numVertices = 0;
   unsigned short numPolygonsRead = 0;
-  for (int i = 0; i < numPolygons; ++i) 
+  for (int i = 0; i < numPolygons; ++i)
   {
     file >> numVertices;
-    if (numVertices == 3) 
+    if (numVertices == 3)
     {
       vesVector3us indices;
       file >> indices[0] >> indices[1] >> indices[2];
@@ -157,7 +162,7 @@ void vesLegacyReader::readLines(std::ifstream &file, std::vector<vesVector2us>& 
 {
   unsigned short numVertices = 0;
   unsigned short numLinesRead = 0;
-  for (int i = 0; i < numLines; ++i) 
+  for (int i = 0; i < numLines; ++i)
   {
     file >> numVertices;
     for (int j = 0; j < numVertices-1; ++j)

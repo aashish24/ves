@@ -1,22 +1,25 @@
-// ============================================================================
-/**
- * @file   Transform.cpp
- *
- * @section COPYRIGHT
- *
- * Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
- * All rights reserved.
- * See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
- *
- *   This software is distributed WITHOUT ANY WARRANTY; without even
- *   the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- *   PURPOSE.  See the above copyright notice for more information.
- *
- * @author nikhil shetty <nikhil.shetty@kitware.com>
- */
-// ============================================================================
-# include "Transform.h"
-// --------------------------------------------------------------------includes
+/*========================================================================
+  VES --- VTK OpenGL ES Rendering Toolkit
+
+      http://www.kitware.com/ves
+
+  Copyright 2011 Kitware, Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ ========================================================================*/
+
+#include "Transform.h"
+
 #include "vsg/vsgVisitor.h"
 
 namespace vsg{
@@ -29,42 +32,39 @@ class TransformInternal
 private:
   vesMatrix4x4f T,C,R,SR,S,SRinv,Cinv;
 public:
-  // ..................................................................internal
   vesMatrix4x4f Eval()
-    {
-      return T * C * R * SR * S * SRinv * Cinv;
-    }
-  // ..................................................................internal
+  {
+    return T * C * R * SR * S * SRinv * Cinv;
+  }
+
   void SetTranslation(SFVec3f trans)
-    {
-      T = makeTranslationMatrix4x4(trans);
-    }
-  // .................................................................internal
+  {
+    T = makeTranslationMatrix4x4(trans);
+  }
+
   void SetCenter(SFVec3f center)
-    {
-      C = makeTranslationMatrix4x4(center);
-      Cinv = makeInverseMatrix4x4(C);
-    }
-  // ..................................................................internal
+  {
+    C = makeTranslationMatrix4x4(center);
+    Cinv = makeInverseMatrix4x4(C);
+  }
+
   void SetRotation(SFRotation rot)
-    {
-      R = makeRotationMatrix4x4(rot[3], rot[0], rot[1], rot[2]);
-    }
-  // ..................................................................internal
+  {
+    R = makeRotationMatrix4x4(rot[3], rot[0], rot[1], rot[2]);
+  }
+
   void SetScaleOrientation(SFVec4f sr)
-    {
-      SR = makeRotationMatrix4x4(sr[3], sr[0], sr[1], sr[2]);
-      SRinv = makeInverseMatrix4x4(SR);
-    }
-  // ..................................................................internal
+  {
+    SR = makeRotationMatrix4x4(sr[3], sr[0], sr[1], sr[2]);
+    SRinv = makeInverseMatrix4x4(SR);
+  }
+
   void SetScale(SFVec3f scale)
-    {
-      S = makeScaleMatrix4x4(scale[0],scale[1],scale[2]);
-    }
+  {
+    S = makeScaleMatrix4x4(scale[0],scale[1],scale[2]);
+  }
 };
 
-
-// -----------------------------------------------------------------------cnstr
 Transform::Transform()
 {
   _internal = new TransformInternal();
@@ -75,13 +75,11 @@ Transform::Transform()
   _translation = SFVec3f(0,0,0);
 }
 
-// -----------------------------------------------------------------------destr
 Transform::~Transform()
 {
   delete _internal;
 }
 
-// ---------------------------------------------------------------------private
 void Transform::setInternals()
 {
   _internal->SetTranslation(_translation);
@@ -91,23 +89,21 @@ void Transform::setInternals()
   _internal->SetScale(_scale);
 }
 
-// ---------------------------------------------------------------------private
 SFMatrix4f Transform::computeTransform()
 {
   setInternals();
   return _internal->Eval();
 }
 
-// ----------------------------------------------------------------------public
 SFMatrix4f Transform::eval()
 {
   setInternals();
   return _internal->Eval();
 }
 
-// ----------------------------------------------------------------------public
 bool Transform::accept(vsgVisitor* vsgVisitor)
-  {
-    return vsgVisitor->visitTransform(this);
-  }
+{
+  return vsgVisitor->visitTransform(this);
+}
+
 }

@@ -1,53 +1,48 @@
-// ============================================================================
-/**
- * @file   vsgComposedGeometryNode.h
- *
- * @section COPYRIGHT
- *
- * Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
- * All rights reserved.
- * See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
- *
- *   This software is distributed WITHOUT ANY WARRANTY; without even
- *   the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- *   PURPOSE.  See the above copyright notice for more information.
- *
- * @section DESCRIPTION
- *
- *
- *
- * @author nikhil shetty <nikhil.shetty@kitware.com>
- */
-// ============================================================================
+/*========================================================================
+  VES --- VTK OpenGL ES Rendering Toolkit
+
+      http://www.kitware.com/ves
+
+  Copyright 2011 Kitware, Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ ========================================================================*/
+
 #ifndef __vsgComposedGeometryNode_h
 #define __vsgComposedGeometryNode_h
-// --------------------------------------------------------------------includes
-# include "vsgMacro.h"
-# include "vsgTypes.h"
-# include "vsgGeometryNode.h"
 
-    // -------------------------------------------------------------pre-defines
+#include "vsgMacro.h"
+#include "vsgTypes.h"
+#include "vsgGeometryNode.h"
 
-    // -------------------------------------------------------------------class
-    class vsgComposedGeometryNode: public vsgGeometryNode
-    {
-      public:
-      // ........................................................public-methods
-      vsgComposedGeometryNode(SFBool ccw,
-                              SFBool colorPerVertex,
-                              SFBool normalPerVertex,
-                              SFBool solid);
-      virtual ~vsgComposedGeometryNode();
-      InOutMF(attrib,MFNode)
-      InOutSF(color,SFNode)
-      InOutSF(coord,SFNode)
-      InOutSF(normal,SFNode)
-      InOutSF(texCoord,SFNode)
-      protected:
-      // .......................................................protected-ivars
-      SFBool _ccw;
-      SFBool _colorPerVertex;
-      SFBool _normalPerVertex;
-      SFBool _solid;
-    };
+class vsgComposedGeometryNode: public vsgGeometryNode
+{
+public:
+  vsgComposedGeometryNode(SFBool ccw,
+                          SFBool colorPerVertex,
+                          SFBool normalPerVertex,
+                          SFBool solid);
+  virtual ~vsgComposedGeometryNode();
+  InOutMF(attrib,MFNode)
+  InOutSF(color,SFNode)
+  InOutSF(coord,SFNode)
+  InOutSF(normal,SFNode)
+  InOutSF(texCoord,SFNode)
+  protected:
+    SFBool _ccw;
+  SFBool _colorPerVertex;
+  SFBool _normalPerVertex;
+  SFBool _solid;
+};
+
 #endif // __vsgComposedGeometryNode_h

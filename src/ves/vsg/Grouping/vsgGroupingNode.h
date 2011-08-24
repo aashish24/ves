@@ -1,46 +1,39 @@
-// ============================================================================
-/**
- * @file   vsgGroupingNode.h
- *
- * @section COPYRIGHT
- *
- * Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
- * All rights reserved.
- * See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
- *
- *   This software is distributed WITHOUT ANY WARRANTY; without even
- *   the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- *   PURPOSE.  See the above copyright notice for more information.
- *
- * @section DESCRIPTION
- *
- * Abstract base class
- *
- * @author nikhil shetty <nikhil.shetty@kitware.com>
- */
-// ============================================================================
+/*========================================================================
+  VES --- VTK OpenGL ES Rendering Toolkit
+
+      http://www.kitware.com/ves
+
+  Copyright 2011 Kitware, Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ ========================================================================*/
+
 #ifndef __vsgGroupingNode_h
 #define __vsgGroupingNode_h
-// --------------------------------------------------------------------includes
+
 # include "vsg/Utility/vsgMacro.h"
 # include "vsg/Utility/vsgTypes.h"
 # include "vsg/Core/vsgChildNode.h"
 # include "vsg/Grouping/vsgBoundedObject.h"
 
-// -----------------------------------------------------------------pre-defines
-
-// -----------------------------------------------------------------------class
 class vsgGroupingNode: public vsgChildNode, public vsgBoundedObject
 {
 public:
-  // ............................................................public-methods
   vsgGroupingNode();
   virtual ~vsgGroupingNode();
   void addChildren(MFNode &children);
   void removeChildren(MFNode &children);
   InOutMF(children,MFNode)
-protected:
-  // ...........................................................protected-ivars
-
 };
+
 #endif // __vsgGroupingNode_h

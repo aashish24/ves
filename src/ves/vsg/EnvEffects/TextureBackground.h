@@ -1,17 +1,24 @@
-// ============================================================================
+/*========================================================================
+  VES --- VTK OpenGL ES Rendering Toolkit
+
+      http://www.kitware.com/ves
+
+  Copyright 2011 Kitware, Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ ========================================================================*/
+
 /**
- * @file   TextureBackground.h
- *
- * @section COPYRIGHT
- *
- * Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
- * All rights reserved.
- * See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
- *
- *   This software is distributed WITHOUT ANY WARRANTY; without even
- *   the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- *   PURPOSE.  See the above copyright notice for more information.
- *
  * @section DESCRIPTION
  *
  * From: ISO-IEC-19775-1.2-X3D: 24.4.5
@@ -52,36 +59,30 @@
  *
  * @author nikhil shetty <nikhil.shetty@kitware.com>
  */
-// ============================================================================
+
 #ifndef __TextureBackground_h
 #define __TextureBackground_h
-// --------------------------------------------------------------------includes
+
 #include "vsg/Utility/vsgMacro.h"
 #include "vsg/Utility/vsgTypes.h"
 #include "vsg/EnvEffects/vsgBackgroundNode.h"
 
 namespace vsg {
-  // -------------------------------------------------------------pre-defines
-  class TextureBackgroundInternal;
+class TextureBackgroundInternal;
 
-  // -------------------------------------------------------------------class
-  class TextureBackground: public vsgBackgroundNode
-  {
-  public:
-    // ........................................................public-methods
-    TextureBackground();
-    virtual ~TextureBackground();
-    InOutSF(backTexture,SFNode)
-    InOutSF(bottomTexture,SFNode)
-    InOutSF(frontTexture,SFNode)
-    InOutSF(leftTexture,SFNode)
-    InOutSF(rightTexture,SFNode)
-    InOutSF(topTexture, SFNode)
-  protected:
-    // .......................................................protected-ivars
+class TextureBackground: public vsgBackgroundNode
+{
+public:
+  TextureBackground();
+  virtual ~TextureBackground();
+  InOutSF(backTexture,SFNode)
+  InOutSF(bottomTexture,SFNode)
+  InOutSF(frontTexture,SFNode)
+  InOutSF(leftTexture,SFNode)
+  InOutSF(rightTexture,SFNode)
+  InOutSF(topTexture, SFNode)
   private:
-    // .........................................................private-ivars
     TextureBackgroundInternal *_internal;
-  };
+};
 }
 #endif // __TextureBackground_h

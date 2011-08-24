@@ -1,17 +1,24 @@
-// ============================================================================
+/*========================================================================
+  VES --- VTK OpenGL ES Rendering Toolkit
+
+      http://www.kitware.com/ves
+
+  Copyright 2011 Kitware, Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ ========================================================================*/
+
 /**
- * @file   Appearance.h
- *
- * @section COPYRIGHT
- *
- * Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
- * All rights reserved.
- * See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
- *
- *   This software is distributed WITHOUT ANY WARRANTY; without even
- *   the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- *   PURPOSE.  See the above copyright notice for more information.
- *
  * @section DESCRIPTION
  *
  * The Appearance node specifies the visual properties of geometry. The value
@@ -48,44 +55,39 @@
  * requirements defined by this specification are ignored. The field shall
  * contain one of the various types of shader nodes as specified in 31
  * Programmable shaders component.
- *
- * @author nikhil shetty <nikhil.shetty@kitware.com>
  */
-// ============================================================================
+
 #ifndef __Appearance_h
 #define __Appearance_h
-// --------------------------------------------------------------------includes
-# include "vsg/Utility/vsgMacro.h"
-# include "vsg/Utility/vsgTypes.h"
+
+#include "vsg/Utility/vsgMacro.h"
+#include "vsg/Utility/vsgTypes.h"
 #include "vsg/Shape/vsgAppearanceNode.h"
 
 namespace vsg {
-    // -------------------------------------------------------------pre-defines
-    class AppearanceInternal;
 
-    // -------------------------------------------------------------------class
-    class Appearance: public vsgAppearanceNode
-    {
-      public:
-      // ........................................................public-methods
-      Appearance();
-      virtual ~Appearance();
-      bool Read();              // This will be deleted in the future
-      void Render(Painter* render); // This will be deleted in the future
+class AppearanceInternal;
 
-      // InOutSF(fillProperties,SFNode)
-      // InOutSF(lineProperties,SFNode)
-      // InOutSF(maternal,SFNode)
-      InOutMF(shaders,MFNode)
-      // InOutSF(texture,SFNode)
-      // InOutSF(textureTransform,SFNode)
-      bool accept(vsgVisitor* vsgVisitor);
-      protected:
-      // .......................................................protected-ivars
+class Appearance: public vsgAppearanceNode
+{
+public:
+  Appearance();
+  virtual ~Appearance();
+  bool Read();              // This will be deleted in the future
+  void Render(Painter* render); // This will be deleted in the future
 
-      private:
-      // .........................................................private-ivars
-      AppearanceInternal *_internal;
-    };
+  // InOutSF(fillProperties,SFNode)
+  // InOutSF(lineProperties,SFNode)
+  // InOutSF(maternal,SFNode)
+  InOutMF(shaders,MFNode)
+  // InOutSF(texture,SFNode)
+  // InOutSF(textureTransform,SFNode)
+  bool accept(vsgVisitor* vsgVisitor);
+
+private:
+  AppearanceInternal *_internal;
+};
+
 }
+
 #endif // __Appearance_h

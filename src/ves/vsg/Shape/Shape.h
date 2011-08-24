@@ -1,17 +1,24 @@
-// ============================================================================
+/*========================================================================
+  VES --- VTK OpenGL ES Rendering Toolkit
+
+      http://www.kitware.com/ves
+
+  Copyright 2011 Kitware, Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ ========================================================================*/
+
 /**
- * @file   Shape.h
- *
- * @section COPYRIGHT
- *
- * Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
- * All rights reserved.
- * See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
- *
- *   This software is distributed WITHOUT ANY WARRANTY; without even
- *   the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- *   PURPOSE.  See the above copyright notice for more information.
- *
  * @section DESCRIPTION
  *
  * The Shape node has two fields, appearance and geometry, that are used to
@@ -36,36 +43,32 @@
  *
  * @author nikhil shetty <nikhil.shetty@kitware.com>
  */
-// ============================================================================
+
 #ifndef __Shape_h
 #define __Shape_h
-// --------------------------------------------------------------------includes
+
 #include "vsg/Utility/vsgMacro.h"
 #include "vsg/Utility/vsgTypes.h"
 #include "vsg/Shape/vsgShapeNode.h"
 
 namespace vsg {
-  // -------------------------------------------------------------pre-defines
-  class ShapeInternal;
 
-  // -------------------------------------------------------------------class
-  class Shape :public vsgShapeNode
-  {
-  public:
-    // ........................................................public-methods
-    Shape();
-    virtual ~Shape();
-    bool accept(vsgVisitor* vsgVisitor);
-    bool Read();                // Should be deleted
-    void Render(Painter* render); // Should be deleted
-    void ComputeBounds();         // Should be deleted
+class ShapeInternal;
 
-    protected:
-    // .......................................................protected-ivars
+class Shape :public vsgShapeNode
+{
+public:
+  Shape();
+  virtual ~Shape();
+  bool accept(vsgVisitor* vsgVisitor);
+  bool Read();                // Should be deleted
+  void Render(Painter* render); // Should be deleted
+  void ComputeBounds();         // Should be deleted
 
-    private:
-    // .........................................................private-ivars
-    ShapeInternal *_internal;
-  };
+private:
+  ShapeInternal *_internal;
+};
+
 }
+
 #endif // __Shape_h

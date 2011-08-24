@@ -1,85 +1,77 @@
-// ============================================================================
-/**
- * @file   Shape.cpp
- *
- * @section COPYRIGHT
- *
- * Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
- * All rights reserved.
- * See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
- *
- *   This software is distributed WITHOUT ANY WARRANTY; without even
- *   the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- *   PURPOSE.  See the above copyright notice for more information.
- *
- * @author nikhil shetty <nikhil.shetty@kitware.com>
- */
-// ============================================================================
+/*========================================================================
+  VES --- VTK OpenGL ES Rendering Toolkit
+
+      http://www.kitware.com/ves
+
+  Copyright 2011 Kitware, Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ ========================================================================*/
+
 #include "vsg/Shape/Shape.h"
-// --------------------------------------------------------------------includes
+
 #include "vsg/vsgVisitor.h"
 #include "Painter.h"
 
 namespace vsg {
-  // -------------------------------------------------------------------macro
 
-  // ................................................................internal
-  // IMPORTANT: Make sure that this struct has no pointers.  All pointers should
-  // be put in the class declaration. For all newly defined pointers make sure
-  // to update constructor and destructor methods.
-  struct ShapeInternal
-  {
-    double value; // sample
+// IMPORTANT: Make sure that this struct has no pointers.  All pointers should
+// be put in the class declaration. For all newly defined pointers make sure
+// to update constructor and destructor methods.
+struct ShapeInternal
+{
+  double value; // sample
+};
 
-  };
-  // ................................................................internal
-
-  // -------------------------------------------------------------------cnstr
-  Shape::Shape()
-  {
-    _internal = new ShapeInternal();
-  }
-
-  // -------------------------------------------------------------------destr
-  Shape::~Shape()
-  {
-    delete _internal;
-  }
-
-  // ------------------------------------------------------------------public
-  // -----------------------------------------------------------------private
+Shape::Shape()
+{
+  _internal = new ShapeInternal();
 }
 
-bool vsg::Shape::accept(vsgVisitor* vsgVisitor)
+Shape::~Shape()
+{
+  delete _internal;
+}
+
+bool Shape::accept(vsgVisitor* vsgVisitor)
 {
   return vsgVisitor->visitShape(this);
 }
-bool vsg::Shape::Read()
+bool Shape::Read()
 {
   //std::cout << "Read: Shape" <<std::endl;
   get_appearance() -> Read();
   if (get_geometry())
-    {
-      get_geometry() -> Read();
-    }
+  {
+    get_geometry() -> Read();
+  }
   return true;
 }
 
-void vsg::Shape::Render(Painter* render)
+void Shape::Render(Painter* render)
 {
   render->visitShape(this);
 }
 
-void vsg::Shape::ComputeBounds()
+void Shape::ComputeBounds()
 {
   vesMapper* mapper = (vesMapper*) get_geometry();
   if(mapper)
-    {
-      mapper->ComputeBounds();
-      set_BBoxCenter(mapper->get_min(),mapper->get_max());
-      set_BBoxSize(mapper->get_min(),mapper->get_max());
-    }
+  {
+    mapper->ComputeBounds();
+    set_BBoxCenter(mapper->get_min(),mapper->get_max());
+    set_BBoxSize(mapper->get_min(),mapper->get_max());
+  }
 }
 
-
-
+}

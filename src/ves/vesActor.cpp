@@ -1,17 +1,22 @@
-/*=========================================================================
+/*========================================================================
+  VES --- VTK OpenGL ES Rendering Toolkit
 
-  Program:   Visualization Toolkit
-  Module:    vesActor.cxx
+      http://www.kitware.com/ves
 
-  Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
-  All rights reserved.
-  See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
+  Copyright 2011 Kitware, Inc.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-     PURPOSE.  See the above copyright notice for more information.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
 
-=========================================================================*/
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ ========================================================================*/
 #include "vesActor.h"
 
 // --------------------------------------------------------------------includes
@@ -47,15 +52,15 @@ vesActor::vesActor(vesShader *shader,vesMapper* mapper,vesMultitouchWidget *widg
   this->Mapper = mapper;        // This is used to make the actor visible again
   AddShapeChild(this->_shape);
   if(widget)
-    {
-      this->Sensor = true;
-      this->Widget = widget;
-      //std::cout<< "Adding widget interactor" <<std::endl;
-    }
+  {
+    this->Sensor = true;
+    this->Widget = widget;
+    //std::cout<< "Adding widget interactor" <<std::endl;
+  }
   else
-    {
-      this->Sensor = false;
-    }
+  {
+    this->Sensor = false;
+  }
   this->Visible = true;
 }
 
@@ -91,9 +96,9 @@ bool vesActor::Read()
 {
   //std::cout << "Read: Actor" <<std::endl;
   for (int i = 0; i < this->get_children().size(); ++i)
-    {
-      this->get_children()[i]->Read();
-    }
+  {
+    this->get_children()[i]->Read();
+  }
   return true;
 }
 
@@ -125,13 +130,13 @@ void vesActor::ComputeBounds()
 bool vesActor::SetVisible(bool value)
 {
   if(value)
-    {
-      this->_shape->set_geometry(this->Mapper);
-    }
+  {
+    this->_shape->set_geometry(this->Mapper);
+  }
   else
-    {
-      this->_shape->set_geometry(NULL);
-    }
+  {
+    this->_shape->set_geometry(NULL);
+  }
   this->Visible = value;
   return true;
 }

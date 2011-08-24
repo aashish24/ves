@@ -1,22 +1,34 @@
-//
-//  vesShaderProgram.cpp
-//  kiwi
-//
-//  Created by kitware on 4/22/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
-//
+/*========================================================================
+  VES --- VTK OpenGL ES Rendering Toolkit
+
+      http://www.kitware.com/ves
+
+  Copyright 2011 Kitware, Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ ========================================================================*/
 
 #include "vesShaderProgram.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
 
-#define VTK_STR_LIST_CNSTR(NAME)                \
-  vtkStringList  NAME (string value)            \
-  {                                             \
-    vtkStringList temp;                         \
-    temp.List.push_back(value);                 \
-    return temp;                                \
+#define VTK_STR_LIST_CNSTR(NAME)              \
+vtkStringList  NAME (string value)            \
+  {                                           \
+  vtkStringList temp;                         \
+  temp.List.push_back(value);                 \
+  return temp;                                \
   }
 
 VTK_STR_LIST_CNSTR(_att)
@@ -40,10 +52,10 @@ int vesShaderProgram::GetAttribute(string value)
 void vesShaderProgram::DeleteProgram()
 {
   if (this->Program)
-    {
-      glDeleteProgram(this->Program);
-      this->Program = 0;
-    }
+  {
+    glDeleteProgram(this->Program);
+    this->Program = 0;
+  }
 }
 
 void vesShaderProgram::SetUniformMatrix4x4f(string str, vesMatrix4x4f& mat)
@@ -84,9 +96,9 @@ GLuint vesShaderProgram::CompileShader(GLenum type, const char* source)
   // Create shader
   shader = glCreateShader(type);
   if(shader ==0)
-    {
-      return 0;
-    }
+  {
+    return 0;
+  }
 
   // Load source
   glShaderSource(shader, 1, &source, NULL);
@@ -94,23 +106,23 @@ GLuint vesShaderProgram::CompileShader(GLenum type, const char* source)
 
   glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
   if (!compiled)
+  {
+    GLint infoLen =0;
+    glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLen);
+    if(infoLen > 1)
     {
-      GLint infoLen =0;
-      glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLen);
-      if(infoLen > 1)
-        {
-          char *infoLog = (char*) malloc(sizeof(char)*infoLen);
-          glGetShaderInfoLog(shader,infoLen,NULL,infoLog);
-          std::cout << "Error compiling shader:"
-                    << std::endl
-                    << infoLog
-                    << std::endl;
-          free(infoLog);
-        }
-
-      glDeleteShader(shader);
-      return 0;
+      char *infoLog = (char*) malloc(sizeof(char)*infoLen);
+      glGetShaderInfoLog(shader,infoLen,NULL,infoLog);
+      std::cout << "Error compiling shader:"
+                << std::endl
+                << infoLog
+                << std::endl;
+      free(infoLog);
     }
+
+    glDeleteShader(shader);
+    return 0;
+  }
 
   return shader;
 }
@@ -125,12 +137,12 @@ bool vesShaderProgram::Link()
   GLint logLength;
   glGetProgramiv(this->Program, GL_INFO_LOG_LENGTH, &logLength);
   if (logLength > 0)
-    {
-      char *log = (char *)malloc(logLength);
-      glGetProgramInfoLog(this->Program, logLength, &logLength, log);
-      std::cerr  << "Program link log:" << std::endl << log << std::endl;
-      free(log);
-    }
+  {
+    char *log = (char *)malloc(logLength);
+    glGetProgramInfoLog(this->Program, logLength, &logLength, log);
+    std::cerr  << "Program link log:" << std::endl << log << std::endl;
+    free(log);
+  }
 
   glGetProgramiv(this->Program, GL_LINK_STATUS, &status);
   if (status == 0)
@@ -146,12 +158,12 @@ bool vesShaderProgram::Validate()
   glValidateProgram(this->Program);
   glGetProgramiv(this->Program, GL_INFO_LOG_LENGTH, &logLength);
   if (logLength > 0)
-    {
-      char *log = (char *)malloc(logLength);
-      glGetProgramInfoLog(this->Program, logLength, &logLength, log);
-      std::cerr << "Program validate log:" <<std::endl << log << std::endl;
-      free(log);
-    }
+  {
+    char *log = (char *)malloc(logLength);
+    glGetProgramInfoLog(this->Program, logLength, &logLength, log);
+    std::cerr << "Program validate log:" <<std::endl << log << std::endl;
+    free(log);
+  }
 
   glGetProgramiv(this->Program, GL_VALIDATE_STATUS, &status);
   if (status == 0)
@@ -168,9 +180,9 @@ vesShaderProgram::vesShaderProgram (char* vertexShaderStr,
 {
   this->Program = glCreateProgram();
   if(this->Program == 0)
-    {
-      std::cout << "ERROR: Cannot create Program Object" <<std::endl;
-    }
+  {
+    std::cout << "ERROR: Cannot create Program Object" <<std::endl;
+  }
   // compile and load vertex and framgent shader
   this->CompileAndLoadVertexShader(vertexShaderStr);
   this->CompileAndLoadFragmentShader(fragmentShaderStr);
@@ -180,10 +192,10 @@ vesShaderProgram::vesShaderProgram (char* vertexShaderStr,
 
   // link program
   if(!this->Link())
-    {
-      std::cout<< "ERROR: Failed to link Program" << std::endl;
-      this->Delete();
-    }
+  {
+    std::cout<< "ERROR: Failed to link Program" << std::endl;
+    this->Delete();
+  }
 
   // bind uniforms
   this->BindUniforms(uniforms);
@@ -212,19 +224,19 @@ void vesShaderProgram::CompileAndLoadFragmentShader(char* fragmentShaderStr)
 void vesShaderProgram::BindAttributes(vtkStringList attribs)
 {
   for(int i=0; i<attribs.List.size(); ++i)
-    {
-      this->Attributes[attribs.List[i]] = i;
-      glBindAttribLocation(this->Program, i, attribs.List[i].c_str());
-    }
+  {
+    this->Attributes[attribs.List[i]] = i;
+    glBindAttribLocation(this->Program, i, attribs.List[i].c_str());
+  }
 
 }
 
 void vesShaderProgram::BindUniforms(vtkStringList uniforms)
 {
   for(int i=0 ; i<uniforms.List.size(); ++i)
-    {
-      this->Uniforms[uniforms.List[i]] = glGetUniformLocation(this->Program, uniforms.List[i].c_str());
-    }
+  {
+    this->Uniforms[uniforms.List[i]] = glGetUniformLocation(this->Program, uniforms.List[i].c_str());
+  }
 }
 
 void vesShaderProgram::Delete()
@@ -236,15 +248,15 @@ void vesShaderProgram::Delete()
 void vesShaderProgram::DeleteVertexAndFragment()
 {
   if (this->VertexShader)
-    {
-      glDeleteShader(this->VertexShader);
-      this->VertexShader = 0;
-    }
+  {
+    glDeleteShader(this->VertexShader);
+    this->VertexShader = 0;
+  }
   if (this->FragmentShader)
-    {
-      glDeleteShader(this->FragmentShader);
-      this->FragmentShader = 0;
-    }
+  {
+    glDeleteShader(this->FragmentShader);
+    this->FragmentShader = 0;
+  }
 }
 
 vesShaderProgram _program(char* vertexShaderStr,
@@ -264,4 +276,3 @@ void vesShaderProgram::Render(Painter *render)
 {
   render->ShaderProgram(this);
 }
-

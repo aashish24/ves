@@ -1,17 +1,22 @@
-/*=========================================================================
+/*========================================================================
+  VES --- VTK OpenGL ES Rendering Toolkit
 
-  Program:   Visualization Toolkit
-  Module:    vesActorCollection.cxx
+      http://www.kitware.com/ves
 
-  Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
-  All rights reserved.
-  See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
+  Copyright 2011 Kitware, Inc.
 
-     This software is distributed WITHOUT ANY WARRANTY; without even
-     the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
-     PURPOSE.  See the above copyright notice for more information.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
 
-=========================================================================*/
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ ========================================================================*/
 #include "vesActorCollection.h"
 
 // --------------------------------------------------------------------includes
@@ -70,10 +75,10 @@ bool vesActorCollection::Read()
   return true;
 }
 
- vesMatrix4x4f vesActorCollection::Eval()
- {
-   return Transform::eval();
- }
+vesMatrix4x4f vesActorCollection::Eval()
+{
+  return Transform::eval();
+}
 
 void vesActorCollection::Render(Painter *render)
 {
@@ -86,30 +91,30 @@ void vesActorCollection::ComputeBounds()
   vesVector3f allMax(0,0,0);
 
   for (int i =0; i<this->get_children().size(); ++i)
-    {
+  {
     vesActor* child = (vesActor*) this->get_children()[i];
     child->ComputeBounds();
     vesVector3f min = child->get_min();
     vesVector3f max = child->get_max();
 
     if (i == 0)
-      {
+    {
       allMin = min;
       allMax = max;
-      }
+    }
 
     for (int i = 0; i < 3; ++i)
-      {
+    {
       if (max[i] > allMax[i])
-        {
+      {
         allMax[i] = max[i];
-        }
+      }
       if (min[i] < allMin[i])
-        {
+      {
         allMin[i] = min[i];
-        }
       }
     }
+  }
 
   set_BBoxCenter(allMin, allMax);
   set_BBoxSize(allMin, allMax);

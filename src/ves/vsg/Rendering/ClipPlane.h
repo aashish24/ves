@@ -1,17 +1,24 @@
-// ============================================================================
+/*========================================================================
+  VES --- VTK OpenGL ES Rendering Toolkit
+
+      http://www.kitware.com/ves
+
+  Copyright 2011 Kitware, Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ ========================================================================*/
+
 /**
- * @file   ClipPlane.h
- *
- * @section COPYRIGHT
- *
- * Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
- * All rights reserved.
- * See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
- *
- *   This software is distributed WITHOUT ANY WARRANTY; without even
- *   the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- *   PURPOSE.  See the above copyright notice for more information.
- *
  * @section DESCRIPTION
  *
  * The ClipPlane node specifies a single plane equation that will be used to
@@ -19,38 +26,32 @@
  * that describes the inside and outside half space. The first three components
  * are a normalized vector describing the direction of the plane's normal
  * direction.
- *
- * @author nikhil shetty <nikhil.shetty@kitware.com>
  */
-// ============================================================================
+
 #ifndef __ClipPlane_h
 #define __ClipPlane_h
-// --------------------------------------------------------------------includes
+
 # include "vsgMacro.h"
 # include "vsgTypes.h"
 # include "vsgChildNode.h"
 
 namespace vsg {
-    // -------------------------------------------------------------pre-defines
-    class ClipPlaneInternal;
 
-    // -------------------------------------------------------------------class
-    class ClipPlane: public vsgChildNode
-    {
-      public:
-      // ........................................................public-methods
-      ClipPlane();
-      virtual ~ClipPlane();
-      InOutSF(enabled,SFBool)
-      InOutSF(plane,SFVec4f)
-      bool accept(vsgVisitor *vsgVisitor);
+class ClipPlaneInternal;
 
-      protected:
-      // .......................................................protected-ivars
+class ClipPlane: public vsgChildNode
+{
+public:
+  ClipPlane();
+  virtual ~ClipPlane();
+  InOutSF(enabled,SFBool)
+  InOutSF(plane,SFVec4f)
+  bool accept(vsgVisitor *vsgVisitor);
 
-      private:
-      // .........................................................private-ivars
-      ClipPlaneInternal *_internal;
-    };
+private:
+  ClipPlaneInternal *_internal;
+};
+
 }
+
 #endif // __ClipPlane_h

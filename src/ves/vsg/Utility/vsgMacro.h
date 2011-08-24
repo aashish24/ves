@@ -1,29 +1,32 @@
-// ============================================================================
+/*========================================================================
+  VES --- VTK OpenGL ES Rendering Toolkit
+
+      http://www.kitware.com/ves
+
+  Copyright 2011 Kitware, Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ ========================================================================*/
+
 /**
- * @file   vsgMacro.h
- *
- * @section COPYRIGHT
- *
- * Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
- * All rights reserved.
- * See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
- *
- *   This software is distributed WITHOUT ANY WARRANTY; without even
- *   the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- *   PURPOSE.  See the above copyright notice for more information.
- *
  * @section DESCRIPTION
  *
  * This file constains all the macro definitions used in VTK Scene Graph
- *
- * @author nikhil shetty <nikhil.shetty@kitware.com>
  */
-// ============================================================================
+
 #ifndef __vsgMacro_h
 #define __vsgMacro_h
-// --------------------------------------------------------------------includes
 
-// -----------------------------------------------------------------------macro
 #define InOnlySF(name,type)                     \
   private:                                      \
   type _##name ;                                \
@@ -33,7 +36,6 @@ virtual void set_##name (type _arg)             \
   _##name = _arg;                               \
 }
 
-// -----------------------------------------------------------------------macro
 #define OutOnlySF(name,type)                    \
   private:                                      \
   type _##name;                                 \
@@ -57,7 +59,6 @@ virtual bool name##_changed ()                  \
     }                                           \
 }
 
-// -----------------------------------------------------------------------macro
 #define InOutSF(name,type)                      \
   private:                                      \
   type _##name ;                                \
@@ -87,7 +88,6 @@ virtual bool name##_changed ()                  \
     }                                           \
 }
 
-// -----------------------------------------------------------------------macro
 #define InOnlyMF(name,type)                     \
   private:                                      \
   type _##name;                                 \
@@ -97,7 +97,6 @@ virtual void set_##name ( const type &_arg)     \
   _##name = _arg;                               \
 }
 
-// -----------------------------------------------------------------------macro
 #define OutOnlyMF(name,type)                    \
   private:                                      \
   type _##name;                                 \
@@ -117,7 +116,6 @@ virtual bool name##_changed (type &_arg)        \
     }                                           \
 }
 
-// -----------------------------------------------------------------------macro
 #define InOutMF(name,type)                      \
   private:                                      \
   type _##name;                                 \
@@ -151,7 +149,6 @@ virtual bool name##_changed (type &_arg)        \
     }                                           \
 }
 
-// -----------------------------------------------------------------------macro
 #define InOutMFNode(name)                       \
   private:                                      \
   MFNode _##name;                               \
@@ -181,7 +178,6 @@ virtual bool name##_changed (type &_arg)        \
     }                                           \
 }
 
-// -----------------------------------------------------------------------macro
 #define vsgSetVectorMacro(name,type)            \
   void Set##name(const std::vector<type> &_arg) \
   {                                             \
@@ -191,7 +187,6 @@ virtual bool name##_changed (type &_arg)        \
       }                                         \
   }
 
-// -----------------------------------------------------------------------macro
 #define vsgGetVectorMacro(name,type)            \
   bool get##name (std::vector<type> *_arg)      \
   {                                             \
@@ -204,7 +199,6 @@ virtual bool name##_changed (type &_arg)        \
     return true;                                \
   }
 
-// -----------------------------------------------------------------------macro
 #define vsgSetGetVectorMacro(name,type)         \
   void set##name(const std::vector<type> &_arg) \
   {                                             \
@@ -225,7 +219,6 @@ virtual bool name##_changed (type &_arg)        \
     return true;                                \
   }
 
-// -----------------------------------------------------------------------macro
 #define vsgSetSFMacro(name,type)                \
   virtual void set##name (SF##type _arg)        \
   {                                             \
@@ -235,14 +228,12 @@ virtual bool name##_changed (type &_arg)        \
       }                                         \
   }
 
-// -----------------------------------------------------------------------macro
 #define vsgGetSFMacro(name,type)                \
   virtual SF##type get##name ()                 \
   {                                             \
     return this->name;                          \
   }
 
-// -----------------------------------------------------------------------macro
 #define vsgSetGetSFMacro(name,type)             \
   virtual void set##name (SF##type _arg)        \
   {                                             \
@@ -257,7 +248,6 @@ virtual bool name##_changed (type &_arg)        \
     return this->name;                          \
   }
 
-// -----------------------------------------------------------------------macro
 #define vsgSetMFMacro(name,type)                        \
   void Set##name(const std::vector<SF##type> &_arg)     \
   {                                                     \
@@ -267,7 +257,6 @@ virtual bool name##_changed (type &_arg)        \
       }                                                 \
   }
 
-// -----------------------------------------------------------------------macro
 #define vsgGetMFMacro(name,type)                \
   bool Get##name (std::vector<SF##type> &_arg)  \
   {                                             \
@@ -280,7 +269,6 @@ virtual bool name##_changed (type &_arg)        \
     return true;                                \
   }
 
-// -----------------------------------------------------------------------macro
 #define vsgSetGetMFMacro(name,type)                     \
   void Set##name(const std::vector<SF##type> &_arg)     \
   {                                                     \

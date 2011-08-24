@@ -1,17 +1,22 @@
-/*=========================================================================
+/*========================================================================
+  VES --- VTK OpenGL ES Rendering Toolkit
 
- Program:   Visualization Toolkit
- Module:    vesRenderer.mm
+      http://www.kitware.com/ves
 
- Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
- All rights reserved.
- See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
+  Copyright 2011 Kitware, Inc.
 
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notice for more information.
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
 
- =========================================================================*/
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ ========================================================================*/
 
 #include "vesRenderer.h"
 #include "vesFileReader.h"
@@ -30,14 +35,14 @@ void PrintMatrix(std::string name, vesMatrix4x4f mv)
 {
   std::cerr << name << ":" << std::endl;
   for (int i = 0; i < 4; ++i)
-    {
-    std::cerr << mv[i][0] << "," << mv[i][1] << "," << mv[i][2] << "," << mv[i][3] << std::endl;
-    }
+  {
+    std::cerr << mv[i][0] << "," << mv[i][1] << "," << mv[i][2] << ","
+              << mv[i][3] << std::endl;
+  }
   std::cerr << std::endl;
 }
 }
 
-// -----------------------------------------------------------------------cnstr
 vesRenderer::vesRenderer()
 {
   this->Actor = new vesActorCollection();
@@ -48,7 +53,6 @@ vesRenderer::vesRenderer()
   this->Height = 100.0f;
 }
 
-// -----------------------------------------------------------------------destr
 vesRenderer::~vesRenderer()
 {
   delete Actor;
@@ -56,25 +60,23 @@ vesRenderer::~vesRenderer()
   delete Camera;
 }
 
-// ----------------------------------------------------------------------public
 void vesRenderer::AddActor(vesActor* actor)
 {
   this->Actor->AddItem(actor);
 }
 
-// ----------------------------------------------------------------------public
 void vesRenderer::RemoveActor(vesActor* actor)
 {
   this->Actor->RemoveItem(actor);
 }
 
-// ----------------------------------------------------------------------public
 void vesRenderer::Render()
 {
   // Clear the buffers
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glEnable(GL_DEPTH_TEST);
-  vesMatrix4x4f proj = this->Camera->ComputeProjectionTransform(this->Aspect[1], -1, 1);
+  vesMatrix4x4f proj = this->Camera->ComputeProjectionTransform(this->Aspect[1],
+                                                                -1, 1);
   vesMatrix4x4f view = this->Camera->ComputeViewTransform();
   this->Paint->Push(proj);
   this->Paint->Push(view);
@@ -83,7 +85,6 @@ void vesRenderer::Render()
   this->Paint->Pop();
 }
 
-// ----------------------------------------------------------------------public
 void vesRenderer::Resize(int width, int height, float scale)
 {
   this->Width = (width > 0) ? width : 1;
@@ -92,13 +93,13 @@ void vesRenderer::Resize(int width, int height, float scale)
   this->Aspect[1] = static_cast<double>(this->Width)/this->Height;
 }
 
-// ----------------------------------------------------------------------public
 vesVector3f vesRenderer::ComputeWorldToDisplay(vesVector3f world)
 {
   //
   // WorldToView
   //
-  vesMatrix4x4f proj_mat = this->Camera->ComputeProjectionTransform(this->Aspect[1], 0, 1);
+  vesMatrix4x4f proj_mat = this->Camera->ComputeProjectionTransform(this->Aspect[1],
+                                                                    0, 1);
   vesMatrix4x4f view_mat = this->Camera->ComputeViewTransform();
   vesMatrix4x4f mat = proj_mat*view_mat;
   vesVector4f world4(world[0], world[1], world[2], 1);
@@ -118,7 +119,6 @@ vesVector3f vesRenderer::ComputeWorldToDisplay(vesVector3f world)
   return display;
 }
 
-// ----------------------------------------------------------------------public
 vesVector3f vesRenderer::ComputeDisplayToWorld(vesVector3f display)
 {
   //
@@ -133,7 +133,8 @@ vesVector3f vesRenderer::ComputeDisplayToWorld(vesVector3f display)
   //
   // ViewToWorld
   //
-  vesMatrix4x4f proj_mat = this->Camera->ComputeProjectionTransform(this->Aspect[1], 0, 1);
+  vesMatrix4x4f proj_mat = this->Camera->ComputeProjectionTransform(this->Aspect[1],
+                                                                    0, 1);
   vesMatrix4x4f view_mat = this->Camera->ComputeViewTransform();
   vesMatrix4x4f mat = proj_mat*view_mat;
   vesMatrix4x4f inv;
@@ -141,11 +142,11 @@ vesVector3f vesRenderer::ComputeDisplayToWorld(vesVector3f display)
   vesVector4f world4;
   gmtl::xform(world4, inv, view);
 
-  vesVector3f world(world4[0]/world4[3], world4[1]/world4[3], world4[2]/world4[3]);
+  vesVector3f world(world4[0]/world4[3], world4[1]/world4[3],
+                    world4[2]/world4[3]);
   return world;
 }
 
-// ----------------------------------------------------------------------public
 void vesRenderer::ResetCamera()
 {
   this->Actor->Read();
@@ -189,7 +190,7 @@ void vesRenderer::ResetCamera()
   vup = this->Camera->GetViewUp();
   if ( fabs(gmtl::dot(vup,vn)) > 0.999 )
   {
-   // vtkWarningMacro(<<"Resetting view-up since view plane normal is parallel");
+    // vtkWarningMacro(<<"Resetting view-up since view plane normal is parallel");
     vesVector3f temp;
     temp[0] = -vup[2];
     temp[1] = vup[0];
@@ -216,7 +217,6 @@ void vesRenderer::ResetCamera()
   this->Camera->SetParallelScale(parallelScale);
 }
 
-// ----------------------------------------------------------------------public
 void vesRenderer::ResetCameraClippingRange()
 {
   this->Actor->Read();
@@ -232,7 +232,6 @@ void vesRenderer::ResetCameraClippingRange()
   this->ResetCameraClippingRange(bounds);
 }
 
-// ----------------------------------------------------------------------
 void vesRenderer::ResetCameraClippingRange(float bounds[6])
 {
   vesVector3f  vn, position;

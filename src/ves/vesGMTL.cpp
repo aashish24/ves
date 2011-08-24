@@ -1,3 +1,23 @@
+/*========================================================================
+  VES --- VTK OpenGL ES Rendering Toolkit
+
+      http://www.kitware.com/ves
+
+  Copyright 2011 Kitware, Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ ========================================================================*/
+
 #include "vesGMTL.h"
 #include "gmtl/Generate.h"
 #include "gmtl/AxisAngle.h"
@@ -66,11 +86,11 @@ vesMatrix4x4f vesOrtho(float left,
 
 // -------------------------------------------------------------------------fun
 vesMatrix4x4f vesFrustum(float left,
-			 float right,
-			 float bottom,
-			 float top,
-			 float near,
-			 float far)
+                         float right,
+                         float bottom,
+                         float top,
+                         float near,
+                         float far)
 {
   vesMatrix4x4f mat;
   float a = 2 * near / (right - left);
@@ -137,14 +157,14 @@ float deg2Rad(float degree)
 
 // ----------------------------------------------------------------------------
 vesMatrix4x4f vesLookAt( vesVector3f position,
-			 vesVector3f focalPoint,
-			 vesVector3f viewUp)
+                         vesVector3f focalPoint,
+                         vesVector3f viewUp)
 {
   vesMatrix4x4f matrix;
   gmtl::identity(matrix);
 
   gmtl::Vec3f viewSideways, orthoViewUp, viewPlaneNormal;
-  viewPlaneNormal = position - focalPoint;  
+  viewPlaneNormal = position - focalPoint;
   gmtl::normalize(viewPlaneNormal);
   viewSideways = gmtl::makeCross(viewUp,viewPlaneNormal);
   gmtl::normalize(viewSideways);

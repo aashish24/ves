@@ -1,19 +1,32 @@
-//
-//  vesShaderProgram.h
-//  kiwi
-//
-//  Created by kitware on 4/22/11.
-//  Copyright 2011 __MyCompanyName__. All rights reserved.
-//
+/*========================================================================
+  VES --- VTK OpenGL ES Rendering Toolkit
+
+      http://www.kitware.com/ves
+
+  Copyright 2011 Kitware, Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ ========================================================================*/
+
 #ifndef __vesShaderProgram_h
 #define __vesShaderProgram_h
 
 #ifdef ANDROID
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
+# include <GLES2/gl2.h>
+# include <GLES2/gl2ext.h>
 #else
-#include <OpenGLES/ES2/gl.h>
-#include <OpenGLES/ES2/glext.h>
+# include <OpenGLES/ES2/gl.h>
+# include <OpenGLES/ES2/glext.h>
 #endif
 #include <map>
 #include <vector>
@@ -23,7 +36,6 @@
 
 using namespace std;
 
-// ----------------------------------------------------------------------struct
 struct vtkStringList
 {
   vector<std::string> List;
@@ -31,21 +43,19 @@ struct vtkStringList
   {
     vtkStringList temp = a;
     for(int i=0;i<b.List.size();++i)
-      {
-        temp.List.push_back(b.List[i]);
-      }
+    {
+      temp.List.push_back(b.List[i]);
+    }
     return temp;
   }
 };
 
-// -----------------------------------------------------------------------macro
 #define VTK_STR_LIST_CNSTR_DECLARE(NAME) \
-vtkStringList NAME (string value);
+  vtkStringList NAME (string value);
 
 VTK_STR_LIST_CNSTR_DECLARE(_att)
 VTK_STR_LIST_CNSTR_DECLARE(_uni)
 
-// -----------------------------------------------------------------------class
 class vesShaderProgram
 {
 public:
@@ -83,9 +93,8 @@ private:
 };
 
 vesShaderProgram _program(char* vertexShaderStr,
-                           char* fragmentShaderStr,
-                           vtkStringList uniforms,
-                           vtkStringList attributes);
+                          char* fragmentShaderStr,
+                          vtkStringList uniforms,
+                          vtkStringList attributes);
 
 #endif
-
