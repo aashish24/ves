@@ -61,26 +61,26 @@
 
 -(IBAction)information:(UIButton*)sender
 {
-  InfoView *infoView = [[InfoView alloc] init];
-  UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:infoView];
+  InfoView *infoView = [[[InfoView alloc] init] autorelease];
 
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+    {
+    self.window.rootViewController = infoView;
+    }
+  else
+    {
+    UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:infoView];
+    [popover presentPopoverFromRect:CGRectMake(570,785,300,200) 
+                             inView:self.glView 
+           permittedArrowDirections:(UIPopoverArrowDirectionDown)
+                           animated:NO];
+	  [popover setPopoverContentSize:CGSizeMake(300,225) animated:NO];
+    }
   // need to get the info from the renderer
   [infoView updateModelInfoLabelWithNumFacets:[self.glView getNumberOfFacetsForCurrentModel]
                                  withNumLines:[self.glView getNumberOfLinesForCurrentModel]
                               withNumVertices:[self.glView getNumberOfVerticesForCurrentModel]
-                                withCurrentRefreshRate:[self.glView currentRefreshRate]];
-  [popover presentPopoverFromRect:CGRectMake(570,785,300,200) 
-                           inView:self.glView 
-         permittedArrowDirections:(//UIPopoverArrowDirectionUp
-                                   //UIPopoverArrowDirectionLeft
-                                   //&
-                                   UIPopoverArrowDirectionDown)
-//                                   &UIPopoverArrowDirectionRight) 
-                         animated:NO];
- // [popover  setPopoverContentSize:<#(CGSize)#> animated:<#(BOOL)#>
-  //[popover  dismissPopoverAnimated:YES];
-	[popover setPopoverContentSize:CGSizeMake(300,225) animated:NO];
-  //[popover setContentViewController:infoView animated:NO];
+                       withCurrentRefreshRate:[self.glView currentRefreshRate]];
 }
 
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
