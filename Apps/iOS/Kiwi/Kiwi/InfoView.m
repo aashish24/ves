@@ -11,7 +11,9 @@
 
 
 @implementation InfoView
+
 @synthesize modelInfoLabel;
+@synthesize hideButton;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -66,6 +68,11 @@
 {
     // Return YES for supported orientations
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+- (IBAction) hideView
+{
+  self.view.window.rootViewController = nil;
 }
 
 @end

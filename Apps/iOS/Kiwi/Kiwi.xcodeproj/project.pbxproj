@@ -11,7 +11,6 @@
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
-		1F4C1BF4137D970E0052301B /* InfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1F4C1BF3137D970E0052301B /* InfoView.xib */; };
 		1FBD34E3132163C300738902 /* current.vtk in Resources */ = {isa = PBXBuildFile; fileRef = 1FBD34E2132163C300738902 /* current.vtk */; };
 		2514C27310084DB100A42282 /* ES2Renderer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2514C27010084DB100A42282 /* ES2Renderer.mm */; };
 		28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD733E0D9D9553002E5188 /* MainWindow.xib */; };
@@ -41,6 +40,7 @@
 		436B34B613C802D500C5726C /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 436B34B113C802D500C5726C /* icon.png */; };
 		436B34B713C802D500C5726C /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = 436B34B213C802D500C5726C /* iTunesArtwork */; };
 		436B34B813C802D500C5726C /* Kiwi_Splash_72.png in Resources */ = {isa = PBXBuildFile; fileRef = 436B34B313C802D500C5726C /* Kiwi_Splash_72.png */; };
+		453036EB1406A298003A861A /* InfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 453036EA1406A298003A861A /* InfoView.xib */; };
 		6F25E721137DEA5400BF4BCA /* current.stl in Resources */ = {isa = PBXBuildFile; fileRef = 6F25E720137DEA5400BF4BCA /* current.stl */; };
 		6F41B5C01360C0CA00D0079D /* InfoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F41B5BE1360C0CA00D0079D /* InfoView.m */; };
 		6F43A8AE138AC01D0053899E /* Kiwi_K.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F43A8AD138AC01D0053899E /* Kiwi_K.png */; };
@@ -63,7 +63,6 @@
 		1D3623250D0F684500981E51 /* kiwiAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = kiwiAppDelegate.m; sourceTree = "<group>"; };
 		1D6058910D05DD3D006BFB54 /* kiwi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = kiwi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		1F4C1BF3137D970E0052301B /* InfoView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = InfoView.xib; sourceTree = "<group>"; };
 		1FBD34E2132163C300738902 /* current.vtk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = current.vtk; sourceTree = "<group>"; };
 		2514C26F10084DB100A42282 /* ES2Renderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ES2Renderer.h; sourceTree = "<group>"; };
 		2514C27010084DB100A42282 /* ES2Renderer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ES2Renderer.mm; sourceTree = "<group>"; };
@@ -100,6 +99,7 @@
 		436B34B113C802D500C5726C /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		436B34B213C802D500C5726C /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; path = iTunesArtwork; sourceTree = "<group>"; };
 		436B34B313C802D500C5726C /* Kiwi_Splash_72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Kiwi_Splash_72.png; sourceTree = "<group>"; };
+		453036EA1406A298003A861A /* InfoView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InfoView.xib; sourceTree = "<group>"; };
 		6F25E720137DEA5400BF4BCA /* current.stl */ = {isa = PBXFileReference; lastKnownFileType = file; path = current.stl; sourceTree = "<group>"; };
 		6F41B5BD1360C0C900D0079D /* InfoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfoView.h; sourceTree = "<group>"; };
 		6F41B5BE1360C0CA00D0079D /* InfoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InfoView.m; sourceTree = "<group>"; };
@@ -165,9 +165,9 @@
 				1D3623250D0F684500981E51 /* kiwiAppDelegate.m */,
 				6F41B5BD1360C0C900D0079D /* InfoView.h */,
 				6F41B5BE1360C0CA00D0079D /* InfoView.m */,
+				453036EA1406A298003A861A /* InfoView.xib */,
 				4307FCFA13C8E22E00FFF019 /* DataReader.h */,
 				4307FCFD13C8E32100FFF019 /* DataReader.mm */,
-				1F4C1BF3137D970E0052301B /* InfoView.xib */,
 				28AD733E0D9D9553002E5188 /* MainWindow.xib */,
 				6F25E6F3137D8B5600BF4BCA /* Supporting Files */,
 			);
@@ -337,7 +337,6 @@
 				432DE14E13D15D81000F8EC0 /* Shader.vsh in Resources */,
 				28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */,
 				1FBD34E3132163C300738902 /* current.vtk in Resources */,
-				1F4C1BF4137D970E0052301B /* InfoView.xib in Resources */,
 				6F25E721137DEA5400BF4BCA /* current.stl in Resources */,
 				6F43A8AE138AC01D0053899E /* Kiwi_K.png in Resources */,
 				706F0E4A138C691E00B575F4 /* fullscreen_32.png in Resources */,
@@ -354,6 +353,7 @@
 				7027670D13EC44DE0089945A /* AppendedKneeData.vtp in Resources */,
 				7027670F13EC45590089945A /* shuttle.vtp in Resources */,
 				7027671113EC46620089945A /* MountStHelen.vtp in Resources */,
+				453036EB1406A298003A861A /* InfoView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -396,6 +396,7 @@
 					"../../../src/ves/**",
 				);
 				INFOPLIST_FILE = "Kiwi/Kiwi-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				"LIBRARY_SEARCH_PATHS[sdk=iphoneos*][arch=*]" = (
 					"$(inherited)",
@@ -409,7 +410,7 @@
 				);
 				PRODUCT_NAME = kiwi;
 				PROVISIONING_PROFILE = "";
-				TARGETED_DEVICE_FAMILY = 2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -432,6 +433,7 @@
 					"../../../src/ves/**",
 				);
 				INFOPLIST_FILE = "Kiwi/Kiwi-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				"LIBRARY_SEARCH_PATHS[sdk=iphoneos*][arch=*]" = (
 					"$(inherited)",
@@ -446,7 +448,7 @@
 				PRODUCT_NAME = kiwi;
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				TARGETED_DEVICE_FAMILY = 2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -492,6 +494,7 @@
 					"../../../src/ves/**",
 				);
 				INFOPLIST_FILE = "Kiwi/Kiwi-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				"LIBRARY_SEARCH_PATHS[sdk=iphoneos*][arch=*]" = (
 					"$(inherited)",
@@ -506,7 +509,7 @@
 				PRODUCT_NAME = kiwi;
 				PROVISIONING_PROFILE = "B8AED505-0041-4D2F-BA3C-8E3073226432";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				TARGETED_DEVICE_FAMILY = 2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
 				VALIDATE_PRODUCT = YES;
 			};
@@ -549,6 +552,7 @@
 					"../../../src/ves/**",
 				);
 				INFOPLIST_FILE = "Kiwi/Kiwi-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				"LIBRARY_SEARCH_PATHS[sdk=iphoneos*][arch=*]" = (
 					"$(inherited)",
@@ -563,7 +567,7 @@
 				PRODUCT_NAME = kiwi;
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "";
-				TARGETED_DEVICE_FAMILY = 2;
+				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
 				VALIDATE_PRODUCT = YES;
 			};
