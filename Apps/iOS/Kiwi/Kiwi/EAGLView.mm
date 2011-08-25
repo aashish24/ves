@@ -51,9 +51,9 @@
   if ((pinching && panning) ||
       (pinching && rotating2D) ||
       (panning && rotating2D))
-  {
+    {
     return YES;
-  }
+    }
   return NO;
 }
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch
@@ -68,7 +68,6 @@
 - (BOOL) createFramebuffer;
 - (void) destroyFramebuffer;
 
-
 @end
 
 @implementation EAGLView
@@ -78,7 +77,7 @@
 // You must implement this method
 + (Class)layerClass
 {
-    return [CAEAGLLayer class];
+  return [CAEAGLLayer class];
 }
 
 //The EAGL view is stored in the nib file. When it's unarchived it's sent -initWithCoder:
@@ -86,32 +85,31 @@
 {    
   self = [super initWithCoder:coder];
   if (self)
-  {
+    {
     // Get the layer
     CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
     
     eaglLayer.opaque = TRUE;
     eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
                                     [NSNumber numberWithBool:FALSE], kEAGLDrawablePropertyRetainedBacking, kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat, nil];
-        context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
-        if (!context || ![EAGLContext setCurrentContext:context])
-        {
-          [self release];
-          return nil;
-        }
+    context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+    if (!context || ![EAGLContext setCurrentContext:context])
+      {
+      [self release];
+      return nil;
+      }
     
-
     renderer = [[ES2Renderer alloc] init];
     
     if (!renderer)
-    {
+      {
 			[self release];
 			return nil;
-    }
+      }
 
     [self createGestureRecognizers];
     self.multipleTouchEnabled = YES;
-  }
+    }
   
   self->shouldRender = NO;
   self->recentRenderFPS = [NSMutableArray new];
@@ -125,7 +123,23 @@
   [self destroyFramebuffer];
   [self createFramebuffer];
   [renderer resizeFromLayer:backingWidth height:backingHeight];
-  
+
+  // Reposition buttons on the iPhone
+  if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+    {
+    UIButton* resetButton = [[self subviews] objectAtIndex:0];
+    resetButton.frame = CGRectMake((backingWidth / 2) - (resetButton.frame.size.width / 2),
+                                   backingHeight - 50,
+                                   resetButton.frame.size.width, resetButton.frame.size.height);
+
+    UIButton* openDataButton = [[self subviews] objectAtIndex:1];
+    openDataButton.frame = CGRectMake(backingWidth - 90, backingHeight - 45,
+                                      openDataButton.frame.size.width, openDataButton.frame.size.height);
+
+    UIButton* infoButton = [[self subviews] objectAtIndex:2];
+    infoButton.frame = CGRectMake(backingWidth - 36, backingHeight - 38,
+                                  infoButton.frame.size.width, infoButton.frame.size.height);
+    }
   //
   // set up animation loop
   self->displayLink = [self.window.screen displayLinkWithTarget:self selector:@selector(drawView:)];
@@ -147,17 +161,19 @@
   glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &backingWidth);
   glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &backingHeight);
   
-  if (USE_DEPTH_BUFFER) {
+  if (USE_DEPTH_BUFFER)
+    {
     glGenRenderbuffers(1, &depthRenderbuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, depthRenderbuffer);
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, backingWidth, backingHeight);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderbuffer);
-  }
+    }
   
-  if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
+  if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    {
     NSLog(@"failed to make complete framebuffer object %x", glCheckFramebufferStatus(GL_FRAMEBUFFER));
     return NO;
-  }
+    }
   
   return YES;
 }
@@ -169,10 +185,11 @@
   glDeleteRenderbuffers(1, &viewRenderbuffer);
   viewRenderbuffer = 0;
   
-  if(depthRenderbuffer) {
+  if(depthRenderbuffer)
+    {
     glDeleteRenderbuffers(1, &depthRenderbuffer);
     depthRenderbuffer = 0;
-  }
+    }
 }
 
 - (void) updateRefreshRate:(float)lastRenderFPS
@@ -180,23 +197,23 @@
   //
   // ignore the call if there is no animation loop
   if (!self->displayLink)
-  {
+    {
     return;
-  }
+    }
   
   //
   // keep track of the last few rendering speeds
   const unsigned int maxWindowSize = 20;
   [self->recentRenderFPS addObject:[NSNumber numberWithFloat:lastRenderFPS]];
   if ([self->recentRenderFPS count] > maxWindowSize)
-  {
+    {
     [self->recentRenderFPS removeObjectAtIndex:0];
-  }
+    }
   float sumFPS = 0.0;
   for (NSNumber* n in self->recentRenderFPS)
-  {
-      sumFPS += n.floatValue;
-  }
+    {
+    sumFPS += n.floatValue;
+    }
   float meanFPS = sumFPS / maxWindowSize;
 
   //
@@ -209,18 +226,18 @@
   desiredFrameInterval = desiredFrameInterval > 6 ? 6 : desiredFrameInterval;
   
   if (desiredFrameInterval != self->displayLink.frameInterval)
-  {
+    {
     //NSLog(@"Changing frame interval to %d", desiredFrameInterval);
     [self->displayLink setFrameInterval:desiredFrameInterval];
-  }
+    }
 }
 
 - (int)currentRefreshRate
 {
   if (!self->displayLink)
-  {
+    {
     return 0;
-  }
+    }
   return 60 / self->displayLink.frameInterval;
 }
 
@@ -235,10 +252,10 @@
   [self drawView:nil];
 }
 
-- (void)drawView:(id) sender {  
-  
+- (void)drawView:(id) sender
+{    
   if (self->shouldRender)
-  {
+    {
     NSDate* startRenderDate = [NSDate date];
     [EAGLContext setCurrentContext:context];
     glBindFramebuffer(GL_FRAMEBUFFER, viewFramebuffer);
@@ -250,14 +267,15 @@
     float currentFPS = 1.0 / [[NSDate date] timeIntervalSinceDate:startRenderDate];
     //NSLog(@"Render @ %4.1f fps", currentFPS);
     [self updateRefreshRate:currentFPS];
-  }
+    }
 }
 
 - (void)dealloc
 {
   if ([EAGLContext currentContext] == context)
+    {
     [EAGLContext setCurrentContext:nil];
-	
+    }
   [context release];
   context = nil;
   [renderer release];
@@ -273,10 +291,11 @@
 
 - (void) setFilePath :(NSString *) fpath
 {
-	if(renderer){
+	if(renderer)
+    {
 		[renderer setFilePath:fpath];
     [self resetView];
-	}
+	  }
 }
 
 
@@ -330,10 +349,10 @@
 {
   if (sender.state == UIGestureRecognizerStateEnded ||
       sender.state == UIGestureRecognizerStateCancelled)
-  {
+    {
     // start inertial pan?
     return;
-  }
+    }
   
   [self stopInertialMotion];
     
@@ -381,14 +400,14 @@
 { 
   if (sender.state == UIGestureRecognizerStateEnded ||
       sender.state == UIGestureRecognizerStateCancelled)
-  {
-    if (lastRotationMotionNorm > 4.0f)
     {
+    if (lastRotationMotionNorm > 4.0f)
+      {
       self->inertialRotationThread = [[NSThread alloc] initWithTarget:self selector:@selector(handleInertialRotation) object:nil];
       [inertialRotationThread start];
-    }
+      }
     return;
-  }
+    }
   
   [self stopInertialMotion];
   
@@ -402,7 +421,7 @@
   self->lastRotationMotionNorm = sqrtf(currentTranslation.x*currentTranslation.x + 
                                        currentTranslation.y*currentTranslation.y);
   if (self->lastRotationMotionNorm > 0)
-  {
+    {
     self->lastMovementXYUnitDelta.x = currentTranslation.x / lastRotationMotionNorm;
     self->lastMovementXYUnitDelta.y = currentTranslation.y / lastRotationMotionNorm;
     
@@ -410,21 +429,21 @@
     // apply the rotation and rerender
     [self rotate:currentTranslation];
     [self scheduleRender];
-  }
+    }
   else
-  {
+    {
     self->lastMovementXYUnitDelta.x = 0.0f;
     self->lastMovementXYUnitDelta.y = 0.0f;
-  }
+    }
 }
 
 - (IBAction)handlePinchGesture:(UIPinchGestureRecognizer *)sender
 {  
   if (sender.state == UIGestureRecognizerStateEnded ||
       sender.state == UIGestureRecognizerStateCancelled)
-  {
+    {
     return;
-  }
+    }
   
   [self stopInertialMotion];
   
@@ -445,9 +464,9 @@
 {  
   if (sender.state == UIGestureRecognizerStateEnded ||
       sender.state == UIGestureRecognizerStateCancelled)
-  {
+    {
     return;
-  }
+    }
   
     [self stopInertialMotion];
   
@@ -497,13 +516,13 @@
   NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
   CGPoint delta;
   while (lastRotationMotionNorm > 0.5)
-  {
+    {
     [NSThread sleepForTimeInterval:1/30.0];
     
     if ([[NSThread currentThread] isCancelled])
-    {
+      {
       break;
-    }
+      }
     
     delta.x = lastRotationMotionNorm*lastMovementXYUnitDelta.x;
     delta.y = lastRotationMotionNorm*lastMovementXYUnitDelta.y;
@@ -511,7 +530,7 @@
     
     [self scheduleRender];
     lastRotationMotionNorm *= 0.9;
-  }
+    }
   lastRotationMotionNorm = 0;
   [pool release];
   //[NSThread exit];
@@ -520,7 +539,7 @@
 - (void) stopInertialMotion
 {
   if (inertialRotationThread)
-  {
+    {
     [inertialRotationThread setThreadPriority:1.0f];
     [inertialRotationThread cancel];
     
@@ -530,12 +549,12 @@
     // its render.  The priority and sleep should be removed when the wait is improved
     [NSThread sleepForTimeInterval:1/20.0];
     while (![inertialRotationThread isFinished])
-    {
+      {
       // busy wait for the thread to exit
-    }
+      }
     [inertialRotationThread release];
     inertialRotationThread = nil;
-  }
+    }
 }
 
 #pragma mark -
@@ -545,18 +564,18 @@
 -(int) getNumberOfFacetsForCurrentModel
 {
   if (renderer)
-  {
+    {
     return [renderer getNumberOfFacetsForCurrentModel];
-  }
+    }
   return 0;
 }
 
 -(int) getNumberOfLinesForCurrentModel
 {
   if (renderer)
-  {
+    {
     return [renderer getNumberOfLinesForCurrentModel];
-  }
+    }
   return 0;
 }
 
@@ -564,9 +583,9 @@
 -(int) getNumberOfVerticesForCurrentModel
 {
   if (renderer)
-  {
+    {
     return [renderer getNumberOfVerticesForCurrentModel];
-  }
+    }
   return 0;
 }
 

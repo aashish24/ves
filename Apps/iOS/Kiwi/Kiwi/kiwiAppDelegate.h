@@ -52,5 +52,5 @@
 - (void)showDownloadIndicator;
 - (void)updateStatusIndicator;
 - (void)hideStatusIndicator;
-@end
 
+@end
