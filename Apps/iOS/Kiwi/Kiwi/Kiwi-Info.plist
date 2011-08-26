@@ -80,6 +80,8 @@
 	<key>CFBundleIconFiles</key>
 	<array>
 		<string>Kiwi_Splash_72.png</string>
+		<string>Kiwi_Splash_57.png</string>
+		<string>Kiwi_Splash_114.png</string>
 	</array>
 	<key>CFBundleIdentifier</key>
 	<string>com.kitware.kiwiviewer</string>
