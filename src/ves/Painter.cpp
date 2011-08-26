@@ -187,12 +187,11 @@ void Painter::visitShape(vsg::Shape* shape)
   program->SetUniformMatrix4x4f("u_mvpMatrix",mvp);
   program->SetUniformMatrix3x3f("u_normalMatrix",normal_matrix);
   program->SetUniformVector3f("u_ecLightDir",light);
+  program->SetUniformFloat("u_opacity", mapper->GetAlpha());
 
   // Clear the buffers
   //  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   //  glEnable(GL_DEPTH_TEST);
-  glEnable(GL_CULL_FACE);
-  glCullFace(GL_BACK);
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -200,12 +199,24 @@ void Painter::visitShape(vsg::Shape* shape)
   program->EnableVertexArray("a_vertex");
   program->EnableVertexArray("a_normal");
 
-  //  glVertexAttrib4f(program->GetAttribute("a_texcoord"), 0.8, 0.8, 0.8, 1.0);
-  glVertexAttrib4f(program->GetAttribute("a_texcoord"),
-                   mapper->GetRed(),
-                   mapper->GetGreen(),
-                   mapper->GetBlue(),
-                   mapper->GetAlpha());
+  if (mapper->GetData()->GetVertexColors().size() == 0)
+    {
+    program->DisableVertexArray("a_vertex_color");
+    glVertexAttrib3f(program->GetAttribute("a_vertex_color"),
+                     mapper->GetRed(),
+                     mapper->GetGreen(),
+                     mapper->GetBlue());
+    }
+  else
+    {
+    program->EnableVertexArray("a_vertex_color");
+    glVertexAttribPointer(program->GetAttribute("a_vertex_color"),
+                          3,
+                          GL_FLOAT,
+                          0,
+                          3*sizeof(float),
+                          &(mapper->GetData()->GetVertexColors()[0]));
+    }
 
   glVertexAttribPointer(program->GetAttribute("a_vertex"),
                         3,
@@ -255,6 +266,7 @@ void Painter::visitShape(vsg::Shape* shape)
   //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
   program->DisableVertexArray("a_vertex");
   program->DisableVertexArray("a_normal");
+  program->DisableVertexArray("a_vertex_color");
 
 }
 

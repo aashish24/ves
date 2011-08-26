@@ -75,7 +75,12 @@ void vesShaderProgram::SetUniformVector3f(string str, vesVector3f point)
 
 void vesShaderProgram::SetUniformVector2f(string str, vesVector2f point)
 {
-  glUniform3fv(this->GetUniform(str), 1, point.mData);
+  glUniform2fv(this->GetUniform(str), 1, point.mData);
+}
+
+void vesShaderProgram::SetUniformFloat(string str, float value)
+{
+  glUniform1f(this->GetUniform(str), value);
 }
 
 void vesShaderProgram::EnableVertexArray(string str)

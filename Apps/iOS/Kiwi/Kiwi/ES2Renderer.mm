@@ -59,10 +59,11 @@
                                    fragmentSourceStr,
                                    (_uni("u_mvpMatrix"),
                                     _uni("u_normalMatrix"),
-                                    _uni("u_ecLightDir")),
+                                    _uni("u_ecLightDir"),
+                                    _uni("u_opacity")),
                                    (_att("a_vertex"),
                                     _att("a_normal"),
-                                    _att("a_texcoord"))
+                                    _att("a_vertex_color"))
                                    );
     self->Shader = new vesShader(shaderProgram);
     
@@ -134,6 +135,12 @@
   //
   // dolly so that scene fits window
   renderer->ResetCamera();
+
+  //
+  // The current ResetCamera() method pulls the camera back further than
+  // required.  ResetCamera should be fixed.  Until then, perform a dolly
+  // with a scale factor of 1.5 (a magic number).
+  renderer->GetCamera()->Dolly(1.5);
   
   // 
   // now set the view plane normal

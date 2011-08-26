@@ -113,7 +113,7 @@
   if (!url)
     {
     NSLog(@"Null url; opening default data file");
-    [glView setFilePath:[[NSBundle mainBundle] pathForResource:@"current" ofType:@"stl"]];
+    [glView setFilePath:[[NSBundle mainBundle] pathForResource:@"AppendedKneeData" ofType:@"vtp"]];
     return YES;
     }
 

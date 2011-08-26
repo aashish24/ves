@@ -12,12 +12,10 @@
  PURPOSE.  See the above copyright notice for more information.
 
  =========================================================================*/
-//precision mediump float;
 
-//varying float v_diffuse;
-varying lowp vec4 v_texcoord;
+varying lowp vec4 v_color;
 
 void main()
 {
-    gl_FragColor = v_texcoord;
+  gl_FragColor = v_color;
 }

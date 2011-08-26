@@ -30,6 +30,7 @@
 #include <iostream>
 #include <vector>
 #include <map>
+#include <cstring>
 
 #define VTK_ASCII 0
 #define VTK_BINARY 1
