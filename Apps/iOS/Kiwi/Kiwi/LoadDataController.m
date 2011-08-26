@@ -69,6 +69,7 @@
   [_exampleData addObject:@"NAMIC Knee Atlas"];
   [_exampleData addObject:@"Mount St. Helens"];
   [_exampleData addObject:@"Space Shuttle"];
+  [_exampleData addObject:@"Buckyball"];
   
   self.helpStrings = [NSMutableArray array];
   // not ready for prime time...
@@ -212,6 +213,13 @@
                                                         pathForResource:@"shuttle" 
                                                         ofType:@"vtp"]]];
       }
+      else if (label == @"Buckyball")
+      {
+        [_delegate dataSelected:[NSURL fileURLWithPath:[[NSBundle mainBundle] 
+                                                        pathForResource:@"Buckyball" 
+                                                        ofType:@"vtp"]]];
+      }
+
     }
     else if (indexPath.section == 1) {
       NSString *label = [_helpStrings objectAtIndex:indexPath.row];

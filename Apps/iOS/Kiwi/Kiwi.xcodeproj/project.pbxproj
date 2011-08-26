@@ -55,6 +55,7 @@
 		70398015138551CE00E579C2 /* LoadDataController.m in Sources */ = {isa = PBXBuildFile; fileRef = 70398014138551CE00E579C2 /* LoadDataController.m */; };
 		706F0E4A138C691E00B575F4 /* fullscreen_32.png in Resources */ = {isa = PBXBuildFile; fileRef = 706F0E49138C691E00B575F4 /* fullscreen_32.png */; };
 		706F0E4C138C693100B575F4 /* opendata_32.png in Resources */ = {isa = PBXBuildFile; fileRef = 706F0E4B138C693100B575F4 /* opendata_32.png */; };
+		70BED44514082CF2004D2731 /* Buckyball.vtp in Resources */ = {isa = PBXBuildFile; fileRef = 70BED44414082CF2004D2731 /* Buckyball.vtp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -116,6 +117,7 @@
 		70398014138551CE00E579C2 /* LoadDataController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoadDataController.m; sourceTree = "<group>"; };
 		706F0E49138C691E00B575F4 /* fullscreen_32.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fullscreen_32.png; sourceTree = "<group>"; };
 		706F0E4B138C693100B575F4 /* opendata_32.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = opendata_32.png; sourceTree = "<group>"; };
+		70BED44414082CF2004D2731 /* Buckyball.vtp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Buckyball.vtp; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Kiwi-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Kiwi-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -262,6 +264,7 @@
 				7027670813EC425A0089945A /* old_well.vtp */,
 				7027670613EC41D30089945A /* bunny.vtp */,
 				7027670413EC41640089945A /* teapot.vtp */,
+				70BED44414082CF2004D2731 /* Buckyball.vtp */,
 				6F25E720137DEA5400BF4BCA /* current.stl */,
 				1FBD34E2132163C300738902 /* current.vtk */,
 			);
@@ -354,6 +357,7 @@
 				7027670F13EC45590089945A /* shuttle.vtp in Resources */,
 				7027671113EC46620089945A /* MountStHelen.vtp in Resources */,
 				453036EB1406A298003A861A /* InfoView.xib in Resources */,
+				70BED44514082CF2004D2731 /* Buckyball.vtp in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
