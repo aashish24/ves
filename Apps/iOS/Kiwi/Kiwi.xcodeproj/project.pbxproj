@@ -17,7 +17,10 @@
 		28FD14FE0DC6FC130079059D /* EAGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 28FD14FD0DC6FC130079059D /* EAGLView.mm */; };
 		28FD15000DC6FC520079059D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD14FF0DC6FC520079059D /* OpenGLES.framework */; };
 		28FD15080DC6FC5B0079059D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD15070DC6FC5B0079059D /* QuartzCore.framework */; };
+		43006996140842770050DA06 /* GLViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 43006995140842770050DA06 /* GLViewController.m */; };
 		4307FCFE13C8E32100FFF019 /* DataReader.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4307FCFD13C8E32100FFF019 /* DataReader.mm */; };
+		431FC64E1408B7A5006B9246 /* TitleBarViewContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 431FC64C1408B7A5006B9246 /* TitleBarViewContainer.m */; };
+		431FC64F1408B7A5006B9246 /* TitleBarViewContainer.xib in Resources */ = {isa = PBXBuildFile; fileRef = 431FC64D1408B7A5006B9246 /* TitleBarViewContainer.xib */; };
 		432DE14D13D15D81000F8EC0 /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 432DE13013D158B8000F8EC0 /* Shader.fsh */; };
 		432DE14E13D15D81000F8EC0 /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 432DE13113D158B8000F8EC0 /* Shader.vsh */; };
 		432DE15F13D15DFC000F8EC0 /* libvtkCommonCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 432DE15213D15DFC000F8EC0 /* libvtkCommonCore.a */; };
@@ -77,8 +80,13 @@
 		28FD15070DC6FC5B0079059D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = main.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* Kiwi-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Kiwi-Prefix.pch"; sourceTree = "<group>"; };
+		43006994140842770050DA06 /* GLViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLViewController.h; sourceTree = "<group>"; };
+		43006995140842770050DA06 /* GLViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLViewController.m; sourceTree = "<group>"; };
 		4307FCFA13C8E22E00FFF019 /* DataReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataReader.h; sourceTree = "<group>"; };
 		4307FCFD13C8E32100FFF019 /* DataReader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DataReader.mm; sourceTree = "<group>"; };
+		431FC64B1408B7A5006B9246 /* TitleBarViewContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TitleBarViewContainer.h; sourceTree = "<group>"; };
+		431FC64C1408B7A5006B9246 /* TitleBarViewContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TitleBarViewContainer.m; sourceTree = "<group>"; };
+		431FC64D1408B7A5006B9246 /* TitleBarViewContainer.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TitleBarViewContainer.xib; sourceTree = "<group>"; };
 		432DE13013D158B8000F8EC0 /* Shader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = Shader.fsh; path = ../../../../src/shaders/Shader.fsh; sourceTree = "<group>"; };
 		432DE13113D158B8000F8EC0 /* Shader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = Shader.vsh; path = ../../../../src/shaders/Shader.vsh; sourceTree = "<group>"; };
 		432DE15213D15DFC000F8EC0 /* libvtkCommonCore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkCommonCore.a; path = "../CMakeBuild/build/CMakeExternals/Install/vtkmodular-device/lib/libvtkCommonCore.a"; sourceTree = "<group>"; };
@@ -176,6 +184,11 @@
 				4307FCFD13C8E32100FFF019 /* DataReader.mm */,
 				28AD733E0D9D9553002E5188 /* MainWindow.xib */,
 				6F25E6F3137D8B5600BF4BCA /* Supporting Files */,
+				43006994140842770050DA06 /* GLViewController.h */,
+				43006995140842770050DA06 /* GLViewController.m */,
+				431FC64B1408B7A5006B9246 /* TitleBarViewContainer.h */,
+				431FC64C1408B7A5006B9246 /* TitleBarViewContainer.m */,
+				431FC64D1408B7A5006B9246 /* TitleBarViewContainer.xib */,
 			);
 			path = Kiwi;
 			sourceTree = "<group>";
@@ -366,6 +379,7 @@
 				70BED43D14081092004D2731 /* Kiwi_Splash_57.png in Resources */,
 				70BED44514082CF2004D2731 /* Buckyball.vtp in Resources */,
 				70BED44714082EB5004D2731 /* Kiwi_Splash_114.png in Resources */,
+				431FC64F1408B7A5006B9246 /* TitleBarViewContainer.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -384,6 +398,8 @@
 				70398015138551CE00E579C2 /* LoadDataController.m in Sources */,
 				4307FCFE13C8E32100FFF019 /* DataReader.mm in Sources */,
 				43657DED13D9D8AB0016FBC1 /* vesPolyDataToTriangleData.cpp in Sources */,
+				43006996140842770050DA06 /* GLViewController.m in Sources */,
+				431FC64E1408B7A5006B9246 /* TitleBarViewContainer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

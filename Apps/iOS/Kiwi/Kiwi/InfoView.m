@@ -24,16 +24,28 @@
 @implementation InfoView
 
 @synthesize modelInfoLabel;
-@synthesize hideButton;
+@synthesize contentView;
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
+- (id)initWithFrame: (CGRect)inFrame;
 {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        // Custom initialization
+    if ( (self = [super initWithFrame: inFrame]) ) {
+        [[NSBundle mainBundle] loadNibNamed: @"InfoView"
+                                      owner: self
+                                    options: nil];
+        self.autoresizesSubviews = YES;
+        self.autoresizingMask = UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin;
+        [self addSubview:contentView];
     }
     return self;
 }
+
+- (void)dealloc;
+{
+    [contentView release];
+    [modelInfoLabel release];
+    [super dealloc];
+}
+
 
 -(IBAction)kitwareDotCom:(UIButton*)sender
 {
@@ -46,44 +58,5 @@
   modelInfoLabel.text = [NSString stringWithFormat:@"Current Mesh:\n   Triangles: %i\n   Lines: %i\n   Vertices: %i\n   Drawing @ %dHz", numFacets, numLines, numVertices, refreshRate];
 }
 
-- (void)dealloc
-{
-  [modelInfoLabel release];
-  [super dealloc];
-}
-
-- (void)didReceiveMemoryWarning
-{
-    // Releases the view if it doesn't have a superview.
-    [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc that aren't in use.
-}
-
-#pragma mark - View lifecycle
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    // Return YES for supported orientations
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
-}
-
-- (IBAction) hideView
-{
-  self.view.window.rootViewController = nil;
-}
 
 @end

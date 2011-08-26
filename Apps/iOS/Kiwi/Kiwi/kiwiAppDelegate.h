@@ -22,6 +22,7 @@
 #import "LoadDataController.h"
 
 @class EAGLView;
+@class GLViewController;
 
 @interface kiwiAppDelegate : NSObject <UIApplicationDelegate,LoadDataDelegate> {
   UIWindow *window;
@@ -40,6 +41,7 @@
 }
 @property (nonatomic, retain) IBOutlet UIWindow *window;
 @property (nonatomic, retain) IBOutlet EAGLView *glView;
+@property (nonatomic, retain) IBOutlet GLViewController *viewController;
 @property (nonatomic, retain) LoadDataController *dataLoader;
 @property (nonatomic, retain) UIPopoverController *loadDataPopover;
 

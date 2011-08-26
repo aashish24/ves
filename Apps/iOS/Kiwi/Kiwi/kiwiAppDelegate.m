@@ -19,18 +19,22 @@
  ========================================================================*/
 
 #import "kiwiAppDelegate.h"
+#import "GLViewController.h"
 #import "EAGLView.h"
 #import "InfoView.h"
+#import "TitleBarViewContainer.h"
 
 @implementation kiwiAppDelegate
 
 @synthesize window;
 @synthesize glView;
+@synthesize viewController;
 @synthesize dataLoader = _dataLoader;
 @synthesize loadDataPopover = _loadDataPopover;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions   
 {
+  self.window.rootViewController = self.viewController;
 	NSURL *url = (NSURL *)[launchOptions valueForKey:UIApplicationLaunchOptionsURLKey];
 	[self handleCustomURLScheme:url];
   return YES;
@@ -42,6 +46,7 @@
 
   [window release];
   [glView release];
+  [viewController release];
   [_dataLoader release];
   [super dealloc];
 }
@@ -66,20 +71,27 @@
 
 -(IBAction)information:(UIButton*)sender
 {
-  InfoView *infoView = [[[InfoView alloc] init] autorelease];
+  InfoView *infoView = [[[InfoView alloc] initWithFrame:CGRectMake(0,0,320,260)] autorelease];
 
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
     {
-    self.window.rootViewController = infoView;
+    TitleBarViewContainer* container = [TitleBarViewContainer new];
+    infoView.contentView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.0];
+    [container addViewToContainer:infoView];
+    container.previousViewController = self.window.rootViewController;    
+    [self.viewController presentModalViewController:container animated:YES];
     }
   else
     {
-    UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:infoView];
-    [popover presentPopoverFromRect:CGRectMake(570,785,300,200) 
-                             inView:self.glView 
+    UIViewController* newController = [UIViewController new];
+    newController.view = infoView;
+    UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:newController];
+    [popover setPopoverContentSize:CGSizeMake(320,260) animated:NO];
+    [popover presentPopoverFromRect:[(UIButton*)sender frame] inView:self.glView 
            permittedArrowDirections:(UIPopoverArrowDirectionDown)
                            animated:NO];
-	  [popover setPopoverContentSize:CGSizeMake(300,225) animated:NO];
+                           
+    self->viewController.infoPopover = popover;
     }
   // need to get the info from the renderer
   [infoView updateModelInfoLabelWithNumFacets:[self.glView getNumberOfFacetsForCurrentModel]
@@ -308,7 +320,9 @@
   [self handleCustomURLScheme:url];
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
     {
-    self.window.rootViewController = nil;
+    //self.window.rootViewController = self.viewController;
+    [self.viewController dismissModalViewControllerAnimated:NO];
+
     }
   else
     {
@@ -336,12 +350,17 @@
 
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
     {
-    [self.window setRootViewController:_dataLoader];
+    TitleBarViewContainer* container = [TitleBarViewContainer new];
+    [container addViewToContainer:_dataLoader.view];
+    [container setTitle:@"Load Data"];
+    container.previousViewController = self.window.rootViewController;    
+    [self.viewController presentModalViewController:container animated:YES];    
     }
   else
     {
-    [self.loadDataPopover presentPopoverFromRect:CGRectMake(515,960,300,200) 
+    [self.loadDataPopover presentPopoverFromRect:[(UIButton*)sender frame]
                                           inView:self.glView permittedArrowDirections:UIPopoverArrowDirectionDown animated:YES];
+    self.viewController.loadPopover = self.loadDataPopover;
     }
 }
 

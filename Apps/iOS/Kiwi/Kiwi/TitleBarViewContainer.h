@@ -20,19 +20,20 @@
 
 #import <UIKit/UIKit.h>
 
-@interface InfoView : UIView {
-  UILabel *modelInfoLabel;
+@interface TitleBarViewContainer : UIViewController {
+    
 }
 
-@property (nonatomic, retain) IBOutlet UILabel *modelInfoLabel;
-@property (nonatomic, retain) IBOutlet UIView *contentView;
+@property (nonatomic, retain) IBOutlet UIView *containerView;
+@property (nonatomic, retain) IBOutlet UIViewController *previousViewController;
+@property (nonatomic, retain) IBOutlet UINavigationItem *titleItem;
 
 
--(void)updateModelInfoLabelWithNumFacets:(int)numFacets 
-                            withNumLines:(int)numLines
-                         withNumVertices:(int)numVertices
-                  withCurrentRefreshRate:(int)refreshRate;
+-(IBAction)dismissModalView:(id)sender;
 
--(IBAction)kitwareDotCom:(UIButton*)sender;
+-(void)addViewToContainer:(UIView*)view;
+
+-(void)setTitle:(NSString *)title;
+
 
 @end

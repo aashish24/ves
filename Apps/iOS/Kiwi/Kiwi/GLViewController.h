@@ -20,19 +20,17 @@
 
 #import <UIKit/UIKit.h>
 
-@interface InfoView : UIView {
-  UILabel *modelInfoLabel;
+@class UIPopoverController;
+
+@interface GLViewController : UIViewController {
+    
 }
 
-@property (nonatomic, retain) IBOutlet UILabel *modelInfoLabel;
-@property (nonatomic, retain) IBOutlet UIView *contentView;
+@property (nonatomic, retain) IBOutlet UIButton *infoButton;
+@property (nonatomic, retain) IBOutlet UIButton *loadButton;
 
 
--(void)updateModelInfoLabelWithNumFacets:(int)numFacets 
-                            withNumLines:(int)numLines
-                         withNumVertices:(int)numVertices
-                  withCurrentRefreshRate:(int)refreshRate;
-
--(IBAction)kitwareDotCom:(UIButton*)sender;
+@property (nonatomic, retain) UIPopoverController *infoPopover;
+@property (nonatomic, retain) UIPopoverController *loadPopover;
 
 @end
