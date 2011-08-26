@@ -32,6 +32,12 @@
 #include "vtkTriangleFilter.h"
 #include "vtkErrorCode.h"
 
+#include <vtkNew.h>
+#include <vtkPolyData.h>
+#include <vtkPointData.h>
+#include <vtkFloatArray.h>
+#include <vtkLookupTable.h>
+
 
 @implementation DataReader
 
@@ -93,6 +99,32 @@ bool hasEnding(std::string const &fullString, std::string const &ending)
   return TRUE;
 }
 
+// Looks for a point data array with a single component.  If such an array is found,
+// a vtkLookupTable is used to generate vertex color values from the scalar array.
+// This will use the first suitable array that is found.  If no array is found, this
+// method doesn't do anything.
+void ComputeVertexColorFromScalars(vtkPolyData* polyData, vesTriangleData* triangleData)
+{
+  for (vtkIdType i = 0; i < polyData->GetPointData()->GetNumberOfArrays(); ++i)
+    {
+    vtkDataArray* scalars = polyData->GetPointData()->GetArray(i);
+    if (scalars && scalars->GetNumberOfComponents() == 1)
+      {
+      vtkNew<vtkLookupTable> table;
+      table->SetRange(scalars->GetRange());
+      table->SetHueRange(0, 0.666);
+      table->Build();
+      double rgb[3];
+      const size_t nPoints = triangleData->GetPoints().size();
+      for (size_t i = 0; i < nPoints; ++i)
+        {
+        table->GetColor(scalars->GetComponent(i, 0), rgb);
+        triangleData->GetVertexColors().push_back(vesVector3f(rgb[0], rgb[1], rgb[2]));
+        }
+      break;
+      }
+    }
+}
 
 // It is mandatory that the caller passes a vtkAlgorithm that produces vtkPolyData.
 -(vesTriangleData*) dataFromPolyDataReader:(vtkAlgorithm*)reader
@@ -125,7 +157,10 @@ bool hasEnding(std::string const &fullString, std::string const &ending)
       {
       return 0;
       }
-    return vesPolyDataToTriangleData::Convert(triangleFilter->GetOutput());
+    vtkPolyData* polyData = triangleFilter->GetOutput();
+    vesTriangleData* triangleData = vesPolyDataToTriangleData::Convert(polyData);
+    ComputeVertexColorFromScalars(polyData, triangleData);
+    return triangleData;
     }
   else
     {

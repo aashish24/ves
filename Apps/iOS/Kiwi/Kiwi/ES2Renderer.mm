@@ -59,10 +59,11 @@
                                    fragmentSourceStr,
                                    (_uni("u_mvpMatrix"),
                                     _uni("u_normalMatrix"),
-                                    _uni("u_ecLightDir")),
+                                    _uni("u_ecLightDir"),
+                                    _uni("u_opacity")),
                                    (_att("a_vertex"),
                                     _att("a_normal"),
-                                    _att("a_texcoord"))
+                                    _att("a_vertex_color"))
                                    );
     self->Shader = new vesShader(shaderProgram);
     
