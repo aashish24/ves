@@ -55,7 +55,7 @@
                                    (_uni("u_mvpMatrix"),
                                     _uni("u_normalMatrix"),
                                     _uni("u_ecLightDir"),
-                                    _uni("u_opacity"),
+                                    _uni("u_opacity")),
                                    (_att("a_vertex"),
                                     _att("a_normal"),
                                     _att("a_vertex_color"))
