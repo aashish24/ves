@@ -33,6 +33,6 @@
                   withCurrentRefreshRate:(int)refreshRate;
 
 -(IBAction)kitwareDotCom:(UIButton*)sender;
--(IBAction)hideView;
+-(IBAction)hideView:(id)sender;
 
 @end
