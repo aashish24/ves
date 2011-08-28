@@ -55,6 +55,8 @@ struct saved_state {
     int32_t y0;
     int32_t x1;
     int32_t y1;
+
+    bool isTwoTouches;
 };
 
 /**
@@ -235,6 +237,7 @@ static int engine_init_display(struct engine* engine) {
     engine->state.y0 = 0;
     engine->state.x1 = 0;
     engine->state.y1 = 0;
+    engine->state.isTwoTouches = false;
     engine->renderer->Resize(w, h, 1.0f);
     
     // Initialize GL state.
@@ -369,15 +372,37 @@ static void engine_term_display(struct engine* engine) {
 static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) {
     struct engine* engine = (struct engine*)app->userData;
     if (AInputEvent_getType(event) == AINPUT_EVENT_TYPE_MOTION) {
+
+
         if (AMotionEvent_getAction(event) == AMOTION_EVENT_ACTION_DOWN) {
             engine->state.x0 = AMotionEvent_getX(event, 0);
             engine->state.y0 = AMotionEvent_getY(event, 0);
-            if (AMotionEvent_getPointerCount(event) > 1) {
-                engine->state.x1 = AMotionEvent_getX(event, 1);
-                engine->state.y1 = AMotionEvent_getY(event, 1);
-            }
             return 1;
         }
+
+
+        // When transitioning from one touch to two touches, we record the position
+        // of of the new touch and return.  When transitioning from two touches to
+        // one touch, we record the position of the single remaining touch and return.
+        if (AMotionEvent_getPointerCount(event) > 1) {
+            if (!engine->state.isTwoTouches) {
+              engine->state.x1 = AMotionEvent_getX(event, 1);
+              engine->state.y1 = AMotionEvent_getY(event, 1);
+              engine->state.isTwoTouches = true;
+              return 1;
+            }
+        }
+        else if (engine->state.isTwoTouches) {
+          engine->state.isTwoTouches = false;
+          engine->state.x0 = AMotionEvent_getX(event, 0);
+          engine->state.y0 = AMotionEvent_getY(event, 0);
+          return 1;
+        }
+
+        if (AMotionEvent_getPointerCount(event) > 1 && !engine->state.isTwoTouches) {
+            return 1;
+        }
+
         engine->animating = 1;
         float px0 = engine->state.x0;
         float py0 = engine->state.y0;
