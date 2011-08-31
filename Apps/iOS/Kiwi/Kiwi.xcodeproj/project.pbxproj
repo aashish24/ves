@@ -37,6 +37,8 @@
 		432DE16A13D15DFC000F8EC0 /* libvtksys.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 432DE15D13D15DFC000F8EC0 /* libvtksys.a */; };
 		432DE16B13D15DFC000F8EC0 /* libvtkzlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 432DE15E13D15DFC000F8EC0 /* libvtkzlib.a */; };
 		432DE16D13D15E1C000F8EC0 /* libves.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 432DE16C13D15E1C000F8EC0 /* libves.a */; };
+		435026EF140E93C9000C315D /* caffeine.pdb in Resources */ = {isa = PBXBuildFile; fileRef = 435026ED140E93C9000C315D /* caffeine.pdb */; };
+		435026F0140E93C9000C315D /* motor.g in Resources */ = {isa = PBXBuildFile; fileRef = 435026EE140E93C9000C315D /* motor.g */; };
 		43657DED13D9D8AB0016FBC1 /* vesPolyDataToTriangleData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43657DEB13D9D8AB0016FBC1 /* vesPolyDataToTriangleData.cpp */; };
 		436B34B413C802D500C5726C /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 436B34AF13C802D500C5726C /* Default-Landscape~ipad.png */; };
 		436B34B513C802D500C5726C /* Default-Portrait~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 436B34B013C802D500C5726C /* Default-Portrait~ipad.png */; };
@@ -103,6 +105,8 @@
 		432DE15D13D15DFC000F8EC0 /* libvtksys.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtksys.a; path = "../CMakeBuild/build/CMakeExternals/Install/vtkmodular-device/lib/libvtksys.a"; sourceTree = "<group>"; };
 		432DE15E13D15DFC000F8EC0 /* libvtkzlib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkzlib.a; path = "../CMakeBuild/build/CMakeExternals/Install/vtkmodular-device/lib/libvtkzlib.a"; sourceTree = "<group>"; };
 		432DE16C13D15E1C000F8EC0 /* libves.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libves.a; path = "../CMakeBuild/build/CMakeExternals/Build/ves-device/libves.a"; sourceTree = "<group>"; };
+		435026ED140E93C9000C315D /* caffeine.pdb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = caffeine.pdb; sourceTree = "<group>"; };
+		435026EE140E93C9000C315D /* motor.g */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = motor.g; sourceTree = "<group>"; };
 		43657DEB13D9D8AB0016FBC1 /* vesPolyDataToTriangleData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = vesPolyDataToTriangleData.cpp; path = ../../../../src/ves/vesPolyDataToTriangleData.cpp; sourceTree = "<group>"; };
 		43657DEC13D9D8AB0016FBC1 /* vesPolyDataToTriangleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vesPolyDataToTriangleData.h; path = ../../../../src/ves/vesPolyDataToTriangleData.h; sourceTree = "<group>"; };
 		436B34AF13C802D500C5726C /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
@@ -276,6 +280,8 @@
 		6F25E6F2137D88DD00BF4BCA /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				435026ED140E93C9000C315D /* caffeine.pdb */,
+				435026EE140E93C9000C315D /* motor.g */,
 				7027671013EC46620089945A /* MountStHelen.vtp */,
 				7027670E13EC45590089945A /* shuttle.vtp */,
 				7027670C13EC44DE0089945A /* AppendedKneeData.vtp */,
@@ -380,6 +386,8 @@
 				70BED44514082CF2004D2731 /* Buckyball.vtp in Resources */,
 				70BED44714082EB5004D2731 /* Kiwi_Splash_114.png in Resources */,
 				431FC64F1408B7A5006B9246 /* TitleBarViewContainer.xib in Resources */,
+				435026EF140E93C9000C315D /* caffeine.pdb in Resources */,
+				435026F0140E93C9000C315D /* motor.g in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -70,6 +70,8 @@
   [_exampleData addObject:@"Mount St. Helens"];
   [_exampleData addObject:@"Space Shuttle"];
   [_exampleData addObject:@"Buckyball"];
+  [_exampleData addObject:@"Motor"];
+  [_exampleData addObject:@"Caffeine"];
   
   self.helpStrings = [NSMutableArray array];
   // not ready for prime time...
@@ -218,6 +220,18 @@
         [_delegate dataSelected:[NSURL fileURLWithPath:[[NSBundle mainBundle] 
                                                         pathForResource:@"Buckyball" 
                                                         ofType:@"vtp"]]];
+      }
+      else if (label == @"Motor")
+      {
+        [_delegate dataSelected:[NSURL fileURLWithPath:[[NSBundle mainBundle]
+                                                        pathForResource:@"motor"
+                                                        ofType:@"g"]]];
+      }
+      else if (label == @"Caffeine")
+      {
+        [_delegate dataSelected:[NSURL fileURLWithPath:[[NSBundle mainBundle]
+                                                        pathForResource:@"caffeine"
+                                                        ofType:@"pdb"]]];
       }
 
     }
