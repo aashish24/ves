@@ -18,7 +18,7 @@
   limitations under the License.
  ========================================================================*/
 
-#include "vesPolyDataToTriangleData.h"
+#include "vtkPolyDataToTriangleData.h"
 
 #include "vtkCellArray.h"
 #include "vesTriangleData.h"
@@ -26,7 +26,7 @@
 #include "vtkPointData.h"
 #include "vtkPolyData.h"
 
-void vesPolyDataToTriangleData::ConvertTriangles(vtkPolyData* input, vesTriangleData* output)
+void vtkPolyDataToTriangleData::ConvertTriangles(vtkPolyData* input, vesTriangleData* output)
 {
   if (!input || !output)
   {
@@ -79,7 +79,7 @@ void vesPolyDataToTriangleData::ConvertTriangles(vtkPolyData* input, vesTriangle
   output->ComputeBounds();
 }
 
-vesTriangleData* vesPolyDataToTriangleData::Convert(vtkPolyData* input)
+vesTriangleData* vtkPolyDataToTriangleData::Convert(vtkPolyData* input)
 {
   //cerr << "starting conversion" << endl;
   vesTriangleData* output = new vesTriangleData();
