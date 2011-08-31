@@ -166,14 +166,17 @@ vesTriangleData* vesPolyDataToTriangleData::Convert(vtkPolyData* input)
     output->ComputeNormals();
   }
 
-  if (input->GetPointData()->GetScalars())
+  // Note- the PDB reader assigns a 3 component 'rgb_colors' array as point scalars,
+  // so make sure we check the number of components
+  vtkDataArray* scalars = input->GetPointData()->GetScalars();
+  if (scalars && scalars->GetNumberOfComponents() == 1)
   {
-    vtkDataArray* scalars = input->GetPointData()->GetScalars();
     for (int i = 0; i < input->GetNumberOfPoints(); ++i)
     {
       output->GetPointScalars().push_back(static_cast<float>(scalars->GetTuple1(i)));
     }
   }
+
   //cerr << "done with conversion" << endl;
   return output;
 }
