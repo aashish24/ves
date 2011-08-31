@@ -37,7 +37,11 @@
 #include <vtkPointData.h>
 #include <vtkFloatArray.h>
 #include <vtkLookupTable.h>
-
+#include <vtkBYUReader.h>
+#include <vtkSphereSource.h>
+#include <vtkPDBReader.h>
+#include <vtkGlyph3D.h>
+#include <vtkAppendPolyData.h>
 
 @implementation DataReader
 
@@ -70,6 +74,7 @@ bool hasEnding(std::string const &fullString, std::string const &ending)
 -(NSString*)safelyUpdateAlgorithm:(vtkAlgorithm*)algorithm
 {
   algorithm->Update();
+
   unsigned long errorCode = algorithm->GetErrorCode();
   if (errorCode == vtkErrorCode::NoError)
     {
@@ -105,6 +110,20 @@ bool hasEnding(std::string const &fullString, std::string const &ending)
 // method doesn't do anything.
 void ComputeVertexColorFromScalars(vtkPolyData* polyData, vesTriangleData* triangleData)
 {
+  // First look for a 3 component array named rgb_colors
+  vtkUnsignedCharArray* colors = vtkUnsignedCharArray::SafeDownCast(polyData->GetPointData()->GetArray("rgb_colors"));
+  if (colors && colors->GetNumberOfComponents() == 3)
+    {
+    unsigned char rgb[3];
+    const size_t nPoints = triangleData->GetPoints().size();
+    for (size_t i = 0; i < nPoints; ++i)
+        {
+        colors->GetTupleValue(i, rgb);
+        triangleData->GetVertexColors().push_back(vesVector3f(rgb[0]/255.0, rgb[1]/255.0, rgb[2]/255.0));
+        }
+    return;
+    }
+
   for (vtkIdType i = 0; i < polyData->GetPointData()->GetNumberOfArrays(); ++i)
     {
     vtkDataArray* scalars = polyData->GetPointData()->GetArray(i);
@@ -195,6 +214,39 @@ void ComputeVertexColorFromScalars(vtkPolyData* polyData, vesTriangleData* trian
   else if (hasEnding(str, "stl"))
     {
     vtkSmartPointer<vtkSTLReader> reader = vtkSmartPointer<vtkSTLReader>::New();
+    reader->SetFileName(str.c_str());
+    return [self dataFromPolyDataReader:reader];
+    }
+  else if (hasEnding(str, "pdb"))
+    {
+    vtkNew<vtkPDBReader> reader;
+    reader->SetFileName(str.c_str());
+    reader->SetHBScale(1.0);
+    reader->SetBScale(1.0);
+
+    vtkNew<vtkSphereSource> sphere;
+    sphere->SetCenter(0.0, 0.0, 0.0);
+    sphere->SetRadius(1.0);
+    sphere->SetThetaResolution(8);
+    sphere->SetPhiResolution(8);
+
+    vtkNew<vtkGlyph3D> glyph;
+    glyph->SetInputConnection(reader->GetOutputPort());
+    glyph->SetSource(sphere->GetOutput());
+    glyph->SetOrient(1);
+    glyph->SetScaleMode(2);
+    glyph->SetScaleFactor(0.25);
+    glyph->SetColorMode(1);
+
+    vtkNew<vtkAppendPolyData> append;
+    append->AddInputConnection(reader->GetOutputPort());
+    append->AddInputConnection(glyph->GetOutputPort());
+
+    return [self dataFromPolyDataReader:append.GetPointer()];
+    }
+  else if (hasEnding(str, "g"))
+    {
+    vtkSmartPointer<vtkBYUReader> reader = vtkSmartPointer<vtkBYUReader>::New();
     reader->SetFileName(str.c_str());
     return [self dataFromPolyDataReader:reader];
     }
