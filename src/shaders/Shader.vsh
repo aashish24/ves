@@ -17,6 +17,7 @@ uniform mat4   u_mvpMatrix;     // model-view-projection matrix
 uniform mat3   u_normalMatrix;  // normal matrix
 uniform vec3   u_ecLightDir;     // light direction in eye coordinates
 uniform float  u_opacity;
+uniform bool   u_enable_diffuse;
 
 attribute vec4 a_vertex;         // vertex position
 attribute vec3 a_normal;         // vertex normal
@@ -32,7 +33,11 @@ void main()
   // compute diffuse scale factor
   float diffuse = max(dot(u_ecLightDir,ec_normal), 0.0);
 
-  vec3 rgb = vec3(.25,.25,.25) + diffuse * a_vertex_color;
+  vec3 rgb = a_vertex_color;
+  if (u_enable_diffuse) {
+    rgb = vec3(.25,.25,.25) + diffuse * a_vertex_color;
+  }
+
   v_color = vec4(rgb, u_opacity);
 
   gl_Position = u_mvpMatrix * a_vertex;

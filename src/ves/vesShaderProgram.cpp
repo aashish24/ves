@@ -83,6 +83,11 @@ void vesShaderProgram::SetUniformFloat(string str, float value)
   glUniform1f(this->GetUniform(str), value);
 }
 
+void vesShaderProgram::SetUniformInt(string str, int value)
+{
+  glUniform1i(this->GetUniform(str), value);
+}
+
 void vesShaderProgram::EnableVertexArray(string str)
 {
   glEnableVertexAttribArray(this->GetAttribute(str));

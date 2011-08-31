@@ -188,6 +188,7 @@ void Painter::visitShape(vsg::Shape* shape)
   program->SetUniformMatrix3x3f("u_normalMatrix",normal_matrix);
   program->SetUniformVector3f("u_ecLightDir",light);
   program->SetUniformFloat("u_opacity", mapper->GetAlpha());
+  program->SetUniformInt("u_enable_diffuse", 1);
 
   // Clear the buffers
   //  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -254,6 +255,7 @@ void Painter::visitShape(vsg::Shape* shape)
                    &mapper->GetData()->GetTriangles()[0]);
 
     // draw lines
+    program->SetUniformInt("u_enable_diffuse", 0);
     glDrawElements(GL_LINES,
                    mapper->GetData()->GetLines().size() * 2,
                    GL_UNSIGNED_SHORT,

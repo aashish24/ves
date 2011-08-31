@@ -75,6 +75,7 @@ public:
   void SetUniformVector3f(string str, vesVector3f point);
   void SetUniformVector2f(string str, vesVector2f point);
   void SetUniformFloat(string str, float value);
+  void SetUniformInt(string str, int value);
   void EnableVertexArray(string str);
   void DisableVertexArray(string str);
   void CompileAndLoadVertexShader(char* vertexShaderStr);
