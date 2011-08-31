@@ -317,17 +317,15 @@
 
 -(void)dataSelected:(NSURL*)url
 {
-  [self handleCustomURLScheme:url];
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
     {
-    //self.window.rootViewController = self.viewController;
     [self.viewController dismissModalViewControllerAnimated:NO];
-
     }
   else
     {
     [self.loadDataPopover dismissPopoverAnimated:YES];
     }
+  [self handleCustomURLScheme:url];
 }
 
 -(IBAction)setLoadDataButtonTapped:(id)sender

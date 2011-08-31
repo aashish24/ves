@@ -168,6 +168,11 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+  // deselect the row
+  // on iphone, this view is packed in a modal view controller and when it is dismissed
+  // the tableview does not get the message to deselect the row automatically
+  [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
+
   if (_delegate != nil) {
     if (indexPath.section == 0) {
       NSString *label = [_exampleData objectAtIndex:indexPath.row];
