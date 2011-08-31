@@ -125,6 +125,12 @@
 - (void)layoutSubviews 
 {
   [EAGLContext setCurrentContext:context];
+  
+  if (self->displayLink)
+  {
+    [self->displayLink invalidate];
+  }
+
   [self destroyFramebuffer];
   [self createFramebuffer];
   [renderer resizeFromLayer:backingWidth height:backingHeight];
