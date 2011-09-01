@@ -22,7 +22,7 @@
 
 #include "vesTriangleData.h"
 #include "vesSTLReader.h"
-#include "vesPolyDataToTriangleData.h"
+#include "vtkPolyDataToTriangleData.h"
 
 #include "vtkSmartPointer.h"
 #include "vtkXMLPolyDataReader.h"
@@ -177,13 +177,13 @@ void ComputeVertexColorFromScalars(vtkPolyData* polyData, vesTriangleData* trian
       return 0;
       }
     vtkPolyData* polyData = triangleFilter->GetOutput();
-    vesTriangleData* triangleData = vesPolyDataToTriangleData::Convert(polyData);
+    vesTriangleData* triangleData = vtkPolyDataToTriangleData::Convert(polyData);
     ComputeVertexColorFromScalars(polyData, triangleData);
     return triangleData;
     }
   else
     {
-    return vesPolyDataToTriangleData::Convert(readerOutput);
+    return vtkPolyDataToTriangleData::Convert(readerOutput);
     }
 }
 

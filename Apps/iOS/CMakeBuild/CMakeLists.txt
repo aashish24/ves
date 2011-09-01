@@ -66,16 +66,18 @@ crosscompile(vtkmodular-simulator toolchain-ios-simulator.cmake)
 crosscompile(vtkmodular-device toolchain-ios-device.cmake)
 
 
-macro(crosscompile_ves proj toolchain_file)
+macro(crosscompile_ves proj tag toolchain_file)
   ExternalProject_Add(
     ${proj}
-    SOURCE_DIR ${CMAKE_SOURCE_DIR}/../../../src/ves
+    SOURCE_DIR ${CMAKE_SOURCE_DIR}/../../..
     DOWNLOAD_COMMAND ""
-    INSTALL_COMMAND ""
+    DEPENDS vtkmodular-${tag}
     CMAKE_ARGS
       -DCMAKE_INSTALL_PREFIX:PATH=${install_prefix}/${proj}
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
       -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_SOURCE_DIR}/cmake/${toolchain_file}
+      -DVES_USE_VTK:BOOL=ON
+      -DVTK_DIR:PATH=${build_prefix}/vtkmodular-${tag}
   )
 
   ExternalProject_Add_Step(${proj} forcebuild
@@ -87,5 +89,5 @@ macro(crosscompile_ves proj toolchain_file)
 
 endmacro()
 
-crosscompile_ves(ves-simulator toolchain-ios-simulator.cmake)
-crosscompile_ves(ves-device toolchain-ios-device.cmake)
+crosscompile_ves(ves-simulator simulator toolchain-ios-simulator.cmake)
+crosscompile_ves(ves-device device toolchain-ios-device.cmake)

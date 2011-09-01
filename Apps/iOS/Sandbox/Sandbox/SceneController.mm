@@ -25,7 +25,7 @@
 #include "vesActor.h"
 #include "vesMapper.h"
 #include "vesRenderer.h"
-#include "vesPolyDataToTriangleData.h"
+#include "vtkPolyDataToTriangleData.h"
 
 #include "vtkSmartPointer.h"
 #include "vtkConeSource.h"
@@ -109,7 +109,7 @@ public:
   cone->SetPhiResolution(24);
   cone->SetThetaResolution(24);
   cone->Update();
-  return vesPolyDataToTriangleData::Convert(cone->GetOutput());
+  return vtkPolyDataToTriangleData::Convert(cone->GetOutput());
 }
 
 //------------------------------------------------------------------------------
@@ -122,7 +122,7 @@ public:
   cone->SetHeight(cone->GetHeight()*scale);
   cone->SetResolution(24);
   cone->Update();
-  return vesPolyDataToTriangleData::Convert(cone->GetOutput());
+  return vtkPolyDataToTriangleData::Convert(cone->GetOutput());
 }
 
 //------------------------------------------------------------------------------
@@ -136,7 +136,7 @@ public:
   tube->SetNumberOfSides(24);
   tube->SetRadius(radius);
   tube->Update();
-  return vesPolyDataToTriangleData::Convert(tube->GetOutput());
+  return vtkPolyDataToTriangleData::Convert(tube->GetOutput());
 }
 
 //------------------------------------------------------------------------------

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		4325001213CE9F5300D41D42 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4325001013CE9F5300D41D42 /* RootViewController.m */; };
 		4325001313CE9F5300D41D42 /* RootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4325001113CE9F5300D41D42 /* RootViewController.xib */; };
+		432DE7B3141058FF00236E60 /* libvtkVES.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 432DE7B2141058FF00236E60 /* libvtkVES.a */; };
 		4334F0AE13CD0C2D0053A32A /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 4334F0AC13CD0C2D0053A32A /* Shader.fsh */; };
 		4334F0AF13CD0C2D0053A32A /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 4334F0AD13CD0C2D0053A32A /* Shader.vsh */; };
 		43533ACB13CD0654004DCF07 /* ESRenderer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 43533AC613CD0654004DCF07 /* ESRenderer.mm */; };
@@ -17,7 +18,6 @@
 		43533C1713CD08D9004DCF07 /* libves.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43533C1613CD08D9004DCF07 /* libves.a */; };
 		43533C2113CD0A39004DCF07 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43533C2013CD0A39004DCF07 /* QuartzCore.framework */; };
 		43533C2313CD0A41004DCF07 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43533C2213CD0A41004DCF07 /* OpenGLES.framework */; };
-		43657DF913D9D92E0016FBC1 /* vesPolyDataToTriangleData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 43657DF713D9D92E0016FBC1 /* vesPolyDataToTriangleData.cpp */; };
 		4385FDA013CE8F0500BCE998 /* SceneController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4385FD9F13CE8F0500BCE998 /* SceneController.mm */; };
 		4385FDB213CE905000BCE998 /* libvtkCommonCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4385FDA513CE905000BCE998 /* libvtkCommonCore.a */; };
 		4385FDB313CE905000BCE998 /* libvtkCommonDataModel.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4385FDA613CE905000BCE998 /* libvtkCommonDataModel.a */; };
@@ -50,6 +50,7 @@
 		4325000F13CE9F5300D41D42 /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
 		4325001013CE9F5300D41D42 /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
 		4325001113CE9F5300D41D42 /* RootViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RootViewController.xib; sourceTree = "<group>"; };
+		432DE7B2141058FF00236E60 /* libvtkVES.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkVES.a; path = "../CMakeBuild/build/CMakeExternals/Build/ves-device/lib/libvtkVES.a"; sourceTree = "<group>"; };
 		4334F0AC13CD0C2D0053A32A /* Shader.fsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = Shader.fsh; path = ../../../../src/shaders/Shader.fsh; sourceTree = "<group>"; };
 		4334F0AD13CD0C2D0053A32A /* Shader.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = Shader.vsh; path = ../../../../src/shaders/Shader.vsh; sourceTree = "<group>"; };
 		43533AC513CD0654004DCF07 /* ESRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ESRenderer.h; path = ../Common/ESRenderView/ESRenderer.h; sourceTree = "<group>"; };
@@ -58,11 +59,9 @@
 		43533AC813CD0654004DCF07 /* ESRenderView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = ESRenderView.mm; path = ../Common/ESRenderView/ESRenderView.mm; sourceTree = "<group>"; };
 		43533AC913CD0654004DCF07 /* ESRenderViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ESRenderViewController.h; path = ../Common/ESRenderView/ESRenderViewController.h; sourceTree = "<group>"; };
 		43533ACA13CD0654004DCF07 /* ESRenderViewController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = ESRenderViewController.mm; path = ../Common/ESRenderView/ESRenderViewController.mm; sourceTree = "<group>"; };
-		43533C1613CD08D9004DCF07 /* libves.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libves.a; path = "../CMakeBuild/build/CMakeExternals/Build/ves-simulator/libves.a"; sourceTree = "<group>"; };
+		43533C1613CD08D9004DCF07 /* libves.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libves.a; path = "../CMakeBuild/build/CMakeExternals/Build/ves-simulator/lib/libves.a"; sourceTree = "<group>"; };
 		43533C2013CD0A39004DCF07 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		43533C2213CD0A41004DCF07 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
-		43657DF713D9D92E0016FBC1 /* vesPolyDataToTriangleData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = vesPolyDataToTriangleData.cpp; path = ../../../../src/ves/vesPolyDataToTriangleData.cpp; sourceTree = "<group>"; };
-		43657DF813D9D92E0016FBC1 /* vesPolyDataToTriangleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = vesPolyDataToTriangleData.h; path = ../../../../src/ves/vesPolyDataToTriangleData.h; sourceTree = "<group>"; };
 		4385FD9E13CE8F0500BCE998 /* SceneController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SceneController.h; sourceTree = "<group>"; };
 		4385FD9F13CE8F0500BCE998 /* SceneController.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = SceneController.mm; sourceTree = "<group>"; };
 		4385FDA513CE905000BCE998 /* libvtkCommonCore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkCommonCore.a; path = "../CMakeBuild/build/CMakeExternals/Install/vtkmodular-simulator/lib/libvtkCommonCore.a"; sourceTree = "<group>"; };
@@ -118,6 +117,7 @@
 				43533C2113CD0A39004DCF07 /* QuartzCore.framework in Frameworks */,
 				43533C2313CD0A41004DCF07 /* OpenGLES.framework in Frameworks */,
 				43533C1713CD08D9004DCF07 /* libves.a in Frameworks */,
+				432DE7B3141058FF00236E60 /* libvtkVES.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -181,6 +181,7 @@
 				4385FDAF13CE905000BCE998 /* libvtkIOXML.a */,
 				4385FDB013CE905000BCE998 /* libvtksys.a */,
 				4385FDB113CE905000BCE998 /* libvtkzlib.a */,
+				432DE7B2141058FF00236E60 /* libvtkVES.a */,
 				43533C1613CD08D9004DCF07 /* libves.a */,
 				43D6025C13CD05830077C8B7 /* UIKit.framework */,
 				43D6025E13CD05830077C8B7 /* Foundation.framework */,
@@ -192,8 +193,6 @@
 		43D6026213CD05830077C8B7 /* Sandbox */ = {
 			isa = PBXGroup;
 			children = (
-				43657DF713D9D92E0016FBC1 /* vesPolyDataToTriangleData.cpp */,
-				43657DF813D9D92E0016FBC1 /* vesPolyDataToTriangleData.h */,
 				4385FD9E13CE8F0500BCE998 /* SceneController.h */,
 				4385FD9F13CE8F0500BCE998 /* SceneController.mm */,
 				43D6026B13CD05830077C8B7 /* SandboxAppDelegate.h */,
@@ -298,7 +297,6 @@
 				43533ACD13CD0654004DCF07 /* ESRenderViewController.mm in Sources */,
 				4385FDA013CE8F0500BCE998 /* SceneController.mm in Sources */,
 				4325001213CE9F5300D41D42 /* RootViewController.m in Sources */,
-				43657DF913D9D92E0016FBC1 /* vesPolyDataToTriangleData.cpp in Sources */,
 				6FD7B71013E856EC000FB649 /* BackgroundTexture.vsh in Sources */,
 				6FD7B71313E856F6000FB649 /* BackgroundTexture.fsh in Sources */,
 			);
@@ -370,6 +368,7 @@
 				GCC_PREFIX_HEADER = "Sandbox/Sandbox-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
 					../../../src,
+					../../../src/vtkVES,
 					../../../src/ves,
 					../../../src/ves/vsg,
 					../../../src/ves/vsg/Core,
@@ -386,12 +385,12 @@
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				"LIBRARY_SEARCH_PATHS[sdk=iphoneos*][arch=*]" = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Build/ves-device\"",
+					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Build/ves-device/lib\"",
 					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Install/vtkmodular-device/lib\"",
 				);
 				"LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*][arch=*]" = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Build/ves-simulator\"",
+					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Build/ves-simulator/lib\"",
 					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Install/vtkmodular-simulator/lib\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -408,6 +407,7 @@
 				GCC_PREFIX_HEADER = "Sandbox/Sandbox-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
 					../../../src,
+					../../../src/vtkVES,
 					../../../src/ves,
 					../../../src/ves/vsg,
 					../../../src/ves/vsg/Core,
@@ -424,12 +424,12 @@
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				"LIBRARY_SEARCH_PATHS[sdk=iphoneos*][arch=*]" = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Build/ves-device\"",
+					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Build/ves-device/lib\"",
 					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Install/vtkmodular-device/lib\"",
 				);
 				"LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*][arch=*]" = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Build/ves-simulator\"",
+					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Build/ves-simulator/lib\"",
 					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Install/vtkmodular-simulator/lib\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
