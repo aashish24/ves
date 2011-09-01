@@ -1,5 +1,3 @@
-project(ves)
-cmake_minimum_required(VERSION 2.8)
 
 set(sources
 
@@ -89,16 +87,4 @@ set(sources
   #  vsg/Shader/ShaderProgram.cpp
 )
 
-include_directories( vsg
-                     vsg/Core
-                     vsg/Grouping
-                     vsg/Navigation
-                     vsg/Rendering
-                     vsg/Shader
-                     vsg/Shape
-                     vsg/EnvEffects
-                     vsg/Utility )
-
-include_directories(${CMAKE_SOURCE_DIR})
-include_directories(${CMAKE_SOURCE_DIR}/..)
-add_library(ves ${sources})
+ves_add_library(ves "${sources}" "")
