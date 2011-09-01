@@ -63,6 +63,8 @@
 		70BED43D14081092004D2731 /* Kiwi_Splash_57.png in Resources */ = {isa = PBXBuildFile; fileRef = 70BED43C14081092004D2731 /* Kiwi_Splash_57.png */; };
 		70BED44514082CF2004D2731 /* Buckyball.vtp in Resources */ = {isa = PBXBuildFile; fileRef = 70BED44414082CF2004D2731 /* Buckyball.vtp */; };
 		70BED44714082EB5004D2731 /* Kiwi_Splash_114.png in Resources */ = {isa = PBXBuildFile; fileRef = 70BED44614082EB5004D2731 /* Kiwi_Splash_114.png */; };
+		70F2731B140F098C00D1677C /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 70F2731A140F098C00D1677C /* Default.png */; };
+		70F2731E140F099100D1677C /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 70F2731D140F099100D1677C /* Default@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -134,6 +136,8 @@
 		70BED43C14081092004D2731 /* Kiwi_Splash_57.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Kiwi_Splash_57.png; sourceTree = "<group>"; };
 		70BED44414082CF2004D2731 /* Buckyball.vtp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Buckyball.vtp; sourceTree = "<group>"; };
 		70BED44614082EB5004D2731 /* Kiwi_Splash_114.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Kiwi_Splash_114.png; sourceTree = "<group>"; };
+		70F2731A140F098C00D1677C /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Default.png; path = /Users/davisb/Development/zm/Utilities/ves/Apps/iOS/Kiwi/Kiwi/Images/Default.png; sourceTree = "<absolute>"; };
+		70F2731D140F099100D1677C /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Kiwi-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Kiwi-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -264,6 +268,8 @@
 			children = (
 				436B34AF13C802D500C5726C /* Default-Landscape~ipad.png */,
 				436B34B013C802D500C5726C /* Default-Portrait~ipad.png */,
+				70F2731A140F098C00D1677C /* Default.png */,
+				70F2731D140F099100D1677C /* Default@2x.png */,
 				436B34B113C802D500C5726C /* icon.png */,
 				436B34B213C802D500C5726C /* iTunesArtwork */,
 				70BED43C14081092004D2731 /* Kiwi_Splash_57.png */,
@@ -388,6 +394,8 @@
 				431FC64F1408B7A5006B9246 /* TitleBarViewContainer.xib in Resources */,
 				435026EF140E93C9000C315D /* caffeine.pdb in Resources */,
 				435026F0140E93C9000C315D /* motor.g in Resources */,
+				70F2731B140F098C00D1677C /* Default.png in Resources */,
+				70F2731E140F099100D1677C /* Default@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
