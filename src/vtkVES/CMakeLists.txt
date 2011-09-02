@@ -11,3 +11,6 @@ set(deps
 
 ves_add_library(vtkVES "${sources}" "${deps}")
 
+if(BUILD_TESTING)
+  add_subdirectory(Testing)
+endif()
