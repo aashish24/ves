@@ -87,20 +87,17 @@ Execute the following commands:
 export ANDROID_NDK=/path/to/android/android-ndk-r6
 
 # build native code
+# this will create a library and put it where ant will find it
 cd /path/to/ves/Apps/Android/PointCloud
 mkdir build
 cd build
-cmake -DANDROID_LEVEL=9 -DCMAKE_TOOLCHAIN_FILE=../../CMakeBuild/cmake/android.toolchain.cmake -DVTK_DIR=../../CMakeBuild/build/CMakeExternals/Build/vtkmodular-android ../
+cmake -DANDROID_LEVEL=9 -DCMAKE_TOOLCHAIN_FILE=../../CMakeBuild/cmake/android.toolchain.cmake -DVTK_DIR=../../CMakeBuild/build/CMakeExternals/Build/vtkmodular-android -DVES_DIR=../../CMakeBuild/build/CMakeExternals/Build/ves-android ../
 make
-
-# copy library
-cd ..
-mkdir -p libs/armeabi
-cp build/jni/libnative-activity.so libs/armeabi/
 
 # create ant build files
 # you can run 'android list targets' to find out the available targets
 
+cd /path/to/ves/Apps/Android/PointCloud
 android update project --name PointCloud --path . --target android-12
 
 # build app

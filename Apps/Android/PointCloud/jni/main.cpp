@@ -35,7 +35,7 @@
 #include <vtkNew.h>
 #include <vtkLookupTable.h>
 
-#include <vesPolyDataToTriangleData.h>
+#include <vtkPolyDataToTriangleData.h>
 
 #include <vesMultitouchCamera.h>
 #include <vesRenderer.h>
@@ -270,7 +270,7 @@ static int engine_init_display(struct engine* engine) {
     read->Update ();
     vtkPolyData *data = read->GetOutput ();
     LOGI("a: number of points is %d", data->GetNumberOfPoints());
-    vesTriangleData* triangle_data = vesPolyDataToTriangleData::Convert (data);
+    vesTriangleData* triangle_data = vtkPolyDataToTriangleData::Convert (data);
     LOGI("b: number of points is %d\n**\n", triangle_data->GetPoints().size());
     vesVector2f range = triangle_data->GetPointScalarRange();
     LOGI("scalar range: %f, %f\n", range[0], range[1]);

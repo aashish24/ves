@@ -65,13 +65,15 @@ crosscompile(vtkmodular-android android.toolchain.cmake)
 macro(crosscompile_ves proj toolchain_file)
   ExternalProject_Add(
     ${proj}
-    SOURCE_DIR ${CMAKE_SOURCE_DIR}/../../../src/ves
+    SOURCE_DIR ${CMAKE_SOURCE_DIR}/../../..
     DOWNLOAD_COMMAND ""
-    INSTALL_COMMAND ""
+    DEPENDS vtkmodular-android
     CMAKE_ARGS
       -DCMAKE_INSTALL_PREFIX:PATH=${install_prefix}/${proj}
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
       -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_SOURCE_DIR}/cmake/${toolchain_file}
+      -DVES_USE_VTK:BOOL=ON
+      -DVTK_DIR:PATH=${build_prefix}/vtkmodular-android
   )
 
   ExternalProject_Add_Step(${proj} forcebuild
