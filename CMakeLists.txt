@@ -17,10 +17,12 @@ set(LIBRARY_OUTPUT_PATH "${CMAKE_BINARY_DIR}/lib")
 
 # declare options
 option(BUILD_SHARED_LIBS "Build VES with shared libraries." OFF)
+OPTION(BUILD_TESTING "Build VES with tests enabled." OFF)
 option(VES_USE_VTK "Build the vtkVES library.  Requires VTK." OFF)
 
 # include cmake scripts
 include(CMake/ves-macros.cmake)
+include(CMake/ves-testing.cmake)
 
 # build project
 add_subdirectory(src)
