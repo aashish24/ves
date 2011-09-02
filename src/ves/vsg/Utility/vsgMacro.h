@@ -70,7 +70,7 @@ virtual void set_##name (type _arg)             \
   name##Changed = true;                         \
 }                                               \
                                                 \
-virtual type get_##name()                       \
+virtual type get_##name() const                      \
 {                                               \
   return _##name;                               \
 }                                               \

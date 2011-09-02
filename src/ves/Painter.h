@@ -23,29 +23,30 @@
 
 #ifndef __Painter_h
 #define __Painter_h
-// --------------------------------------------------------------------includes
-// #include "Transform.h"
-#include "vsg/Shape/Shape.h"
+
+#include "vesGMTL.h"
 #include "vesActorCollection.h"
-#include "vesActor.h"
-#include "vesShader.h"
-#include "vesMapper.h"
-#include "vesCamera.h"
-#include "vesTexture.h"
-#include "vsg/EnvEffects/TextureBackground.h"
 
 #include <vector>
-// -----------------------------------------------------------------pre-defines
+
+namespace vsg
+{
+class Shape;
+}
+
+class vesActor;
+class vesCamera;
+class vesMapper;
+class vesShader;
+class vesShaderProgram;
+class vesTexture;
 class PainterInternal;
 
-// -----------------------------------------------------------------------class
 class Painter
 {
 public:
-  // ............................................................public-methods
   Painter();
   ~Painter();
-  // void Transform(Transform* transform);
   void Texture(vesTexture* textureBackground);
   void visitShape(vsg::Shape* shape);
   void Shader(vesShader * shader);
@@ -54,25 +55,19 @@ public:
   void ActorCollection(vesActorCollection *actor);
   void Camera(vesCamera *camera);
   void ShaderProgram(vesShaderProgram *shaderProg);
-  void Push(vesMatrix4x4f mat);
+  void Push(const vesMatrix4x4f& mat);
   void Pop();
   void SetBackgroundTexture(vesTexture* background);
-protected:
-  // ...........................................................protected-ivars
-  std::vector<vesMatrix4x4f> MatrixStack;
-  vesMatrix4x4f Eval(int startIndex);
-  float Aspect, NearZ, FarZ;
-  vesTexture* _textureBackground;
 
 protected:
-  //BTX
-  // .......................................................................BTX
+  vesMatrix4x4f Eval(int startIndex);
+
+  std::vector<vesMatrix4x4f> m_matrixStack;
+  float m_aspect, m_nearZ, m_farZ;
+  vesTexture* m_textureBackground;
 
 private:
-  PainterInternal *Internal;
-
-  //ETX
-  // .......................................................................ETX
+  PainterInternal *m_internal;
 };
 
 #endif // __Painter_h

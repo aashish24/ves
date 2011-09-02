@@ -22,6 +22,7 @@
 
 #include "vsg/vsgVisitor.h"
 #include "Painter.h"
+#include "vesMapper.h"
 
 namespace vsg {
 

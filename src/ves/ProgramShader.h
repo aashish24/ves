@@ -23,37 +23,30 @@
 
 #ifndef __ProgramShader_h
 #define __ProgramShader_h
-// --------------------------------------------------------------------includes
+
 #include "vsgShaderNode.h"
 #include "vesSetGet.h"
+
 #include <vector>
 
-// -----------------------------------------------------------------pre-defines
 class ProgramShaderInternal;
 class vesShaderProgram;
 
-// -----------------------------------------------------------------------class
 class ProgramShader : public vsgShaderNode
 {
 public:
-  // ............................................................public-methods
   ProgramShader();
   ~ProgramShader();
+
   vesSetGetVectorMacro(Programs,vesShaderProgram*)
   bool Read();
   void Render(Painter *render);
+
 protected:
-  // ...........................................................protected-ivars
   std::vector<vesShaderProgram*> Programs;
-protected:
-  //BTX
-  // .......................................................................BTX
 
 private:
-  ProgramShaderInternal *Internal;
-
-  //ETX
-  // .......................................................................ETX
+  ProgramShaderInternal *m_internal;
 };
 
 #endif // __ProgramShader_h

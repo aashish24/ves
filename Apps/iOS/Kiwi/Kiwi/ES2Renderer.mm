@@ -36,25 +36,25 @@
 {
   self = [super init];
   if (self)
-  {		
-  
-  		// Create a C++ renderer object
+  {
+
+      // Create a C++ renderer object
     renderer = new vesRenderer();
-    
+
     NSString *vertShaderPathname, *fragShaderPathname;
     GLchar* vertexSourceStr, *fragmentSourceStr;
-    
+
     vertShaderPathname = [[NSBundle mainBundle] pathForResource:@"Shader" ofType:@"vsh"];
     fragShaderPathname = [[NSBundle mainBundle] pathForResource:@"Shader" ofType:@"fsh"];
-    
-    vertexSourceStr = (GLchar *)[[NSString stringWithContentsOfFile:vertShaderPathname 
-                                                           encoding:NSUTF8StringEncoding 
+
+    vertexSourceStr = (GLchar *)[[NSString stringWithContentsOfFile:vertShaderPathname
+                                                           encoding:NSUTF8StringEncoding
                                                               error:nil] UTF8String];
-    fragmentSourceStr = (GLchar *)[[NSString stringWithContentsOfFile:fragShaderPathname 
-                                                             encoding:NSUTF8StringEncoding 
+    fragmentSourceStr = (GLchar *)[[NSString stringWithContentsOfFile:fragShaderPathname
+                                                             encoding:NSUTF8StringEncoding
                                                                 error:nil] UTF8String];
 
-    
+
     shaderProgram = new vesShaderProgram(vertexSourceStr,
                                    fragmentSourceStr,
                                    (_uni("u_mvpMatrix"),
@@ -67,16 +67,16 @@
                                     _att("a_vertex_color"))
                                    );
     self->Shader = new vesShader(shaderProgram);
-    
+
     NSString* defaultFile = [[NSBundle mainBundle] pathForResource:@"current" ofType:@"vtk"];
     vesTriangleData* triangleData = [[[DataReader new] autorelease] readData:defaultFile];
     mMapper = new vesMapper();
     mMapper->SetTriangleData(triangleData);
     mActor = new vesActor(self->Shader, mMapper);
-    mActor->SetColor(0.8, 0.8, 0.8, 1.0);
+    mActor->setColor(0.8, 0.8, 0.8, 1.0);
     renderer->AddActor(mActor);
     }
-  
+
   return self;
 }
 
@@ -114,13 +114,13 @@
 {
   shaderProgram->Delete();
   delete renderer;
-	renderer = 0;
-	
+  renderer = 0;
+
   [super dealloc];
 }
 
 - (void)resetView
-{  
+{
   //
   // this is just confusing...
   // We want to set the direction to look from and view up
@@ -128,8 +128,8 @@
   // a reasonable portion of the screen.
   // the ResetCamera function will overwrite view up
   // so we have to call things in this strange order.
-  
-  // 
+
+  //
   // set direction to look from
   renderer->GetCamera()->SetViewPlaneNormal(vesVector3f(0.0, 0.0, 1.0));
 
@@ -142,8 +142,8 @@
   // required.  ResetCamera should be fixed.  Until then, perform a dolly
   // with a scale factor of 1.5 (a magic number).
   renderer->GetCamera()->Dolly(1.5);
-  
-  // 
+
+  //
   // now set the view plane normal
   renderer->GetCamera()->SetViewUp(vesVector3f(0.0, 1.0, 0.0));
   renderer->GetCamera()->OrthogonalizeViewUp();
@@ -192,9 +192,9 @@
   {
     delete mMapper->GetTriangleData();
   }
-  
+
   mMapper->SetTriangleData(newData);
-  mActor->Read();
+  mActor->read();
   [readerAlert dismissWithClickedButtonIndex:0 animated:YES];
 }
 

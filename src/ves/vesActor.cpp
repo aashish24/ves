@@ -19,150 +19,111 @@
  ========================================================================*/
 #include "vesActor.h"
 
-// --------------------------------------------------------------------includes
-#include "Appearance.h"
-#include "Shape.h"
 #include "vesMapper.h"
 #include "vesShader.h"
-#include "vesSetGet.h"
 #include "Painter.h"
+#include "vsg/Shape/Shape.h"
+#include "vsg/Shape/Appearance.h"
 
-// -----------------------------------------------------------------------macro
-
-// --------------------------------------------------------------------internal
-// IMPORTANT: Make sure that this struct has no pointers.  All pointers should
-// be put in the class declaration. For all newly defined pointers make sure to
-// update constructor and destructor methods.
 class vesActorInternal
 {
-  double value; // sample
 };
 
-// -----------------------------------------------------------------------cnstr
-vesActor::vesActor(vesShader *shader,vesMapper* mapper,vesMultitouchWidget *widget)
+vesActor::vesActor(vesShader *shader, vesMapper* mapper,
+                   vesMultitouchWidget *widget)
 {
-  this->Internal = new vesActorInternal();
-  this->_shape = new vsg::Shape();
-  this->_appearance = new vsg::Appearance();
+  m_internal = new vesActorInternal();
+  m_shape = new vsg::Shape();
+  m_appearance = new vsg::Appearance();
   MFNode shaders;
   shaders.push_back(shader);
-  this->_appearance->set_shaders(shaders);
-  this->_shape->set_geometry(mapper);
-  this->_shape->set_appearance(this->_appearance);
-  this->Mapper = mapper;        // This is used to make the actor visible again
-  AddShapeChild(this->_shape);
-  if(widget)
-  {
-    this->Sensor = true;
-    this->Widget = widget;
-    //std::cout<< "Adding widget interactor" <<std::endl;
+  m_appearance->set_shaders(shaders);
+  m_shape->set_geometry(mapper);
+  m_shape->set_appearance(m_appearance);
+  m_mapper = mapper;        // This is used to make the actor visible again
+  addShapeChild(m_shape);
+  if(widget) {
+    m_sensor = true;
+    m_widget = widget;
   }
-  else
-  {
-    this->Sensor = false;
+  else {
+    m_sensor = false;
   }
-  this->Visible = true;
+  m_visible = true;
 }
 
-
-// -----------------------------------------------------------------------destr
 vesActor::~vesActor()
 {
-  delete this->Internal;
-  delete this->_appearance;
-  delete this->_shape;
+  delete m_internal;
+  delete m_appearance;
+  delete m_shape;
 }
 
-// ----------------------------------------------------------------------public
-vesMapper* vesActor::GetMapper()
+void vesActor::setColor(float r, float g, float b, float a)
 {
-  return this->Mapper;
+  m_mapper->SetColor(r, g, b, a);
 }
 
-// ----------------------------------------------------------------------public
-void vesActor::SetColor(float r, float g, float b, float a)
-{
-  this->Mapper->SetColor(r, g, b, a);
-}
-
-// ----------------------------------------------------------------------public
-vesMatrix4x4f vesActor::Eval()
+vesMatrix4x4f vesActor::eval()
 {
   return this->Transform::eval();
 }
 
-// ----------------------------------------------------------------------public
-bool vesActor::Read()
+bool vesActor::read()
 {
-  //std::cout << "Read: Actor" <<std::endl;
   for (int i = 0; i < this->get_children().size(); ++i)
-  {
     this->get_children()[i]->Read();
-  }
+
   return true;
 }
 
-// ----------------------------------------------------------------------public
-void vesActor::Render(Painter* render)
+void vesActor::render(Painter* render)
 {
   render->Actor(this);
 }
 
-// ----------------------------------------------------------------------public
-void vesActor::AddShapeChild(vsg::Shape* shape)
+void vesActor::addShapeChild(vsg::Shape* shape)
 {
   MFNode temp;
   temp.push_back(shape);
   set_children(temp);
 }
 
-// ----------------------------------------------------------------------public
-void vesActor::ComputeBounds()
+void vesActor::computeBounds()
 {
-  _shape->ComputeBounds();
-  vesVector3f min = transformPoint3f(this->Eval(), _shape->get_min());
-  vesVector3f max = transformPoint3f(this->Eval(), _shape->get_max());
-  set_BBoxCenter(min,max);
-  set_BBoxSize(min,max);
+  m_shape->ComputeBounds();
+  vesVector3f min = transformPoint3f(this->eval(), m_shape->get_min());
+  vesVector3f max = transformPoint3f(this->eval(), m_shape->get_max());
+  set_BBoxCenter(min, max);
+  set_BBoxSize(min, max);
 }
 
-// ----------------------------------------------------------------------public
-bool vesActor::SetVisible(bool value)
+void vesActor::setVisible(bool value)
 {
   if(value)
-  {
-    this->_shape->set_geometry(this->Mapper);
-  }
+    m_shape->set_geometry(m_mapper);
   else
-  {
-    this->_shape->set_geometry(NULL);
-  }
-  this->Visible = value;
-  return true;
+    m_shape->set_geometry(NULL);
+
+  m_visible = value;
 }
 
-// ----------------------------------------------------------------------public
-bool vesActor::isVisible()
-{
-  return true;
-}
-
-void vesActor::SetTranslation(vesVector3f translation)
+void vesActor::setTranslation(const vesVector3f& translation)
 {
   set_translation(translation);
 }
 
-void vesActor::SetRotation(vesVector4f rotation)
-{
-  set_rotation(rotation);
-}
-
-vesVector3f vesActor::GetTranslation()
+vesVector3f vesActor::translation() const
 {
   return get_translation();
 }
 
-vesVector4f vesActor::GetRotation()
+void vesActor::setRotation(const vesVector4f& rotation)
+{
+  set_rotation(rotation);
+}
+
+vesVector4f vesActor::rotation() const
 {
   return get_rotation();
 }

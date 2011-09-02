@@ -27,7 +27,9 @@
 #include "vesGMTL.h"
 #include "vesTriangleData.h"
 
-class vesMapper :public vsgGeometryNode, public vsgBoundedObject
+#include "vesSetGet.h"
+
+class vesMapper : public vsgGeometryNode, public vsgBoundedObject
 {
 public:
   vesMapper();

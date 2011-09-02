@@ -19,12 +19,6 @@
  ========================================================================*/
 #include "ProgramShader.h"
 
-// --------------------------------------------------------------------includes
-#include <iostream>
-
-// -----------------------------------------------------------------------macro
-
-// --------------------------------------------------------------------internal
 // IMPORTANT: Make sure that this struct has no pointers.  All pointers should
 // be put in the class declaration. For all newly defined pointers make sure to
 // update constructor and destructor methods.
@@ -33,27 +27,21 @@ struct ProgramShaderInternal
   double value; // sample
 };
 
-// -----------------------------------------------------------------------cnstr
 ProgramShader::ProgramShader()
 {
-  this->Internal = new ProgramShaderInternal();
+  m_internal = new ProgramShaderInternal();
 }
 
-// -----------------------------------------------------------------------destr
 ProgramShader::~ProgramShader()
 {
-  delete this->Internal;
+  delete m_internal;
 }
 
 bool ProgramShader::Read()
 {
-  //std::cout << "Read: ProgramShader" << std::endl;
   return true;
 }
 
 void ProgramShader::Render(Painter *render)
 {
-  //std::cout << "Render ProgramShader" << std::endl;
 }
-
-
