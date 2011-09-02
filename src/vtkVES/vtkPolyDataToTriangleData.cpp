@@ -25,6 +25,47 @@
 #include "vesGMTL.h"
 #include "vtkPointData.h"
 #include "vtkPolyData.h"
+#include "vtkNew.h"
+#include "vtkUnsignedCharArray.h"
+#include "vtkLookupTable.h"
+
+
+void vtkPolyDataToTriangleData::ComputeVertexColorFromScalars(vtkPolyData* polyData, vesTriangleData* triangleData)
+{
+  // First look for a 3 component array named rgb_colors
+  vtkUnsignedCharArray* colors = vtkUnsignedCharArray::SafeDownCast(polyData->GetPointData()->GetArray("rgb_colors"));
+  if (colors && colors->GetNumberOfComponents() == 3)
+    {
+    unsigned char rgb[3];
+    const size_t nPoints = triangleData->GetPoints().size();
+    for (size_t i = 0; i < nPoints; ++i)
+        {
+        colors->GetTupleValue(i, rgb);
+        triangleData->GetVertexColors().push_back(vesVector3f(rgb[0]/255.0, rgb[1]/255.0, rgb[2]/255.0));
+        }
+    return;
+    }
+
+  for (vtkIdType i = 0; i < polyData->GetPointData()->GetNumberOfArrays(); ++i)
+    {
+    vtkDataArray* scalars = polyData->GetPointData()->GetArray(i);
+    if (scalars && scalars->GetNumberOfComponents() == 1)
+      {
+      vtkNew<vtkLookupTable> table;
+      table->SetRange(scalars->GetRange());
+      table->SetHueRange(0, 0.666);
+      table->Build();
+      double rgb[3];
+      const size_t nPoints = triangleData->GetPoints().size();
+      for (size_t i = 0; i < nPoints; ++i)
+        {
+        table->GetColor(scalars->GetComponent(i, 0), rgb);
+        triangleData->GetVertexColors().push_back(vesVector3f(rgb[0], rgb[1], rgb[2]));
+        }
+      break;
+      }
+    }
+}
 
 void vtkPolyDataToTriangleData::ConvertTriangles(vtkPolyData* input, vesTriangleData* output)
 {

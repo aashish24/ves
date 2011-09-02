@@ -34,4 +34,14 @@ public:
   // Note: many of the optimizations here could be added to the Convert function
   //       this would be wortwhile future work.
   static void ConvertTriangles(vtkPolyData* input, vesTriangleData* output);
+
+  // This is a convenience method for populating the vertex colors array on a
+  // vesTriangleData object.  First, it looks on the given polydata for an
+  // unsigned char array named rgb_colors.  If that is not found, it will
+  // looks for a point data array with a single component.  If such an array is found,
+  // a blue to red vtkLookupTable is used to generate vertex color values from
+  // the scalar array. This will use the first suitable array that is found.
+  // If no array is found, this method doesn't do anything.
+  static void ComputeVertexColorFromScalars(vtkPolyData* polyData, vesTriangleData* triangleData);
+
 };

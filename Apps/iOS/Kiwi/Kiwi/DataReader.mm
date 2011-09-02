@@ -36,7 +36,6 @@
 #include <vtkPolyData.h>
 #include <vtkPointData.h>
 #include <vtkFloatArray.h>
-#include <vtkLookupTable.h>
 #include <vtkBYUReader.h>
 #include <vtkSphereSource.h>
 #include <vtkPDBReader.h>
@@ -104,47 +103,6 @@ bool hasEnding(std::string const &fullString, std::string const &ending)
   return TRUE;
 }
 
-// Looks for a point data array with a single component.  If such an array is found,
-// a vtkLookupTable is used to generate vertex color values from the scalar array.
-// This will use the first suitable array that is found.  If no array is found, this
-// method doesn't do anything.
-void ComputeVertexColorFromScalars(vtkPolyData* polyData, vesTriangleData* triangleData)
-{
-  // First look for a 3 component array named rgb_colors
-  vtkUnsignedCharArray* colors = vtkUnsignedCharArray::SafeDownCast(polyData->GetPointData()->GetArray("rgb_colors"));
-  if (colors && colors->GetNumberOfComponents() == 3)
-    {
-    unsigned char rgb[3];
-    const size_t nPoints = triangleData->GetPoints().size();
-    for (size_t i = 0; i < nPoints; ++i)
-        {
-        colors->GetTupleValue(i, rgb);
-        triangleData->GetVertexColors().push_back(vesVector3f(rgb[0]/255.0, rgb[1]/255.0, rgb[2]/255.0));
-        }
-    return;
-    }
-
-  for (vtkIdType i = 0; i < polyData->GetPointData()->GetNumberOfArrays(); ++i)
-    {
-    vtkDataArray* scalars = polyData->GetPointData()->GetArray(i);
-    if (scalars && scalars->GetNumberOfComponents() == 1)
-      {
-      vtkNew<vtkLookupTable> table;
-      table->SetRange(scalars->GetRange());
-      table->SetHueRange(0, 0.666);
-      table->Build();
-      double rgb[3];
-      const size_t nPoints = triangleData->GetPoints().size();
-      for (size_t i = 0; i < nPoints; ++i)
-        {
-        table->GetColor(scalars->GetComponent(i, 0), rgb);
-        triangleData->GetVertexColors().push_back(vesVector3f(rgb[0], rgb[1], rgb[2]));
-        }
-      break;
-      }
-    }
-}
-
 // It is mandatory that the caller passes a vtkAlgorithm that produces vtkPolyData.
 -(vesTriangleData*) dataFromPolyDataReader:(vtkAlgorithm*)reader
 {
@@ -178,7 +136,7 @@ void ComputeVertexColorFromScalars(vtkPolyData* polyData, vesTriangleData* trian
       }
     vtkPolyData* polyData = triangleFilter->GetOutput();
     vesTriangleData* triangleData = vtkPolyDataToTriangleData::Convert(polyData);
-    ComputeVertexColorFromScalars(polyData, triangleData);
+    vtkPolyDataToTriangleData::ComputeVertexColorFromScalars(polyData, triangleData);
     return triangleData;
     }
   else
