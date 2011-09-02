@@ -1,3 +1,10 @@
+# Hack-
+# VES removes Apple specific code when the ANDROID symbol is defined, which is normally defined
+# by the android toolchain file.  We can get VES to build on Linux by defining ANDROID.
+if(NOT APPLE)
+  add_definitions(-DANDROID)
+endif()
+
 include(setup-headers.cmake)
 
 add_subdirectory(ves)
