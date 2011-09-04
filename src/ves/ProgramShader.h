@@ -32,6 +32,15 @@
 class ProgramShaderInternal;
 class vesShaderProgram;
 
+/**
+ * \class ProgramShader
+ * \brief Defines a collection of shaders.
+ *
+ * ProgramShader [refer 31.4.6]
+ *
+ * \todo Currently an empty class with no render method.
+ */
+
 class ProgramShader : public vsgShaderNode
 {
 public:
@@ -39,8 +48,16 @@ public:
   ~ProgramShader();
 
   vesSetGetVectorMacro(Programs,vesShaderProgram*)
-  bool Read();
-  void Render(Painter *render);
+
+  /** Render.
+   * \todo Document these methods.
+   */
+  bool read();
+
+  /** Render.
+   * \todo Document these methods.
+   */
+  void render(Painter *render);
 
 protected:
   std::vector<vesShaderProgram*> Programs;

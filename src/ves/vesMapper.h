@@ -21,43 +21,55 @@
 #ifndef __vesMapper_h
 #define __vesMapper_h
 
-#include "vesShaderProgram.h"
 #include "vsgGeometryNode.h"
 #include "vsgBoundedObject.h"
-#include "vesGMTL.h"
-#include "vesTriangleData.h"
 
-#include "vesSetGet.h"
+#include "vesGMTL.h" // Needed for vesMatrix4x4f return.
+
+class vesShaderProgram;
+class vesTriangleData;
+
+/**
+ * \class vesMapper
+ * \brief Provides API analagous to vtkMapper derived classes in VTK.
+ *
+ * The vesActor class defines an entity that contains various attributes for
+ * rendering, along with geometry in the correct form for rendering on the GPU.
+ */
 
 class vesMapper : public vsgGeometryNode, public vsgBoundedObject
 {
 public:
   vesMapper();
   ~vesMapper();
-  bool Read();
-  vesMatrix4x4f Eval();
-  void Render(Painter* render);
-  void Render(vesShaderProgram *program);
-  void SetTriangleData(vesTriangleData* data);
-  vesTriangleData* GetTriangleData();
-  vesTriangleData* GetData();
-  void ComputeBounds();
-  void SetColor(float r, float g, float b, float a);
-  vesGetMacro(Red, float)
-  vesGetMacro(Green, float)
-  vesGetMacro(Blue, float)
-  vesGetMacro(Alpha, float)
-  vesGetMacro(DrawPoints, bool)
-  vesSetMacro(DrawPoints, bool)
-  private:
-    void Normalize();
-  vesMatrix4x4f NormalizedMatrix;
+  bool read();
+  vesMatrix4x4f eval();
+  void render(Painter* render);
+  void render(vesShaderProgram *program);
+  void setTriangleData(vesTriangleData* data);
+  vesTriangleData* triangleData();
+  vesTriangleData* data();
+  void computeBounds();
+  void setColor(float r, float g, float b, float a);
+
+  float red() const { return m_red; }
+  float green() const { return m_green; }
+  float blue() const { return m_blue; }
+  float alpha() const { return m_alpha; }
+
+  void setDrawPoints(bool drawPoints) { m_drawPoints = drawPoints; }
+  bool drawPoints() const { return m_drawPoints; }
+
+private:
+  void normalize();
+  vesMatrix4x4f m_normalizedMatrix;
+
 protected:
-  float Red,Green,Blue,Alpha;
-  bool mIsNew;
-  vesTriangleData *Data;
+  float m_red, m_green, m_blue, m_alpha;
+  bool m_isNew;
+  vesTriangleData *m_data;
   bool m_initialized;
-  bool DrawPoints;
+  bool m_drawPoints;
 
   // unsigned int mMapperVBO[2];
 };

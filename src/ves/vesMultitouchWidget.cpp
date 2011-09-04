@@ -53,12 +53,12 @@ void vesMultitouchWidget::Update(float xRotation,
   Scale[2] = scaleFactor;
 }
 
-bool vesMultitouchWidget::Read()
+bool vesMultitouchWidget::read()
 {
   return true;
 }
 
-void vesMultitouchWidget::Render(Painter* render)
+void vesMultitouchWidget::render(Painter* render)
 {
 
 }

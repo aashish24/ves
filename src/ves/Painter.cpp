@@ -25,11 +25,14 @@
 #include "vsg/Shape/Shape.h"
 
 #include "vesActor.h"
+#include "vesActorCollection.h"
 #include "vesMapper.h"
 #include "vesCamera.h"
 #include "vesShader.h"
 #include "vesMultitouchWidget.h"
 #include "vesTexture.h"
+#include "vesShaderProgram.h"
+#include "vesTriangleData.h"
 
 #include <iostream>
 #include <vector>
@@ -58,17 +61,17 @@ void Painter::Texture(vesTexture* textureBackground)
   textureBackground->Render();
 }
 
-void Painter::Camera(vesCamera *camera)
+void Painter::setCamera(vesCamera *camera)
 {
-  this->Push(camera->eval());
+  this->push(camera->eval());
   // If there are children nodes then tternate through and render
   MFNode children = camera->get_children();
   if (children.size()) {
     for (int i = 0; i < children.size(); ++i)
-      children[i]->Render(this);
+      children[i]->render(this);
   }
   // Pop the transformation
-  this->Pop();
+  this->pop();
 }
 
 void Painter::Shader(vesShader * shader)
@@ -79,13 +82,9 @@ void Painter::Shader(vesShader * shader)
       temp[i]->Render(this);
 }
 
-void Painter::ShaderProgram(vesShaderProgram *shaderProg)
+void Painter::setShaderProgram(vesShaderProgram *shaderProg)
 {
   shaderProg->Use();
-}
-
-void Painter::Mapper(vesMapper *mapper)
-{
 }
 
 void Painter::Actor(vesActor * actor)
@@ -97,11 +96,11 @@ void Painter::Actor(vesActor * actor)
       actor->set_scale(actor->widget()->GetScale());
     }
   }
-  this->Push(actor->eval());
+  this->push(actor->eval());
   MFNode temp;
   temp = actor->get_children();
-  temp[0]->Render(this);
-  this->Pop();
+  temp[0]->render(this);
+  this->pop();
 }
 
 void Painter::ActorCollection(vesActorCollection *actor)
@@ -110,23 +109,23 @@ void Painter::ActorCollection(vesActorCollection *actor)
     this->Texture(m_textureBackground);
 
   // Push the transformation
-  this->Push(actor->Eval());
+  this->push(actor->Eval());
 
   // If there are children nodes then tternate through and render
   MFNode children = actor->get_children();;
   if (children.size())
     for (int i = 0; i < children.size(); ++i)
-      children[i]->Render(this);
+      children[i]->render(this);
 
   // Pop the transformation
-  this->Pop();
+  this->pop();
 }
 
 void Painter::visitShape(vsg::Shape* shape)
 {
-  shape->get_appearance() -> Render(this);
+  shape->get_appearance()->render(this);
   if(shape->get_geometry())
-    shape->get_geometry() -> Render(this);
+    shape->get_geometry()->render(this);
   else
     return;
 
@@ -141,10 +140,10 @@ void Painter::visitShape(vsg::Shape* shape)
 
   // Model-view matrix is everything except the top level matrix (the projection
   // matrix). This is needed for normal calculation.
-  vesMatrix4x4f mv = this->Eval(1);
+  vesMatrix4x4f mv = this->eval(1);
 
   // The model-view-projection matrix includes everything.
-  vesMatrix4x4f mvp = this->Eval(0);
+  vesMatrix4x4f mvp = this->eval(0);
 
   vesMatrix3x3f normal_matrix =
     makeNormalMatrix3x3f(makeTransposeMatrix4x4(makeInverseMatrix4x4 (mv)));
@@ -154,7 +153,7 @@ void Painter::visitShape(vsg::Shape* shape)
   program->SetUniformMatrix4x4f("u_mvpMatrix",mvp);
   program->SetUniformMatrix3x3f("u_normalMatrix",normal_matrix);
   program->SetUniformVector3f("u_ecLightDir",light);
-  program->SetUniformFloat("u_opacity", mapper->GetAlpha());
+  program->SetUniformFloat("u_opacity", mapper->alpha());
 
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -163,12 +162,14 @@ void Painter::visitShape(vsg::Shape* shape)
   program->EnableVertexArray("a_vertex");
   program->EnableVertexArray("a_normal");
 
-  if (mapper->GetData()->GetVertexColors().size() == 0) {
+  if (mapper->data()->GetVertexColors().size() == 0) {
     program->DisableVertexArray("a_vertex_color");
+    // FIXME: This could be reduced to one call if color was stored in
+    // vtkColor4f or similar, and then use a call similar to the one in the else.
     glVertexAttrib3f(program->GetAttribute("a_vertex_color"),
-                     mapper->GetRed(),
-                     mapper->GetGreen(),
-                     mapper->GetBlue());
+                     mapper->red(),
+                     mapper->green(),
+                     mapper->blue());
     }
   else {
     program->EnableVertexArray("a_vertex_color");
@@ -177,7 +178,7 @@ void Painter::visitShape(vsg::Shape* shape)
                           GL_FLOAT,
                           0,
                           3*sizeof(float),
-                          &(mapper->GetData()->GetVertexColors()[0]));
+                          &(mapper->data()->GetVertexColors()[0]));
     }
 
   glVertexAttribPointer(program->GetAttribute("a_vertex"),
@@ -185,39 +186,39 @@ void Painter::visitShape(vsg::Shape* shape)
                         GL_FLOAT,
                         0,
                         6 * sizeof(float),
-                        &(mapper->GetData()->GetPoints()[0]));
+                        &(mapper->data()->GetPoints()[0]));
   glVertexAttribPointer(program->GetAttribute("a_normal"),
                         3,
                         GL_FLOAT,
                         0,
                         6 * sizeof(float),
-                        mapper->GetData()->GetPoints()[0].normal.mData);
+                        mapper->data()->GetPoints()[0].normal.mData);
 
   // draw vertices
-  if (mapper->GetDrawPoints()) {
-    program->SetUniformVector2f("u_scalarRange", mapper->GetData()->GetPointScalarRange());
+  if (mapper->drawPoints()) {
+    program->SetUniformVector2f("u_scalarRange", mapper->data()->GetPointScalarRange());
     program->EnableVertexArray("a_scalar");
     glVertexAttribPointer(program->GetAttribute("a_scalar"),
                           1,
                           GL_FLOAT,
                           0,
                           sizeof(float),
-                          &(mapper->GetData()->GetPointScalars()[0]));
+                          &(mapper->data()->GetPointScalars()[0]));
 
-    glDrawArrays(GL_POINTS, 0, mapper->GetData()->GetPoints().size());
+    glDrawArrays(GL_POINTS, 0, mapper->data()->GetPoints().size());
   }
   else {
     // draw triangles
     glDrawElements(GL_TRIANGLES,
-                   mapper->GetData()->GetTriangles().size() * 3,
+                   mapper->data()->GetTriangles().size() * 3,
                    GL_UNSIGNED_SHORT,
-                   &mapper->GetData()->GetTriangles()[0]);
+                   &mapper->data()->GetTriangles()[0]);
 
     // draw lines
     glDrawElements(GL_LINES,
-                   mapper->GetData()->GetLines().size() * 2,
+                   mapper->data()->GetLines().size() * 2,
                    GL_UNSIGNED_SHORT,
-                   &mapper->GetData()->GetLines()[0]);
+                   &mapper->data()->GetLines()[0]);
   }
 
   glDisable(GL_CULL_FACE);
@@ -228,17 +229,17 @@ void Painter::visitShape(vsg::Shape* shape)
 
 }
 
-void Painter::Push(const vesMatrix4x4f& mat)
+void Painter::push(const vesMatrix4x4f& mat)
 {
   m_matrixStack.push_back(mat);
 }
 
-void Painter::Pop()
+void Painter::pop()
 {
   m_matrixStack.pop_back();
 }
 
-vesMatrix4x4f Painter::Eval(int startIndex)
+vesMatrix4x4f Painter::eval(int startIndex)
 {
   vesMatrix4x4f temp;
   for (int i = startIndex; i < m_matrixStack.size(); ++i)
@@ -247,7 +248,7 @@ vesMatrix4x4f Painter::Eval(int startIndex)
   return temp;
 }
 
-void Painter::SetBackgroundTexture(vesTexture* background)
+void Painter::setBackgroundTexture(vesTexture* background)
 {
   m_textureBackground = background;
 }

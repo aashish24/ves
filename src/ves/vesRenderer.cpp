@@ -78,11 +78,11 @@ void vesRenderer::Render()
   vesMatrix4x4f proj = this->Camera->ComputeProjectionTransform(this->Aspect[1],
                                                                 -1, 1);
   vesMatrix4x4f view = this->Camera->ComputeViewTransform();
-  this->Paint->Push(proj);
-  this->Paint->Push(view);
-  this->Actor->Render(this->Paint);
-  this->Paint->Pop();
-  this->Paint->Pop();
+  this->Paint->push(proj);
+  this->Paint->push(view);
+  this->Actor->render(this->Paint);
+  this->Paint->pop();
+  this->Paint->pop();
 }
 
 void vesRenderer::Resize(int width, int height, float scale)
@@ -149,8 +149,8 @@ vesVector3f vesRenderer::ComputeDisplayToWorld(vesVector3f display)
 
 void vesRenderer::ResetCamera()
 {
-  this->Actor->Read();
-  this->Actor->ComputeBounds();
+  this->Actor->read();
+  this->Actor->computeBounds();
   vesVector3f center = this->Actor->get_BBoxCenter();
 
   double distance;
@@ -219,8 +219,8 @@ void vesRenderer::ResetCamera()
 
 void vesRenderer::ResetCameraClippingRange()
 {
-  this->Actor->Read();
-  this->Actor->ComputeBounds();
+  this->Actor->read();
+  this->Actor->computeBounds();
   float bounds[6];
   bounds[0] = this->Actor->get_min()[0];
   bounds[1] = this->Actor->get_max()[0];
@@ -293,5 +293,5 @@ void vesRenderer::ResetCameraClippingRange(float bounds[6])
 
 void vesRenderer::SetBackground(vesTexture* background)
 {
-  this->Paint->SetBackgroundTexture(background);
+  this->Paint->setBackgroundTexture(background);
 }

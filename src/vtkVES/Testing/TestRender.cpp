@@ -153,10 +153,10 @@ void LoadData() {
   vtkPolyDataToTriangleData::ComputeVertexColorFromScalars(reader->GetOutput(), data);
 
   view->setMapper(new vesMapper());
-  view->mapper()->SetTriangleData(data);
+  view->mapper()->setTriangleData(data);
   view->setActor(new vesActor(view->shader(), view->mapper()));
 
-  view->actor()->SetColor(0.8, 0.8, 0.8, 1.0);
+  view->actor()->setColor(0.8, 0.8, 0.8, 1.0);
   view->renderer()->AddActor(view->actor());
   view->resetView();
   view->camera()->Dolly(1.5);
@@ -175,7 +175,7 @@ std::string GetFileContents(const std::string& filename) {
 void InitVes() {
 
   view->setRenderer(new vesRenderer());
-  
+
   std::string vertexShaderFile = view->sourceDirectory() + "/src/shaders/Shader.vsh";
   std::string fragmentShaderFile = view->sourceDirectory() + "/src/shaders/Shader.fsh";
 
@@ -313,8 +313,8 @@ make_x_window(Display *x_dpy, EGLDisplay egl_dpy,
    mask = CWBackPixel | CWBorderPixel | CWColormap | CWEventMask;
 
    win = XCreateWindow( x_dpy, root, 0, 0, width, height,
-		        0, visInfo->depth, InputOutput,
-		        visInfo->visual, mask, &attr );
+                        0, visInfo->depth, InputOutput,
+                        visInfo->visual, mask, &attr );
 
    /* set hints and properties */
    {
@@ -453,7 +453,7 @@ main(int argc, char *argv[])
    x_dpy = XOpenDisplay(dpyName);
    if (!x_dpy) {
       printf("Error: couldn't open display %s\n",
-	     dpyName ? dpyName : getenv("DISPLAY"));
+             dpyName ? dpyName : getenv("DISPLAY"));
       return -1;
    }
 

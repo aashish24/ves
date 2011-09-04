@@ -61,7 +61,7 @@ vesActor::~vesActor()
 
 void vesActor::setColor(float r, float g, float b, float a)
 {
-  m_mapper->SetColor(r, g, b, a);
+  m_mapper->setColor(r, g, b, a);
 }
 
 vesMatrix4x4f vesActor::eval()
@@ -72,7 +72,7 @@ vesMatrix4x4f vesActor::eval()
 bool vesActor::read()
 {
   for (int i = 0; i < this->get_children().size(); ++i)
-    this->get_children()[i]->Read();
+    this->get_children()[i]->read();
 
   return true;
 }
@@ -91,7 +91,7 @@ void vesActor::addShapeChild(vsg::Shape* shape)
 
 void vesActor::computeBounds()
 {
-  m_shape->ComputeBounds();
+  m_shape->computeBounds();
   vesVector3f min = transformPoint3f(this->eval(), m_shape->get_min());
   vesVector3f max = transformPoint3f(this->eval(), m_shape->get_max());
   set_BBoxCenter(min, max);

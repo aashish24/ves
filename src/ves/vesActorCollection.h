@@ -45,10 +45,10 @@ public:
   vesVector4f GetRotation();
 
   //void Handle(vesController *handle);
-  bool Read();
+  bool read();
   vesMatrix4x4f Eval();
-  void Render(Painter *render);
-  void ComputeBounds();
+  void render(Painter *render);
+  void computeBounds();
 protected:
   // ...........................................................protected-ivars
 protected:

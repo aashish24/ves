@@ -53,12 +53,12 @@ vesMultitouchCamera::~vesMultitouchCamera()
 {
 }
 
-bool vesMultitouchCamera::Read()
+bool vesMultitouchCamera::read()
 {
   return true;
 }
 
-void vesMultitouchCamera::Render(Painter* render)
+void vesMultitouchCamera::render(Painter* render)
 {
 
 }

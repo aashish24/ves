@@ -25,14 +25,6 @@
 
 #include "vesGMTL.h"
 
-/**
- * \class vesActor
- * \brief Defines an entity in the scene.
- *
- * The vesActor class defines an entity in the scene, and aims to provide API
- * analagous to the vtkActor classes.
- */
-
 namespace vsg
 {
 class Shape;
@@ -43,6 +35,14 @@ class vesActorInternal;
 class vesShader;
 class vesMapper;
 class vesMultitouchWidget;
+
+/**
+ * \class vesActor
+ * \brief Defines an entity in the scene.
+ *
+ * The vesActor class defines an entity in the scene, and aims to provide API
+ * analagous to the vtkActor classes.
+ */
 
 class vesActor : public vsg::Transform
 {

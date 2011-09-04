@@ -63,14 +63,14 @@ void vesActorCollection::RemoveItem(vesActor* a)
   removeChildren(actorList);
 }
 
-bool vesActorCollection::Read()
+bool vesActorCollection::read()
 {
   //std::cout << "Read: Actor Collection" <<std::endl;
 
   for (int i =0; i<this->get_children().size(); ++i)
   {
     vesActor* child = (vesActor*) this->get_children()[i];
-    child->Read();
+    child->read();
   }
   return true;
 }
@@ -80,12 +80,12 @@ vesMatrix4x4f vesActorCollection::Eval()
   return Transform::eval();
 }
 
-void vesActorCollection::Render(Painter *render)
+void vesActorCollection::render(Painter *render)
 {
   render->ActorCollection(this);
 }
 
-void vesActorCollection::ComputeBounds()
+void vesActorCollection::computeBounds()
 {
   vesVector3f allMin(0,0,0);
   vesVector3f allMax(0,0,0);
@@ -93,7 +93,7 @@ void vesActorCollection::ComputeBounds()
   for (int i =0; i<this->get_children().size(); ++i)
   {
     vesActor* child = (vesActor*) this->get_children()[i];
-    child->ComputeBounds();
+    child->computeBounds();
     vesVector3f min = child->get_min();
     vesVector3f max = child->get_max();
 

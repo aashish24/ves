@@ -73,8 +73,8 @@ class Appearance: public vsgAppearanceNode
 public:
   Appearance();
   virtual ~Appearance();
-  bool Read();              // This will be deleted in the future
-  void Render(Painter* render); // This will be deleted in the future
+  bool read();              // This will be deleted in the future
+  void render(Painter* render); // This will be deleted in the future
 
   // InOutSF(fillProperties,SFNode)
   // InOutSF(lineProperties,SFNode)

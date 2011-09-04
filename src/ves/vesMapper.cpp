@@ -19,16 +19,19 @@
  ========================================================================*/
 
 #include "vesMapper.h"
-#include "Painter.h"
 
-vesMapper::vesMapper(): Data(NULL), m_initialized(false)
+#include "Painter.h"
+#include "vesShaderProgram.h"
+#include "vesTriangleData.h"
+
+vesMapper::vesMapper(): m_data(NULL), m_initialized(false)
 {
-  this->mIsNew = true;
-  this->Red = 0.8;
-  this->Green = 0.8;
-  this->Blue = 0.8;
-  this->Alpha = 1.0;
-  this->DrawPoints = false;
+  this->m_isNew = true;
+  this->m_red = 0.8;
+  this->m_green = 0.8;
+  this->m_blue = 0.8;
+  this->m_alpha = 1.0;
+  this->m_drawPoints = false;
 }
 vesMapper::~vesMapper()
 {
@@ -38,20 +41,20 @@ vesMapper::~vesMapper()
   }
 }
 
-void vesMapper::SetTriangleData(vesTriangleData* data)
+void vesMapper::setTriangleData(vesTriangleData* data)
 {
-  this->Data = data;
+  this->m_data = data;
 }
 
-void vesMapper::SetColor(float r, float g, float b, float a)
+void vesMapper::setColor(float r, float g, float b, float a)
 {
-  this->Red = r;
-  this->Green = g;
-  this->Blue = b;
-  this->Alpha =a;
+  this->m_red = r;
+  this->m_green = g;
+  this->m_blue = b;
+  this->m_alpha =a;
 }
 
-vesMatrix4x4f vesMapper::Eval()
+vesMatrix4x4f vesMapper::eval()
 {
   vesMatrix4x4f temp;
   return temp;
@@ -59,12 +62,12 @@ vesMatrix4x4f vesMapper::Eval()
   //  return temp;
 }
 
-bool vesMapper::Read()
+bool vesMapper::read()
 {
   return true;
 }
 
-void vesMapper::Render(vesShaderProgram *program)
+void vesMapper::render(vesShaderProgram *program)
 {
   glVertexAttrib4f(program->GetAttribute("a_texcoord"), 0.8, 0.8, 0.8, 1.0);
   glVertexAttribPointer(program->GetAttribute("a_vertex"),
@@ -72,37 +75,37 @@ void vesMapper::Render(vesShaderProgram *program)
                         GL_FLOAT,
                         0,
                         6 * sizeof(float),
-                        &this->Data->GetPoints()[0]);
+                        &this->m_data->GetPoints()[0]);
   glVertexAttribPointer(program->GetAttribute("a_normal"),
                         3,
                         GL_FLOAT,
                         0,
                         6 * sizeof(float),
-                        this->Data->GetPoints()[0].normal.mData);
+                        this->m_data->GetPoints()[0].normal.mData);
 
   // draw triangles
   glDrawElements(GL_TRIANGLES,
-                 this->Data->GetTriangles().size() * 3,
+                 this->m_data->GetTriangles().size() * 3,
                  GL_UNSIGNED_SHORT,
-                 &this->Data->GetTriangles()[0]);
+                 &this->m_data->GetTriangles()[0]);
 
   // draw lines
   glDrawElements(GL_LINES,
-                 this->Data->GetLines().size() * 2,
+                 this->m_data->GetLines().size() * 2,
                  GL_UNSIGNED_SHORT,
-                 &this->Data->GetLines()[0]);
+                 &this->m_data->GetLines()[0]);
 }
 
 
-vesTriangleData* vesMapper::GetTriangleData()
+vesTriangleData* vesMapper::triangleData()
 {
-  return this->Data;
+  return this->m_data;
 }
 
-void vesMapper::ComputeBounds()
+void vesMapper::computeBounds()
 {
-  vesVector3f min = this->Data->GetMin();
-  vesVector3f max = this->Data->GetMax();
+  vesVector3f min = this->m_data->GetMin();
+  vesVector3f max = this->m_data->GetMax();
   set_BBoxSize(min,max);
   set_BBoxCenter(min, max);
   /*
@@ -120,14 +123,14 @@ void vesMapper::ComputeBounds()
   */
 }
 
-void vesMapper::Normalize()
+void vesMapper::normalize()
 {
   float r = GetBBoxRadius();
-  this->NormalizedMatrix =
+  this->m_normalizedMatrix =
       makeScaleMatrix4x4(1/r,1/r,1/r)*
       makeTranslationMatrix4x4(-get_BBoxCenter());
-  set_BBoxCenter(transformPoint3f(this->NormalizedMatrix, get_BBoxCenter()));
-  set_BBoxSize(transformPoint3f(this->NormalizedMatrix, get_BBoxSize()));
+  set_BBoxCenter(transformPoint3f(this->m_normalizedMatrix, get_BBoxCenter()));
+  set_BBoxSize(transformPoint3f(this->m_normalizedMatrix, get_BBoxSize()));
   /*
   std::cout<< "BBoxSize = [ ";
   for (int i =0 ; i<3; ++i) {
@@ -143,13 +146,12 @@ void vesMapper::Normalize()
   */
 }
 
-void vesMapper::Render(Painter* render)
+void vesMapper::render(Painter* render)
 {
-  render->Mapper(this);
 }
 
-vesTriangleData* vesMapper::GetData()
+vesTriangleData* vesMapper::data()
 {
-  return this->Data;
+  return this->m_data;
 }
 

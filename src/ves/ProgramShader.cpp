@@ -37,11 +37,11 @@ ProgramShader::~ProgramShader()
   delete m_internal;
 }
 
-bool ProgramShader::Read()
+bool ProgramShader::read()
 {
   return true;
 }
 
-void ProgramShader::Render(Painter *render)
+void ProgramShader::render(Painter *render)
 {
 }

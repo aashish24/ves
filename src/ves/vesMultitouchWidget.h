@@ -36,8 +36,8 @@ public:
   // ............................................................public-methods
   vesMultitouchWidget();
   ~vesMultitouchWidget();
-  bool Read();
-  void Render(Painter* render);
+  bool read();
+  void render(Painter* render);
   void Update(float xRotation,
               float yRotation,
               float scaleFactor,

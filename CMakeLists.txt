@@ -27,5 +27,8 @@ include(CMake/ves-testing.cmake)
 # build project
 add_subdirectory(src)
 
+# documentation
+add_subdirectory(Docs)
+
 # project install rules
 include(CMake/ves-post-build.cmake)

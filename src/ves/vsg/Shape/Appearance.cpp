@@ -48,14 +48,14 @@ bool Appearance::accept(vsgVisitor* vsgVisitor)
   return vsgVisitor->visitAppearance(this);
 }
 
-void Appearance::Render(Painter* render)
+void Appearance::render(Painter* render)
 {
-  this->_shaders[0]->Render(render);
+  this->_shaders[0]->render(render);
 }
 
-bool Appearance::Read()
+bool Appearance::read()
 {
-  this->_shaders[0]->Read();
+  this->_shaders[0]->read();
   return true;
 }
 
