@@ -29,6 +29,14 @@
 class vesShaderProgram;
 class vesTriangleData;
 
+/**
+ * \class vesMapper
+ * \brief Provides API analagous to vtkMapper derived classes in VTK.
+ *
+ * The vesActor class defines an entity that contains various attributes for
+ * rendering, along with geometry in the correct form for rendering on the GPU.
+ */
+
 class vesMapper : public vsgGeometryNode, public vsgBoundedObject
 {
 public:
