@@ -153,7 +153,7 @@ void LoadData() {
   vtkPolyDataToTriangleData::ComputeVertexColorFromScalars(reader->GetOutput(), data);
 
   view->setMapper(new vesMapper());
-  view->mapper()->SetTriangleData(data);
+  view->mapper()->setTriangleData(data);
   view->setActor(new vesActor(view->shader(), view->mapper()));
 
   view->actor()->setColor(0.8, 0.8, 0.8, 1.0);

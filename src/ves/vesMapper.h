@@ -27,37 +27,39 @@
 #include "vesGMTL.h"
 #include "vesTriangleData.h"
 
-#include "vesSetGet.h"
-
 class vesMapper : public vsgGeometryNode, public vsgBoundedObject
 {
 public:
   vesMapper();
   ~vesMapper();
   bool read();
-  vesMatrix4x4f Eval();
+  vesMatrix4x4f eval();
   void render(Painter* render);
   void render(vesShaderProgram *program);
-  void SetTriangleData(vesTriangleData* data);
-  vesTriangleData* GetTriangleData();
-  vesTriangleData* GetData();
+  void setTriangleData(vesTriangleData* data);
+  vesTriangleData* triangleData();
+  vesTriangleData* data();
   void computeBounds();
-  void SetColor(float r, float g, float b, float a);
-  vesGetMacro(Red, float)
-  vesGetMacro(Green, float)
-  vesGetMacro(Blue, float)
-  vesGetMacro(Alpha, float)
-  vesGetMacro(DrawPoints, bool)
-  vesSetMacro(DrawPoints, bool)
-  private:
-    void Normalize();
-  vesMatrix4x4f NormalizedMatrix;
+  void setColor(float r, float g, float b, float a);
+
+  float red() const { return m_red; }
+  float green() const { return m_green; }
+  float blue() const { return m_blue; }
+  float alpha() const { return m_alpha; }
+
+  void setDrawPoints(bool drawPoints) { m_drawPoints = drawPoints; }
+  bool drawPoints() const { return m_drawPoints; }
+
+private:
+  void normalize();
+  vesMatrix4x4f m_normalizedMatrix;
+
 protected:
-  float Red,Green,Blue,Alpha;
-  bool mIsNew;
-  vesTriangleData *Data;
+  float m_red, m_green, m_blue, m_alpha;
+  bool m_isNew;
+  vesTriangleData *m_data;
   bool m_initialized;
-  bool DrawPoints;
+  bool m_drawPoints;
 
   // unsigned int mMapperVBO[2];
 };

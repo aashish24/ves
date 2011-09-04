@@ -61,7 +61,7 @@ vesActor::~vesActor()
 
 void vesActor::setColor(float r, float g, float b, float a)
 {
-  m_mapper->SetColor(r, g, b, a);
+  m_mapper->setColor(r, g, b, a);
 }
 
 vesMatrix4x4f vesActor::eval()

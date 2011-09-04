@@ -151,7 +151,7 @@ void Painter::visitShape(vsg::Shape* shape)
   program->SetUniformMatrix4x4f("u_mvpMatrix",mvp);
   program->SetUniformMatrix3x3f("u_normalMatrix",normal_matrix);
   program->SetUniformVector3f("u_ecLightDir",light);
-  program->SetUniformFloat("u_opacity", mapper->GetAlpha());
+  program->SetUniformFloat("u_opacity", mapper->alpha());
 
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -160,12 +160,14 @@ void Painter::visitShape(vsg::Shape* shape)
   program->EnableVertexArray("a_vertex");
   program->EnableVertexArray("a_normal");
 
-  if (mapper->GetData()->GetVertexColors().size() == 0) {
+  if (mapper->data()->GetVertexColors().size() == 0) {
     program->DisableVertexArray("a_vertex_color");
+    // FIXME: This could be reduced to one call if color was stored in
+    // vtkColor4f or similar, and then use a call similar to the one in the else.
     glVertexAttrib3f(program->GetAttribute("a_vertex_color"),
-                     mapper->GetRed(),
-                     mapper->GetGreen(),
-                     mapper->GetBlue());
+                     mapper->red(),
+                     mapper->green(),
+                     mapper->blue());
     }
   else {
     program->EnableVertexArray("a_vertex_color");
@@ -174,7 +176,7 @@ void Painter::visitShape(vsg::Shape* shape)
                           GL_FLOAT,
                           0,
                           3*sizeof(float),
-                          &(mapper->GetData()->GetVertexColors()[0]));
+                          &(mapper->data()->GetVertexColors()[0]));
     }
 
   glVertexAttribPointer(program->GetAttribute("a_vertex"),
@@ -182,39 +184,39 @@ void Painter::visitShape(vsg::Shape* shape)
                         GL_FLOAT,
                         0,
                         6 * sizeof(float),
-                        &(mapper->GetData()->GetPoints()[0]));
+                        &(mapper->data()->GetPoints()[0]));
   glVertexAttribPointer(program->GetAttribute("a_normal"),
                         3,
                         GL_FLOAT,
                         0,
                         6 * sizeof(float),
-                        mapper->GetData()->GetPoints()[0].normal.mData);
+                        mapper->data()->GetPoints()[0].normal.mData);
 
   // draw vertices
-  if (mapper->GetDrawPoints()) {
-    program->SetUniformVector2f("u_scalarRange", mapper->GetData()->GetPointScalarRange());
+  if (mapper->drawPoints()) {
+    program->SetUniformVector2f("u_scalarRange", mapper->data()->GetPointScalarRange());
     program->EnableVertexArray("a_scalar");
     glVertexAttribPointer(program->GetAttribute("a_scalar"),
                           1,
                           GL_FLOAT,
                           0,
                           sizeof(float),
-                          &(mapper->GetData()->GetPointScalars()[0]));
+                          &(mapper->data()->GetPointScalars()[0]));
 
-    glDrawArrays(GL_POINTS, 0, mapper->GetData()->GetPoints().size());
+    glDrawArrays(GL_POINTS, 0, mapper->data()->GetPoints().size());
   }
   else {
     // draw triangles
     glDrawElements(GL_TRIANGLES,
-                   mapper->GetData()->GetTriangles().size() * 3,
+                   mapper->data()->GetTriangles().size() * 3,
                    GL_UNSIGNED_SHORT,
-                   &mapper->GetData()->GetTriangles()[0]);
+                   &mapper->data()->GetTriangles()[0]);
 
     // draw lines
     glDrawElements(GL_LINES,
-                   mapper->GetData()->GetLines().size() * 2,
+                   mapper->data()->GetLines().size() * 2,
                    GL_UNSIGNED_SHORT,
-                   &mapper->GetData()->GetLines()[0]);
+                   &mapper->data()->GetLines()[0]);
   }
 
   glDisable(GL_CULL_FACE);
