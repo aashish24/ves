@@ -19,7 +19,10 @@
  ========================================================================*/
 
 #include "vesMapper.h"
+
 #include "Painter.h"
+#include "vesShaderProgram.h"
+#include "vesTriangleData.h"
 
 vesMapper::vesMapper(): m_data(NULL), m_initialized(false)
 {

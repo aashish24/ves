@@ -31,6 +31,8 @@
 #include "vesShader.h"
 #include "vesMultitouchWidget.h"
 #include "vesTexture.h"
+#include "vesShaderProgram.h"
+#include "vesTriangleData.h"
 
 #include <iostream>
 #include <vector>
