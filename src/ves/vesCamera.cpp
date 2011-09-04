@@ -283,7 +283,7 @@ void vesCamera::ComputeViewPlaneNormal()
 // ----------------------------------------------------------------------public
 void vesCamera::render(Painter *render)
 {
-  render->Camera(this);
+  render->setCamera(this);
 }
 
 // ----------------------------------------------------------------------public

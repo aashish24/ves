@@ -145,7 +145,6 @@ void vesMapper::Normalize()
 
 void vesMapper::render(Painter* render)
 {
-  render->Mapper(this);
 }
 
 vesTriangleData* vesMapper::GetData()

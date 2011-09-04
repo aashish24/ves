@@ -284,5 +284,5 @@ vesShaderProgram _program(char* vertexShaderStr,
 
 void vesShaderProgram::Render(Painter *render)
 {
-  render->ShaderProgram(this);
+  render->setShaderProgram(this);
 }

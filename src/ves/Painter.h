@@ -17,15 +17,11 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
-// .NAME Painter - Paints the scene graph
-// .SECTION Description
-// Painter
 
 #ifndef __Painter_h
 #define __Painter_h
 
 #include "vesGMTL.h"
-#include "vesActorCollection.h"
 
 #include <vector>
 
@@ -35,12 +31,18 @@ class Shape;
 }
 
 class vesActor;
+class vesActorCollection;
 class vesCamera;
 class vesMapper;
 class vesShader;
 class vesShaderProgram;
 class vesTexture;
 class PainterInternal;
+
+/**
+ * \class Painter
+ * \brief Paints the scene graph.
+ */
 
 class Painter
 {
@@ -50,17 +52,34 @@ public:
   void Texture(vesTexture* textureBackground);
   void visitShape(vsg::Shape* shape);
   void Shader(vesShader * shader);
-  void Mapper(vesMapper *mapper);
+
+  /** Render the supplied actor. */
   void Actor(vesActor * actor);
+
+  /** Render all actors in the supplied collection. */
   void ActorCollection(vesActorCollection *actor);
-  void Camera(vesCamera *camera);
-  void ShaderProgram(vesShaderProgram *shaderProg);
-  void Push(const vesMatrix4x4f& mat);
-  void Pop();
-  void SetBackgroundTexture(vesTexture* background);
+
+  /** Set the camera as the active camera, modifying the model-view matrix. */
+  void setCamera(vesCamera *camera);
+
+  /** Set the supplied shaeder program as the active program. */
+  void setShaderProgram(vesShaderProgram *shaderProgram);
+
+  /**
+   * Push the supplied matrix to the top of the stack, this will not post
+   * multiply the current stack.
+   * \param matrix Will be added to the stack of matrices to be multipled.
+   */
+  void push(const vesMatrix4x4f& matrix);
+
+  /** Pop the current matrix from the top of the stack. */
+  void pop();
+
+  /** Set the background texture to the supplied texture. */
+  void setBackgroundTexture(vesTexture* background);
 
 protected:
-  vesMatrix4x4f Eval(int startIndex);
+  vesMatrix4x4f eval(int startIndex);
 
   std::vector<vesMatrix4x4f> m_matrixStack;
   float m_aspect, m_nearZ, m_farZ;

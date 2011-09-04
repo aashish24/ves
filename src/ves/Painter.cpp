@@ -25,6 +25,7 @@
 #include "vsg/Shape/Shape.h"
 
 #include "vesActor.h"
+#include "vesActorCollection.h"
 #include "vesMapper.h"
 #include "vesCamera.h"
 #include "vesShader.h"
@@ -58,9 +59,9 @@ void Painter::Texture(vesTexture* textureBackground)
   textureBackground->Render();
 }
 
-void Painter::Camera(vesCamera *camera)
+void Painter::setCamera(vesCamera *camera)
 {
-  this->Push(camera->eval());
+  this->push(camera->eval());
   // If there are children nodes then tternate through and render
   MFNode children = camera->get_children();
   if (children.size()) {
@@ -68,7 +69,7 @@ void Painter::Camera(vesCamera *camera)
       children[i]->render(this);
   }
   // Pop the transformation
-  this->Pop();
+  this->pop();
 }
 
 void Painter::Shader(vesShader * shader)
@@ -79,13 +80,9 @@ void Painter::Shader(vesShader * shader)
       temp[i]->Render(this);
 }
 
-void Painter::ShaderProgram(vesShaderProgram *shaderProg)
+void Painter::setShaderProgram(vesShaderProgram *shaderProg)
 {
   shaderProg->Use();
-}
-
-void Painter::Mapper(vesMapper *mapper)
-{
 }
 
 void Painter::Actor(vesActor * actor)
@@ -97,11 +94,11 @@ void Painter::Actor(vesActor * actor)
       actor->set_scale(actor->widget()->GetScale());
     }
   }
-  this->Push(actor->eval());
+  this->push(actor->eval());
   MFNode temp;
   temp = actor->get_children();
   temp[0]->render(this);
-  this->Pop();
+  this->pop();
 }
 
 void Painter::ActorCollection(vesActorCollection *actor)
@@ -110,7 +107,7 @@ void Painter::ActorCollection(vesActorCollection *actor)
     this->Texture(m_textureBackground);
 
   // Push the transformation
-  this->Push(actor->Eval());
+  this->push(actor->Eval());
 
   // If there are children nodes then tternate through and render
   MFNode children = actor->get_children();;
@@ -119,7 +116,7 @@ void Painter::ActorCollection(vesActorCollection *actor)
       children[i]->render(this);
 
   // Pop the transformation
-  this->Pop();
+  this->pop();
 }
 
 void Painter::visitShape(vsg::Shape* shape)
@@ -141,10 +138,10 @@ void Painter::visitShape(vsg::Shape* shape)
 
   // Model-view matrix is everything except the top level matrix (the projection
   // matrix). This is needed for normal calculation.
-  vesMatrix4x4f mv = this->Eval(1);
+  vesMatrix4x4f mv = this->eval(1);
 
   // The model-view-projection matrix includes everything.
-  vesMatrix4x4f mvp = this->Eval(0);
+  vesMatrix4x4f mvp = this->eval(0);
 
   vesMatrix3x3f normal_matrix =
     makeNormalMatrix3x3f(makeTransposeMatrix4x4(makeInverseMatrix4x4 (mv)));
@@ -228,17 +225,17 @@ void Painter::visitShape(vsg::Shape* shape)
 
 }
 
-void Painter::Push(const vesMatrix4x4f& mat)
+void Painter::push(const vesMatrix4x4f& mat)
 {
   m_matrixStack.push_back(mat);
 }
 
-void Painter::Pop()
+void Painter::pop()
 {
   m_matrixStack.pop_back();
 }
 
-vesMatrix4x4f Painter::Eval(int startIndex)
+vesMatrix4x4f Painter::eval(int startIndex)
 {
   vesMatrix4x4f temp;
   for (int i = startIndex; i < m_matrixStack.size(); ++i)
@@ -247,7 +244,7 @@ vesMatrix4x4f Painter::Eval(int startIndex)
   return temp;
 }
 
-void Painter::SetBackgroundTexture(vesTexture* background)
+void Painter::setBackgroundTexture(vesTexture* background)
 {
   m_textureBackground = background;
 }
