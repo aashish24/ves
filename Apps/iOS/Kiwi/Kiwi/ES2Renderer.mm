@@ -71,7 +71,7 @@
     NSString* defaultFile = [[NSBundle mainBundle] pathForResource:@"current" ofType:@"vtk"];
     vesTriangleData* triangleData = [[[DataReader new] autorelease] readData:defaultFile];
     mMapper = new vesMapper();
-    mMapper->SetTriangleData(triangleData);
+    mMapper->setTriangleData(triangleData);
     mActor = new vesActor(self->Shader, mMapper);
     mActor->setColor(0.8, 0.8, 0.8, 1.0);
     renderer->AddActor(mActor);
@@ -188,28 +188,28 @@
     return;
     }
 
-  if (mMapper->GetTriangleData())
+  if (mMapper->triangleData())
   {
-    delete mMapper->GetTriangleData();
+    delete mMapper->triangleData();
   }
 
-  mMapper->SetTriangleData(newData);
+  mMapper->setTriangleData(newData);
   mActor->read();
   [readerAlert dismissWithClickedButtonIndex:0 animated:YES];
 }
 
 -(int) getNumberOfFacetsForCurrentModel
 {
-  return mMapper->GetTriangleData()->GetTriangles().size();
+  return mMapper->triangleData()->GetTriangles().size();
 }
 
 -(int) getNumberOfLinesForCurrentModel
 {
-  return mMapper->GetTriangleData()->GetLines().size();
+  return mMapper->triangleData()->GetLines().size();
 }
 
 -(int) getNumberOfVerticesForCurrentModel
 {
-  return mMapper->GetTriangleData()->GetPoints().size();
+  return mMapper->triangleData()->GetPoints().size();
 }
 @end
