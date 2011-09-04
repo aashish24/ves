@@ -65,7 +65,7 @@ void Painter::Camera(vesCamera *camera)
   MFNode children = camera->get_children();
   if (children.size()) {
     for (int i = 0; i < children.size(); ++i)
-      children[i]->Render(this);
+      children[i]->render(this);
   }
   // Pop the transformation
   this->Pop();
@@ -100,7 +100,7 @@ void Painter::Actor(vesActor * actor)
   this->Push(actor->eval());
   MFNode temp;
   temp = actor->get_children();
-  temp[0]->Render(this);
+  temp[0]->render(this);
   this->Pop();
 }
 
@@ -116,7 +116,7 @@ void Painter::ActorCollection(vesActorCollection *actor)
   MFNode children = actor->get_children();;
   if (children.size())
     for (int i = 0; i < children.size(); ++i)
-      children[i]->Render(this);
+      children[i]->render(this);
 
   // Pop the transformation
   this->Pop();
@@ -124,9 +124,9 @@ void Painter::ActorCollection(vesActorCollection *actor)
 
 void Painter::visitShape(vsg::Shape* shape)
 {
-  shape->get_appearance() -> Render(this);
+  shape->get_appearance()->render(this);
   if(shape->get_geometry())
-    shape->get_geometry() -> Render(this);
+    shape->get_geometry()->render(this);
   else
     return;
 

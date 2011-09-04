@@ -46,13 +46,13 @@ vesShader::~vesShader()
   delete this->Internal;
 }
 
-bool vesShader::Read()
+bool vesShader::read()
 {
   //std::cout << "Read: Shader" <<std::endl;
   return true;
 }
 
-void vesShader::Render(Painter *render)
+void vesShader::render(Painter *render)
 {
   render->Shader(this);
 }

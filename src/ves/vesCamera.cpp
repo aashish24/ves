@@ -281,13 +281,13 @@ void vesCamera::ComputeViewPlaneNormal()
 }
 
 // ----------------------------------------------------------------------public
-void vesCamera::Render(Painter *render)
+void vesCamera::render(Painter *render)
 {
   render->Camera(this);
 }
 
 // ----------------------------------------------------------------------public
-void vesCamera::ComputeBounds()
+void vesCamera::computeBounds()
 {
   vesVector3f allMin(0,0,0);
   vesVector3f allMax(0,0,0);
@@ -295,7 +295,7 @@ void vesCamera::ComputeBounds()
   for (int i =0; i<this->get_children().size(); ++i)
   {
     vesActorCollection* child = (vesActorCollection*) this->get_children()[i];
-    child->ComputeBounds();
+    child->computeBounds();
     vesVector3f min = child->get_min();
     vesVector3f max = child->get_max();
 
@@ -323,12 +323,12 @@ void vesCamera::ComputeBounds()
 }
 
 // ----------------------------------------------------------------------public
-bool vesCamera::Read()
+bool vesCamera::read()
 {
   for (int i =0; i<this->get_children().size(); ++i)
   {
     vesActorCollection* child = (vesActorCollection*) this->get_children()[i];
-    child->Read();
+    child->read();
   }
   return true;
 }

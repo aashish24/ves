@@ -39,8 +39,8 @@ public:
   ~ProgramShader();
 
   vesSetGetVectorMacro(Programs,vesShaderProgram*)
-  bool Read();
-  void Render(Painter *render);
+  bool read();
+  void render(Painter *render);
 
 protected:
   std::vector<vesShaderProgram*> Programs;

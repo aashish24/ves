@@ -33,8 +33,8 @@ class vesShader : public ProgramShader
 public:
   vesShader(vesShaderProgram* program);
   ~vesShader();
-  bool Read();
-  void Render(Painter *render);
+  bool read();
+  void render(Painter *render);
 
 private:
   vesShaderInternal *Internal;

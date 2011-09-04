@@ -34,14 +34,14 @@ class vesMapper : public vsgGeometryNode, public vsgBoundedObject
 public:
   vesMapper();
   ~vesMapper();
-  bool Read();
+  bool read();
   vesMatrix4x4f Eval();
-  void Render(Painter* render);
-  void Render(vesShaderProgram *program);
+  void render(Painter* render);
+  void render(vesShaderProgram *program);
   void SetTriangleData(vesTriangleData* data);
   vesTriangleData* GetTriangleData();
   vesTriangleData* GetData();
-  void ComputeBounds();
+  void computeBounds();
   void SetColor(float r, float g, float b, float a);
   vesGetMacro(Red, float)
   vesGetMacro(Green, float)

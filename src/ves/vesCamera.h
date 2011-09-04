@@ -30,9 +30,9 @@ class vesCamera: public vsg::Transform
 public:
   vesCamera();
   ~vesCamera();
-  bool Read();
-  void Render(Painter *render);
-  void ComputeBounds();
+  bool read();
+  void render(Painter *render);
+  void computeBounds();
   void AddActorCollection(vesActorCollection* actor);
 
   vesSetGetMacro(UseHorizontalViewAngle,bool)

@@ -34,8 +34,8 @@ public:
   vsgNode();
   ~vsgNode();
   virtual bool accept(vsgVisitor *vsgVisitor){return true;}
-  virtual bool Read() = 0;
-  virtual void Render(Painter * render) =0;
+  virtual bool read() = 0;
+  virtual void render(Painter * render) =0;
 };
 
 typedef vsgNode* SFNode;

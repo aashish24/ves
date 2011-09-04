@@ -59,12 +59,12 @@ vesMatrix4x4f vesMapper::Eval()
   //  return temp;
 }
 
-bool vesMapper::Read()
+bool vesMapper::read()
 {
   return true;
 }
 
-void vesMapper::Render(vesShaderProgram *program)
+void vesMapper::render(vesShaderProgram *program)
 {
   glVertexAttrib4f(program->GetAttribute("a_texcoord"), 0.8, 0.8, 0.8, 1.0);
   glVertexAttribPointer(program->GetAttribute("a_vertex"),
@@ -99,7 +99,7 @@ vesTriangleData* vesMapper::GetTriangleData()
   return this->Data;
 }
 
-void vesMapper::ComputeBounds()
+void vesMapper::computeBounds()
 {
   vesVector3f min = this->Data->GetMin();
   vesVector3f max = this->Data->GetMax();
@@ -143,7 +143,7 @@ void vesMapper::Normalize()
   */
 }
 
-void vesMapper::Render(Painter* render)
+void vesMapper::render(Painter* render)
 {
   render->Mapper(this);
 }

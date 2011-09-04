@@ -61,9 +61,9 @@ public:
   Shape();
   virtual ~Shape();
   bool accept(vsgVisitor* vsgVisitor);
-  bool Read();                // Should be deleted
-  void Render(Painter* render); // Should be deleted
-  void ComputeBounds();         // Should be deleted
+  bool read();                // Should be deleted
+  void render(Painter* render); // Should be deleted
+  void computeBounds();         // Should be deleted
 
 private:
   ShapeInternal *_internal;

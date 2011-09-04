@@ -35,7 +35,7 @@ class vsgBoundedObject
 public:
   vsgBoundedObject();
   ~vsgBoundedObject();
-  virtual void ComputeBounds()=0;
+  virtual void computeBounds()=0;
   InOutSF(BBoxCenter,SFVec3f)
   InOutSF(BBoxSize, SFVec3f)
   InOutSF(min,SFVec3f)

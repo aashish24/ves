@@ -45,8 +45,8 @@ public:
   vesMultitouchCamera();
   ~vesMultitouchCamera();
 
-  bool Read();
-  void Render(Painter* render);
+  bool read();
+  void render(Painter* render);
   void SetWidthHeight(const unsigned int width,
                       const unsigned int height);
   vesMatrix4x4f GetMatrix();
