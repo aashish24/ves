@@ -154,6 +154,7 @@ void Painter::visitShape(vsg::Shape* shape)
   program->SetUniformMatrix3x3f("u_normalMatrix",normal_matrix);
   program->SetUniformVector3f("u_ecLightDir",light);
   program->SetUniformFloat("u_opacity", mapper->alpha());
+  program->SetUniformInt("u_enable_diffuse", 1);
 
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -215,6 +216,7 @@ void Painter::visitShape(vsg::Shape* shape)
                    &mapper->data()->GetTriangles()[0]);
 
     // draw lines
+    program->SetUniformInt("u_enable_diffuse", 0);
     glDrawElements(GL_LINES,
                    mapper->data()->GetLines().size() * 2,
                    GL_UNSIGNED_SHORT,
