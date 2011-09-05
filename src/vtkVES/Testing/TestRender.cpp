@@ -245,6 +245,31 @@ init(void)
 }
 
 
+static void
+write_ppm(const char *filename, const GLubyte *buffer, int width, int height)
+{
+  FILE *f = fopen(filename, "w");
+  if (f) {
+    int i, x, y;
+    const GLubyte *ptr = buffer;
+    fprintf(f,"P6\n");
+    fprintf(f,"%i %i\n", width, height);
+    fprintf(f,"255\n");
+    fclose(f);
+    f = fopen(filename, "ab");  /* reopen in binary append mode */
+    for (y = height-1; y >= 0; y--) {
+      for (x = 0; x < width; x++) {
+         i = (y*width + x) * 4;
+         fputc(ptr[i], f);   /* write red */
+         fputc(ptr[i+1], f); /* write green */
+         fputc(ptr[i+2], f); /* write blue */
+      }
+    }
+    fclose(f);
+  }
+}
+
+
 /*
  * Create an RGB, double-buffered X window.
  * Return the window and context handles.
@@ -507,7 +532,12 @@ main(int argc, char *argv[])
    // begin the event loop if not in testing mode
    if (!view->isTesting()) {
      event_loop(x_dpy, win, egl_dpy, egl_surf);
-   }
+   } else {
+    GLubyte* buffer = new GLubyte[winWidth * winHeight * 4];
+    glReadPixels(0, 0, winWidth, winHeight, GL_RGBA, GL_UNSIGNED_BYTE, (void*)buffer);
+    write_ppm("test.ppm", buffer, winWidth, winHeight);
+    delete [] buffer;
+  }
 
    eglDestroyContext(egl_dpy, egl_ctx);
    eglDestroySurface(egl_dpy, egl_surf);
