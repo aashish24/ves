@@ -18,8 +18,6 @@
   limitations under the License.
  ========================================================================*/
 
-#import "ESRenderer.h"
-
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
 
@@ -30,7 +28,7 @@ struct vesMapper;
 struct vesActor;
 struct vesCamera;
 
-@interface ES2Renderer : NSObject <ESRenderer>
+@interface ES2Renderer : NSObject
 {
 @private
 
