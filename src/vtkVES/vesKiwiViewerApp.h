@@ -18,39 +18,42 @@
   limitations under the License.
  ========================================================================*/
 
-#import <OpenGLES/ES2/gl.h>
-#import <OpenGLES/ES2/glext.h>
+#ifndef __vesKiwiViewerApp_h
+#define __vesKiwiViewerApp_h
 
-struct vesRenderer;
-struct vesShader;
-struct vesMapper;
-struct vesActor;
-struct vesCamera;
-struct vesKiwiViewerApp;
 
-@interface ES2Renderer : NSObject
+#include <string>
+
+class vesActor;
+class vesMapper;
+class vesRenderer;
+class vesCamera;
+
+class vesKiwiViewerApp
 {
-@private
+public:
 
-  vesShader *Shader;
-	vesRenderer *renderer;
-  vesMapper* mMapper;
-  vesActor* mActor;
-  vesKiwiViewerApp* mApp;
+  vesKiwiViewerApp();
+  ~vesKiwiViewerApp();
 
-}
+  void setVertexShaderSource(const std::string& source);
+  void setFragmentShaderSource(const std::string& source);
+  bool initializeShaderProgram();
+  bool initializeRendering();
 
-- (struct vesRenderer*) getRenderer;
-- (struct vesCamera*) getCamera;
-- (struct vesKiwiViewerApp*) getApp;
+  vesActor* actor() const;
+  vesMapper* mapper() const;
+  vesCamera* camera() const;
+  vesRenderer* renderer() const;
 
-- (void)render;
-- (void)resetView;
-- (BOOL)resizeFromLayer:(int)w height:(int) h;
-- (void)setFilePath:(NSString*)fpath;
+private:
 
-- (int)getNumberOfFacetsForCurrentModel;
-- (int)getNumberOfLinesForCurrentModel;
-- (int)getNumberOfVerticesForCurrentModel;
-@end
+  vesKiwiViewerApp(const vesKiwiViewerApp&); // Not implemented
+  void operator=(const vesKiwiViewerApp&); // Not implemented
 
+  class vesInternal;
+  vesInternal* Internal;
+};
+
+
+#endif

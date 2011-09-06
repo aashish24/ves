@@ -3,6 +3,7 @@ find_package(VTK REQUIRED)
 include(${VTK_USE_FILE})
 
 set(sources
+  vesKiwiViewerApp.cpp
   vtkPolyDataToTriangleData.cpp)
 
 

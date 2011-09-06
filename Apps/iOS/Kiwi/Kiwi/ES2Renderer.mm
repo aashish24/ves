@@ -21,10 +21,9 @@
 #import "ES2Renderer.h"
 #import "DataReader.h"
 
+#include "vesKiwiViewerApp.h"
 #include "vesRenderer.h"
 #include "vesCamera.h"
-#include "vesShader.h"
-#include "vesShaderProgram.h"
 #include "vesTriangleData.h"
 #include "vesMapper.h"
 #include "vesActor.h"
@@ -37,47 +36,39 @@
   self = [super init];
   if (self)
   {
+    self->mApp = new vesKiwiViewerApp;
 
-      // Create a C++ renderer object
-    renderer = new vesRenderer();
+    NSString* vertShaderPathname = [[NSBundle mainBundle] pathForResource:@"Shader" ofType:@"vsh"];
+    NSString* fragShaderPathname = [[NSBundle mainBundle] pathForResource:@"Shader" ofType:@"fsh"];
 
-    NSString *vertShaderPathname, *fragShaderPathname;
-    GLchar* vertexSourceStr, *fragmentSourceStr;
-
-    vertShaderPathname = [[NSBundle mainBundle] pathForResource:@"Shader" ofType:@"vsh"];
-    fragShaderPathname = [[NSBundle mainBundle] pathForResource:@"Shader" ofType:@"fsh"];
-
-    vertexSourceStr = (GLchar *)[[NSString stringWithContentsOfFile:vertShaderPathname
+    NSString* vertexSourceStr = [NSString stringWithContentsOfFile:vertShaderPathname
                                                            encoding:NSUTF8StringEncoding
-                                                              error:nil] UTF8String];
-    fragmentSourceStr = (GLchar *)[[NSString stringWithContentsOfFile:fragShaderPathname
+                                                              error:nil];
+    NSString* fragmentSourceStr = [NSString stringWithContentsOfFile:fragShaderPathname
                                                              encoding:NSUTF8StringEncoding
-                                                                error:nil] UTF8String];
+                                                                error:nil];
 
 
-    shaderProgram = new vesShaderProgram(vertexSourceStr,
-                                   fragmentSourceStr,
-                                   (_uni("u_mvpMatrix"),
-                                    _uni("u_normalMatrix"),
-                                    _uni("u_ecLightDir"),
-                                    _uni("u_opacity"),
-                                    _uni("u_enable_diffuse")),
-                                   (_att("a_vertex"),
-                                    _att("a_normal"),
-                                    _att("a_vertex_color"))
-                                   );
-    self->Shader = new vesShader(shaderProgram);
+    self->mApp->setVertexShaderSource([vertexSourceStr UTF8String]);
+    self->mApp->setFragmentShaderSource([fragmentSourceStr UTF8String]);
+    self->mApp->initializeShaderProgram();
+    self->mApp->initializeRendering();
+
+    renderer = self->mApp->renderer();
+    mMapper = self->mApp->mapper();
+    mActor = self->mApp->actor();
 
     NSString* defaultFile = [[NSBundle mainBundle] pathForResource:@"current" ofType:@"vtk"];
     vesTriangleData* triangleData = [[[DataReader new] autorelease] readData:defaultFile];
-    mMapper = new vesMapper();
     mMapper->setTriangleData(triangleData);
-    mActor = new vesActor(self->Shader, mMapper);
-    mActor->setColor(0.8, 0.8, 0.8, 1.0);
-    renderer->AddActor(mActor);
     }
 
   return self;
+}
+
+- (vesKiwiViewerApp*) getApp
+{
+  return self->mApp;
 }
 
 - (vesRenderer*) getRenderer
@@ -98,8 +89,6 @@
 - (void) render
 {
   glClearColor(63/255.0f, 96/255.0f, 144/255.0, 1.0f);
-  // Use shader program
-  shaderProgram->Use();
   renderer->ResetCameraClippingRange();
   renderer->Render();
 }
@@ -112,10 +101,7 @@
 
 - (void)dealloc
 {
-  shaderProgram->Delete();
-  delete renderer;
-  renderer = 0;
-
+  delete self->mApp;
   [super dealloc];
 }
 
