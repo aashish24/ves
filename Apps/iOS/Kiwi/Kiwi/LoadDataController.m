@@ -59,25 +59,13 @@
   [super viewDidLoad];
   self.clearsSelectionOnViewWillAppear = YES;
   self.contentSizeForViewInPopover = CGSizeMake(275.0, 570.0);
-  self.exampleData = [NSMutableArray array];
-  [_exampleData addObject:@"Sphere"];
-  [_exampleData addObject:@"Utah Teapot"];
-  [_exampleData addObject:@"Stanford Bunny"];
-  // there are some problems with this mesh
-  //[_exampleData addObject:@"UNC Old Well"];
-  [_exampleData addObject:@"NLM Visible Woman Hand"];
-  [_exampleData addObject:@"NAMIC Knee Atlas"];
-  [_exampleData addObject:@"Mount St. Helens"];
-  [_exampleData addObject:@"Space Shuttle"];
-  [_exampleData addObject:@"Buckyball"];
-  [_exampleData addObject:@"Motor"];
-  [_exampleData addObject:@"Caffeine"];
   
   self.helpStrings = [NSMutableArray array];
   // not ready for prime time...
   //[_helpStrings addObject:@"from the web."];
   [_helpStrings addObject:@"from DropBox."];
   [_helpStrings addObject:@"from email."];
+
 }
 
 - (void)viewDidUnload
@@ -175,70 +163,7 @@
 
   if (_delegate != nil) {
     if (indexPath.section == 0) {
-      NSString *label = [_exampleData objectAtIndex:indexPath.row];
-      if (label == @"Sphere")
-      {
-        [_delegate dataSelected:[NSURL fileURLWithPath:[[NSBundle mainBundle] 
-                                                         pathForResource:@"current" 
-                                                         ofType:@"stl"]]];
-      }
-      else if (label == @"Utah Teapot") {
-        [_delegate dataSelected:[NSURL fileURLWithPath:[[NSBundle mainBundle] 
-                                                        pathForResource:@"teapot" 
-                                                        ofType:@"vtp"]]];
-      }
-      else if (label == @"Stanford Bunny") {
-        [_delegate dataSelected:[NSURL fileURLWithPath:[[NSBundle mainBundle] 
-                                                        pathForResource:@"bunny" 
-                                                        ofType:@"vtp"]]];
-      }
-      else if (label == @"UNC Old Well") {
-        [_delegate dataSelected:[NSURL fileURLWithPath:[[NSBundle mainBundle] 
-                                                        pathForResource:@"old_well" 
-                                                        ofType:@"vtp"]]];
-      }
-      else if (label == @"NLM Visible Woman Hand") {
-        [_delegate dataSelected:[NSURL fileURLWithPath:[[NSBundle mainBundle] 
-                                                        pathForResource:@"visible-woman-hand" 
-                                                        ofType:@"vtp"]]];
-      }
-      else if (label == @"NAMIC Knee Atlas")
-      {
-        [_delegate dataSelected:[NSURL fileURLWithPath:[[NSBundle mainBundle] 
-                                                        pathForResource:@"AppendedKneeData" 
-                                                        ofType:@"vtp"]]];
-      }
-      else if (label == @"Mount St. Helens")
-      {
-        [_delegate dataSelected:[NSURL fileURLWithPath:[[NSBundle mainBundle] 
-                                                        pathForResource:@"MountStHelen" 
-                                                        ofType:@"vtp"]]];
-      }
-      else if (label == @"Space Shuttle")
-      {
-        [_delegate dataSelected:[NSURL fileURLWithPath:[[NSBundle mainBundle] 
-                                                        pathForResource:@"shuttle" 
-                                                        ofType:@"vtp"]]];
-      }
-      else if (label == @"Buckyball")
-      {
-        [_delegate dataSelected:[NSURL fileURLWithPath:[[NSBundle mainBundle] 
-                                                        pathForResource:@"Buckyball" 
-                                                        ofType:@"vtp"]]];
-      }
-      else if (label == @"Motor")
-      {
-        [_delegate dataSelected:[NSURL fileURLWithPath:[[NSBundle mainBundle]
-                                                        pathForResource:@"motor"
-                                                        ofType:@"g"]]];
-      }
-      else if (label == @"Caffeine")
-      {
-        [_delegate dataSelected:[NSURL fileURLWithPath:[[NSBundle mainBundle]
-                                                        pathForResource:@"caffeine"
-                                                        ofType:@"pdb"]]];
-      }
-
+      [_delegate dataSelected:indexPath.row];
     }
     else if (indexPath.section == 1) {
       NSString *label = [_helpStrings objectAtIndex:indexPath.row];

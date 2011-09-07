@@ -30,6 +30,8 @@
 
 @implementation ES2Renderer
 
+@synthesize app = mApp;
+
 // Create an OpenGL ES 2.0 context
 - (id)init
 {
@@ -88,14 +90,12 @@
 
 - (void) render
 {
-  glClearColor(63/255.0f, 96/255.0f, 144/255.0, 1.0f);
-  renderer->ResetCameraClippingRange();
-  renderer->Render();
+  self->mApp->render();
 }
 
 - (BOOL) resizeFromLayer:(int) w height:(int) h
 {
-  renderer->Resize(w,h,1.0f);
+  self->mApp->resizeView(w, h);
   return YES;
 }
 
@@ -107,32 +107,7 @@
 
 - (void)resetView
 {
-  //
-  // this is just confusing...
-  // We want to set the direction to look from and view up
-  // then we want to dolly the camera so that the surface takes up
-  // a reasonable portion of the screen.
-  // the ResetCamera function will overwrite view up
-  // so we have to call things in this strange order.
-
-  //
-  // set direction to look from
-  renderer->GetCamera()->SetViewPlaneNormal(vesVector3f(0.0, 0.0, 1.0));
-
-  //
-  // dolly so that scene fits window
-  renderer->ResetCamera();
-
-  //
-  // The current ResetCamera() method pulls the camera back further than
-  // required.  ResetCamera should be fixed.  Until then, perform a dolly
-  // with a scale factor of 1.5 (a magic number).
-  renderer->GetCamera()->Dolly(1.5);
-
-  //
-  // now set the view plane normal
-  renderer->GetCamera()->SetViewUp(vesVector3f(0.0, 1.0, 0.0));
-  renderer->GetCamera()->OrthogonalizeViewUp();
+  self->mApp->resetView();
 }
 
 - (void) setFilePath :(NSString *) fpath

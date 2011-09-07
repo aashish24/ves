@@ -27,6 +27,7 @@
 #import "kiwiAppDelegate.h"
 
 @class ES2Renderer;
+struct vesKiwiViewerApp;
 
 // This class wraps the CAEAGLLayer from CoreAnimation into a convenient UIView subclass.
 // The view content is basically an EAGL surface you render your OpenGL scene into.
@@ -64,6 +65,8 @@
 - (void)forceRender;
 - (void)updateRefreshRate:(float) lastRenderFPS;
 - (int)currentRefreshRate;
+
+-(struct vesKiwiViewerApp*) getApp;
 
 - (void)resetView;
 - (void)setFilePath:(NSString*)fpath;

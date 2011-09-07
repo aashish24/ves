@@ -24,6 +24,7 @@
 #include "vesRenderer.h"
 #include "vesShader.h"
 #include "vesShaderProgram.h"
+#include "vesGMTL.h"
 
 #include <cassert>
 
@@ -58,12 +59,26 @@ public:
 
   std::string VertexShaderSource;
   std::string FragmentShaderSource;
+
+  std::vector<std::string> BuiltinDatasetNames;
+  std::vector<std::string> BuiltinDatasetFilenames;
 };
 
 //----------------------------------------------------------------------------
 vesKiwiViewerApp::vesKiwiViewerApp()
 {
   this->Internal = new vesInternal();
+
+  this->addBuiltinDataset("Sphere", "current.stl");
+  this->addBuiltinDataset("Utah Teapot", "teapot.vtp");
+  this->addBuiltinDataset("Stanford Bunny", "bunny.vtp");
+  this->addBuiltinDataset("NLM Visible Woman Hand", "visible-woman-hand.vtp");
+  this->addBuiltinDataset("NAMIC Knee Atlas", "AppendedKneeData.vtp");
+  this->addBuiltinDataset("Mount St. Helens", "MountStHelen.vtp");
+  this->addBuiltinDataset("Space Shuttle", "shuttle.vtp");
+  this->addBuiltinDataset("Buckyball", "Buckyball.vtp");
+  this->addBuiltinDataset("Motor", "motor.g");
+  this->addBuiltinDataset("Caffeine", "caffeine.pdb");
 }
 
 //----------------------------------------------------------------------------
@@ -95,6 +110,85 @@ vesCamera* vesKiwiViewerApp::camera() const
 vesRenderer* vesKiwiViewerApp::renderer() const
 {
   return this->Internal->Renderer;
+}
+
+//----------------------------------------------------------------------------
+int vesKiwiViewerApp::numberOfBuiltinDatasets() const
+{
+  return static_cast<int>(this->Internal->BuiltinDatasetNames.size());
+}
+
+//----------------------------------------------------------------------------
+int vesKiwiViewerApp::defaultBuiltinDatasetIndex() const
+{
+  return 0;
+}
+
+//----------------------------------------------------------------------------
+std::string vesKiwiViewerApp::builtinDatasetName(int index)
+{
+  assert(index >= 0 && index < this->numberOfBuiltinDatasets());
+  return this->Internal->BuiltinDatasetNames[index];
+}
+
+//----------------------------------------------------------------------------
+std::string vesKiwiViewerApp::builtinDatasetFilename(int index)
+{
+  assert(index >= 0 && index < this->numberOfBuiltinDatasets());
+  return this->Internal->BuiltinDatasetFilenames[index];
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiViewerApp::addBuiltinDataset(const std::string& name, const std::string& filename)
+{
+  this->Internal->BuiltinDatasetNames.push_back(name);
+  this->Internal->BuiltinDatasetFilenames.push_back(filename);
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiViewerApp::render()
+{
+  glClearColor(63/255.0f, 96/255.0f, 144/255.0, 1.0f);
+  this->Internal->Renderer->ResetCameraClippingRange();
+  this->Internal->Renderer->Render();
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiViewerApp::resizeView(int width, int height)
+{
+  this->Internal->Renderer->Resize(width, height, 1.0f);
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiViewerApp::resetView()
+{
+  //
+  // this is just confusing...
+  // We want to set the direction to look from and view up
+  // then we want to dolly the camera so that the surface takes up
+  // a reasonable portion of the screen.
+  // the ResetCamera function will overwrite view up
+  // so we have to call things in this strange order.
+
+  //
+  // set direction to look from
+  vesRenderer* renderer = this->Internal->Renderer;
+  renderer->GetCamera()->SetViewPlaneNormal(vesVector3f(0.0, 0.0, 1.0));
+
+  //
+  // dolly so that scene fits window
+  renderer->ResetCamera();
+
+  //
+  // The current ResetCamera() method pulls the camera back further than
+  // required.  ResetCamera should be fixed.  Until then, perform a dolly
+  // with a scale factor of 1.5 (a magic number).
+  renderer->GetCamera()->Dolly(1.5);
+
+  //
+  // now set the view plane normal
+  renderer->GetCamera()->SetViewUp(vesVector3f(0.0, 1.0, 0.0));
+  renderer->GetCamera()->OrthogonalizeViewUp();
 }
 
 //----------------------------------------------------------------------------

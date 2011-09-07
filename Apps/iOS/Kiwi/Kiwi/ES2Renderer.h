@@ -42,7 +42,6 @@ struct vesKiwiViewerApp;
 
 - (struct vesRenderer*) getRenderer;
 - (struct vesCamera*) getCamera;
-- (struct vesKiwiViewerApp*) getApp;
 
 - (void)render;
 - (void)resetView;
@@ -52,5 +51,8 @@ struct vesKiwiViewerApp;
 - (int)getNumberOfFacetsForCurrentModel;
 - (int)getNumberOfLinesForCurrentModel;
 - (int)getNumberOfVerticesForCurrentModel;
+
+@property (readonly) struct vesKiwiViewerApp* app;
+
 @end
 

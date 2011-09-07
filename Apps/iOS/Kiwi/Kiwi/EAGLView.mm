@@ -122,6 +122,11 @@
   return self;
 }
 
+-(struct vesKiwiViewerApp*) getApp
+{
+  return self->renderer.app;
+}
+
 - (void)layoutSubviews 
 {
   [EAGLContext setCurrentContext:context];

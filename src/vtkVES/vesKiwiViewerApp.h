@@ -33,18 +33,33 @@ class vesKiwiViewerApp
 {
 public:
 
+
   vesKiwiViewerApp();
   ~vesKiwiViewerApp();
+
+
+  int numberOfBuiltinDatasets() const;
+  int defaultBuiltinDatasetIndex() const;
+  std::string builtinDatasetName(int index);
+  std::string builtinDatasetFilename(int index);
 
   void setVertexShaderSource(const std::string& source);
   void setFragmentShaderSource(const std::string& source);
   bool initializeShaderProgram();
   bool initializeRendering();
 
+  void render();
+  void resetView();
+  void resizeView(int width, int height);
+
   vesActor* actor() const;
   vesMapper* mapper() const;
   vesCamera* camera() const;
   vesRenderer* renderer() const;
+
+protected:
+
+  void addBuiltinDataset(const std::string& name, const std::string& filename);
 
 private:
 

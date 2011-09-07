@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1D3623260D0F684500981E51 /* kiwiAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D3623250D0F684500981E51 /* kiwiAppDelegate.m */; };
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
@@ -46,6 +45,7 @@
 		436B34B813C802D500C5726C /* Kiwi_Splash_72.png in Resources */ = {isa = PBXBuildFile; fileRef = 436B34B313C802D500C5726C /* Kiwi_Splash_72.png */; };
 		43C1C1CE1410533A00A721F7 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 43C1C1CD1410533A00A721F7 /* Default.png */; };
 		43EB039814105402002F463B /* libvtkVES.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43EB039714105402002F463B /* libvtkVES.a */; };
+		43FA5BE4141705FD00ECC80E /* kiwiAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 43FA5BE3141705FD00ECC80E /* kiwiAppDelegate.mm */; };
 		453036EB1406A298003A861A /* InfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 453036EA1406A298003A861A /* InfoView.xib */; };
 		6F25E721137DEA5400BF4BCA /* current.stl in Resources */ = {isa = PBXBuildFile; fileRef = 6F25E720137DEA5400BF4BCA /* current.stl */; };
 		6F41B5C01360C0CA00D0079D /* InfoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F41B5BE1360C0CA00D0079D /* InfoView.m */; };
@@ -70,7 +70,6 @@
 /* Begin PBXFileReference section */
 		1D30AB110D05D00D00671497 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1D3623240D0F684500981E51 /* kiwiAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kiwiAppDelegate.h; sourceTree = "<group>"; };
-		1D3623250D0F684500981E51 /* kiwiAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = kiwiAppDelegate.m; sourceTree = "<group>"; };
 		1D6058910D05DD3D006BFB54 /* kiwi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = kiwi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		1FBD34E2132163C300738902 /* current.vtk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = current.vtk; sourceTree = "<group>"; };
@@ -115,6 +114,7 @@
 		436B34B313C802D500C5726C /* Kiwi_Splash_72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Kiwi_Splash_72.png; sourceTree = "<group>"; };
 		43C1C1CD1410533A00A721F7 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		43EB039714105402002F463B /* libvtkVES.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkVES.a; path = "../CMakeBuild/build/CMakeExternals/Build/ves-device/lib/libvtkVES.a"; sourceTree = "<group>"; };
+		43FA5BE3141705FD00ECC80E /* kiwiAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = kiwiAppDelegate.mm; sourceTree = "<group>"; };
 		453036EA1406A298003A861A /* InfoView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InfoView.xib; sourceTree = "<group>"; };
 		6F25E720137DEA5400BF4BCA /* current.stl */ = {isa = PBXFileReference; lastKnownFileType = file; path = current.stl; sourceTree = "<group>"; };
 		6F41B5BD1360C0C900D0079D /* InfoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfoView.h; sourceTree = "<group>"; };
@@ -180,7 +180,7 @@
 				28FD14FC0DC6FC130079059D /* EAGLView.h */,
 				28FD14FD0DC6FC130079059D /* EAGLView.mm */,
 				1D3623240D0F684500981E51 /* kiwiAppDelegate.h */,
-				1D3623250D0F684500981E51 /* kiwiAppDelegate.m */,
+				43FA5BE3141705FD00ECC80E /* kiwiAppDelegate.mm */,
 				6F41B5BD1360C0C900D0079D /* InfoView.h */,
 				6F41B5BE1360C0CA00D0079D /* InfoView.m */,
 				453036EA1406A298003A861A /* InfoView.xib */,
@@ -404,7 +404,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				1D60589B0D05DD56006BFB54 /* main.m in Sources */,
-				1D3623260D0F684500981E51 /* kiwiAppDelegate.m in Sources */,
 				28FD14FE0DC6FC130079059D /* EAGLView.mm in Sources */,
 				2514C27310084DB100A42282 /* ES2Renderer.mm in Sources */,
 				6F41B5C01360C0CA00D0079D /* InfoView.m in Sources */,
@@ -412,6 +411,7 @@
 				4307FCFE13C8E32100FFF019 /* DataReader.mm in Sources */,
 				43006996140842770050DA06 /* GLViewController.m in Sources */,
 				431FC64E1408B7A5006B9246 /* TitleBarViewContainer.m in Sources */,
+				43FA5BE4141705FD00ECC80E /* kiwiAppDelegate.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
