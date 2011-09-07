@@ -348,3 +348,15 @@ int vesKiwiViewerApp::numberOfModelLines() const
 {
   return static_cast<int>(this->Internal->Mapper->triangleData()->GetLines().size());
 }
+
+//----------------------------------------------------------------------------
+int vesKiwiViewerApp::viewWidth() const
+{
+  return this->Internal->Renderer->GetWidth();
+}
+
+//----------------------------------------------------------------------------
+int vesKiwiViewerApp::viewHeight() const
+{
+  return this->Internal->Renderer->GetHeight();
+}

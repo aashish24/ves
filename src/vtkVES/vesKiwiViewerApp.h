@@ -64,6 +64,9 @@ public:
   int numberOfModelVertices() const;
   int numberOfModelLines() const;
 
+  int viewWidth() const;
+  int viewHeight() const;
+
 protected:
 
   // These accessors are protected so that apps cannot use the APIs of
