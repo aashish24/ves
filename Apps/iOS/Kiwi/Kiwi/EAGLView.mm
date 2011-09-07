@@ -275,7 +275,6 @@
     NSDate* startRenderDate = [NSDate date];
     [EAGLContext setCurrentContext:context];
     glBindFramebuffer(GL_FRAMEBUFFER, viewFramebuffer);
-    glViewport(0, 0, backingWidth, backingHeight);
     [renderer render];
     glBindRenderbuffer(GL_RENDERBUFFER, viewRenderbuffer);
     [context presentRenderbuffer:GL_RENDERBUFFER];

@@ -157,6 +157,7 @@ void vesKiwiViewerApp::render()
 void vesKiwiViewerApp::resizeView(int width, int height)
 {
   this->Internal->Renderer->Resize(width, height, 1.0f);
+  glViewport(0, 0, width, height);
 }
 
 //----------------------------------------------------------------------------
