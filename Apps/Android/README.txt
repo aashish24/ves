@@ -80,7 +80,7 @@ cmake ../
 make -j4
 
 
---Build PointCloud demo
+--Build KiwiViewer app
 
 Execute the following commands:
 
@@ -88,7 +88,7 @@ export ANDROID_NDK=/path/to/android/android-ndk-r6
 
 # build native code
 # this will create a library and put it where ant will find it
-cd /path/to/ves/Apps/Android/PointCloud
+cd /path/to/ves/Apps/Android/Kiwi
 mkdir build
 cd build
 cmake -DANDROID_LEVEL=9 -DCMAKE_TOOLCHAIN_FILE=../../CMakeBuild/cmake/android.toolchain.cmake -DVTK_DIR=../../CMakeBuild/build/CMakeExternals/Build/vtkmodular-android -DVES_DIR=../../CMakeBuild/build/CMakeExternals/Build/ves-android ../
@@ -97,8 +97,8 @@ make
 # create ant build files
 # you can run 'android list targets' to find out the available targets
 
-cd /path/to/ves/Apps/Android/PointCloud
-android update project --name PointCloud --path . --target android-12
+cd /path/to/ves/Apps/Android/Kiwi
+android update project --name KiwiViewer --path . --target android-12
 
 # build app
 ant debug
@@ -107,11 +107,14 @@ ant debug
 --Running on your device
 
 Make sure that adb can see your device.  Run 'adb devices' and you should see
-your device listed.
+your device listed.  If your device does not appear in the list, try following
+the steps in the android documentation:
+
+  http://developer.android.com/guide/developing/device.html
 
 I struggled at this step, my device would not show up.  Finally I discovered
-that the problem was an app called EasyTether that I had installed on my phone
-which included an installed component on my macbook.  The macbook component prevents
+that the problem was an app called EasyTether that I had installed which
+included an installed component on my macbook.  The macbook component prevents
 adb from working.  See this blog to disable it:
 
   http://www.intohand.com/blog/?p=116
@@ -119,9 +122,9 @@ adb from working.  See this blog to disable it:
 Execute the following commands:
 
 # install to device
-adb -d install -r bin/PointCloud-debug.apk
+adb -d install -r bin/KiwiViewer-debug.apk
 
 # launch
-adb shell am start -a android.intent.action.MAIN -n com.example.native_activity/android.app.NativeActivity
+adb shell am start -a android.intent.action.MAIN -n com.kitware.KiwiViewer/.KiwiViewerActivity
 
 
