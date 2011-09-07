@@ -278,14 +278,14 @@ bool vesKiwiViewerApp::initializeShaderProgram()
   this->Internal->ShaderProgram = new vesShaderProgram(
                                    const_cast<char*>(this->Internal->VertexShaderSource.c_str()),
                                    const_cast<char*>(this->Internal->FragmentShaderSource.c_str()),
-                                   (_uni("u_mvpMatrix"),
-                                    _uni("u_normalMatrix"),
-                                    _uni("u_ecLightDir"),
-                                    _uni("u_opacity"),
-                                    _uni("u_enable_diffuse")),
-                                   (_att("a_vertex"),
-                                    _att("a_normal"),
-                                    _att("a_vertex_color")));
+                                   (_uni("modelViewProjectionMatrix"),
+                                    _uni("normalMatrix"),
+                                    _uni("lightDirection"),
+                                    _uni("opacity"),
+                                    _uni("enableDiffuse")),
+                                   (_att("vertexPosition"),
+                                    _att("vertexNormal"),
+                                    _att("vertexColor")));
 
   this->Internal->Shader = new vesShader(this->Internal->ShaderProgram);
   this->Internal->ShaderProgram->Use();

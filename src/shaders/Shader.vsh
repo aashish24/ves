@@ -13,32 +13,48 @@
 
  =========================================================================*/
 
-uniform mat4   u_mvpMatrix;     // model-view-projection matrix
-uniform mat3   u_normalMatrix;  // normal matrix
-uniform vec3   u_ecLightDir;     // light direction in eye coordinates
-uniform float  u_opacity;
-uniform bool   u_enable_diffuse;
+uniform mat4   modelViewProjectionMatrix;
+uniform mat3   normalMatrix;  
+uniform vec3   lightDirection;
+uniform float  opacity;
+uniform bool   enableDiffuse;
 
-attribute vec4 a_vertex;         // vertex position
-attribute vec3 a_normal;         // vertex normal
-attribute vec3 a_vertex_color;
+attribute vec4 vertexPosition;       
+attribute vec3 vertexNormal;
+attribute vec3 vertexColor;
 
-varying vec4 v_color;
+varying lowp vec4  varVertexColor;
+varying lowp vec4  varDiffuseColor;
+varying lowp vec4  varAmbientColor;
+
+varying lowp float varOpacity;
+varying highp vec4 varPosition;
+varying highp vec3 varNormal;
+varying highp vec3 varLightDirection;
 
 void main()
 {
-  // put vertex normal into eye coords
-  vec3 ec_normal = normalize(u_normalMatrix * a_normal);
+  // Default ambient color for now.
+  varAmbientColor = vec4(0.01, 0.01, 0.01, 0.0);
+  
+  // Default diffuse color for now.
+  varDiffuseColor = vec4(0.1, 0.1, 0.1, 0.0);
+    
+  // Transform vertex normal into eye space.
+  varNormal = normalize(normalMatrix * vertexNormal);
 
-  // compute diffuse scale factor
-  float diffuse = max(dot(u_ecLightDir,ec_normal), 0.0);
-
-  vec3 rgb = a_vertex_color;
-  if (u_enable_diffuse) {
-    rgb = vec3(.25,.25,.25) + diffuse * a_vertex_color;
-  }
-
-  v_color = vec4(rgb, u_opacity);
-
-  gl_Position = u_mvpMatrix * a_vertex;
+  // Save light direction (direction light for now)
+  varLightDirection = normalize(lightDirection);
+    
+  // Save opacity for shading later.
+  varOpacity = opacity;
+  
+  // Save vertex color for shading later.
+  varVertexColor = vec4(vertexColor, 0.0);
+    
+  // Save position for shading later.
+  varPosition = modelViewProjectionMatrix * vertexPosition;
+  
+  // GLSL still requires this.
+  gl_Position = varPosition;
 }
