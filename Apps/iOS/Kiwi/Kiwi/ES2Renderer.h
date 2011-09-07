@@ -18,23 +18,14 @@
   limitations under the License.
  ========================================================================*/
 
-#import <OpenGLES/ES2/gl.h>
-#import <OpenGLES/ES2/glext.h>
-
-struct vesRenderer;
-struct vesCamera;
 struct vesKiwiViewerApp;
 
 @interface ES2Renderer : NSObject
 {
 @private
 
-	vesRenderer *renderer;
   vesKiwiViewerApp* mApp;
 }
-
-- (struct vesRenderer*) getRenderer;
-- (struct vesCamera*) getCamera;
 
 - (void)render;
 - (void)resetView;

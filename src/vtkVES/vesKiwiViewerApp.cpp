@@ -20,15 +20,18 @@
 
 #include "vesKiwiViewerApp.h"
 #include "vesKiwiDataLoader.h"
+
 #include "vesActor.h"
+#include "vesCamera.h"
+#include "vesGMTL.h"
 #include "vesMapper.h"
 #include "vesRenderer.h"
 #include "vesShader.h"
 #include "vesShaderProgram.h"
 #include "vesTriangleData.h"
-#include "vesGMTL.h"
 
 #include <cassert>
+#include <cmath>
 
 //----------------------------------------------------------------------------
 class vesKiwiViewerApp::vesInternal
@@ -98,12 +101,6 @@ vesActor* vesKiwiViewerApp::actor() const
 }
 
 //----------------------------------------------------------------------------
-vesMapper* vesKiwiViewerApp::mapper() const
-{
-  return this->Internal->Mapper;
-}
-
-//----------------------------------------------------------------------------
 vesCamera* vesKiwiViewerApp::camera() const
 {
   assert(this->Internal->Renderer);
@@ -111,9 +108,21 @@ vesCamera* vesKiwiViewerApp::camera() const
 }
 
 //----------------------------------------------------------------------------
+vesMapper* vesKiwiViewerApp::mapper() const
+{
+  return this->Internal->Mapper;
+}
+
+//----------------------------------------------------------------------------
 vesRenderer* vesKiwiViewerApp::renderer() const
 {
   return this->Internal->Renderer;
+}
+
+//----------------------------------------------------------------------------
+vesShaderProgram* vesKiwiViewerApp::shaderProgram() const
+{
+  return this->Internal->ShaderProgram;
 }
 
 //----------------------------------------------------------------------------
@@ -167,7 +176,6 @@ void vesKiwiViewerApp::resizeView(int width, int height)
 //----------------------------------------------------------------------------
 void vesKiwiViewerApp::resetView()
 {
-  //
   // this is just confusing...
   // We want to set the direction to look from and view up
   // then we want to dolly the camera so that the surface takes up
@@ -180,20 +188,75 @@ void vesKiwiViewerApp::resetView()
   vesRenderer* renderer = this->Internal->Renderer;
   renderer->GetCamera()->SetViewPlaneNormal(vesVector3f(0.0, 0.0, 1.0));
 
-  //
   // dolly so that scene fits window
   renderer->ResetCamera();
 
-  //
   // The current ResetCamera() method pulls the camera back further than
   // required.  ResetCamera should be fixed.  Until then, perform a dolly
   // with a scale factor of 1.5 (a magic number).
   renderer->GetCamera()->Dolly(1.5);
 
-  //
   // now set the view plane normal
   renderer->GetCamera()->SetViewUp(vesVector3f(0.0, 1.0, 0.0));
   renderer->GetCamera()->OrthogonalizeViewUp();
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiViewerApp::handleTwoTouchPanGesture(double x0, double y0, double x1, double y1)
+{
+  // calculate the focal depth so we'll know how far to move
+  vesRenderer* ren = this->Internal->Renderer;
+  vesCamera* camera = ren->GetCamera();
+  vesVector3f viewFocus = camera->GetFocalPoint();
+  vesVector3f viewPoint = camera->GetPosition();
+  vesVector3f viewFocusDisplay = ren->ComputeWorldToDisplay(viewFocus);
+  float focalDepth = viewFocusDisplay[2];
+  
+  // map change into world coordinates
+  vesVector3f oldPickPoint = ren->ComputeDisplayToWorld(vesVector3f(x0, y0, focalDepth));
+  vesVector3f newPickPoint = ren->ComputeDisplayToWorld(vesVector3f(x1, y1, focalDepth));
+  vesVector3f motionVector = oldPickPoint - newPickPoint;
+  
+  vesVector3f newViewFocus = viewFocus + motionVector;
+  vesVector3f newViewPoint = viewPoint + motionVector;
+  camera->SetFocalPoint(newViewFocus);
+  camera->SetPosition(newViewPoint);
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiViewerApp::handleSingleTouchPanGesture(double deltaX, double deltaY)
+{
+  //
+  // Rotate camera
+  // Based on vtkInteractionStyleTrackballCamera::Rotate().
+  //
+  vesRenderer* ren = this->Internal->Renderer;
+  vesCamera *camera = ren->GetCamera();
+
+  double delta_elevation = -20.0 / ren->GetHeight();
+  double delta_azimuth = -20.0 / ren->GetWidth();
+  double motionFactor = 10.0;
+  
+  double rxf = deltaX * delta_azimuth * motionFactor;
+  double ryf = deltaY * delta_elevation * motionFactor;
+  
+  camera->Azimuth(rxf);
+  camera->Elevation(ryf);
+  camera->OrthogonalizeViewUp(); 
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiViewerApp::handleTwoTouchPinchGesture(double scale)
+{
+  this->Internal->Renderer->GetCamera()->Dolly(scale);
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiViewerApp::handleTwoTouchRotationGesture(double rotation)
+{
+  vesCamera* camera = this->Internal->Renderer->GetCamera();
+  camera->Roll(rotation * 180.0 / M_PI);
+  camera->OrthogonalizeViewUp();
 }
 
 //----------------------------------------------------------------------------
@@ -225,7 +288,6 @@ bool vesKiwiViewerApp::initializeShaderProgram()
 
   this->Internal->Shader = new vesShader(this->Internal->ShaderProgram);
   this->Internal->ShaderProgram->Use();
-
   return true;
 }
 
@@ -254,8 +316,6 @@ bool vesKiwiViewerApp::loadDataset(const std::string& filename)
 
   delete this->Internal->Mapper->triangleData();
   this->Internal->Mapper->setTriangleData(newData);
-  //this->Internal->Actor->read();
-
   return true;
 }
 

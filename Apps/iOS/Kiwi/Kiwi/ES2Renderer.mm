@@ -21,40 +21,29 @@
 #import "ES2Renderer.h"
 
 #include "vesKiwiViewerApp.h"
-#include "vesRenderer.h"
-#include "vesCamera.h"
-#include "vesTriangleData.h"
 
 @implementation ES2Renderer
 
 @synthesize app = mApp;
 
-// Create an OpenGL ES 2.0 context
 - (id)init
 {
   self = [super init];
   if (self)
   {
-    self->mApp = new vesKiwiViewerApp;
-
     NSString* vertShaderPathname = [[NSBundle mainBundle] pathForResource:@"Shader" ofType:@"vsh"];
     NSString* fragShaderPathname = [[NSBundle mainBundle] pathForResource:@"Shader" ofType:@"fsh"];
-
     NSString* vertexSourceStr = [NSString stringWithContentsOfFile:vertShaderPathname
-                                                           encoding:NSUTF8StringEncoding
-                                                              error:nil];
+                                          encoding:NSUTF8StringEncoding error:nil];
     NSString* fragmentSourceStr = [NSString stringWithContentsOfFile:fragShaderPathname
-                                                             encoding:NSUTF8StringEncoding
-                                                                error:nil];
+                                            encoding:NSUTF8StringEncoding error:nil];
 
-
+    self->mApp = new vesKiwiViewerApp;
     self->mApp->setVertexShaderSource([vertexSourceStr UTF8String]);
     self->mApp->setFragmentShaderSource([fragmentSourceStr UTF8String]);
     self->mApp->initializeShaderProgram();
     self->mApp->initializeRendering();
-
-    renderer = self->mApp->renderer();
-    }
+  }
 
   return self;
 }
@@ -62,16 +51,6 @@
 - (vesKiwiViewerApp*) getApp
 {
   return self->mApp;
-}
-
-- (vesRenderer*) getRenderer
-{
-  return self->renderer;
-}
-
-- (vesCamera*) getCamera
-{
-  return renderer->GetCamera();
 }
 
 - (void) render

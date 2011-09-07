@@ -25,18 +25,17 @@
 #include <string>
 
 class vesActor;
+class vesCamera;
 class vesMapper;
 class vesRenderer;
-class vesCamera;
+class vesShaderProgram;
 
 class vesKiwiViewerApp
 {
 public:
 
-
   vesKiwiViewerApp();
   ~vesKiwiViewerApp();
-
 
   int numberOfBuiltinDatasets() const;
   int defaultBuiltinDatasetIndex() const;
@@ -47,27 +46,35 @@ public:
   std::string loadDatasetErrorTitle() const;
   std::string loadDatasetErrorMessage() const;
 
-
   void setVertexShaderSource(const std::string& source);
   void setFragmentShaderSource(const std::string& source);
   bool initializeShaderProgram();
   bool initializeRendering();
 
   void render();
-
   void resetView();
   void resizeView(int width, int height);
+
+  void handleTwoTouchPanGesture(double x0, double y0, double x1, double y1);
+  void handleSingleTouchPanGesture(double deltaX, double deltaY);
+  void handleTwoTouchPinchGesture(double scale);
+  void handleTwoTouchRotationGesture(double rotation);
 
   int numberOfModelFacets() const;
   int numberOfModelVertices() const;
   int numberOfModelLines() const;
 
-  vesActor* actor() const;
-  vesMapper* mapper() const;
-  vesCamera* camera() const;
-  vesRenderer* renderer() const;
-
 protected:
+
+  // These accessors are protected so that apps cannot use the APIs of
+  // these objects.  Instead, this class should provide public methods to
+  // wrap the APIs.  The goal is to allow the ves APIs to be refactored
+  // without breaking the Android and iOS KiwiViewer apps.
+  vesActor* actor() const;
+  vesCamera* camera() const;
+  vesMapper* mapper() const;
+  vesRenderer* renderer() const;
+  vesShaderProgram* shaderProgram() const;
 
   void addBuiltinDataset(const std::string& name, const std::string& filename);
 

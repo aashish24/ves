@@ -21,8 +21,7 @@
 #import "EAGLView.h"
 #import "ES2Renderer.h"
 
-#import "vesCamera.h"
-#import "vesRenderer.h"
+#include "vesKiwiViewerApp.h"
 
 #define USE_DEPTH_BUFFER 1
 
@@ -383,30 +382,7 @@
   previousLocation.x = currentLocation.x - currentTranslation.x;
   previousLocation.y = currentLocation.y + currentTranslation.y;
   
-  //
-  // calculate the focal depth so we'll know how far to move
-  vesRenderer* ren = [self->renderer getRenderer];
-  vesCamera* camera = ren->GetCamera();
-  vesVector3f viewFocus = camera->GetFocalPoint();
-  vesVector3f viewFocusDisplay = ren->ComputeWorldToDisplay(viewFocus);
-  float focalDepth = viewFocusDisplay[2];
-  
-  //
-  // map change into world coordinates
-  vesVector3f newPickPoint = ren->ComputeDisplayToWorld(vesVector3f(currentLocation.x,
-                                                                    currentLocation.y,
-                                                                    focalDepth));
-  vesVector3f oldPickPoint = ren->ComputeDisplayToWorld(vesVector3f(previousLocation.x,
-                                                                    previousLocation.y,
-                                                                    focalDepth));
-  
-  vesVector3f motionVector = oldPickPoint - newPickPoint;
-  
-  vesVector3f viewPoint = camera->GetPosition();
-  vesVector3f newViewFocus = motionVector + viewFocus;
-  vesVector3f newViewPoint = motionVector + viewPoint;
-  camera->SetFocalPoint(newViewFocus);
-  camera->SetPosition(newViewPoint);
+  self->renderer.app->handleTwoTouchPanGesture(previousLocation.x, previousLocation.y, currentLocation.x, currentLocation.y);
 
   [self scheduleRender];
 }
@@ -462,11 +438,7 @@
   
   [self stopInertialMotion];
   
-  //
-  // apply dolly
-  vesRenderer* ren = [self->renderer getRenderer];
-  vesCamera* camera = ren->GetCamera();
-  camera->Dolly(sender.scale);
+  self->renderer.app->handleTwoTouchPinchGesture(sender.scale);
   
   //
   // reset scale so it won't accumulate
@@ -484,13 +456,8 @@
     }
   
     [self stopInertialMotion];
-  
-  //
-  // apply roll
-  vesRenderer* ren = [self->renderer getRenderer];
-  vesCamera* camera = ren->GetCamera();
-  camera->Roll(sender.rotation * 180.0 / M_PI);
-  camera->OrthogonalizeViewUp();
+
+  self->renderer.app->handleTwoTouchRotationGesture(sender.rotation);
   
   //
   // reset rotation so it won't accumulate
@@ -506,24 +473,7 @@
 
 - (void)rotate: (CGPoint)delta
 {
-  //
-  // Rotate camera
-  // Based on vtkInteractionStyleTrackballCamera::Rotate().
-  //
-  
-  vesRenderer* ren = [self->renderer getRenderer];
-  
-  double delta_elevation = -20.0 / ren->GetHeight();
-  double delta_azimuth = -20.0 / ren->GetWidth();
-  double motionFactor = 10.0;
-  
-  double rxf = delta.x * delta_azimuth * motionFactor;
-  double ryf = delta.y * delta_elevation * motionFactor;
-  
-  vesCamera *camera = [self->renderer getRenderer]->GetCamera();
-  camera->Azimuth(rxf);
-  camera->Elevation(ryf);
-  camera->OrthogonalizeViewUp();  
+  self->renderer.app->handleSingleTouchPanGesture(delta.x, delta.y); 
 }
 
 - (void)handleInertialRotation
