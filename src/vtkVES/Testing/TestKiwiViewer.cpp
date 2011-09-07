@@ -33,61 +33,18 @@
 #include <GLES2/gl2.h>
 #include <EGL/egl.h>
 
-#include <vesRenderer.h>
-#include <vesCamera.h>
-#include <vesShader.h>
-#include <vesShaderProgram.h>
-#include <vesMapper.h>
-#include <vesActor.h>
-#include <vesLegacyReader.h>
-#include <vesGMTL.h>
+#include <vesKiwiViewerApp.h>
 
-#include <vtkPolyDataToTriangleData.h>
-#include <vtkNew.h>
-#include <vtkPolyData.h>
-#include <vtkPointData.h>
-#include <vtkFloatArray.h>
-#include <vtkXMLPolyDataReader.h>
+static void write_ppm(const char *filename, const GLubyte *buffer, int width, int height);
 
+//----------------------------------------------------------------------------
 namespace {
 
-class RenderView {
+class vesTestHelper {
 public:
 
-  vesRenderer* renderer() {
-    return this->Renderer;
-  }
-
-  void setRenderer(vesRenderer* renderer) {
-    this->Renderer = renderer;
-  }
-
-  vesShader* shader() {
-    return this->Shader;
-  }
-
-  void setShader(vesShader* shader) {
-    this->Shader = shader;
-  }
-
-  vesShaderProgram* shaderProgram() {
-    return this->ShaderProgram;
-  }
-
-  void setShaderProgram(vesShaderProgram* shaderProgram) {
-    this->ShaderProgram = shaderProgram;
-  }
-
-  vesCamera* camera() {
-    return this->Renderer->GetCamera();
-  }
-
-  vesMapper* mapper() {
-    return this->Mapper;
-  }
-
-  void setMapper(vesMapper* mapper) {
-    this->Mapper = mapper;
+  vesKiwiViewerApp* app() {
+    return &this->App;
   }
 
   std::string sourceDirectory() {
@@ -106,63 +63,57 @@ public:
     this->IsTesting = testing;
   }
 
-  vesActor* actor() {
-    return this->Actor;
-  }
-
-  void setActor(vesActor* actor) {
-    this->Actor = actor;
-  }
-
-  void render() {
-    this->Renderer->ResetCameraClippingRange();
-    this->Renderer->Render();
-  }
-
-  void resize(int w, int h) {
-    this->Renderer->Resize(w, h, 1.0f);
-  }
-
-  void resetView() {
-    this->Renderer->ResetCamera();
-  }
-
 private:
-  vesRenderer*      Renderer;
-  vesShaderProgram* ShaderProgram;
-  vesShader*        Shader;
-  vesMapper*        Mapper;
-  vesActor*         Actor;
+
+  vesKiwiViewerApp App;
 
   std::string       SourceDirectory;
   bool              IsTesting;
 };
 
-RenderView* view = new RenderView();
+//----------------------------------------------------------------------------
+vesTestHelper* testHelper;
 
-
-
-void LoadData() {
-
-  std::string dataFile = view->sourceDirectory() + "/Apps/iOS/Kiwi/Kiwi/Data/AppendedKneeData.vtp";
-
-  vtkNew<vtkXMLPolyDataReader> reader;
-  reader->SetFileName(dataFile.c_str());
-  reader->Update();
-  vesTriangleData* data = vtkPolyDataToTriangleData::Convert(reader->GetOutput());
-  vtkPolyDataToTriangleData::ComputeVertexColorFromScalars(reader->GetOutput(), data);
-
-  view->setMapper(new vesMapper());
-  view->mapper()->setTriangleData(data);
-  view->setActor(new vesActor(view->shader(), view->mapper()));
-
-  view->actor()->setColor(0.8, 0.8, 0.8, 1.0);
-  view->renderer()->AddActor(view->actor());
-  view->resetView();
-  view->camera()->Dolly(1.5);
+//----------------------------------------------------------------------------
+void LoadData(int index)
+{
+  std::string dataRoot = testHelper->sourceDirectory() + "/Apps/iOS/Kiwi/Kiwi/Data/";
+  std::string filename = dataRoot + testHelper->app()->builtinDatasetFilename(index);
+  testHelper->app()->loadDataset(filename);
+  testHelper->app()->resetView();
 }
 
-std::string GetFileContents(const std::string& filename) {
+//----------------------------------------------------------------------------
+void LoadDefaultData()
+{
+  LoadData(testHelper->app()->defaultBuiltinDatasetIndex());
+}
+
+//----------------------------------------------------------------------------
+void DoTesting()
+{
+  // This loads each builtin dataset, renders it, and saves a screenshot
+
+  int width = testHelper->app()->viewWidth();
+  int height = testHelper->app()->viewHeight();
+  GLubyte* buffer = new GLubyte[width * height * 4];
+
+  // Note, this loop renders but does not bother to swap buffers
+  for (int i = 0; i < testHelper->app()->numberOfBuiltinDatasets(); ++i) {
+    LoadData(i);
+    testHelper->app()->render();
+    std::string datasetName = testHelper->app()->builtinDatasetName(i);
+    std::string imageName = datasetName + ".ppm";
+    glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, (void*)buffer);
+    write_ppm(imageName.c_str(), buffer, width, height);
+  }
+
+  delete [] buffer;
+}
+
+//----------------------------------------------------------------------------
+std::string GetFileContents(const std::string& filename)
+{
   std::ifstream file(filename.c_str());
   std::stringstream buffer;
   if (file) {
@@ -172,77 +123,48 @@ std::string GetFileContents(const std::string& filename) {
   return buffer.str();
 }
 
-void InitVes() {
-
-  view->setRenderer(new vesRenderer());
-
-  std::string vertexShaderFile = view->sourceDirectory() + "/src/shaders/Shader.vsh";
-  std::string fragmentShaderFile = view->sourceDirectory() + "/src/shaders/Shader.fsh";
+//----------------------------------------------------------------------------
+void InitRendering()
+{
+  std::string vertexShaderFile = testHelper->sourceDirectory() + "/src/shaders/Shader.vsh";
+  std::string fragmentShaderFile = testHelper->sourceDirectory() + "/src/shaders/Shader.fsh";
 
   std::string vertexSourceStr = GetFileContents(vertexShaderFile);
   std::string fragmentSourceStr = GetFileContents(fragmentShaderFile);
 
-  view->setShaderProgram(new vesShaderProgram(const_cast<char*>(vertexSourceStr.c_str()),
-                                 const_cast<char*>(fragmentSourceStr.c_str()),
-                                 (_uni("u_mvpMatrix"),
-                                  _uni("u_normalMatrix"),
-                                  _uni("u_ecLightDir"),
-                                  _uni("u_opacity"),
-                                  _uni("u_enable_diffuse")),
-                                 (_att("a_vertex"),
-                                  _att("a_normal"),
-                                  _att("a_vertex_color"))
-                                 ));
+  testHelper->app()->setVertexShaderSource(vertexSourceStr);
+  testHelper->app()->setFragmentShaderSource(fragmentSourceStr);
 
-  view->setShader(new vesShader(view->shaderProgram()));
-
-  glClearColor(63/255.0f, 96/255.0f, 144/255.0, 1.0f);
+  testHelper->app()->initializeShaderProgram();
+  testHelper->app()->initializeRendering();
 }
 
-bool ReadCommandLine(int argc, char* argv[]) {
-
+//----------------------------------------------------------------------------
+bool InitTest(int argc, char* argv[])
+{
   if (argc < 2) {
     printf("Usage: %s <path to VES source directory> [testing]\n", argv[0]);
     return false;
   }
 
-  view->setSourceDirectory(argv[1]);
+  testHelper = new vesTestHelper();
+  testHelper->setSourceDirectory(argv[1]);
 
   if (argc == 3) {
-    view->setTesting(true);
+    testHelper->setTesting(true);
   }
-
   return true;
 }
 
-};
-
-
-
-/* new window size or exposure */
-static void
-reshape(int width, int height)
+//----------------------------------------------------------------------------
+void FinalizeTest()
 {
-   glViewport(0, 0, (GLint) width, (GLint) height);
-   view->resize(width, height);
+  delete testHelper;
 }
 
+}; // end namespace
+//----------------------------------------------------------------------------
 
-static void
-init(void)
-{
-   typedef void (*proc)();
-
-#if 1 /* test code */
-   proc p = eglGetProcAddress("glMapBufferOES");
-   assert(p);
-#endif
-
-   glClearColor(0.0, 0.0, 0.0, 0.0);
-
-   InitVes();
-   LoadData();
-}
 
 
 static void
@@ -412,7 +334,7 @@ event_loop(Display *dpy, Window win,
          redraw = 1;
          break;
       case ConfigureNotify:
-         reshape(event.xconfigure.width, event.xconfigure.height);
+         testHelper->app()->resizeView(event.xconfigure.width, event.xconfigure.height);
          break;
       case KeyPress:
          {
@@ -447,7 +369,7 @@ event_loop(Display *dpy, Window win,
       }
 
       if (redraw) {
-         view->render();
+         testHelper->app()->render();
          eglSwapBuffers(egl_dpy, egl_surf);
       }
    }
@@ -457,95 +379,96 @@ event_loop(Display *dpy, Window win,
 int
 main(int argc, char *argv[])
 {
-   const int winWidth = 800, winHeight = 600;
-   Display *x_dpy;
-   Window win;
-   EGLSurface egl_surf;
-   EGLContext egl_ctx;
-   EGLDisplay egl_dpy;
-   char *dpyName = NULL;
-   GLboolean printInfo = GL_FALSE;
-   EGLint egl_major, egl_minor;
-   int i;
-   const char *s;
+  const int winWidth = 800, winHeight = 600;
+  Display *x_dpy;
+  Window win;
+  EGLSurface egl_surf;
+  EGLContext egl_ctx;
+  EGLDisplay egl_dpy;
+  char *dpyName = NULL;
+  GLboolean printInfo = GL_FALSE;
+  EGLint egl_major, egl_minor;
+  int i;
+  const char *s;
 
 
-  if (!ReadCommandLine(argc, argv))
-    {
+  if (!InitTest(argc, argv)) {
     return -1;
-    }
-
-   x_dpy = XOpenDisplay(dpyName);
-   if (!x_dpy) {
-      printf("Error: couldn't open display %s\n",
-             dpyName ? dpyName : getenv("DISPLAY"));
-      return -1;
-   }
-
-   egl_dpy = eglGetDisplay(x_dpy);
-   if (!egl_dpy) {
-      printf("Error: eglGetDisplay() failed\n");
-      return -1;
-   }
-
-   if (!eglInitialize(egl_dpy, &egl_major, &egl_minor)) {
-      printf("Error: eglInitialize() failed\n");
-      return -1;
-   }
-
-   s = eglQueryString(egl_dpy, EGL_VERSION);
-   printf("EGL_VERSION = %s\n", s);
-
-   s = eglQueryString(egl_dpy, EGL_VENDOR);
-   printf("EGL_VENDOR = %s\n", s);
-
-   s = eglQueryString(egl_dpy, EGL_EXTENSIONS);
-   printf("EGL_EXTENSIONS = %s\n", s);
-
-   s = eglQueryString(egl_dpy, EGL_CLIENT_APIS);
-   printf("EGL_CLIENT_APIS = %s\n", s);
-
-   make_x_window(x_dpy, egl_dpy,
-                 "OpenGL ES 2.x tri", 0, 0, winWidth, winHeight,
-                 &win, &egl_ctx, &egl_surf);
-
-   XMapWindow(x_dpy, win);
-   if (!eglMakeCurrent(egl_dpy, egl_surf, egl_surf, egl_ctx)) {
-      printf("Error: eglMakeCurrent() failed\n");
-      return -1;
-   }
-
-   if (printInfo) {
-      printf("GL_RENDERER   = %s\n", (char *) glGetString(GL_RENDERER));
-      printf("GL_VERSION    = %s\n", (char *) glGetString(GL_VERSION));
-      printf("GL_VENDOR     = %s\n", (char *) glGetString(GL_VENDOR));
-      printf("GL_EXTENSIONS = %s\n", (char *) glGetString(GL_EXTENSIONS));
-   }
-
-   init();
-
-   // render once
-   reshape(winWidth, winHeight);
-   view->render();
-   eglSwapBuffers(egl_dpy, egl_surf);
-
-   // begin the event loop if not in testing mode
-   if (!view->isTesting()) {
-     event_loop(x_dpy, win, egl_dpy, egl_surf);
-   } else {
-    GLubyte* buffer = new GLubyte[winWidth * winHeight * 4];
-    glReadPixels(0, 0, winWidth, winHeight, GL_RGBA, GL_UNSIGNED_BYTE, (void*)buffer);
-    write_ppm("test.ppm", buffer, winWidth, winHeight);
-    delete [] buffer;
   }
 
-   eglDestroyContext(egl_dpy, egl_ctx);
-   eglDestroySurface(egl_dpy, egl_surf);
-   eglTerminate(egl_dpy);
+  x_dpy = XOpenDisplay(dpyName);
+  if (!x_dpy) {
+    printf("Error: couldn't open display %s\n",
+           dpyName ? dpyName : getenv("DISPLAY"));
+    return -1;
+  }
+
+  egl_dpy = eglGetDisplay(x_dpy);
+  if (!egl_dpy) {
+    printf("Error: eglGetDisplay() failed\n");
+    return -1;
+  }
+
+  if (!eglInitialize(egl_dpy, &egl_major, &egl_minor)) {
+    printf("Error: eglInitialize() failed\n");
+    return -1;
+  }
+
+  s = eglQueryString(egl_dpy, EGL_VERSION);
+  printf("EGL_VERSION = %s\n", s);
+
+  s = eglQueryString(egl_dpy, EGL_VENDOR);
+  printf("EGL_VENDOR = %s\n", s);
+
+  s = eglQueryString(egl_dpy, EGL_EXTENSIONS);
+  printf("EGL_EXTENSIONS = %s\n", s);
+
+  s = eglQueryString(egl_dpy, EGL_CLIENT_APIS);
+  printf("EGL_CLIENT_APIS = %s\n", s);
+
+  make_x_window(x_dpy, egl_dpy,
+               "OpenGL ES 2.x tri", 0, 0, winWidth, winHeight,
+               &win, &egl_ctx, &egl_surf);
+
+  XMapWindow(x_dpy, win);
+  if (!eglMakeCurrent(egl_dpy, egl_surf, egl_surf, egl_ctx)) {
+    printf("Error: eglMakeCurrent() failed\n");
+    return -1;
+  }
+
+  if (printInfo) {
+    printf("GL_RENDERER   = %s\n", (char *) glGetString(GL_RENDERER));
+    printf("GL_VERSION    = %s\n", (char *) glGetString(GL_VERSION));
+    printf("GL_VENDOR     = %s\n", (char *) glGetString(GL_VENDOR));
+    printf("GL_EXTENSIONS = %s\n", (char *) glGetString(GL_EXTENSIONS));
+  }
 
 
-   XDestroyWindow(x_dpy, win);
-   XCloseDisplay(x_dpy);
+  InitRendering();
+  LoadDefaultData();
 
-   return 0;
+  // render once
+  testHelper->app()->resizeView(winWidth, winHeight);
+  testHelper->app()->render();
+  eglSwapBuffers(egl_dpy, egl_surf);
+
+  // begin the event loop if not in testing mode
+  if (!testHelper->isTesting()) {
+    event_loop(x_dpy, win, egl_dpy, egl_surf);
+  }
+  else {
+    DoTesting();
+  }
+
+  FinalizeTest();
+
+  eglDestroyContext(egl_dpy, egl_ctx);
+  eglDestroySurface(egl_dpy, egl_surf);
+  eglTerminate(egl_dpy);
+
+
+  XDestroyWindow(x_dpy, win);
+  XCloseDisplay(x_dpy);
+
+  return 0;
 }
