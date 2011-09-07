@@ -19,134 +19,60 @@
  ========================================================================*/
 
 #import "ES2Renderer.h"
-#import "DataReader.h"
 
-#include "vesRenderer.h"
-#include "vesCamera.h"
-#include "vesShader.h"
-#include "vesShaderProgram.h"
-#include "vesTriangleData.h"
-#include "vesMapper.h"
-#include "vesActor.h"
+#include "vesKiwiViewerApp.h"
 
 @implementation ES2Renderer
 
-// Create an OpenGL ES 2.0 context
+@synthesize app = mApp;
+
 - (id)init
 {
   self = [super init];
   if (self)
   {
+    NSString* vertShaderPathname = [[NSBundle mainBundle] pathForResource:@"Shader" ofType:@"vsh"];
+    NSString* fragShaderPathname = [[NSBundle mainBundle] pathForResource:@"Shader" ofType:@"fsh"];
+    NSString* vertexSourceStr = [NSString stringWithContentsOfFile:vertShaderPathname
+                                          encoding:NSUTF8StringEncoding error:nil];
+    NSString* fragmentSourceStr = [NSString stringWithContentsOfFile:fragShaderPathname
+                                            encoding:NSUTF8StringEncoding error:nil];
 
-      // Create a C++ renderer object
-    renderer = new vesRenderer();
-
-    NSString *vertShaderPathname, *fragShaderPathname;
-    GLchar* vertexSourceStr, *fragmentSourceStr;
-
-    vertShaderPathname = [[NSBundle mainBundle] pathForResource:@"Shader" ofType:@"vsh"];
-    fragShaderPathname = [[NSBundle mainBundle] pathForResource:@"Shader" ofType:@"fsh"];
-
-    vertexSourceStr = (GLchar *)[[NSString stringWithContentsOfFile:vertShaderPathname
-                                                           encoding:NSUTF8StringEncoding
-                                                              error:nil] UTF8String];
-    fragmentSourceStr = (GLchar *)[[NSString stringWithContentsOfFile:fragShaderPathname
-                                                             encoding:NSUTF8StringEncoding
-                                                                error:nil] UTF8String];
-
-
-    shaderProgram = new vesShaderProgram(vertexSourceStr,
-                                   fragmentSourceStr,
-                                   (_uni("u_mvpMatrix"),
-                                    _uni("u_normalMatrix"),
-                                    _uni("u_ecLightDir"),
-                                    _uni("u_opacity"),
-                                    _uni("u_enable_diffuse")),
-                                   (_att("a_vertex"),
-                                    _att("a_normal"),
-                                    _att("a_vertex_color"))
-                                   );
-    self->Shader = new vesShader(shaderProgram);
-
-    NSString* defaultFile = [[NSBundle mainBundle] pathForResource:@"current" ofType:@"vtk"];
-    vesTriangleData* triangleData = [[[DataReader new] autorelease] readData:defaultFile];
-    mMapper = new vesMapper();
-    mMapper->setTriangleData(triangleData);
-    mActor = new vesActor(self->Shader, mMapper);
-    mActor->setColor(0.8, 0.8, 0.8, 1.0);
-    renderer->AddActor(mActor);
-    }
+    self->mApp = new vesKiwiViewerApp;
+    self->mApp->setVertexShaderSource([vertexSourceStr UTF8String]);
+    self->mApp->setFragmentShaderSource([fragmentSourceStr UTF8String]);
+    self->mApp->initializeShaderProgram();
+    self->mApp->initializeRendering();
+  }
 
   return self;
 }
 
-- (vesRenderer*) getRenderer
+- (vesKiwiViewerApp*) getApp
 {
-  return self->renderer;
-}
-
-- (vesShader*) getShader
-{
-  return self->Shader;
-}
-
-- (vesCamera*) getCamera
-{
-  return renderer->GetCamera();
+  return self->mApp;
 }
 
 - (void) render
 {
-  glClearColor(63/255.0f, 96/255.0f, 144/255.0, 1.0f);
-  // Use shader program
-  shaderProgram->Use();
-  renderer->ResetCameraClippingRange();
-  renderer->Render();
+  self->mApp->render();
 }
 
 - (BOOL) resizeFromLayer:(int) w height:(int) h
 {
-  renderer->Resize(w,h,1.0f);
+  self->mApp->resizeView(w, h);
   return YES;
 }
 
 - (void)dealloc
 {
-  shaderProgram->Delete();
-  delete renderer;
-  renderer = 0;
-
+  delete self->mApp;
   [super dealloc];
 }
 
 - (void)resetView
 {
-  //
-  // this is just confusing...
-  // We want to set the direction to look from and view up
-  // then we want to dolly the camera so that the surface takes up
-  // a reasonable portion of the screen.
-  // the ResetCamera function will overwrite view up
-  // so we have to call things in this strange order.
-
-  //
-  // set direction to look from
-  renderer->GetCamera()->SetViewPlaneNormal(vesVector3f(0.0, 0.0, 1.0));
-
-  //
-  // dolly so that scene fits window
-  renderer->ResetCamera();
-
-  //
-  // The current ResetCamera() method pulls the camera back further than
-  // required.  ResetCamera should be fixed.  Until then, perform a dolly
-  // with a scale factor of 1.5 (a magic number).
-  renderer->GetCamera()->Dolly(1.5);
-
-  //
-  // now set the view plane normal
-  renderer->GetCamera()->SetViewUp(vesVector3f(0.0, 1.0, 0.0));
-  renderer->GetCamera()->OrthogonalizeViewUp();
+  self->mApp->resetView();
 }
 
 - (void) setFilePath :(NSString *) fpath
@@ -172,14 +98,13 @@
     n++;
     }
 
-  DataReader* reader = [[DataReader new] autorelease];
-  vesTriangleData* newData = [reader readData:fpath];
-  if (!newData)
-    {
+  bool loadSuccess = self->mApp->loadDataset([fpath UTF8String]);
+  if (!loadSuccess)
+  {
     [readerAlert dismissWithClickedButtonIndex:0 animated:YES];
     UIAlertView *alert = [[UIAlertView alloc]
-      initWithTitle:reader.errorTitle
-      message:reader.errorMessage
+      initWithTitle:[NSString stringWithUTF8String:self->mApp->loadDatasetErrorTitle().c_str()]
+      message:[NSString stringWithUTF8String:self->mApp->loadDatasetErrorMessage().c_str()]
       delegate:self
       cancelButtonTitle:NSLocalizedStringFromTable(@"OK", @"Localized", nil)
       otherButtonTitles: nil, nil];
@@ -188,28 +113,21 @@
     return;
     }
 
-  if (mMapper->triangleData())
-  {
-    delete mMapper->triangleData();
-  }
-
-  mMapper->setTriangleData(newData);
-  mActor->read();
   [readerAlert dismissWithClickedButtonIndex:0 animated:YES];
 }
 
 -(int) getNumberOfFacetsForCurrentModel
 {
-  return mMapper->triangleData()->GetTriangles().size();
+  return mApp->numberOfModelFacets();
 }
 
 -(int) getNumberOfLinesForCurrentModel
 {
-  return mMapper->triangleData()->GetLines().size();
+  return mApp->numberOfModelLines();
 }
 
 -(int) getNumberOfVerticesForCurrentModel
 {
-  return mMapper->triangleData()->GetPoints().size();
+  return mApp->numberOfModelVertices();
 }
 @end

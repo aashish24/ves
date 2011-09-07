@@ -59,6 +59,11 @@ VTK_STR_LIST_CNSTR_DECLARE(_uni)
 class vesShaderProgram
 {
 public:
+
+  /**
+   * vesShaderProgram constructor.
+   * \todo change arguments from char* to std::string
+   */
   vesShaderProgram(char* vertexShaderStr,
                    char* fragmentShaderStr,
                    vtkStringList uniforms,

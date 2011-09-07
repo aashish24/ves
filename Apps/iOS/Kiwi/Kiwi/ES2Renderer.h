@@ -18,32 +18,14 @@
   limitations under the License.
  ========================================================================*/
 
-#import "ESRenderer.h"
+struct vesKiwiViewerApp;
 
-#import <OpenGLES/ES2/gl.h>
-#import <OpenGLES/ES2/glext.h>
-
-struct vesRenderer;
-struct vesShaderProgram;
-struct vesShader;
-struct vesMapper;
-struct vesActor;
-struct vesCamera;
-
-@interface ES2Renderer : NSObject <ESRenderer>
+@interface ES2Renderer : NSObject
 {
 @private
 
-  vesShader *Shader;
-  vesShaderProgram *shaderProgram;
-	vesRenderer *renderer;
-  vesMapper* mMapper;
-  vesActor* mActor;
+  vesKiwiViewerApp* mApp;
 }
-
-- (struct vesRenderer*) getRenderer;
-- (struct vesShader*) getShader;
-- (struct vesCamera*) getCamera;
 
 - (void)render;
 - (void)resetView;
@@ -53,5 +35,8 @@ struct vesCamera;
 - (int)getNumberOfFacetsForCurrentModel;
 - (int)getNumberOfLinesForCurrentModel;
 - (int)getNumberOfVerticesForCurrentModel;
+
+@property (readonly) struct vesKiwiViewerApp* app;
+
 @end
 

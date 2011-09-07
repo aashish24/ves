@@ -21,7 +21,7 @@
 #import <UIKit/UIKit.h>
 
 @protocol LoadDataDelegate
--(void)dataSelected:(NSURL*) url;
+-(void)dataSelected:(int)index;
 @end
 
 @interface LoadDataController : UITableViewController {

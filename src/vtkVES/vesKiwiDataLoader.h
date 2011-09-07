@@ -18,24 +18,40 @@
   limitations under the License.
  ========================================================================*/
 
-#import <QuartzCore/QuartzCore.h>
+#ifndef __vesKiwiDataLoader_h
+#define __vesKiwiDataLoader_h
 
-#import <OpenGLES/EAGL.h>
-#import <OpenGLES/EAGLDrawable.h>
+#include <string>
 
-@protocol ESRenderer <NSObject>
+class vesTriangleData;
+class vtkAlgorithm;
 
-- (void)render;
-- (void)resetView;
-- (BOOL)resizeFromLayer:(int)w height:(int) h;
-- (void)setFilePath:(NSString*)fpath;
+class vesKiwiDataLoader
+{
+public:
 
-- (struct vesRenderer*) getRenderer;
-- (struct vesShader*) getShader;
-- (struct vesCamera*) getCamera;
+  vesKiwiDataLoader();
+  ~vesKiwiDataLoader();
 
-- (int)getNumberOfFacetsForCurrentModel;
-- (int)getNumberOfLinesForCurrentModel;
-- (int)getNumberOfVerticesForCurrentModel;
+  vesTriangleData* loadDataset(const std::string& filename);
+  std::string errorTitle() const;
+  std::string errorMessage() const;
 
-@end
+protected:
+
+  vesTriangleData* dataFromPolyDataAlgorithm(vtkAlgorithm* algorithm);
+  bool updateAlgorithmOrSetErrorString(vtkAlgorithm* algorithm);
+  bool hasEnding(const std::string& fullString, const std::string& ending) const;
+  void setMaximumNumberOfPointsErrorMessage();
+
+private:
+
+  vesKiwiDataLoader(const vesKiwiDataLoader&); // Not implemented
+  void operator=(const vesKiwiDataLoader&); // Not implemented
+
+  class vesInternal;
+  vesInternal* Internal;
+};
+
+
+#endif

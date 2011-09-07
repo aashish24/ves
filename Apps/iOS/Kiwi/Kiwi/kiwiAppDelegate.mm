@@ -24,6 +24,8 @@
 #import "InfoView.h"
 #import "TitleBarViewContainer.h"
 
+#include "vesKiwiViewerApp.h"
+
 @implementation kiwiAppDelegate
 
 @synthesize window;
@@ -91,7 +93,7 @@
            permittedArrowDirections:(UIPopoverArrowDirectionDown)
                            animated:NO];
                            
-    self->viewController.infoPopover = popover;
+    self.viewController.infoPopover = popover;
     }
   // need to get the info from the renderer
   [infoView updateModelInfoLabelWithNumFacets:[self.glView getNumberOfFacetsForCurrentModel]
@@ -121,11 +123,13 @@
     }
 
   //
-  // no url; go with the default surface
+  // no url; go with the default dataset
   if (!url)
     {
     NSLog(@"Null url; opening default data file");
-    [glView setFilePath:[[NSBundle mainBundle] pathForResource:@"AppendedKneeData" ofType:@"vtp"]];
+    vesKiwiViewerApp* app = [self.glView getApp];
+    NSString* defaultDataset = [NSString stringWithUTF8String:app->builtinDatasetFilename(app->defaultBuiltinDatasetIndex()).c_str()];
+    [glView setFilePath:[[NSBundle mainBundle] pathForResource:defaultDataset ofType:nil]];
     return YES;
     }
 
@@ -315,8 +319,12 @@
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"FileLoadingEnded" object:nil];
 }
 
--(void)dataSelected:(NSURL*)url
+-(void)dataSelected:(int)index
 {
+  vesKiwiViewerApp* app = [self.glView getApp];
+  NSString* datasetFilename = [NSString stringWithUTF8String:app->builtinDatasetFilename(index).c_str()];
+  NSURL* url = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:datasetFilename ofType:nil]];
+
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
     {
     [self.viewController dismissModalViewControllerAnimated:NO];
@@ -335,6 +343,17 @@
     _dataLoader = [[LoadDataController alloc]
                     initWithStyle:UITableViewStyleGrouped];
     _dataLoader.delegate = self;
+
+    vesKiwiViewerApp* app = [self.glView getApp];
+    NSMutableArray* exampleData = [NSMutableArray array];
+    for (int i = 0; i < app->numberOfBuiltinDatasets(); ++i)
+    {
+      NSString* datasetName = [NSString stringWithUTF8String:app->builtinDatasetName(i).c_str()];
+      [exampleData addObject:datasetName];
+    }
+    _dataLoader.exampleData = exampleData;
+
+
     if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
       {
       _dataLoader.modalPresentationStyle = UIModalPresentationFormSheet;

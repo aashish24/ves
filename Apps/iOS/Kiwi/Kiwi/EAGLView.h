@@ -24,8 +24,10 @@
 #import <OpenGLES/EAGL.h>
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
-#import "ESRenderer.h"
 #import "kiwiAppDelegate.h"
+
+@class ES2Renderer;
+struct vesKiwiViewerApp;
 
 // This class wraps the CAEAGLLayer from CoreAnimation into a convenient UIView subclass.
 // The view content is basically an EAGL surface you render your OpenGL scene into.
@@ -48,7 +50,7 @@
   CADisplayLink* displayLink;
   NSMutableArray* recentRenderFPS;
   
-  id <ESRenderer> renderer;
+  ES2Renderer* renderer;
   NSString *filePath;
 	
 	// inertia handling 
@@ -63,6 +65,8 @@
 - (void)forceRender;
 - (void)updateRefreshRate:(float) lastRenderFPS;
 - (int)currentRefreshRate;
+
+-(struct vesKiwiViewerApp*) getApp;
 
 - (void)resetView;
 - (void)setFilePath:(NSString*)fpath;
