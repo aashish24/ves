@@ -50,6 +50,7 @@ public:
   ~vesInternal()
   {
     delete this->Actor;
+    delete this->Mapper->triangleData();
     delete this->Mapper;
     delete this->Renderer;
     delete this->Shader;
