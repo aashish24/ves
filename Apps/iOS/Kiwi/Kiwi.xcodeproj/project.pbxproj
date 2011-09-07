@@ -17,7 +17,6 @@
 		28FD15000DC6FC520079059D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD14FF0DC6FC520079059D /* OpenGLES.framework */; };
 		28FD15080DC6FC5B0079059D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD15070DC6FC5B0079059D /* QuartzCore.framework */; };
 		43006996140842770050DA06 /* GLViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 43006995140842770050DA06 /* GLViewController.m */; };
-		4307FCFE13C8E32100FFF019 /* DataReader.mm in Sources */ = {isa = PBXBuildFile; fileRef = 4307FCFD13C8E32100FFF019 /* DataReader.mm */; };
 		431FC64E1408B7A5006B9246 /* TitleBarViewContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 431FC64C1408B7A5006B9246 /* TitleBarViewContainer.m */; };
 		431FC64F1408B7A5006B9246 /* TitleBarViewContainer.xib in Resources */ = {isa = PBXBuildFile; fileRef = 431FC64D1408B7A5006B9246 /* TitleBarViewContainer.xib */; };
 		432DE14D13D15D81000F8EC0 /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 432DE13013D158B8000F8EC0 /* Shader.fsh */; };
@@ -84,8 +83,6 @@
 		32CA4F630368D1EE00C91783 /* Kiwi-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Kiwi-Prefix.pch"; sourceTree = "<group>"; };
 		43006994140842770050DA06 /* GLViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLViewController.h; sourceTree = "<group>"; };
 		43006995140842770050DA06 /* GLViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLViewController.m; sourceTree = "<group>"; };
-		4307FCFA13C8E22E00FFF019 /* DataReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DataReader.h; sourceTree = "<group>"; };
-		4307FCFD13C8E32100FFF019 /* DataReader.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = DataReader.mm; sourceTree = "<group>"; };
 		431FC64B1408B7A5006B9246 /* TitleBarViewContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TitleBarViewContainer.h; sourceTree = "<group>"; };
 		431FC64C1408B7A5006B9246 /* TitleBarViewContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TitleBarViewContainer.m; sourceTree = "<group>"; };
 		431FC64D1408B7A5006B9246 /* TitleBarViewContainer.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TitleBarViewContainer.xib; sourceTree = "<group>"; };
@@ -184,8 +181,6 @@
 				6F41B5BD1360C0C900D0079D /* InfoView.h */,
 				6F41B5BE1360C0CA00D0079D /* InfoView.m */,
 				453036EA1406A298003A861A /* InfoView.xib */,
-				4307FCFA13C8E22E00FFF019 /* DataReader.h */,
-				4307FCFD13C8E32100FFF019 /* DataReader.mm */,
 				28AD733E0D9D9553002E5188 /* MainWindow.xib */,
 				6F25E6F3137D8B5600BF4BCA /* Supporting Files */,
 				43006994140842770050DA06 /* GLViewController.h */,
@@ -408,7 +403,6 @@
 				2514C27310084DB100A42282 /* ES2Renderer.mm in Sources */,
 				6F41B5C01360C0CA00D0079D /* InfoView.m in Sources */,
 				70398015138551CE00E579C2 /* LoadDataController.m in Sources */,
-				4307FCFE13C8E32100FFF019 /* DataReader.mm in Sources */,
 				43006996140842770050DA06 /* GLViewController.m in Sources */,
 				431FC64E1408B7A5006B9246 /* TitleBarViewContainer.m in Sources */,
 				43FA5BE4141705FD00ECC80E /* kiwiAppDelegate.mm in Sources */,

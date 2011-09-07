@@ -123,11 +123,13 @@
     }
 
   //
-  // no url; go with the default surface
+  // no url; go with the default dataset
   if (!url)
     {
     NSLog(@"Null url; opening default data file");
-    [glView setFilePath:[[NSBundle mainBundle] pathForResource:@"AppendedKneeData" ofType:@"vtp"]];
+    vesKiwiViewerApp* app = [self.glView getApp];
+    NSString* defaultDataset = [NSString stringWithUTF8String:app->builtinDatasetFilename(app->defaultBuiltinDatasetIndex()).c_str()];
+    [glView setFilePath:[[NSBundle mainBundle] pathForResource:defaultDataset ofType:nil]];
     return YES;
     }
 

@@ -1,4 +1,5 @@
 set(headers
+  vesKiwiDataLoader.h
   vesKiwiViewerApp.h
   vtkPolyDataToTriangleData.h)
 

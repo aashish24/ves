@@ -43,14 +43,24 @@ public:
   std::string builtinDatasetName(int index);
   std::string builtinDatasetFilename(int index);
 
+  bool loadDataset(const std::string& filename);
+  std::string loadDatasetErrorTitle() const;
+  std::string loadDatasetErrorMessage() const;
+
+
   void setVertexShaderSource(const std::string& source);
   void setFragmentShaderSource(const std::string& source);
   bool initializeShaderProgram();
   bool initializeRendering();
 
   void render();
+
   void resetView();
   void resizeView(int width, int height);
+
+  int numberOfModelFacets() const;
+  int numberOfModelVertices() const;
+  int numberOfModelLines() const;
 
   vesActor* actor() const;
   vesMapper* mapper() const;

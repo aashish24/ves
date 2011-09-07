@@ -18,34 +18,40 @@
   limitations under the License.
  ========================================================================*/
 
-#import <OpenGLES/ES2/gl.h>
-#import <OpenGLES/ES2/glext.h>
+#ifndef __vesKiwiDataLoader_h
+#define __vesKiwiDataLoader_h
 
-struct vesRenderer;
-struct vesCamera;
-struct vesKiwiViewerApp;
+#include <string>
 
-@interface ES2Renderer : NSObject
+class vesTriangleData;
+class vtkAlgorithm;
+
+class vesKiwiDataLoader
 {
-@private
+public:
 
-	vesRenderer *renderer;
-  vesKiwiViewerApp* mApp;
-}
+  vesKiwiDataLoader();
+  ~vesKiwiDataLoader();
 
-- (struct vesRenderer*) getRenderer;
-- (struct vesCamera*) getCamera;
+  vesTriangleData* loadDataset(const std::string& filename);
+  std::string errorTitle() const;
+  std::string errorMessage() const;
 
-- (void)render;
-- (void)resetView;
-- (BOOL)resizeFromLayer:(int)w height:(int) h;
-- (void)setFilePath:(NSString*)fpath;
+protected:
 
-- (int)getNumberOfFacetsForCurrentModel;
-- (int)getNumberOfLinesForCurrentModel;
-- (int)getNumberOfVerticesForCurrentModel;
+  vesTriangleData* dataFromPolyDataAlgorithm(vtkAlgorithm* algorithm);
+  bool updateAlgorithmOrSetErrorString(vtkAlgorithm* algorithm);
+  bool hasEnding(const std::string& fullString, const std::string& ending) const;
+  void setMaximumNumberOfPointsErrorMessage();
 
-@property (readonly) struct vesKiwiViewerApp* app;
+private:
 
-@end
+  vesKiwiDataLoader(const vesKiwiDataLoader&); // Not implemented
+  void operator=(const vesKiwiDataLoader&); // Not implemented
 
+  class vesInternal;
+  vesInternal* Internal;
+};
+
+
+#endif

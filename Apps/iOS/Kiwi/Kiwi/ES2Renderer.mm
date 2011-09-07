@@ -19,14 +19,11 @@
  ========================================================================*/
 
 #import "ES2Renderer.h"
-#import "DataReader.h"
 
 #include "vesKiwiViewerApp.h"
 #include "vesRenderer.h"
 #include "vesCamera.h"
 #include "vesTriangleData.h"
-#include "vesMapper.h"
-#include "vesActor.h"
 
 @implementation ES2Renderer
 
@@ -57,12 +54,6 @@
     self->mApp->initializeRendering();
 
     renderer = self->mApp->renderer();
-    mMapper = self->mApp->mapper();
-    mActor = self->mApp->actor();
-
-    NSString* defaultFile = [[NSBundle mainBundle] pathForResource:@"current" ofType:@"vtk"];
-    vesTriangleData* triangleData = [[[DataReader new] autorelease] readData:defaultFile];
-    mMapper->setTriangleData(triangleData);
     }
 
   return self;
@@ -76,11 +67,6 @@
 - (vesRenderer*) getRenderer
 {
   return self->renderer;
-}
-
-- (vesShader*) getShader
-{
-  return self->Shader;
 }
 
 - (vesCamera*) getCamera
@@ -133,14 +119,13 @@
     n++;
     }
 
-  DataReader* reader = [[DataReader new] autorelease];
-  vesTriangleData* newData = [reader readData:fpath];
-  if (!newData)
-    {
+  bool loadSuccess = self->mApp->loadDataset([fpath UTF8String]);
+  if (!loadSuccess)
+  {
     [readerAlert dismissWithClickedButtonIndex:0 animated:YES];
     UIAlertView *alert = [[UIAlertView alloc]
-      initWithTitle:reader.errorTitle
-      message:reader.errorMessage
+      initWithTitle:[NSString stringWithUTF8String:self->mApp->loadDatasetErrorTitle().c_str()]
+      message:[NSString stringWithUTF8String:self->mApp->loadDatasetErrorMessage().c_str()]
       delegate:self
       cancelButtonTitle:NSLocalizedStringFromTable(@"OK", @"Localized", nil)
       otherButtonTitles: nil, nil];
@@ -149,28 +134,21 @@
     return;
     }
 
-  if (mMapper->triangleData())
-  {
-    delete mMapper->triangleData();
-  }
-
-  mMapper->setTriangleData(newData);
-  mActor->read();
   [readerAlert dismissWithClickedButtonIndex:0 animated:YES];
 }
 
 -(int) getNumberOfFacetsForCurrentModel
 {
-  return mMapper->triangleData()->GetTriangles().size();
+  return mApp->numberOfModelFacets();
 }
 
 -(int) getNumberOfLinesForCurrentModel
 {
-  return mMapper->triangleData()->GetLines().size();
+  return mApp->numberOfModelLines();
 }
 
 -(int) getNumberOfVerticesForCurrentModel
 {
-  return mMapper->triangleData()->GetPoints().size();
+  return mApp->numberOfModelVertices();
 }
 @end
