@@ -75,17 +75,17 @@ void main()
     {
       color = vec4(0.95, 0.55, 0.5, 1.0);
     }
-    else if(intensity > 0.75)
+    else if(intensity > 0.70)
     {
-      color = vec4(0.6, 0.22, 0.20, 1.0);
+      color = vec4(0.6, 0.3, 0.28, 1.0);
     }
     else if(intensity > 0.5)
     {
-      color = vec4(0.4, 0.18, 0.16, 1.0);
+      color = vec4(0.5, 0.28, 0.25, 1.0);
     }
     else
     {
-      color = vec4(0.36, 0.15, 0.12, 1.0);
+      color = vec4(0.4, 0.25, 0.20, 1.0);
     }
 
     gl_FragColor = color;
