@@ -282,7 +282,9 @@ bool vesKiwiViewerApp::initializeShaderProgram()
                                     _uni("normalMatrix"),
                                     _uni("lightDirection"),
                                     _uni("opacity"),
-                                    _uni("enableDiffuse")),
+                                    _uni("enableDiffuse"),
+                                    _uni("useBlinnPhongShader"),
+                                    _uni("useToonShader")),
                                    (_att("vertexPosition"),
                                     _att("vertexNormal"),
                                     _att("vertexColor")));
