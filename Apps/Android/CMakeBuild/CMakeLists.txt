@@ -41,6 +41,7 @@ ExternalProject_Add(
   CMAKE_ARGS
     -DCMAKE_INSTALL_PREFIX:PATH=${install_prefix}/${proj}
     -DCMAKE_BUILD_TYPE:STRING=${build_type}
+    -DBUILD_SHARED_LIBS:BOOL=OFF
     ${module_defaults}
 )
 
@@ -55,6 +56,7 @@ macro(crosscompile proj toolchain_file)
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
       -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_SOURCE_DIR}/cmake/${toolchain_file}
       -DVTKCompileTools_DIR:PATH=${build_prefix}/vtkmodular-host
+      -DBUILD_SHARED_LIBS:BOOL=OFF
       ${module_defaults}
       -C ${CMAKE_SOURCE_DIR}/cmake/TryRunResults.cmake
   )
