@@ -13,7 +13,8 @@
 
  =========================================================================*/
 
-uniform float opacity;
+uniform mediump float opacity;
+
 uniform bool useToonShader;
 uniform bool useBlinnPhongShader;
 
