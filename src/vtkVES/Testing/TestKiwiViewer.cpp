@@ -360,6 +360,16 @@ event_loop(Display *dpy, Window win,
                   /* escape */
                   return;
                }
+               if (buffer[0] == 116) {
+                 static int currentShadingModelIndex = 0;
+
+                 currentShadingModelIndex = (currentShadingModelIndex + 1) %
+
+                 testHelper->app()->getNumberOfShadingModels();
+
+                 testHelper->app()->setShadingModel(testHelper->app()->getShadingModel(
+                    currentShadingModelIndex));
+               }
             }
          }
          redraw = 1;

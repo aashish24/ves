@@ -48,6 +48,12 @@ public:
 
   void setVertexShaderSource(const std::string& source);
   void setFragmentShaderSource(const std::string& source);
+
+  int  getNumberOfShadingModels() const;
+  std::string getCurrentShadingModel() const;
+  std::string getShadingModel(int index) const;
+  bool setShadingModel(const std::string& name);
+
   bool initializeShaderProgram();
   bool initializeRendering();
 
@@ -80,6 +86,7 @@ protected:
   vesShaderProgram* shaderProgram() const;
 
   void addBuiltinDataset(const std::string& name, const std::string& filename);
+  void addBuiltinShadingModel(const std::string& name);
 
 private:
 
