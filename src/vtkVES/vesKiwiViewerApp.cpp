@@ -283,6 +283,7 @@ bool vesKiwiViewerApp::initializeShaderProgram()
                                     _uni("lightDirection"),
                                     _uni("opacity"),
                                     _uni("enableDiffuse"),
+                                    _uni("useGouraudShader"),
                                     _uni("useBlinnPhongShader"),
                                     _uni("useToonShader")),
                                    (_att("vertexPosition"),

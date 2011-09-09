@@ -15,6 +15,9 @@
 
 uniform mediump float opacity;
 
+uniform bool enableDiffuse;
+
+uniform bool useGouraudShader;
 uniform bool useToonShader;
 uniform bool useBlinnPhongShader;
 
@@ -28,18 +31,21 @@ varying highp vec3 varLightDirection;
 
 void main()
 {
-  highp vec3 n = normalize(varNormal);
+  // Final color of the fragment. Default to gray.
+  lowp vec4 color  = vec4(0.5, 0.5, 0.5, 1.0);
 
   if(useBlinnPhongShader)
   {
     lowp float nDotL;
     lowp float nDotH;
 
+    highp vec3 n = normalize(varNormal);
+
     // Default to metallic look and feel.
     lowp float specularShininess = 128.0;
     lowp vec4  specularColor     = vec4(0.8, 0.8, 0.8, 0.0);
 
-    lowp vec4 color = varAmbientColor;
+    color = varAmbientColor;
 
     highp vec3  viewDirection = normalize(-varPosition.xyz);
 
@@ -62,12 +68,13 @@ void main()
       color += varVertexColor;
     }
 
-    gl_FragColor = vec4(color.xyz, opacity);
+    color.w = opacity;
   }
   else if(useToonShader)
   {
     highp float intensity;
-    lowp vec4 color;
+
+    highp vec3 n = normalize(varNormal);
 
     intensity = dot(varLightDirection, n);
 
@@ -87,11 +94,19 @@ void main()
     {
       color = vec4(0.4, 0.25, 0.20, 1.0);
     }
-
-    gl_FragColor = color;
   }
-  else
+  else if(useGouraudShader)
   {
-    gl_FragColor = vec4(0.5, 0.5, 0.5, 1.0);
+    if(enableDiffuse)
+    {
+      color = varDiffuseColor + varAmbientColor;
+    }
+    else
+    {
+      color = varVertexColor + varAmbientColor;
+    }
+    color.w = opacity;
   }
+
+  gl_FragColor = color;
 }

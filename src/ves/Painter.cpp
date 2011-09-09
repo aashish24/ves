@@ -155,8 +155,9 @@ void Painter::visitShape(vsg::Shape* shape)
   program->SetUniformVector3f("lightDirection",light);
   program->SetUniformFloat("opacity", mapper->alpha());
   program->SetUniformInt("enableDiffuse", 1);
+  program->SetUniformInt("useGouraudShader", 1);
   program->SetUniformInt("useBlinnPhongShader", 0);
-  program->SetUniformInt("useToonShader", 1);
+  program->SetUniformInt("useToonShader", 0);
 
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
