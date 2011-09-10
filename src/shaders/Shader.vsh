@@ -1,44 +1,63 @@
-/*=========================================================================
 
- Program:   Visualization Toolkit
- Module:    Shader.vsh
+// Uniforms.
+uniform mat4   modelViewProjectionMatrix;
+uniform mat3   normalMatrix;
+uniform vec3   lightDirection;
+uniform float  opacity;
+uniform bool   enableDiffuse;
 
- Copyright (c) Ken Martin, Will Schroeder, Bill Lorensen
- All rights reserved.
- See Copyright.txt or http://www.kitware.com/Copyright.htm for details.
+// Flags to use a particular model for shading.
+uniform bool   useGouraudShader;
+uniform bool   useToonShader;
+uniform bool   useBlinnPhongShader;
 
- This software is distributed WITHOUT ANY WARRANTY; without even
- the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
- PURPOSE.  See the above copyright notice for more information.
+// Vertex attributes.
+attribute vec4 vertexPosition;
+attribute vec3 vertexNormal;
+attribute vec3 vertexColor;
 
- =========================================================================*/
+// Varying attributes.
+varying lowp vec4  varVertexColor;
+varying lowp vec4  varDiffuseColor;
+varying lowp vec4  varAmbientColor;
 
-uniform mat4   u_mvpMatrix;     // model-view-projection matrix
-uniform mat3   u_normalMatrix;  // normal matrix
-uniform vec3   u_ecLightDir;     // light direction in eye coordinates
-uniform float  u_opacity;
-uniform bool   u_enable_diffuse;
-
-attribute vec4 a_vertex;         // vertex position
-attribute vec3 a_normal;         // vertex normal
-attribute vec3 a_vertex_color;
-
-varying vec4 v_color;
+varying highp vec4 varPosition;
+varying highp vec3 varNormal;
+varying highp vec3 varLightDirection;
 
 void main()
 {
-  // put vertex normal into eye coords
-  vec3 ec_normal = normalize(u_normalMatrix * a_normal);
+  if(useBlinnPhongShader || useGouraudShader)
+  {
+    // Default ambient color for now.
+    varAmbientColor = vec4(0.01, 0.01, 0.01, 0.0);
 
-  // compute diffuse scale factor
-  float diffuse = max(dot(u_ecLightDir,ec_normal), 0.0);
+    // Default diffuse color for now.
+    varDiffuseColor = vec4(0.1, 0.1, 0.1, 0.0);
 
-  vec3 rgb = a_vertex_color;
-  if (u_enable_diffuse) {
-    rgb = vec3(.25,.25,.25) + diffuse * a_vertex_color;
+    // Save vertex color for shading later.
+    varVertexColor = vec4(vertexColor, 0.0);
   }
 
-  v_color = vec4(rgb, u_opacity);
+  if(useBlinnPhongShader || useToonShader || useGouraudShader)
+  {
+    // Save position for shading later.
+    varPosition = modelViewProjectionMatrix * vertexPosition;
 
-  gl_Position = u_mvpMatrix * a_vertex;
+    // Transform vertex normal into eye space.
+    varNormal = normalize(normalMatrix * vertexNormal);
+
+    // Save light direction (direction light for now)
+    varLightDirection = normalize(lightDirection);
+  }
+
+  if(useGouraudShader && enableDiffuse)
+  {
+    lowp float nDotL = max(dot(varNormal, varLightDirection), 0.0);
+
+    varDiffuseColor = (varDiffuseColor + varVertexColor) * nDotL;
+  }
+
+  // GLSL still requires this.
+  gl_Position = varPosition;
 }

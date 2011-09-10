@@ -150,31 +150,30 @@ void Painter::visitShape(vsg::Shape* shape)
   vtkPoint3f lightDir = vtkPoint3f(0.0,0.0,.650);
 
   vesVector3f light(lightDir.mData[0],lightDir.mData[1],lightDir.mData[2]);
-  program->SetUniformMatrix4x4f("u_mvpMatrix",mvp);
-  program->SetUniformMatrix3x3f("u_normalMatrix",normal_matrix);
-  program->SetUniformVector3f("u_ecLightDir",light);
-  program->SetUniformFloat("u_opacity", mapper->alpha());
-  program->SetUniformInt("u_enable_diffuse", 1);
+  program->SetUniformMatrix4x4f("modelViewProjectionMatrix",mvp);
+  program->SetUniformMatrix3x3f("normalMatrix",normal_matrix);
+  program->SetUniformVector3f("lightDirection",light);
+  program->SetUniformFloat("opacity", mapper->alpha());
 
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   // Enable our attribute arrays
-  program->EnableVertexArray("a_vertex");
-  program->EnableVertexArray("a_normal");
+  program->EnableVertexArray("vertexPosition");
+  program->EnableVertexArray("vertexNormal");
 
   if (mapper->data()->GetVertexColors().size() == 0) {
-    program->DisableVertexArray("a_vertex_color");
+    program->DisableVertexArray("vertexColor");
     // FIXME: This could be reduced to one call if color was stored in
     // vtkColor4f or similar, and then use a call similar to the one in the else.
-    glVertexAttrib3f(program->GetAttribute("a_vertex_color"),
+    glVertexAttrib3f(program->GetAttribute("vertexColor"),
                      mapper->red(),
                      mapper->green(),
                      mapper->blue());
     }
   else {
-    program->EnableVertexArray("a_vertex_color");
-    glVertexAttribPointer(program->GetAttribute("a_vertex_color"),
+    program->EnableVertexArray("vertexColor");
+    glVertexAttribPointer(program->GetAttribute("vertexColor"),
                           3,
                           GL_FLOAT,
                           0,
@@ -182,13 +181,13 @@ void Painter::visitShape(vsg::Shape* shape)
                           &(mapper->data()->GetVertexColors()[0]));
     }
 
-  glVertexAttribPointer(program->GetAttribute("a_vertex"),
+  glVertexAttribPointer(program->GetAttribute("vertexPosition"),
                         3,
                         GL_FLOAT,
                         0,
                         6 * sizeof(float),
                         &(mapper->data()->GetPoints()[0]));
-  glVertexAttribPointer(program->GetAttribute("a_normal"),
+  glVertexAttribPointer(program->GetAttribute("vertexNormal"),
                         3,
                         GL_FLOAT,
                         0,
@@ -216,7 +215,7 @@ void Painter::visitShape(vsg::Shape* shape)
                    &mapper->data()->GetTriangles()[0]);
 
     // draw lines
-    program->SetUniformInt("u_enable_diffuse", 0);
+    program->SetUniformInt("enableDiffuse", 0);
     glDrawElements(GL_LINES,
                    mapper->data()->GetLines().size() * 2,
                    GL_UNSIGNED_SHORT,
@@ -225,9 +224,9 @@ void Painter::visitShape(vsg::Shape* shape)
 
   glDisable(GL_CULL_FACE);
   glDisable(GL_BLEND);
-  program->DisableVertexArray("a_vertex");
-  program->DisableVertexArray("a_normal");
-  program->DisableVertexArray("a_vertex_color");
+  program->DisableVertexArray("vertexPosition");
+  program->DisableVertexArray("vertexNormal");
+  program->DisableVertexArray("vertexColor");
 
 }
 

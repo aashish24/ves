@@ -33,6 +33,10 @@
 #include <cassert>
 #include <cmath>
 
+#include <algorithm>
+#include <string>
+#include <vector>
+
 //----------------------------------------------------------------------------
 class vesKiwiViewerApp::vesInternal
 {
@@ -56,7 +60,7 @@ public:
     delete this->Shader;
     delete this->ShaderProgram;
   }
-  
+
   vesActor* Actor;
   vesMapper* Mapper;
   vesRenderer* Renderer;
@@ -70,6 +74,9 @@ public:
 
   std::vector<std::string> BuiltinDatasetNames;
   std::vector<std::string> BuiltinDatasetFilenames;
+
+  std::string CurrentShadingModel;
+  std::vector<std::string> BuiltinShadingModels;
 };
 
 //----------------------------------------------------------------------------
@@ -87,6 +94,10 @@ vesKiwiViewerApp::vesKiwiViewerApp()
   this->addBuiltinDataset("Buckyball", "Buckyball.vtp");
   this->addBuiltinDataset("Motor", "motor.g");
   this->addBuiltinDataset("Caffeine", "caffeine.pdb");
+
+  this->addBuiltinShadingModel("Gouraud");
+  this->addBuiltinShadingModel("Blinn-Phong");
+  this->addBuiltinShadingModel("Toon");
 }
 
 //----------------------------------------------------------------------------
@@ -160,9 +171,20 @@ void vesKiwiViewerApp::addBuiltinDataset(const std::string& name, const std::str
 }
 
 //----------------------------------------------------------------------------
+void vesKiwiViewerApp::addBuiltinShadingModel(const std::string &name)
+{
+  this->Internal->BuiltinShadingModels.push_back(name);
+}
+
+//----------------------------------------------------------------------------
 void vesKiwiViewerApp::render()
 {
   glClearColor(63/255.0f, 96/255.0f, 144/255.0, 1.0f);
+
+  // \Note: We have to call it every render call since the current
+  // implementation is not quite right in VES library.
+  this->setShadingModel(this->getCurrentShadingModel());
+
   this->Internal->Renderer->ResetCameraClippingRange();
   this->Internal->Renderer->Render();
 }
@@ -212,12 +234,12 @@ void vesKiwiViewerApp::handleTwoTouchPanGesture(double x0, double y0, double x1,
   vesVector3f viewPoint = camera->GetPosition();
   vesVector3f viewFocusDisplay = ren->ComputeWorldToDisplay(viewFocus);
   float focalDepth = viewFocusDisplay[2];
-  
+
   // map change into world coordinates
   vesVector3f oldPickPoint = ren->ComputeDisplayToWorld(vesVector3f(x0, y0, focalDepth));
   vesVector3f newPickPoint = ren->ComputeDisplayToWorld(vesVector3f(x1, y1, focalDepth));
   vesVector3f motionVector = oldPickPoint - newPickPoint;
-  
+
   vesVector3f newViewFocus = viewFocus + motionVector;
   vesVector3f newViewPoint = viewPoint + motionVector;
   camera->SetFocalPoint(newViewFocus);
@@ -237,13 +259,13 @@ void vesKiwiViewerApp::handleSingleTouchPanGesture(double deltaX, double deltaY)
   double delta_elevation = -20.0 / ren->GetHeight();
   double delta_azimuth = -20.0 / ren->GetWidth();
   double motionFactor = 10.0;
-  
+
   double rxf = deltaX * delta_azimuth * motionFactor;
   double ryf = deltaY * delta_elevation * motionFactor;
-  
+
   camera->Azimuth(rxf);
   camera->Elevation(ryf);
-  camera->OrthogonalizeViewUp(); 
+  camera->OrthogonalizeViewUp();
 }
 
 //----------------------------------------------------------------------------
@@ -273,22 +295,96 @@ void vesKiwiViewerApp::setFragmentShaderSource(const std::string& source)
 }
 
 //----------------------------------------------------------------------------
+int vesKiwiViewerApp::getNumberOfShadingModels() const
+{
+  return static_cast<int>(this->Internal->BuiltinShadingModels.size());
+}
+
+//----------------------------------------------------------------------------
+std::string vesKiwiViewerApp::getCurrentShadingModel() const
+{
+  return this->Internal->CurrentShadingModel;
+}
+
+//----------------------------------------------------------------------------
+std::string vesKiwiViewerApp::getShadingModel(int index) const
+{
+  std::string empty;
+  if(index < 0 ||
+     index > static_cast<int>(this->Internal->BuiltinShadingModels.size()))
+  {
+  return empty;
+  }
+
+  return this->Internal->BuiltinShadingModels[index];
+}
+
+//----------------------------------------------------------------------------
+bool vesKiwiViewerApp::setShadingModel(const std::string& name)
+{
+  bool success = false;
+
+  std::vector<std::string>::iterator itr;
+  itr = std::find(this->Internal->BuiltinShadingModels.begin(),
+                  this->Internal->BuiltinShadingModels.end(),
+                  name);
+
+  if(itr != this->Internal->BuiltinShadingModels.end())
+  {
+    success = true;
+
+    this->Internal->CurrentShadingModel = name;
+
+    if(name.compare("Gouraud") == 0)
+    {
+      this->Internal->ShaderProgram->SetUniformInt("enableDiffuse", 1);
+      this->Internal->ShaderProgram->SetUniformInt("useGouraudShader", 1);
+      this->Internal->ShaderProgram->SetUniformInt("useBlinnPhongShader", 0);
+      this->Internal->ShaderProgram->SetUniformInt("useToonShader", 0);
+    }
+    else if(name.compare("Blinn-Phong") == 0)
+    {
+      this->Internal->ShaderProgram->SetUniformInt("enableDiffuse", 1);
+      this->Internal->ShaderProgram->SetUniformInt("useGouraudShader", 0);
+      this->Internal->ShaderProgram->SetUniformInt("useBlinnPhongShader", 1);
+      this->Internal->ShaderProgram->SetUniformInt("useToonShader", 0);
+    }
+    else // Must be "Toon" shader.
+    {
+      this->Internal->ShaderProgram->SetUniformInt("enableDiffuse", 0);
+      this->Internal->ShaderProgram->SetUniformInt("useGouraudShader", 0);
+      this->Internal->ShaderProgram->SetUniformInt("useBlinnPhongShader", 0);
+      this->Internal->ShaderProgram->SetUniformInt("useToonShader", 1);
+    }
+  }
+
+  return success;
+}
+
+//----------------------------------------------------------------------------
 bool vesKiwiViewerApp::initializeShaderProgram()
 {
   this->Internal->ShaderProgram = new vesShaderProgram(
                                    const_cast<char*>(this->Internal->VertexShaderSource.c_str()),
                                    const_cast<char*>(this->Internal->FragmentShaderSource.c_str()),
-                                   (_uni("u_mvpMatrix"),
-                                    _uni("u_normalMatrix"),
-                                    _uni("u_ecLightDir"),
-                                    _uni("u_opacity"),
-                                    _uni("u_enable_diffuse")),
-                                   (_att("a_vertex"),
-                                    _att("a_normal"),
-                                    _att("a_vertex_color")));
+                                   (_uni("modelViewProjectionMatrix"),
+                                    _uni("normalMatrix"),
+                                    _uni("lightDirection"),
+                                    _uni("opacity"),
+                                    _uni("enableDiffuse"),
+                                    _uni("useGouraudShader"),
+                                    _uni("useBlinnPhongShader"),
+                                    _uni("useToonShader")),
+                                   (_att("vertexPosition"),
+                                    _att("vertexNormal"),
+                                    _att("vertexColor")));
 
   this->Internal->Shader = new vesShader(this->Internal->ShaderProgram);
   this->Internal->ShaderProgram->Use();
+
+  // Set default shading model.
+  this->setShadingModel(this->getShadingModel(0));
+
   return true;
 }
 
