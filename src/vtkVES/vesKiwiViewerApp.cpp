@@ -20,11 +20,10 @@
 
 #include "vesKiwiViewerApp.h"
 #include "vesKiwiDataLoader.h"
+#include "vesKiwiDataRepresentation.h"
 
-#include "vesActor.h"
 #include "vesCamera.h"
 #include "vesGMTL.h"
-#include "vesMapper.h"
 #include "vesRenderer.h"
 #include "vesShader.h"
 #include "vesShaderProgram.h"
@@ -44,29 +43,25 @@ public:
 
   vesInternal()
   {
-    this->Actor = 0;
-    this->Mapper = 0;
     this->Renderer = 0;
     this->Shader = 0;
     this->ShaderProgram = 0;
+    this->DataRepresentation = 0;
   }
 
   ~vesInternal()
   {
-    delete this->Actor;
-    delete this->Mapper->triangleData();
-    delete this->Mapper;
     delete this->Renderer;
     delete this->Shader;
     delete this->ShaderProgram;
+    delete this->DataRepresentation;
   }
 
-  vesActor* Actor;
-  vesMapper* Mapper;
   vesRenderer* Renderer;
   vesShader* Shader;
   vesShaderProgram* ShaderProgram;
 
+  vesKiwiDataRepresentation* DataRepresentation;
   vesKiwiDataLoader DataLoader;
 
   std::string VertexShaderSource;
@@ -107,22 +102,10 @@ vesKiwiViewerApp::~vesKiwiViewerApp()
 }
 
 //----------------------------------------------------------------------------
-vesActor* vesKiwiViewerApp::actor() const
-{
-  return this->Internal->Actor;
-}
-
-//----------------------------------------------------------------------------
 vesCamera* vesKiwiViewerApp::camera() const
 {
   assert(this->Internal->Renderer);
   return this->Internal->Renderer->GetCamera();
-}
-
-//----------------------------------------------------------------------------
-vesMapper* vesKiwiViewerApp::mapper() const
-{
-  return this->Internal->Mapper;
 }
 
 //----------------------------------------------------------------------------
@@ -394,11 +377,9 @@ bool vesKiwiViewerApp::initializeRendering()
   assert(this->Internal->Shader);
 
   this->Internal->Renderer = new vesRenderer();
-  this->Internal->Mapper = new vesMapper();
-  this->Internal->Mapper->setTriangleData(new vesTriangleData);
-  this->Internal->Actor = new vesActor(this->Internal->Shader, this->Internal->Mapper);
-  this->Internal->Actor->setColor(0.8, 0.8, 0.8, 1.0);
-  this->Internal->Renderer->AddActor(this->Internal->Actor);
+  this->Internal->DataRepresentation = new vesKiwiDataRepresentation();
+  this->Internal->DataRepresentation->initializeWithShader(this->Internal->Shader);
+  this->Internal->DataRepresentation->addSelfToRenderer(this->Internal->Renderer);
 
   return true;
 }
@@ -411,8 +392,7 @@ bool vesKiwiViewerApp::loadDataset(const std::string& filename)
     return false;
   }
 
-  delete this->Internal->Mapper->triangleData();
-  this->Internal->Mapper->setTriangleData(newData);
+  this->Internal->DataRepresentation->setTriangleData(newData);
   return true;
 }
 
@@ -431,19 +411,19 @@ std::string vesKiwiViewerApp::loadDatasetErrorMessage() const
 //----------------------------------------------------------------------------
 int vesKiwiViewerApp::numberOfModelFacets() const
 {
-  return static_cast<int>(this->Internal->Mapper->triangleData()->GetTriangles().size());
+  return static_cast<int>(this->Internal->DataRepresentation->triangleData()->GetTriangles().size());
 }
 
 //----------------------------------------------------------------------------
 int vesKiwiViewerApp::numberOfModelVertices() const
 {
-  return static_cast<int>(this->Internal->Mapper->triangleData()->GetPoints().size());
+  return static_cast<int>(this->Internal->DataRepresentation->triangleData()->GetPoints().size());
 }
 
 //----------------------------------------------------------------------------
 int vesKiwiViewerApp::numberOfModelLines() const
 {
-  return static_cast<int>(this->Internal->Mapper->triangleData()->GetLines().size());
+  return static_cast<int>(this->Internal->DataRepresentation->triangleData()->GetLines().size());
 }
 
 //----------------------------------------------------------------------------

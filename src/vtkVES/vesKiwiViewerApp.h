@@ -79,9 +79,7 @@ protected:
   // these objects.  Instead, this class should provide public methods to
   // wrap the APIs.  The goal is to allow the ves APIs to be refactored
   // without breaking the Android and iOS KiwiViewer apps.
-  vesActor* actor() const;
   vesCamera* camera() const;
-  vesMapper* mapper() const;
   vesRenderer* renderer() const;
   vesShaderProgram* shaderProgram() const;
 
