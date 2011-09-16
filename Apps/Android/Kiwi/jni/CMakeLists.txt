@@ -10,8 +10,7 @@ include_directories(${VES_INCLUDE_DIRS})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
 set(sources
-  android_native_app_glue.c
-  main.cpp
+  KiwiNative.cpp
 )
 
 set(deps
@@ -19,12 +18,10 @@ set(deps
   EGL
   android
   log
-  vtkIOGeometry
-  vtkIOXML
   ${VES_LIBRARIES}
 )
 
-set(kiwi_lib kiwi-native)
+set(kiwi_lib KiwiNative)
 
 add_library(${kiwi_lib} SHARED ${sources})
 target_link_libraries(${kiwi_lib} ${deps})

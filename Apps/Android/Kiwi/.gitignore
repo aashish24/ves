@@ -1,8 +1,9 @@
+assets
 bin
 build
+gen
 libs
 build.xml
-local.properties
 default.properties
+local.properties
 proguard.cfg
-assets/*
