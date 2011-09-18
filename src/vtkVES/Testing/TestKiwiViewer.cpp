@@ -338,20 +338,21 @@ event_loop(Display *dpy, Window win,
          break;
       case KeyPress:
          {
+            int panDelta = 100;
             char buffer[10];
             int r, code;
             code = XLookupKeysym(&event.xkey, 0);
             if (code == XK_Left) {
-
+              testHelper->app()->handleSingleTouchPanGesture(-panDelta, 0);
             }
             else if (code == XK_Right) {
-
+              testHelper->app()->handleSingleTouchPanGesture(panDelta, 0);
             }
             else if (code == XK_Up) {
-
+              testHelper->app()->handleSingleTouchPanGesture(0, -panDelta);
             }
             else if (code == XK_Down) {
-
+              testHelper->app()->handleSingleTouchPanGesture(0, panDelta);
             }
             else {
                r = XLookupString(&event.xkey, buffer, sizeof(buffer),
@@ -360,7 +361,7 @@ event_loop(Display *dpy, Window win,
                   /* escape */
                   return;
                }
-               if (buffer[0] == 116) {
+               if (buffer[0] == 't') {
                  static int currentShadingModelIndex = 0;
 
                  currentShadingModelIndex = (currentShadingModelIndex + 1) %
@@ -369,6 +370,14 @@ event_loop(Display *dpy, Window win,
 
                  testHelper->app()->setShadingModel(testHelper->app()->getShadingModel(
                     currentShadingModelIndex));
+               }
+               else if (buffer[0] == 'n') {
+                 static int currentDataset = 0;
+                 currentDataset = (currentDataset + 1) % testHelper->app()->numberOfBuiltinDatasets();
+                 LoadData(currentDataset);
+               }
+               else if (buffer[0] == 'r') {
+                 testHelper->app()->resetView();
                }
             }
          }
