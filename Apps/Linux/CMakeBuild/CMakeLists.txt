@@ -5,7 +5,7 @@ include(ExternalProject)
 set(base "${CMAKE_BINARY_DIR}/CMakeExternals")
 set_property(DIRECTORY PROPERTY EP_BASE ${base})
 
-set(build_type Release)
+set(build_type Debug)
 
 set(source_prefix ${base}/Source)
 set(build_prefix ${base}/Build)
