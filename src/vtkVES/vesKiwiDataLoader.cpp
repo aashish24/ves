@@ -20,20 +20,14 @@
 
 #include "vesKiwiDataLoader.h"
 
-#include "vesTriangleData.h"
-#include "vtkPolyDataToTriangleData.h"
-
 #include <vtkSmartPointer.h>
 #include <vtkXMLPolyDataReader.h>
 #include <vtkPolyDataReader.h>
 #include <vtkOBJReader.h>
 #include <vtkSTLReader.h>
-#include <vtkTriangleFilter.h>
 #include <vtkErrorCode.h>
 #include <vtkNew.h>
 #include <vtkPolyData.h>
-#include <vtkPointData.h>
-#include <vtkFloatArray.h>
 #include <vtkBYUReader.h>
 #include <vtkSphereSource.h>
 #include <vtkPDBReader.h>
@@ -102,75 +96,56 @@ bool vesKiwiDataLoader::updateAlgorithmOrSetErrorString(vtkAlgorithm* algorithm)
 }
 
 //----------------------------------------------------------------------------
-vesTriangleData* vesKiwiDataLoader::dataFromPolyDataAlgorithm(vtkAlgorithm* algorithm)
+vtkSmartPointer<vtkDataSet> vesKiwiDataLoader::datasetFromAlgorithm(vtkAlgorithm* algorithm)
 {
   if (!this->updateAlgorithmOrSetErrorString(algorithm))
     {
     return 0;
     }
 
-  vtkPolyData* polyData = vtkPolyData::SafeDownCast(algorithm->GetOutputDataObject(0));
-  assert(polyData);
+  vtkDataSet* dataset = vtkDataSet::SafeDownCast(algorithm->GetOutputDataObject(0));
+  assert(dataset);
 
-  vtkIdType maximumNumberOfPoints = 65536;
-  if (polyData->GetNumberOfPoints() > maximumNumberOfPoints)
+  // VES cannot handle too many points, so handle the error at this point
+  const vtkIdType maximumNumberOfPoints = 65536;
+  if (vtkPointSet::SafeDownCast(dataset) && dataset->GetNumberOfPoints() > maximumNumberOfPoints)
     {
     this->setMaximumNumberOfPointsErrorMessage();
     return 0;
     }
 
-
-  // Always use triangle filter for now.  This will ensure that models containing
-  // polygons other than tris and quads will be rendered correctly.
-  const bool useTriangleFilter = true;
-  if (useTriangleFilter)
-    {
-    vtkSmartPointer<vtkTriangleFilter> triangleFilter = vtkSmartPointer<vtkTriangleFilter>::New();
-    triangleFilter->PassLinesOn();
-    triangleFilter->SetInputConnection(algorithm->GetOutputPort());
-    if (!this->updateAlgorithmOrSetErrorString(triangleFilter))
-      {
-      return 0;
-      }
-    polyData = triangleFilter->GetOutput();
-    vesTriangleData* triangleData = vtkPolyDataToTriangleData::Convert(polyData);
-    vtkPolyDataToTriangleData::ComputeVertexColorFromScalars(polyData, triangleData);
-    return triangleData;
-    }
-  else
-    {
-    return vtkPolyDataToTriangleData::Convert(polyData);
-    }
+  return dataset;
 }
 
 //----------------------------------------------------------------------------
-vesTriangleData* vesKiwiDataLoader::loadDataset(const std::string& filename)
+vtkSmartPointer<vtkDataSet> vesKiwiDataLoader::loadDataset(const std::string& filename)
 {
-  vesTriangleData* newData = 0;
+  this->Internal->ErrorTitle = std::string();
+  this->Internal->ErrorMessage = std::string();
 
   if (this->hasEnding(filename, "vtk"))
     {
     vtkSmartPointer<vtkPolyDataReader> reader = vtkSmartPointer<vtkPolyDataReader>::New();
     reader->SetFileName(filename.c_str());
-    return this->dataFromPolyDataAlgorithm(reader);
+    return this->datasetFromAlgorithm(reader);
     }
   if (this->hasEnding(filename, "vtp"))
     {
     vtkSmartPointer<vtkXMLPolyDataReader> reader = vtkSmartPointer<vtkXMLPolyDataReader>::New();
     reader->SetFileName(filename.c_str());
-    return this->dataFromPolyDataAlgorithm(reader);
+    return this->datasetFromAlgorithm(reader);
     }
   else if (this->hasEnding(filename, "obj"))
     {
     vtkSmartPointer<vtkOBJReader> reader = vtkSmartPointer<vtkOBJReader>::New();
     reader->SetFileName(filename.c_str());
-    return this->dataFromPolyDataAlgorithm(reader);
+    return this->datasetFromAlgorithm(reader);
     }
   else if (this->hasEnding(filename, "stl"))
     {
     vtkSmartPointer<vtkSTLReader> reader = vtkSmartPointer<vtkSTLReader>::New();
     reader->SetFileName(filename.c_str());
-    return this->dataFromPolyDataAlgorithm(reader);
+    return this->datasetFromAlgorithm(reader);
     }
   else if (this->hasEnding(filename, "pdb"))
     {
@@ -197,13 +172,13 @@ vesTriangleData* vesKiwiDataLoader::loadDataset(const std::string& filename)
     append->AddInputConnection(reader->GetOutputPort());
     append->AddInputConnection(glyph->GetOutputPort());
 
-    return this->dataFromPolyDataAlgorithm(append.GetPointer());
+    return this->datasetFromAlgorithm(append.GetPointer());
     }
   else if (this->hasEnding(filename, "g"))
     {
     vtkSmartPointer<vtkBYUReader> reader = vtkSmartPointer<vtkBYUReader>::New();
     reader->SetFileName(filename.c_str());
-    return this->dataFromPolyDataAlgorithm(reader);
+    return this->datasetFromAlgorithm(reader);
     }
   else
     {
@@ -211,12 +186,6 @@ vesTriangleData* vesKiwiDataLoader::loadDataset(const std::string& filename)
     this->Internal->ErrorMessage = "Cannot read files of this format";
     return 0;
     }
-
-
-  this->Internal->ErrorTitle = std::string();
-  this->Internal->ErrorMessage = std::string();
-  return newData;
-
 }
 
 //----------------------------------------------------------------------------

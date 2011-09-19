@@ -22,9 +22,10 @@
 #define __vesKiwiDataLoader_h
 
 #include <string>
+#include <vtkSmartPointer.h>
 
-class vesTriangleData;
 class vtkAlgorithm;
+class vtkDataSet;
 
 class vesKiwiDataLoader
 {
@@ -33,13 +34,13 @@ public:
   vesKiwiDataLoader();
   ~vesKiwiDataLoader();
 
-  vesTriangleData* loadDataset(const std::string& filename);
+  vtkSmartPointer<vtkDataSet> loadDataset(const std::string& filename);
   std::string errorTitle() const;
   std::string errorMessage() const;
 
 protected:
 
-  vesTriangleData* dataFromPolyDataAlgorithm(vtkAlgorithm* algorithm);
+  vtkSmartPointer<vtkDataSet> datasetFromAlgorithm(vtkAlgorithm* algorithm);
   bool updateAlgorithmOrSetErrorString(vtkAlgorithm* algorithm);
   bool hasEnding(const std::string& fullString, const std::string& ending) const;
   void setMaximumNumberOfPointsErrorMessage();

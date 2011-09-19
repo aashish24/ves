@@ -29,9 +29,10 @@
 #include "vesShaderProgram.h"
 #include "vesTriangleData.h"
 
+#include <vtkDataSet.h>
+
 #include <cassert>
 #include <cmath>
-
 #include <algorithm>
 #include <string>
 #include <vector>
@@ -46,7 +47,6 @@ public:
     this->Renderer = 0;
     this->Shader = 0;
     this->ShaderProgram = 0;
-    this->DataRepresentation = 0;
   }
 
   ~vesInternal()
@@ -54,14 +54,14 @@ public:
     delete this->Renderer;
     delete this->Shader;
     delete this->ShaderProgram;
-    delete this->DataRepresentation;
   }
 
   vesRenderer* Renderer;
   vesShader* Shader;
   vesShaderProgram* ShaderProgram;
 
-  vesKiwiDataRepresentation* DataRepresentation;
+  std::vector<vesKiwiDataRepresentation*> DataRepresentations;
+
   vesKiwiDataLoader DataLoader;
 
   std::string VertexShaderSource;
@@ -377,22 +377,41 @@ bool vesKiwiViewerApp::initializeRendering()
   assert(this->Internal->Shader);
 
   this->Internal->Renderer = new vesRenderer();
-  this->Internal->DataRepresentation = new vesKiwiDataRepresentation();
-  this->Internal->DataRepresentation->initializeWithShader(this->Internal->Shader);
-  this->Internal->DataRepresentation->addSelfToRenderer(this->Internal->Renderer);
-
   return true;
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiViewerApp::removeAllDataRepresentations()
+{
+  for (size_t i = 0; i < this->Internal->DataRepresentations.size(); ++i) {
+    this->Internal->DataRepresentations[i]->removeSelfFromRenderer(this->Internal->Renderer);
+    delete this->Internal->DataRepresentations[i];
+  }
+
+  this->Internal->DataRepresentations.clear();
+}
+
+//----------------------------------------------------------------------------
+vesKiwiDataRepresentation* vesKiwiViewerApp::addNewDataRepresentation(vtkDataSet* dataSet)
+{
+  vesKiwiDataRepresentation* rep = new vesKiwiDataRepresentation();
+  rep->initializeWithShader(this->Internal->Shader);
+  rep->setDataSet(dataSet);
+  rep->addSelfToRenderer(this->Internal->Renderer);
+  this->Internal->DataRepresentations.push_back(rep);
+  return rep;
 }
 
 //----------------------------------------------------------------------------
 bool vesKiwiViewerApp::loadDataset(const std::string& filename)
 {
-  vesTriangleData* newData = this->Internal->DataLoader.loadDataset(filename);
-  if (!newData) {
+  vtkSmartPointer<vtkDataSet> dataSet = this->Internal->DataLoader.loadDataset(filename);
+  if (!dataSet) {
     return false;
   }
 
-  this->Internal->DataRepresentation->setTriangleData(newData);
+  this->removeAllDataRepresentations();
+  this->addNewDataRepresentation(dataSet);
   return true;
 }
 
@@ -411,19 +430,32 @@ std::string vesKiwiViewerApp::loadDatasetErrorMessage() const
 //----------------------------------------------------------------------------
 int vesKiwiViewerApp::numberOfModelFacets() const
 {
-  return static_cast<int>(this->Internal->DataRepresentation->triangleData()->GetTriangles().size());
+  int count = 0;
+  for (size_t i = 0; i < this->Internal->DataRepresentations.size(); ++i) {
+    count += static_cast<int>(this->Internal->DataRepresentations[i]->triangleData()->GetTriangles().size());
+  }
+  return count;
 }
 
 //----------------------------------------------------------------------------
 int vesKiwiViewerApp::numberOfModelVertices() const
 {
-  return static_cast<int>(this->Internal->DataRepresentation->triangleData()->GetPoints().size());
+  int count = 0;
+  for (size_t i = 0; i < this->Internal->DataRepresentations.size(); ++i) {
+    count += static_cast<int>(this->Internal->DataRepresentations[i]->triangleData()->GetPoints().size());
+  }
+  return count;
+
 }
 
 //----------------------------------------------------------------------------
 int vesKiwiViewerApp::numberOfModelLines() const
 {
-  return static_cast<int>(this->Internal->DataRepresentation->triangleData()->GetLines().size());
+  int count = 0;
+  for (size_t i = 0; i < this->Internal->DataRepresentations.size(); ++i) {
+    count += static_cast<int>(this->Internal->DataRepresentations[i]->triangleData()->GetLines().size());
+  }
+  return count;
 }
 
 //----------------------------------------------------------------------------

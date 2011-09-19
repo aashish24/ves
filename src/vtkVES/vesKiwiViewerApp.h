@@ -24,11 +24,12 @@
 
 #include <string>
 
-class vesActor;
 class vesCamera;
-class vesMapper;
 class vesRenderer;
 class vesShaderProgram;
+class vesKiwiDataRepresentation;
+
+class vtkDataSet;
 
 class vesKiwiViewerApp
 {
@@ -85,6 +86,9 @@ protected:
 
   void addBuiltinDataset(const std::string& name, const std::string& filename);
   void addBuiltinShadingModel(const std::string& name);
+
+  void removeAllDataRepresentations();
+  vesKiwiDataRepresentation* addNewDataRepresentation(vtkDataSet* dataSet);
 
 private:
 

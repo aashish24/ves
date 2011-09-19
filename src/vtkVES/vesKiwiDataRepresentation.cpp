@@ -24,8 +24,39 @@
 #include "vesMapper.h"
 #include "vesActor.h"
 #include "vesRenderer.h"
+#include "vesTriangleData.h"
+#include "vtkPolyDataToTriangleData.h"
+
+#include <vtkNew.h>
+#include <vtkTriangleFilter.h>
 
 #include <cassert>
+
+
+//----------------------------------------------------------------------------
+namespace {
+vesTriangleData* triangleDataFromPolyData(vtkPolyData* polyData)
+{
+  // Always use triangle filter for now.  This will ensure that models containing
+  // polygons other than tris and quads will be rendered correctly.
+  const bool useTriangleFilter = true;
+  if (useTriangleFilter)
+    {
+    vtkNew<vtkTriangleFilter> triangleFilter;
+    triangleFilter->PassLinesOn();
+    triangleFilter->SetInput(polyData);
+    triangleFilter->Update();
+    polyData = triangleFilter->GetOutput();
+    vesTriangleData* triangleData = vtkPolyDataToTriangleData::Convert(polyData);
+    vtkPolyDataToTriangleData::ComputeVertexColorFromScalars(polyData, triangleData);
+    return triangleData;
+    }
+  else
+    {
+    return vtkPolyDataToTriangleData::Convert(polyData);
+    }
+}
+};
 
 //----------------------------------------------------------------------------
 class vesKiwiDataRepresentation::vesInternal
@@ -62,11 +93,15 @@ vesKiwiDataRepresentation::~vesKiwiDataRepresentation()
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiDataRepresentation::setTriangleData(vesTriangleData* data)
+void vesKiwiDataRepresentation::setDataSet(vtkDataSet* dataSet)
 {
+  vtkPolyData* polyData = vtkPolyData::SafeDownCast(dataSet);
+  assert(polyData);
   assert(this->Internal->Mapper);
+
+  vesTriangleData* triangleData = triangleDataFromPolyData(polyData);
   delete this->Internal->Mapper->triangleData();
-  this->Internal->Mapper->setTriangleData(data);
+  this->Internal->Mapper->setTriangleData(triangleData);
 }
 
 //----------------------------------------------------------------------------
@@ -95,6 +130,13 @@ void vesKiwiDataRepresentation::addSelfToRenderer(vesRenderer* renderer)
 {
   assert(renderer);
   renderer->AddActor(this->Internal->Actor);
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiDataRepresentation::removeSelfFromRenderer(vesRenderer* renderer)
+{
+  assert(renderer);
+  renderer->RemoveActor(this->Internal->Actor);
 }
 
 //----------------------------------------------------------------------------
