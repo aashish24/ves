@@ -74,12 +74,9 @@ void Painter::setCamera(vesCamera *camera)
   this->pop();
 }
 
-void Painter::Shader(vesShader * shader)
+void Painter::Shader(vesShaderProgram* program)
 {
-  std::vector<vesShaderProgram*> temp;
-  if(shader->GetPrograms(&temp))
-    for (int i = 0; i < temp.size(); ++i)
-      temp[i]->Render(this);
+  program->render(this);
 }
 
 void Painter::setShaderProgram(vesShaderProgram *shaderProg)
@@ -129,12 +126,11 @@ void Painter::visitShape(vsg::Shape* shape)
   else
     return;
 
-  std::vector<vesShaderProgram*> temp;
   vesShaderProgram * program;
   vsg::Appearance *appear = (vsg::Appearance*) shape->get_appearance();
-  ProgramShader *prog = (ProgramShader*) appear->get_shaders()[0];
-  if(prog->GetPrograms(&temp))
-    program = temp[0]; // currently we are only using one shader
+
+  // Using only one shader.
+  program = (vesShaderProgram*) appear->attribute(0);
 
   vesMapper* mapper = (vesMapper*)shape->get_geometry();
 
@@ -159,21 +155,21 @@ void Painter::visitShape(vsg::Shape* shape)
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   // Enable our attribute arrays
-  program->EnableVertexArray("vertexPosition");
-  program->EnableVertexArray("vertexNormal");
+  program->EnableVertexArray(vesShaderProgram::POSITION);
+  program->EnableVertexArray(vesShaderProgram::NORMAL);
 
   if (mapper->data()->GetVertexColors().size() == 0) {
-    program->DisableVertexArray("vertexColor");
+    program->DisableVertexArray(vesShaderProgram::COLOR);
     // FIXME: This could be reduced to one call if color was stored in
     // vtkColor4f or similar, and then use a call similar to the one in the else.
-    glVertexAttrib3f(program->GetAttribute("vertexColor"),
+    glVertexAttrib3f(vesShaderProgram::COLOR,
                      mapper->red(),
                      mapper->green(),
                      mapper->blue());
     }
   else {
-    program->EnableVertexArray("vertexColor");
-    glVertexAttribPointer(program->GetAttribute("vertexColor"),
+    program->EnableVertexArray(vesShaderProgram::COLOR);
+    glVertexAttribPointer(vesShaderProgram::COLOR,
                           3,
                           GL_FLOAT,
                           0,
@@ -181,13 +177,13 @@ void Painter::visitShape(vsg::Shape* shape)
                           &(mapper->data()->GetVertexColors()[0]));
     }
 
-  glVertexAttribPointer(program->GetAttribute("vertexPosition"),
+  glVertexAttribPointer(vesShaderProgram::POSITION,
                         3,
                         GL_FLOAT,
                         0,
                         6 * sizeof(float),
                         &(mapper->data()->GetPoints()[0]));
-  glVertexAttribPointer(program->GetAttribute("vertexNormal"),
+  glVertexAttribPointer(vesShaderProgram::NORMAL,
                         3,
                         GL_FLOAT,
                         0,
@@ -196,16 +192,16 @@ void Painter::visitShape(vsg::Shape* shape)
 
   // draw vertices
   if (mapper->drawPoints()) {
-    program->SetUniformVector2f("u_scalarRange", mapper->data()->GetPointScalarRange());
-    program->EnableVertexArray("a_scalar");
-    glVertexAttribPointer(program->GetAttribute("a_scalar"),
-                          1,
-                          GL_FLOAT,
-                          0,
-                          sizeof(float),
-                          &(mapper->data()->GetPointScalars()[0]));
+//    program->SetUniformVector2f("u_scalarRange", mapper->data()->GetPointScalarRange());
+//    program->EnableVertexArray("a_scalar");
+//    glVertexAttribPointer(program->GetAttribute("a_scalar"),
+//                          1,
+//                          GL_FLOAT,
+//                          0,
+//                          sizeof(float),
+//                          &(mapper->data()->GetPointScalars()[0]));
 
-    glDrawArrays(GL_POINTS, 0, mapper->data()->GetPoints().size());
+//    glDrawArrays(GL_POINTS, 0, mapper->data()->GetPoints().size());
   }
   else {
     // draw triangles
@@ -224,9 +220,9 @@ void Painter::visitShape(vsg::Shape* shape)
 
   glDisable(GL_CULL_FACE);
   glDisable(GL_BLEND);
-  program->DisableVertexArray("vertexPosition");
-  program->DisableVertexArray("vertexNormal");
-  program->DisableVertexArray("vertexColor");
+  program->DisableVertexArray(vesShaderProgram::POSITION);
+  program->DisableVertexArray(vesShaderProgram::NORMAL);
+  program->DisableVertexArray(vesShaderProgram::COLOR);
 
 }
 

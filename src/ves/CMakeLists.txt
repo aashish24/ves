@@ -1,8 +1,6 @@
 
 set(sources
-
   Painter.cpp
-  ProgramShader.cpp
   vesActor.cpp
   vesActorCollection.cpp
   vesByteSwap.cpp
@@ -34,7 +32,7 @@ set(sources
   vsg/Core/vsgSensorNode.cpp
 
   # -------------------------------------------------------------------Grouping
-  vsg/Grouping/vsgBoundedObject.cpp  
+  vsg/Grouping/vsgBoundedObject.cpp
   vsg/Grouping/vsgGroupingNode.cpp
   vsg/Grouping/Transform.cpp
 

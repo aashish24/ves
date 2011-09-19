@@ -24,21 +24,109 @@
 #ifndef __vesShader_h
 #define __vesShader_h
 
-#include "ProgramShader.h"
+#ifdef ANDROID
+# include <GLES2/gl2.h>
+# include <GLES2/gl2ext.h>
+#else
+# include <OpenGLES/ES2/gl.h>
+# include <OpenGLES/ES2/glext.h>
+#endif
 
-class vesShaderInternal;
+#include <string>
 
-class vesShader : public ProgramShader
+class vesShader
 {
-public:
-  vesShader(vesShaderProgram* program);
-  ~vesShader();
-  bool read();
-  void render(Painter *render);
+ public:
+ enum ShaderType
+ {
+     VERTEX         = GL_VERTEX_SHADER,
+//     TESSCONTROL    = GL_TESS_CONTROL_SHADER,
+//     TESSEVALUATION = GL_TESS_EVALUATION_SHADER,
+//     GEOMETRY       = GL_GEOMETRY_SHADER_EXT,
+     FRAGMENT       = GL_FRAGMENT_SHADER,
+     UNDEFINED      = -1
+ };
 
-private:
-  vesShaderInternal *Internal;
+ vesShader(ShaderType type = UNDEFINED);
+ vesShader(ShaderType type, const std::string &source);
 
+ // \todo: Support shader binaries.
+
+ // \todo: Implement these useful functions.
+ // int Compare(const vesShader &rhs);
+
+ bool SetShaderType(ShaderType type);
+
+ inline ShaderType GetShaderType() const
+   {
+   return Type;
+   }
+
+//  std::string GetShaderTypeName() const;
+
+ inline void SetFileName(const std::string &fileName)
+   {
+     this->ShaderFileName = fileName;
+//     this->Modified();
+   }
+
+ inline const std::string& GetFileName() const
+   {
+   return this->ShaderFileName;
+   }
+
+ inline void SetShaderSource(const std::string &sourceText)
+   {
+   this->ShaderSource = sourceText;
+//   this->Modified();
+   }
+
+ inline const std::string& GetShaderSource() const
+   {
+   return this->ShaderSource;
+   }
+
+ bool LoadShaderSourceFromFile(const std::string& fileName);
+
+ // If needed, compile the PC shader.
+ void CompileShader();
+
+ // For a given GL context, attach a glShader to a glProgram.
+ // \todo: Improvement (support per context shader).
+// void AttachShader(unsigned int contextID, GLuint program) const;
+
+ // Attach a glShader to a glProgram.
+ void AttachShader(GLuint program) const;
+
+ // For a given GL context, detach a glShader to a glProgram.
+ // \todo: Implement this.
+ // void DetachShader(unsigned int contextID, GLuint program) const;
+
+ // Query InfoLog from a glShader.
+ // \todo: Implement this.
+ // bool GetGlShaderInfoLog(unsigned int contextID, std::string& log) const;
+
+ // Mark internal glShader for deletion.
+ // Deletion requests are queued until they can be executed
+ // in the proper GL context.
+ // \todo: Implement this.
+ // static void DeleteGlShader(unsigned int contextID, GLuint shader);
+
+ // flush all the cached glShaders which need to be deleted
+ //  in the OpenGL context related to contextID.
+ // \todo: Implement this.
+ // static void flushDeletedGlShaders(unsigned int contextID,double currentTime, double& availableTime);
+
+
+ protected:
+
+   ShaderType Type;
+
+   GLuint      ShaderHandle;
+
+   std::string ShaderFileName;
+
+   std::string ShaderSource;
 };
 
 #endif // __vesShader_h

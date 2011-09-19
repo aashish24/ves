@@ -52,6 +52,8 @@ public:
   void computeBounds();
   void setColor(float r, float g, float b, float a);
 
+//  void setVertexAttribute(unsigned int location, vesArray* array);
+
   float red() const { return m_red; }
   float green() const { return m_green; }
   float blue() const { return m_blue; }

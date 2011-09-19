@@ -61,6 +61,7 @@ bool Shape::read()
 
 void Shape::render(Painter* render)
 {
+  std::cout << "Shape render" << std::endl;
   render->visitShape(this);
 }
 

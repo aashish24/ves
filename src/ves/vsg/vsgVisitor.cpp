@@ -141,12 +141,13 @@ bool vsgVisitor::visitShape(vsg::Shape* shape)
 
 bool vsgVisitor::visitAppearance(vsg::Appearance *appearance)
 {
+  // \todo: FixMe.
   std::cout << "Visiting: Appearance" << std::endl;
-  MFNode shaders = appearance->get_shaders();
-  for(int i =0; i< shaders.size(); ++i)
-  {
-    shaders[i]->accept(this);
-  }
+  appearance->attribute(0)->accept(this);
+//  for(int i =0; i< shaders.size(); ++i)
+//  {
+//    shaders[i]->accept(this);
+//  }
 
   return true;
 }

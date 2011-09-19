@@ -47,7 +47,7 @@ public:
     this->Actor = 0;
     this->Mapper = 0;
     this->Renderer = 0;
-    this->Shader = 0;
+//    this->Shader = 0;
     this->ShaderProgram = 0;
   }
 
@@ -57,14 +57,13 @@ public:
     delete this->Mapper->triangleData();
     delete this->Mapper;
     delete this->Renderer;
-    delete this->Shader;
+//    delete this->Shader;
     delete this->ShaderProgram;
   }
 
   vesActor* Actor;
   vesMapper* Mapper;
   vesRenderer* Renderer;
-  vesShader* Shader;
   vesShaderProgram* ShaderProgram;
 
   vesKiwiDataLoader DataLoader;
@@ -364,22 +363,28 @@ bool vesKiwiViewerApp::setShadingModel(const std::string& name)
 //----------------------------------------------------------------------------
 bool vesKiwiViewerApp::initializeShaderProgram()
 {
-  this->Internal->ShaderProgram = new vesShaderProgram(
-                                   const_cast<char*>(this->Internal->VertexShaderSource.c_str()),
-                                   const_cast<char*>(this->Internal->FragmentShaderSource.c_str()),
-                                   (_uni("modelViewProjectionMatrix"),
-                                    _uni("normalMatrix"),
-                                    _uni("lightDirection"),
-                                    _uni("opacity"),
-                                    _uni("enableDiffuse"),
-                                    _uni("useGouraudShader"),
-                                    _uni("useBlinnPhongShader"),
-                                    _uni("useToonShader")),
-                                   (_att("vertexPosition"),
-                                    _att("vertexNormal"),
-                                    _att("vertexColor")));
+//  this->Internal->ShaderProgram = new vesShaderProgram(
+//                                   const_cast<char*>(this->Internal->VertexShaderSource.c_str()),
+//                                   const_cast<char*>(this->Internal->FragmentShaderSource.c_str()),
+//                                   (_uni("modelViewProjectionMatrix"),
+//                                    _uni("normalMatrix"),
+//                                    _uni("lightDirection"),
+//                                    _uni("opacity"),
+//                                    _uni("enableDiffuse"),
+//                                    _uni("useGouraudShader"),
+//                                    _uni("useBlinnPhongShader"),
+//                                    _uni("useToonShader")),
+//                                   (_att("vertexPosition"),
+//                                    _att("vertexNormal"),
+//                                    _att("vertexColor")));
 
-  this->Internal->Shader = new vesShader(this->Internal->ShaderProgram);
+  this->Internal->ShaderProgram = new vesShaderProgram();
+  this->Internal->ShaderProgram->AddShader(
+    new vesShader(vesShader::VERTEX, this->Internal->VertexShaderSource));
+  this->Internal->ShaderProgram->AddShader(
+    new vesShader(vesShader::FRAGMENT, this->Internal->FragmentShaderSource));
+
+//  this->Internal->Shader = new vesShader(this->Internal->ShaderProgram);
   this->Internal->ShaderProgram->Use();
 
   // Set default shading model.
@@ -396,10 +401,11 @@ bool vesKiwiViewerApp::initializeRendering()
   this->Internal->Renderer = new vesRenderer();
   this->Internal->Mapper = new vesMapper();
   this->Internal->Mapper->setTriangleData(new vesTriangleData);
-  this->Internal->Actor = new vesActor(this->Internal->Shader, this->Internal->Mapper);
+  this->Internal->Actor = new vesActor(this->Internal->Mapper);
   this->Internal->Actor->setColor(0.8, 0.8, 0.8, 1.0);
   this->Internal->Renderer->AddActor(this->Internal->Actor);
 
+  this->Internal->Actor->appearance()->addAttribute(this->Internal->ShaderProgram);
   return true;
 }
 

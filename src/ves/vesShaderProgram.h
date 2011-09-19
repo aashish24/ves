@@ -28,80 +28,87 @@
 # include <OpenGLES/ES2/gl.h>
 # include <OpenGLES/ES2/glext.h>
 #endif
+
+#include <list>
 #include <map>
-#include <vector>
 #include <string>
+
 #include "vesGMTL.h"
+
 #include "Painter.h"
+
+#include <vsg/Shader/vsgShaderNode.h>
 
 using namespace std;
 
-struct vtkStringList
-{
-  vector<std::string> List;
-  friend vtkStringList operator, (vtkStringList a, vtkStringList b)
-  {
-    vtkStringList temp = a;
-    for(int i=0;i<b.List.size();++i)
-    {
-      temp.List.push_back(b.List[i]);
-    }
-    return temp;
-  }
-};
-
-#define VTK_STR_LIST_CNSTR_DECLARE(NAME) \
-  vtkStringList NAME (string value);
-
-VTK_STR_LIST_CNSTR_DECLARE(_att)
-VTK_STR_LIST_CNSTR_DECLARE(_uni)
-
-class vesShaderProgram
+class vesShaderProgram : public vsgShaderNode
 {
 public:
 
-  /**
-   * vesShaderProgram constructor.
-   * \todo change arguments from char* to std::string
-   */
-  vesShaderProgram(char* vertexShaderStr,
-                   char* fragmentShaderStr,
-                   vtkStringList uniforms,
-                   vtkStringList attributes);
+  // Ease of use.
+  typedef std::map<string, unsigned int> AttributeBindingMap;
+
+  enum AttributeIndex
+  {
+    POSITION              = 0,
+    NORMAL                = 1,
+    TEXTURE_COORDINATE    = 2,
+    COLOR                 = 3,
+    SCALAR                = 4,
+    COUNT_ATTRIBUTE_INDEX = 5
+  };
+
+   vesShaderProgram();
   ~vesShaderProgram();
-  void Render(Painter *render);
+
+  bool AddShader(vesShader *shader);
+
+  bool AddBindAttributeLocation(const std::string& name, unsigned int location);
+
   bool Validate();
   void Use();
+
   int GetUniform(string value);
   int GetAttribute(string value);
+
   void DeleteProgram();
+
   void SetUniformMatrix4x4f(string str, vesMatrix4x4f& mat);
   void SetUniformMatrix3x3f(string str, vesMatrix3x3f& mat);
   void SetUniformVector3f(string str, vesVector3f point);
   void SetUniformVector2f(string str, vesVector2f point);
   void SetUniformFloat(string str, float value);
   void SetUniformInt(string str, int value);
-  void EnableVertexArray(string str);
-  void DisableVertexArray(string str);
-  void CompileAndLoadVertexShader(char* vertexShaderStr);
-  void CompileAndLoadFragmentShader(char* fragmentShaderStr);
-  void BindAttributes(vtkStringList attribs);
-  void BindUniforms(vtkStringList uniforms);
+
+  void EnableVertexArray  (unsigned int location);
+  void DisableVertexArray (unsigned int location);
+
   bool Link();
+
   void Delete();
   void DeleteVertexAndFragment();
-  GLuint CompileShader(GLenum type, const char* source);
+
+  virtual bool read(){;}
+
+  virtual void render(Painter *render);
+
+
+protected:
+
+  void BindAttributes();
+  void BindUniforms();
+
+
 private:
-  GLuint Program;
-  GLuint VertexShader;
-  GLuint FragmentShader;
-  map<string,int> Uniforms;
-  map<string,int> Attributes;
+
+  GLuint ProgramHandle;
+
+  static std::string PreDefinedAttributeNames[COUNT_ATTRIBUTE_INDEX];
+
+  std::list<vesShader*>    Shaders;
+
+  AttributeBindingMap      Attributes;
 };
 
-vesShaderProgram _program(char* vertexShaderStr,
-                          char* fragmentShaderStr,
-                          vtkStringList uniforms,
-                          vtkStringList attributes);
 
 #endif

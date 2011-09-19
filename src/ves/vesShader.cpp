@@ -18,41 +18,87 @@
   limitations under the License.
  ========================================================================*/
 
+
 #include "vesShader.h"
 
-#include "vesShaderProgram.h"
-#include "Painter.h"
-#include <vector>
+#include <cstdlib>
+#include <iostream>
 
-// --------------------------------------------------------------------internal
-// IMPORTANT: Make sure that this struct has no pointers.  All pointers should
-// be put in the class declaration. For all newly defined pointers make sure to
-// update constructor and destructor methods.
-struct vesShaderInternal
+//-----------------------------------------------------------------------------
+vesShader::vesShader(ShaderType type) :
+  Type(type)
 {
-  double value; // sample
-};
-
-vesShader::vesShader(vesShaderProgram* shader)
-{
-  std::vector<vesShaderProgram*> temp;
-  temp.push_back(shader);
-  SetPrograms(temp);
-  this->Internal = new vesShaderInternal();
 }
 
-vesShader::~vesShader()
+//-----------------------------------------------------------------------------
+vesShader::vesShader(ShaderType type, const std::string &source) :
+  Type        (type),
+  ShaderSource(source)
 {
-  delete this->Internal;
 }
 
-bool vesShader::read()
+//-----------------------------------------------------------------------------
+bool vesShader::SetShaderType(ShaderType type)
 {
-  //std::cout << "Read: Shader" <<std::endl;
+  if (this->Type == type)
+  {
+    return true;
+  }
+
+  if (this->Type != UNDEFINED)
+  {
+    std::cerr << "ERROR: Cannot change type of Shader" << std::endl;
+    return false;
+  }
+
+  this->Type = type;
   return true;
 }
 
-void vesShader::render(Painter *render)
+//-----------------------------------------------------------------------------
+bool vesShader::LoadShaderSourceFromFile(const std::string& fileName)
 {
-  render->Shader(this);
+  // \todo: Implement this function.
+  // this->Modified();
+
+  return true;
+}
+
+//-----------------------------------------------------------------------------
+void vesShader::CompileShader()
+{
+  GLint compiled;
+
+  // Create shader
+  this->ShaderHandle = glCreateShader(this->Type);
+
+  // Load source
+  const GLchar *source = reinterpret_cast<const GLchar*>(this->ShaderSource.c_str());
+  glShaderSource(this->ShaderHandle, 1, &source, NULL);
+  glCompileShader(this->ShaderHandle);
+
+  glGetShaderiv(this->ShaderHandle, GL_COMPILE_STATUS, &compiled);
+  if (!compiled)
+  {
+    GLint infoLen =0;
+    glGetShaderiv(this->ShaderHandle, GL_INFO_LOG_LENGTH, &infoLen);
+    if(infoLen > 1)
+    {
+      char *infoLog = (char*) malloc(sizeof(char)*infoLen);
+      glGetShaderInfoLog(this->ShaderHandle,infoLen,NULL,infoLog);
+      std::cout << "Error compiling shader:"
+                << std::endl
+                << infoLog
+                << std::endl;
+      free(infoLog);
+    }
+
+    glDeleteShader(this->ShaderHandle);
+  }
+}
+
+//-----------------------------------------------------------------------------
+void vesShader::AttachShader(GLuint program) const
+{
+   glAttachShader(program, this->ShaderHandle);
 }

@@ -51,7 +51,8 @@ public:
   ~Painter();
   void Texture(vesTexture* textureBackground);
   void visitShape(vsg::Shape* shape);
-  void Shader(vesShader * shader);
+
+  void Shader(vesShaderProgram * program);
 
   /** Render the supplied actor. */
   void Actor(vesActor * actor);
