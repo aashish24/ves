@@ -36,81 +36,89 @@
 
 class vesShader
 {
- public:
+public:
+
  enum ShaderType
  {
-     VERTEX         = GL_VERTEX_SHADER,
-//     TESSCONTROL    = GL_TESS_CONTROL_SHADER,
-//     TESSEVALUATION = GL_TESS_EVALUATION_SHADER,
-//     GEOMETRY       = GL_GEOMETRY_SHADER_EXT,
-     FRAGMENT       = GL_FRAGMENT_SHADER,
-     UNDEFINED      = -1
+     Vertex         = GL_VERTEX_SHADER,
+
+    // \note: Currently GLES does not support other shaders.
+   //TESSCONTROL    = GL_TESS_CONTROL_SHADER,
+   //TESSEVALUATION = GL_TESS_EVALUATION_SHADER,
+   //GEOMETRY       = GL_GEOMETRY_SHADER_EXT,
+
+     Fragment       = GL_FRAGMENT_SHADER,
+     Undefined      = -1
  };
 
- vesShader(ShaderType type = UNDEFINED);
+
+ vesShader(ShaderType type = Undefined);
  vesShader(ShaderType type, const std::string &source);
 
  // \todo: Support shader binaries.
 
  // \todo: Implement these useful functions.
- // int Compare(const vesShader &rhs);
+ // int compare(const vesShader &rhs);
 
- bool SetShaderType(ShaderType type);
+ bool setShaderType(ShaderType type);
+ inline ShaderType shaderType() const
+ {
+   return m_type;
+ }
 
- inline ShaderType GetShaderType() const
-   {
-   return Type;
-   }
 
-//  std::string GetShaderTypeName() const;
+ inline void setFileName(const std::string &fileName)
+ {
+   this->m_shaderFileName = fileName;
 
- inline void SetFileName(const std::string &fileName)
-   {
-     this->ShaderFileName = fileName;
-//     this->Modified();
-   }
+   // \todo: Make state dirty.
+   //this->Modified();
+ }
 
- inline const std::string& GetFileName() const
-   {
-   return this->ShaderFileName;
-   }
 
- inline void SetShaderSource(const std::string &sourceText)
-   {
-   this->ShaderSource = sourceText;
-//   this->Modified();
-   }
+ inline const std::string& fileName() const
+ {
+   return this->m_shaderFileName;
+ }
 
- inline const std::string& GetShaderSource() const
-   {
-   return this->ShaderSource;
-   }
 
- bool LoadShaderSourceFromFile(const std::string& fileName);
+ inline void setShaderSource(const std::string &sourceText)
+ {
+   this->m_shaderSource = sourceText;
+   // \todo: Make state dirty.
+   //this->Modified();
+ }
+
+ inline const std::string &shaderSource() const
+ {
+   return this->m_shaderSource;
+ }
+
+ bool loadShaderSourceFromFile(const std::string &fileName);
 
  // If needed, compile the PC shader.
- void CompileShader();
+ void compileShader();
 
  // For a given GL context, attach a glShader to a glProgram.
  // \todo: Improvement (support per context shader).
-// void AttachShader(unsigned int contextID, GLuint program) const;
+// void attachShader(unsigned int contextID, GLuint program) const;
 
  // Attach a glShader to a glProgram.
- void AttachShader(GLuint program) const;
+ void attachShader(GLuint program) const;
 
  // For a given GL context, detach a glShader to a glProgram.
  // \todo: Implement this.
- // void DetachShader(unsigned int contextID, GLuint program) const;
+ // void detachShader(unsigned int contextID, GLuint program) const;
 
  // Query InfoLog from a glShader.
  // \todo: Implement this.
- // bool GetGlShaderInfoLog(unsigned int contextID, std::string& log) const;
+ // bool getGlShaderInfoLog(unsigned int contextID, std::string& log) const;
 
  // Mark internal glShader for deletion.
  // Deletion requests are queued until they can be executed
  // in the proper GL context.
  // \todo: Implement this.
- // static void DeleteGlShader(unsigned int contextID, GLuint shader);
+ // static void deleteGlShader(unsigned int contextID, GLuint shader);
 
  // flush all the cached glShaders which need to be deleted
  //  in the OpenGL context related to contextID.
@@ -118,15 +126,15 @@ class vesShader
  // static void flushDeletedGlShaders(unsigned int contextID,double currentTime, double& availableTime);
 
 
- protected:
+protected:
 
-   ShaderType Type;
+   ShaderType  m_type;
 
-   GLuint      ShaderHandle;
+   GLuint      m_shaderHandle;
 
-   std::string ShaderFileName;
+   std::string m_shaderFileName;
 
-   std::string ShaderSource;
+   std::string m_shaderSource;
 };
 
 #endif // __vesShader_h

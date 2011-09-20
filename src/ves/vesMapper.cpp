@@ -69,31 +69,32 @@ bool vesMapper::read()
 
 void vesMapper::render(vesShaderProgram *program)
 {
-  glVertexAttrib4f(program->GetAttribute("a_texcoord"), 0.8, 0.8, 0.8, 1.0);
-  glVertexAttribPointer(program->GetAttribute("a_vertex"),
-                        3,
-                        GL_FLOAT,
-                        0,
-                        6 * sizeof(float),
-                        &this->m_data->GetPoints()[0]);
-  glVertexAttribPointer(program->GetAttribute("a_normal"),
-                        3,
-                        GL_FLOAT,
-                        0,
-                        6 * sizeof(float),
-                        this->m_data->GetPoints()[0].normal.mData);
+  // \note: Not used as of now.
+//  glVertexAttrib4f(program->GetAttribute("a_texcoord"), 0.8, 0.8, 0.8, 1.0);
+//  glVertexAttribPointer(program->GetAttribute("a_vertex"),
+//                        3,
+//                        GL_FLOAT,
+//                        0,
+//                        6 * sizeof(float),
+//                        &this->m_data->GetPoints()[0]);
+//  glVertexAttribPointer(program->GetAttribute("a_normal"),
+//                        3,
+//                        GL_FLOAT,
+//                        0,
+//                        6 * sizeof(float),
+//                        this->m_data->GetPoints()[0].normal.mData);
 
-  // draw triangles
-  glDrawElements(GL_TRIANGLES,
-                 this->m_data->GetTriangles().size() * 3,
-                 GL_UNSIGNED_SHORT,
-                 &this->m_data->GetTriangles()[0]);
+//  // draw triangles
+//  glDrawElements(GL_TRIANGLES,
+//                 this->m_data->GetTriangles().size() * 3,
+//                 GL_UNSIGNED_SHORT,
+//                 &this->m_data->GetTriangles()[0]);
 
-  // draw lines
-  glDrawElements(GL_LINES,
-                 this->m_data->GetLines().size() * 2,
-                 GL_UNSIGNED_SHORT,
-                 &this->m_data->GetLines()[0]);
+//  // draw lines
+//  glDrawElements(GL_LINES,
+//                 this->m_data->GetLines().size() * 2,
+//                 GL_UNSIGNED_SHORT,
+//                 &this->m_data->GetLines()[0]);
 }
 
 
@@ -101,6 +102,7 @@ vesTriangleData* vesMapper::triangleData()
 {
   return this->m_data;
 }
+
 
 void vesMapper::computeBounds()
 {

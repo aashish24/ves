@@ -61,32 +61,32 @@ public:
    vesShaderProgram();
   ~vesShaderProgram();
 
-  bool AddShader(vesShader *shader);
+  bool addShader(vesShader *shader);
 
-  bool AddBindAttributeLocation(const std::string& name, unsigned int location);
+  bool addBindAttributeLocation(const std::string& name, unsigned int location);
 
-  bool Validate();
-  void Use();
+  bool validate();
+  void use();
 
-  int GetUniform(string value);
-  int GetAttribute(string value);
+  int uniform(string value);
+  int attribute(string value);
 
-  void DeleteProgram();
+  void deleteProgram();
 
-  void SetUniformMatrix4x4f(string str, vesMatrix4x4f& mat);
-  void SetUniformMatrix3x3f(string str, vesMatrix3x3f& mat);
-  void SetUniformVector3f(string str, vesVector3f point);
-  void SetUniformVector2f(string str, vesVector2f point);
-  void SetUniformFloat(string str, float value);
-  void SetUniformInt(string str, int value);
+  void setUniformMatrix4x4f(string str, vesMatrix4x4f& mat);
+  void setUniformMatrix3x3f(string str, vesMatrix3x3f& mat);
+  void setUniformVector3f(string str, vesVector3f point);
+  void setUniformVector2f(string str, vesVector2f point);
+  void setUniformFloat(string str, float value);
+  void setUniformInt(string str, int value);
 
-  void EnableVertexArray  (unsigned int location);
-  void DisableVertexArray (unsigned int location);
+  void enableVertexArray  (unsigned int location);
+  void disableVertexArray (unsigned int location);
 
-  bool Link();
+  bool link();
 
-  void Delete();
-  void DeleteVertexAndFragment();
+  void cleanUp();
+  void deleteVertexAndFragment();
 
   virtual bool read(){;}
 
@@ -95,19 +95,19 @@ public:
 
 protected:
 
-  void BindAttributes();
-  void BindUniforms();
+  void bindAttributes();
+  void bindUniforms();
 
 
 private:
 
-  GLuint ProgramHandle;
+  GLuint m_programHandle;
 
-  static std::string PreDefinedAttributeNames[COUNT_ATTRIBUTE_INDEX];
+  static std::string preDefinedAttributeNames[COUNT_ATTRIBUTE_INDEX];
 
-  std::list<vesShader*>    Shaders;
+  std::list<vesShader*>    m_shaders;
 
-  AttributeBindingMap      Attributes;
+  AttributeBindingMap      m_attributes;
 };
 
 

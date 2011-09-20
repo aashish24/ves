@@ -37,29 +37,34 @@
 #include <iostream>
 #include <vector>
 
-namespace {
-void PrintMatrix(vesMatrix4x4f mv)
+namespace
 {
-  for (int i = 0; i < 4; ++i) {
-    std::cerr << mv[i][0] << "," << mv[i][1] << "," << mv[i][2] << ","
-              << mv[i][3] << std::endl;
+  void PrintMatrix(vesMatrix4x4f mv)
+  {
+    for (int i = 0; i < 4; ++i) {
+      std::cerr << mv[i][0] << "," << mv[i][1] << "," << mv[i][2] << ","
+                << mv[i][3] << std::endl;
+    }
   }
 }
-}
+
 
 Painter::Painter()
 {
   m_textureBackground = NULL;
 }
 
+
 Painter::~Painter()
 {
 }
+
 
 void Painter::Texture(vesTexture* textureBackground)
 {
   textureBackground->Render();
 }
+
 
 void Painter::setCamera(vesCamera *camera)
 {
@@ -74,14 +79,16 @@ void Painter::setCamera(vesCamera *camera)
   this->pop();
 }
 
+
 void Painter::Shader(vesShaderProgram* program)
 {
   program->render(this);
 }
 
+
 void Painter::setShaderProgram(vesShaderProgram *shaderProg)
 {
-  shaderProg->Use();
+  shaderProg->use();
 }
 
 void Painter::Actor(vesActor * actor)
@@ -146,20 +153,20 @@ void Painter::visitShape(vsg::Shape* shape)
   vtkPoint3f lightDir = vtkPoint3f(0.0,0.0,.650);
 
   vesVector3f light(lightDir.mData[0],lightDir.mData[1],lightDir.mData[2]);
-  program->SetUniformMatrix4x4f("modelViewProjectionMatrix",mvp);
-  program->SetUniformMatrix3x3f("normalMatrix",normal_matrix);
-  program->SetUniformVector3f("lightDirection",light);
-  program->SetUniformFloat("opacity", mapper->alpha());
+  program->setUniformMatrix4x4f("modelViewProjectionMatrix",mvp);
+  program->setUniformMatrix3x3f("normalMatrix",normal_matrix);
+  program->setUniformVector3f("lightDirection",light);
+  program->setUniformFloat("opacity", mapper->alpha());
 
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   // Enable our attribute arrays
-  program->EnableVertexArray(vesShaderProgram::POSITION);
-  program->EnableVertexArray(vesShaderProgram::NORMAL);
+  program->enableVertexArray(vesShaderProgram::POSITION);
+  program->enableVertexArray(vesShaderProgram::NORMAL);
 
   if (mapper->data()->GetVertexColors().size() == 0) {
-    program->DisableVertexArray(vesShaderProgram::COLOR);
+    program->disableVertexArray(vesShaderProgram::COLOR);
     // FIXME: This could be reduced to one call if color was stored in
     // vtkColor4f or similar, and then use a call similar to the one in the else.
     glVertexAttrib3f(vesShaderProgram::COLOR,
@@ -168,7 +175,7 @@ void Painter::visitShape(vsg::Shape* shape)
                      mapper->blue());
     }
   else {
-    program->EnableVertexArray(vesShaderProgram::COLOR);
+    program->enableVertexArray(vesShaderProgram::COLOR);
     glVertexAttribPointer(vesShaderProgram::COLOR,
                           3,
                           GL_FLOAT,
@@ -211,7 +218,7 @@ void Painter::visitShape(vsg::Shape* shape)
                    &mapper->data()->GetTriangles()[0]);
 
     // draw lines
-    program->SetUniformInt("enableDiffuse", 0);
+    program->setUniformInt("enableDiffuse", 0);
     glDrawElements(GL_LINES,
                    mapper->data()->GetLines().size() * 2,
                    GL_UNSIGNED_SHORT,
@@ -220,9 +227,9 @@ void Painter::visitShape(vsg::Shape* shape)
 
   glDisable(GL_CULL_FACE);
   glDisable(GL_BLEND);
-  program->DisableVertexArray(vesShaderProgram::POSITION);
-  program->DisableVertexArray(vesShaderProgram::NORMAL);
-  program->DisableVertexArray(vesShaderProgram::COLOR);
+  program->disableVertexArray(vesShaderProgram::POSITION);
+  program->disableVertexArray(vesShaderProgram::NORMAL);
+  program->disableVertexArray(vesShaderProgram::COLOR);
 
 }
 

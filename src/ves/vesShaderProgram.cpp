@@ -26,7 +26,7 @@
 
 #include <vector>
 
-std::string vesShaderProgram::PreDefinedAttributeNames[vesShaderProgram::COUNT_ATTRIBUTE_INDEX] =
+std::string vesShaderProgram::preDefinedAttributeNames[vesShaderProgram::COUNT_ATTRIBUTE_INDEX] =
 {
   "vertexPosition",
   "vertexNormal",
@@ -38,182 +38,189 @@ std::string vesShaderProgram::PreDefinedAttributeNames[vesShaderProgram::COUNT_A
 
 vesShaderProgram::vesShaderProgram()
 {
-  for(size_t i=0; i < COUNT_ATTRIBUTE_INDEX; ++i)
-  {
-    this->AddBindAttributeLocation(vesShaderProgram::PreDefinedAttributeNames[i], i);
-  }
+  // \todo: Perform lazy binding.
+  for (size_t i=0; i < COUNT_ATTRIBUTE_INDEX; ++i)
+    this->addBindAttributeLocation(vesShaderProgram::preDefinedAttributeNames[i], i);
 }
+
 
 vesShaderProgram::~vesShaderProgram()
 {
 }
 
-void vesShaderProgram::Use()
+
+void vesShaderProgram::use()
 {
-  glUseProgram(this->ProgramHandle);
+  glUseProgram(this->m_programHandle);
 }
 
-int vesShaderProgram::GetUniform(string value)
+
+int vesShaderProgram::uniform(string value)
 {
-  return glGetUniformLocation(this->ProgramHandle, value.c_str());
+  return glGetUniformLocation(this->m_programHandle, value.c_str());
 }
 
-int vesShaderProgram::GetAttribute(string value)
+
+int vesShaderProgram::attribute(string value)
 {
-  return glGetAttribLocation(this->ProgramHandle, value.c_str());
+  return glGetAttribLocation(this->m_programHandle, value.c_str());
 }
 
-void vesShaderProgram::DeleteProgram()
+
+void vesShaderProgram::deleteProgram()
 {
-  if (this->ProgramHandle)
-  {
-    glDeleteProgram(this->ProgramHandle);
-    this->ProgramHandle = 0;
+  if (this->m_programHandle) {
+    glDeleteProgram(this->m_programHandle);
+    this->m_programHandle = 0;
   }
 }
 
-void vesShaderProgram::SetUniformMatrix4x4f(string str, vesMatrix4x4f& mat)
+
+void vesShaderProgram::setUniformMatrix4x4f(string str, vesMatrix4x4f& mat)
 {
-  glUniformMatrix4fv(this->GetUniform(str), 1, GL_FALSE, mat.mData);
+  glUniformMatrix4fv(this->uniform(str), 1, GL_FALSE, mat.mData);
 }
 
-void vesShaderProgram::SetUniformMatrix3x3f(string str, vesMatrix3x3f& mat)
+
+void vesShaderProgram::setUniformMatrix3x3f(string str, vesMatrix3x3f& mat)
 {
-  glUniformMatrix3fv(this->GetUniform(str), 1, GL_FALSE, mat.mData);
+  glUniformMatrix3fv(this->uniform(str), 1, GL_FALSE, mat.mData);
 }
 
-void vesShaderProgram::SetUniformVector3f(string str, vesVector3f point)
+
+void vesShaderProgram::setUniformVector3f(string str, vesVector3f point)
 {
-  glUniform3fv(this->GetUniform(str), 1, point.mData);
+  glUniform3fv(this->uniform(str), 1, point.mData);
 }
 
-void vesShaderProgram::SetUniformVector2f(string str, vesVector2f point)
+
+void vesShaderProgram::setUniformVector2f(string str, vesVector2f point)
 {
-  glUniform2fv(this->GetUniform(str), 1, point.mData);
+  glUniform2fv(this->uniform(str), 1, point.mData);
 }
 
-void vesShaderProgram::SetUniformFloat(string str, float value)
+
+void vesShaderProgram::setUniformFloat(string str, float value)
 {
-  glUniform1f(this->GetUniform(str), value);
+  glUniform1f(this->uniform(str), value);
 }
 
-void vesShaderProgram::SetUniformInt(string str, int value)
+
+void vesShaderProgram::setUniformInt(string str, int value)
 {
-  glUniform1i(this->GetUniform(str), value);
+  glUniform1i(this->uniform(str), value);
 }
 
-void vesShaderProgram::EnableVertexArray(unsigned int location)
+
+void vesShaderProgram::enableVertexArray(unsigned int location)
 {
   glEnableVertexAttribArray(location);
 }
 
-void vesShaderProgram::DisableVertexArray(unsigned int location)
+
+void vesShaderProgram::disableVertexArray(unsigned int location)
 {
   glDisableVertexAttribArray(location);
 }
 
-bool vesShaderProgram::Link()
+
+bool vesShaderProgram::link()
 {
   GLint status;
 
-  glLinkProgram(this->ProgramHandle);
+  glLinkProgram(this->m_programHandle);
 
   GLint logLength;
-  glGetProgramiv(this->ProgramHandle, GL_INFO_LOG_LENGTH, &logLength);
-  if (logLength > 0)
-  {
+  glGetProgramiv(this->m_programHandle, GL_INFO_LOG_LENGTH, &logLength);
+  if (logLength > 0) {
     char *log = (char *)malloc(logLength);
-    glGetProgramInfoLog(this->ProgramHandle, logLength, &logLength, log);
+    glGetProgramInfoLog(this->m_programHandle, logLength, &logLength, log);
     std::cerr  << "Program link log:" << std::endl << log << std::endl;
     free(log);
   }
 
-  glGetProgramiv(this->ProgramHandle, GL_LINK_STATUS, &status);
+  glGetProgramiv(this->m_programHandle, GL_LINK_STATUS, &status);
   if (status == 0)
     return false;
 
   return true;
 }
 
-bool vesShaderProgram::AddShader(vesShader *shader)
+
+bool vesShaderProgram::addShader(vesShader *shader)
 {
   if(!shader)
-    {
     return false;
-    }
 
   // \todo: Memory management.
-  for (std::list<vesShader*>::iterator it=this->Shaders.begin();
-       it!=this->Shaders.end(); ++it)
-    {
+  for (std::list<vesShader*>::iterator it=this->m_shaders.begin();
+       it!=this->m_shaders.end(); ++it) {
     if(shader == *it)
-      {
       return false;
-      }
 
-    if((*it)->GetShaderType() == shader->GetShaderType())
-      {
-      this->Shaders.remove(*it);
+    if((*it)->shaderType() == shader->shaderType()) {
+      this->m_shaders.remove(*it);
       break;
       }
     }
 
-  this->Shaders.push_back(shader);
+  this->m_shaders.push_back(shader);
 
-  //  \todo: Fix this.
-  //  shader->AddProgramReference(this);
+  //  \todo: Implement this.
+  //  shader->addProgramReference(this);
   //  this->Modified();
 
   return true;
 }
 
-bool vesShaderProgram::AddBindAttributeLocation(const std::string &name, unsigned int location)
+
+bool vesShaderProgram::addBindAttributeLocation(const std::string &name, unsigned int location)
 {
-  this->Attributes[name] = location;
+  this->m_attributes[name] = location;
 
   // \todo: Make it modified or dirty.
+  //  this->Modified();
 }
 
 
-bool vesShaderProgram::Validate()
+bool vesShaderProgram::validate()
 {
   GLint logLength, status;
 
-  glValidateProgram(this->ProgramHandle);
-  glGetProgramiv(this->ProgramHandle, GL_INFO_LOG_LENGTH, &logLength);
-  if (logLength > 0)
-  {
+  glValidateProgram(this->m_programHandle);
+  glGetProgramiv(this->m_programHandle, GL_INFO_LOG_LENGTH, &logLength);
+  if (logLength > 0) {
     char *log = (char *)malloc(logLength);
-    glGetProgramInfoLog(this->ProgramHandle, logLength, &logLength, log);
+    glGetProgramInfoLog(this->m_programHandle, logLength, &logLength, log);
     std::cerr << "Program validate log:" <<std::endl << log << std::endl;
     free(log);
   }
 
-  glGetProgramiv(this->ProgramHandle, GL_VALIDATE_STATUS, &status);
+  glGetProgramiv(this->m_programHandle, GL_VALIDATE_STATUS, &status);
   if (status == 0)
     return false;
 
   return true;
 }
 
-void vesShaderProgram::BindAttributes()
+void vesShaderProgram::bindAttributes()
 {
-  AttributeBindingMap::const_iterator constItr = this->Attributes.begin();
+  AttributeBindingMap::const_iterator constItr = this->m_attributes.begin();
 
-  for(;constItr != this->Attributes.end(); ++constItr)
-  {
-    glBindAttribLocation(this->ProgramHandle, constItr->second, constItr->first.c_str());
+  for(;constItr != this->m_attributes.end(); ++constItr) {
+    glBindAttribLocation(this->m_programHandle, constItr->second, constItr->first.c_str());
   }
 }
 
 
-void vesShaderProgram::Delete()
+void vesShaderProgram::cleanUp()
 {
-  this->DeleteVertexAndFragment();
-  this->DeleteProgram();
+  this->deleteVertexAndFragment();
+  this->deleteProgram();
 }
 
-void vesShaderProgram::DeleteVertexAndFragment()
+
+void vesShaderProgram::deleteVertexAndFragment()
 {
 // \todo: FixMe.
 //  if (this->VertexShader)
@@ -228,50 +235,47 @@ void vesShaderProgram::DeleteVertexAndFragment()
 //  }
 }
 
+
 void vesShaderProgram::render(Painter *render)
 {
   std::cout << "vesShaderProgram::render" << std::endl;
 
   // \todo: Check if it is in modified state.
-  if(!this->ProgramHandle)
+  if(!this->m_programHandle)
   {
-    this->ProgramHandle = glCreateProgram();
+    this->m_programHandle = glCreateProgram();
 
-    if(this->ProgramHandle == 0)
+    if(this->m_programHandle == 0)
     {
       std::cout << "ERROR: Cannot create Program Object" <<std::endl;
       return;
     }
 
     // Compile shaders.
-    for (std::list<vesShader*>::iterator it=this->Shaders.begin();
-         it!=this->Shaders.end(); ++it)
-    {
+    for (std::list<vesShader*>::iterator it=this->m_shaders.begin();
+         it!=this->m_shaders.end(); ++it) {
       std::cout << "Compiling shaders: " << std::endl;
 
-      (*it)->CompileShader();
+      (*it)->compileShader();
 
-      (*it)->AttachShader(this->ProgramHandle);
+      (*it)->attachShader(this->m_programHandle);
     }
 
-    this->BindAttributes();
+    this->bindAttributes();
 
     // link program
-    if(!this->Link())
-    {
+    if(!this->link()) {
       std::cout<< "ERROR: Failed to link Program" << std::endl;
-      this->Delete();
+      this->cleanUp();
     }
   }
-
-  std::cout << "ProgramHandle " << this->ProgramHandle << std::endl;
 
   // bind uniforms
   // \todo: FixMe.
 //  this->BindUniforms(this->Uniforms);
 
   // delete the vertex and fragment shaders (dont ask why? Cause I dont know either)
-  this->DeleteVertexAndFragment();
+  this->deleteVertexAndFragment();
 
   render->setShaderProgram(this);
 }

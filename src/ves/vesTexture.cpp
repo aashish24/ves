@@ -80,14 +80,14 @@ void vesTexture::Render()
                  this->Image.data);
     loaded = true;
   }
-  this->ShaderProgram->Use();
+  this->ShaderProgram->use();
 
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, texID);
 
   // Set uniforms
   vesMatrix4x4f orthoProjection = vesOrtho(-1,1,-1,1,-1,1000);
-  this->ShaderProgram->SetUniformMatrix4x4f("u_ortho",orthoProjection);
+  this->ShaderProgram->setUniformMatrix4x4f("u_ortho",orthoProjection);
 
   // Set Attributes
   // Enable Vertex Attribs
@@ -100,17 +100,17 @@ void vesTexture::Render()
                         0,
                         0,
                         squareVertices);
-  this->ShaderProgram->EnableVertexArray(vesShaderProgram::POSITION);
+  this->ShaderProgram->enableVertexArray(vesShaderProgram::POSITION);
   glVertexAttribPointer(vesShaderProgram::TEXTURE_COORDINATE,
                         2,
                         GL_FLOAT,
                         0,
                         0,
                         textureVertices);
-  this->ShaderProgram->EnableVertexArray(vesShaderProgram::TEXTURE_COORDINATE);
+  this->ShaderProgram->enableVertexArray(vesShaderProgram::TEXTURE_COORDINATE);
   // Draw arrays
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
   // Disable vertex attributes
-  this->ShaderProgram->DisableVertexArray(vesShaderProgram::POSITION);
-  this->ShaderProgram->DisableVertexArray(vesShaderProgram::TEXTURE_COORDINATE);
+  this->ShaderProgram->disableVertexArray(vesShaderProgram::POSITION);
+  this->ShaderProgram->disableVertexArray(vesShaderProgram::TEXTURE_COORDINATE);
 }
