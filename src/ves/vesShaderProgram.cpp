@@ -171,9 +171,9 @@ bool vesShaderProgram::addShader(vesShader *shader)
 
   this->m_shaders.push_back(shader);
 
-  //  \todo: Implement this.
-  //  shader->addProgramReference(this);
-  //  this->Modified();
+  // \todo: Implement this.
+  // shader->addProgramReference(this);
+  // this->Modified();
 
   return true;
 }
@@ -207,6 +207,7 @@ bool vesShaderProgram::validate()
 
   return true;
 }
+
 
 void vesShaderProgram::bindAttributes()
 {
@@ -243,8 +244,6 @@ void vesShaderProgram::deleteVertexAndFragment()
 
 void vesShaderProgram::render(Painter *render)
 {
-  std::cout << "vesShaderProgram::render" << std::endl;
-
   // \todo: Check if it is in modified state.
   if(!this->m_programHandle)
   {
@@ -277,7 +276,7 @@ void vesShaderProgram::render(Painter *render)
 
   // bind uniforms
   // \todo: FixMe.
-//  this->BindUniforms(this->Uniforms);
+  // this->BindUniforms(this->Uniforms);
 
   // delete the vertex and fragment shaders (dont ask why? Cause I dont know either)
   this->deleteVertexAndFragment();

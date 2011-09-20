@@ -379,13 +379,12 @@ bool vesKiwiViewerApp::initializeShaderProgram()
 //                                    _att("vertexColor")));
 
   this->Internal->ShaderProgram = new vesShaderProgram();
+
   this->Internal->ShaderProgram->addShader(
     new vesShader(vesShader::Vertex, this->Internal->VertexShaderSource));
+
   this->Internal->ShaderProgram->addShader(
     new vesShader(vesShader::Fragment, this->Internal->FragmentShaderSource));
-
-//  this->Internal->Shader = new vesShader(this->Internal->ShaderProgram);
-  this->Internal->ShaderProgram->use();
 
   // Set default shading model.
   this->setShadingModel(this->getShadingModel(0));
