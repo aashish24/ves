@@ -112,6 +112,9 @@ private:
   std::list<vesShader*>    m_shaders;
 
   AttributeBindingMap      m_attributes;
+
+  vesShaderProgram(const vesShaderProgram&);
+  void operator=  (const vesShaderProgram&);
 };
 
 
