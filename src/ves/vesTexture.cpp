@@ -94,23 +94,23 @@ void vesTexture::Render()
 
 
   // Assign data
-  glVertexAttribPointer(vesShaderProgram::POSITION,
+  glVertexAttribPointer(vesShaderProgram::Position,
                         2,
                         GL_FLOAT,
                         0,
                         0,
                         squareVertices);
-  this->ShaderProgram->enableVertexArray(vesShaderProgram::POSITION);
-  glVertexAttribPointer(vesShaderProgram::TEXTURE_COORDINATE,
+  this->ShaderProgram->enableVertexArray(vesShaderProgram::Position);
+  glVertexAttribPointer(vesShaderProgram::TextureCoordinate,
                         2,
                         GL_FLOAT,
                         0,
                         0,
                         textureVertices);
-  this->ShaderProgram->enableVertexArray(vesShaderProgram::TEXTURE_COORDINATE);
+  this->ShaderProgram->enableVertexArray(vesShaderProgram::TextureCoordinate);
   // Draw arrays
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
   // Disable vertex attributes
-  this->ShaderProgram->disableVertexArray(vesShaderProgram::POSITION);
-  this->ShaderProgram->disableVertexArray(vesShaderProgram::TEXTURE_COORDINATE);
+  this->ShaderProgram->disableVertexArray(vesShaderProgram::Position);
+  this->ShaderProgram->disableVertexArray(vesShaderProgram::TextureCoordinate);
 }

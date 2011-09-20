@@ -50,12 +50,12 @@ public:
 
   enum AttributeIndex
   {
-    POSITION              = 0,
-    NORMAL                = 1,
-    TEXTURE_COORDINATE    = 2,
-    COLOR                 = 3,
-    SCALAR                = 4,
-    COUNT_ATTRIBUTE_INDEX = 5
+    Position            = 0,
+    Normal              = 1,
+    TextureCoordinate   = 2,
+    Color               = 3,
+    Scalar              = 4,
+    CountAttributeIndex = 5
   };
 
    vesShaderProgram();
@@ -107,7 +107,7 @@ private:
 
   GLuint m_programHandle;
 
-  static std::string preDefinedAttributeNames[COUNT_ATTRIBUTE_INDEX];
+  static std::string preDefinedAttributeNames[CountAttributeIndex];
 
   std::list<vesShader*>    m_shaders;
 

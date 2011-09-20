@@ -26,7 +26,7 @@
 
 #include <vector>
 
-std::string vesShaderProgram::preDefinedAttributeNames[vesShaderProgram::COUNT_ATTRIBUTE_INDEX] =
+std::string vesShaderProgram::preDefinedAttributeNames[vesShaderProgram::CountAttributeIndex] =
 {
   "vertexPosition",
   "vertexNormal",
@@ -39,7 +39,7 @@ std::string vesShaderProgram::preDefinedAttributeNames[vesShaderProgram::COUNT_A
 vesShaderProgram::vesShaderProgram()
 {
   // \todo: Perform lazy binding.
-  for (size_t i=0; i < COUNT_ATTRIBUTE_INDEX; ++i)
+  for (size_t i=0; i < CountAttributeIndex; ++i)
     this->addBindAttributeLocation(vesShaderProgram::preDefinedAttributeNames[i], i);
 }
 

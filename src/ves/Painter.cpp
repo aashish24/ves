@@ -162,21 +162,21 @@ void Painter::visitShape(vsg::Shape* shape)
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   // Enable our attribute arrays
-  program->enableVertexArray(vesShaderProgram::POSITION);
-  program->enableVertexArray(vesShaderProgram::NORMAL);
+  program->enableVertexArray(vesShaderProgram::Position);
+  program->enableVertexArray(vesShaderProgram::Normal);
 
   if (mapper->data()->GetVertexColors().size() == 0) {
-    program->disableVertexArray(vesShaderProgram::COLOR);
+    program->disableVertexArray(vesShaderProgram::Color);
     // FIXME: This could be reduced to one call if color was stored in
     // vtkColor4f or similar, and then use a call similar to the one in the else.
-    glVertexAttrib3f(vesShaderProgram::COLOR,
+    glVertexAttrib3f(vesShaderProgram::Color,
                      mapper->red(),
                      mapper->green(),
                      mapper->blue());
     }
   else {
-    program->enableVertexArray(vesShaderProgram::COLOR);
-    glVertexAttribPointer(vesShaderProgram::COLOR,
+    program->enableVertexArray(vesShaderProgram::Color);
+    glVertexAttribPointer(vesShaderProgram::Color,
                           3,
                           GL_FLOAT,
                           0,
@@ -184,13 +184,13 @@ void Painter::visitShape(vsg::Shape* shape)
                           &(mapper->data()->GetVertexColors()[0]));
     }
 
-  glVertexAttribPointer(vesShaderProgram::POSITION,
+  glVertexAttribPointer(vesShaderProgram::Position,
                         3,
                         GL_FLOAT,
                         0,
                         6 * sizeof(float),
                         &(mapper->data()->GetPoints()[0]));
-  glVertexAttribPointer(vesShaderProgram::NORMAL,
+  glVertexAttribPointer(vesShaderProgram::Normal,
                         3,
                         GL_FLOAT,
                         0,
@@ -200,8 +200,8 @@ void Painter::visitShape(vsg::Shape* shape)
   // draw vertices
   if (mapper->drawPoints()) {
     program->setUniformVector2f("u_scalarRange", mapper->data()->GetPointScalarRange());
-    program->enableVertexArray(vesShaderProgram::SCALAR);
-    glVertexAttribPointer(vesShaderProgram::SCALAR,
+    program->enableVertexArray(vesShaderProgram::Scalar);
+    glVertexAttribPointer(vesShaderProgram::Scalar,
                           1,
                           GL_FLOAT,
                           0,
@@ -227,9 +227,9 @@ void Painter::visitShape(vsg::Shape* shape)
 
   glDisable(GL_CULL_FACE);
   glDisable(GL_BLEND);
-  program->disableVertexArray(vesShaderProgram::POSITION);
-  program->disableVertexArray(vesShaderProgram::NORMAL);
-  program->disableVertexArray(vesShaderProgram::COLOR);
+  program->disableVertexArray(vesShaderProgram::Position);
+  program->disableVertexArray(vesShaderProgram::Normal);
+  program->disableVertexArray(vesShaderProgram::Color);
 
 }
 
