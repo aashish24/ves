@@ -33,6 +33,7 @@
 #include "vesTexture.h"
 #include "vesShaderProgram.h"
 #include "vesTriangleData.h"
+#include "vesUniform.h"
 
 #include <iostream>
 #include <vector>
@@ -153,20 +154,46 @@ void Painter::visitShape(vsg::Shape* shape)
   vtkPoint3f lightDir = vtkPoint3f(0.0,0.0,.650);
 
   vesVector3f light(lightDir.mData[0],lightDir.mData[1],lightDir.mData[2]);
-  program->setUniformMatrix4x4f("modelViewProjectionMatrix",mvp);
-  program->setUniformMatrix3x3f("normalMatrix",normal_matrix);
-  program->setUniformVector3f("lightDirection",light);
-  program->setUniformFloat("opacity", mapper->alpha());
+
+  // \todo: This is definately broken. This is not the best way to set
+  // unifroms, primarily because there is no guarentee that a program
+  // will contain these uniforms.
+  vesUniform *modelViewProjectionUniform = program->uniform("modelViewProjectionMatrix");
+  if (modelViewProjectionUniform)
+  {
+    modelViewProjectionUniform->set(mvp);
+  }
+
+  vesUniform *normalMatrixUniform = program->uniform("normalMatrix");
+  if (normalMatrixUniform)
+  {
+    normalMatrixUniform->set(normal_matrix);
+  }
+
+  vesUniform *lightDirectionUniform = program->uniform("lightDirection");
+  if (lightDirectionUniform)
+  {
+    lightDirectionUniform->set(light);
+  }
+
+  vesUniform *opacityUniform = program->uniform("opacity");
+  if (opacityUniform)
+  {
+    opacityUniform->set(mapper->alpha());
+  }
+
+  program->updateUniforms();
 
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   // Enable our attribute arrays
-  program->enableVertexArray(vesShaderProgram::Position);
-  program->enableVertexArray(vesShaderProgram::Normal);
+  glEnableVertexAttribArray(vesShaderProgram::Position);
+  glEnableVertexAttribArray(vesShaderProgram::Normal);
 
   if (mapper->data()->GetVertexColors().size() == 0) {
-    program->disableVertexArray(vesShaderProgram::Color);
+    glDisableVertexAttribArray(vesShaderProgram::Color);
+
     // FIXME: This could be reduced to one call if color was stored in
     // vtkColor4f or similar, and then use a call similar to the one in the else.
     glVertexAttrib3f(vesShaderProgram::Color,
@@ -175,7 +202,8 @@ void Painter::visitShape(vsg::Shape* shape)
                      mapper->blue());
     }
   else {
-    program->enableVertexArray(vesShaderProgram::Color);
+    glEnableVertexAttribArray(vesShaderProgram::Color);
+
     glVertexAttribPointer(vesShaderProgram::Color,
                           3,
                           GL_FLOAT,
@@ -199,8 +227,13 @@ void Painter::visitShape(vsg::Shape* shape)
 
   // draw vertices
   if (mapper->drawPoints()) {
-    program->setUniformVector2f("u_scalarRange", mapper->data()->GetPointScalarRange());
-    program->enableVertexArray(vesShaderProgram::Scalar);
+
+    vesUniform *scalarRangeUniform = program->uniform("scalarRange");
+    if (scalarRangeUniform)
+      scalarRangeUniform->set(mapper->data()->GetPointScalarRange());
+
+    glEnableVertexAttribArray(vesShaderProgram::Scalar);
+
     glVertexAttribPointer(vesShaderProgram::Scalar,
                           1,
                           GL_FLOAT,
@@ -211,26 +244,34 @@ void Painter::visitShape(vsg::Shape* shape)
     glDrawArrays(GL_POINTS, 0, mapper->data()->GetPoints().size());
   }
   else {
-    // draw triangles
+    // Draw triangles
     glDrawElements(GL_TRIANGLES,
                    mapper->data()->GetTriangles().size() * 3,
                    GL_UNSIGNED_SHORT,
                    &mapper->data()->GetTriangles()[0]);
 
-    // draw lines
-    program->setUniformInt("enableDiffuse", 0);
+    // Draw lines
+    vesUniform *enableDiffuseUniform = program->uniform("enableDiffuse");
+    if(enableDiffuseUniform)
+      enableDiffuseUniform->set(0);
+
+    program->updateUniforms();
+
     glDrawElements(GL_LINES,
                    mapper->data()->GetLines().size() * 2,
                    GL_UNSIGNED_SHORT,
                    &mapper->data()->GetLines()[0]);
+
+    if(enableDiffuseUniform)
+      enableDiffuseUniform->set(1);
   }
 
   glDisable(GL_CULL_FACE);
   glDisable(GL_BLEND);
-  program->disableVertexArray(vesShaderProgram::Position);
-  program->disableVertexArray(vesShaderProgram::Normal);
-  program->disableVertexArray(vesShaderProgram::Color);
 
+  glDisableVertexAttribArray(vesShaderProgram::Position);
+  glDisableVertexAttribArray(vesShaderProgram::Normal);
+  glDisableVertexAttribArray(vesShaderProgram::Color);
 }
 
 void Painter::push(const vesMatrix4x4f& mat)

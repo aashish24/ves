@@ -20,25 +20,29 @@
 
 #include "vesShaderProgram.h"
 
+// VES includes
 #include "vesShader.h"
+#include "vesUniform.h"
 
 #include "Painter.h"
 
+// C++ includes
 #include <vector>
 
-std::string vesShaderProgram::preDefinedAttributeNames[vesShaderProgram::CountAttributeIndex] =
+std::string vesShaderProgram::preDefinedAttributeNames
+  [vesShaderProgram::CountAttributeIndex] =
 {
   "vertexPosition",
   "vertexNormal",
   "vertexTextureCoordinate",
-  "vertexColor"
+  "vertexColor",
   "vertexScalar"
 };
 
 
 vesShaderProgram::vesShaderProgram()
 {
-  // \todo: Perform lazy binding.
+  // \todo: Delay it further.
   for (size_t i=0; i < CountAttributeIndex; ++i)
     this->addBindAttributeLocation(vesShaderProgram::preDefinedAttributeNames[i], i);
 }
@@ -48,9 +52,67 @@ vesShaderProgram::~vesShaderProgram()
 {
   for (std::list<vesShader*>::iterator it=this->m_shaders.begin();
        it!=this->m_shaders.end(); ++it) {
-    delete *it;
-    it = this->m_shaders.erase(it);
+    delete (*it);
   }
+}
+
+
+bool vesShaderProgram::addShader(vesShader *shader)
+{
+  if(!shader)
+    return false;
+
+  // \todo: Memory management.
+  for (std::list<vesShader*>::iterator it=this->m_shaders.begin();
+       it!=this->m_shaders.end(); ++it) {
+
+    if(shader == *it)
+      return false;
+
+    if((*it)->shaderType() == shader->shaderType()) {
+      this->m_shaders.erase(it);
+      break;
+    }
+  }
+
+  this->m_shaders.push_back(shader);
+
+  // \todo: Implement this and make its state dirty.
+  // shader->addProgramReference(this);
+
+  return true;
+}
+
+
+bool vesShaderProgram::addUniform(vesUniform *uniform)
+{
+  if (!uniform)
+  {
+    return false;
+  }
+
+  std::list<vesUniform*>::const_iterator constItr =
+    this->m_uniforms.begin();
+
+  for (constItr; constItr != this->m_uniforms.end(); ++constItr)
+  {
+    if (uniform == *constItr)
+      return false;
+  }
+
+  this->m_uniforms.push_back(uniform);
+
+  // \todo: Make it modified or dirty.
+  // this->modified();
+}
+
+
+bool vesShaderProgram::addBindAttributeLocation(const std::string &name, unsigned int location)
+{
+  this->m_attributes[name] = location;
+
+  // \todo: Make it modified or dirty.
+  //  this->Modified();
 }
 
 
@@ -60,13 +122,13 @@ void vesShaderProgram::use()
 }
 
 
-int vesShaderProgram::uniform(string value)
+int vesShaderProgram::uniformLocation(string value)
 {
   return glGetUniformLocation(this->m_programHandle, value.c_str());
 }
 
 
-int vesShaderProgram::attribute(string value)
+int vesShaderProgram::attributeLocation(string value)
 {
   return glGetAttribLocation(this->m_programHandle, value.c_str());
 }
@@ -78,54 +140,6 @@ void vesShaderProgram::deleteProgram()
     glDeleteProgram(this->m_programHandle);
     this->m_programHandle = 0;
   }
-}
-
-
-void vesShaderProgram::setUniformMatrix4x4f(string str, vesMatrix4x4f& mat)
-{
-  glUniformMatrix4fv(this->uniform(str), 1, GL_FALSE, mat.mData);
-}
-
-
-void vesShaderProgram::setUniformMatrix3x3f(string str, vesMatrix3x3f& mat)
-{
-  glUniformMatrix3fv(this->uniform(str), 1, GL_FALSE, mat.mData);
-}
-
-
-void vesShaderProgram::setUniformVector3f(string str, vesVector3f point)
-{
-  glUniform3fv(this->uniform(str), 1, point.mData);
-}
-
-
-void vesShaderProgram::setUniformVector2f(string str, vesVector2f point)
-{
-  glUniform2fv(this->uniform(str), 1, point.mData);
-}
-
-
-void vesShaderProgram::setUniformFloat(string str, float value)
-{
-  glUniform1f(this->uniform(str), value);
-}
-
-
-void vesShaderProgram::setUniformInt(string str, int value)
-{
-  glUniform1i(this->uniform(str), value);
-}
-
-
-void vesShaderProgram::enableVertexArray(unsigned int location)
-{
-  glEnableVertexAttribArray(location);
-}
-
-
-void vesShaderProgram::disableVertexArray(unsigned int location)
-{
-  glDisableVertexAttribArray(location);
 }
 
 
@@ -149,42 +163,6 @@ bool vesShaderProgram::link()
     return false;
 
   return true;
-}
-
-
-bool vesShaderProgram::addShader(vesShader *shader)
-{
-  if(!shader)
-    return false;
-
-  // \todo: Memory management.
-  for (std::list<vesShader*>::iterator it=this->m_shaders.begin();
-       it!=this->m_shaders.end(); ++it) {
-    if(shader == *it)
-      return false;
-
-    if((*it)->shaderType() == shader->shaderType()) {
-      this->m_shaders.erase(it);
-      break;
-      }
-    }
-
-  this->m_shaders.push_back(shader);
-
-  // \todo: Implement this.
-  // shader->addProgramReference(this);
-  // this->Modified();
-
-  return true;
-}
-
-
-bool vesShaderProgram::addBindAttributeLocation(const std::string &name, unsigned int location)
-{
-  this->m_attributes[name] = location;
-
-  // \todo: Make it modified or dirty.
-  //  this->Modified();
 }
 
 
@@ -213,8 +191,17 @@ void vesShaderProgram::bindAttributes()
 {
   AttributeBindingMap::const_iterator constItr = this->m_attributes.begin();
 
-  for(;constItr != this->m_attributes.end(); ++constItr) {
+  for (;constItr != this->m_attributes.end(); ++constItr) {
     glBindAttribLocation(this->m_programHandle, constItr->second, constItr->first.c_str());
+  }
+}
+
+void vesShaderProgram::bindUniforms()
+{
+  std::list<vesUniform*>::const_iterator constItr = this->m_uniforms.begin();
+  for (;constItr != this->m_uniforms.end(); ++constItr)
+  {
+    (*constItr)->bind(this);
   }
 }
 
@@ -242,6 +229,52 @@ void vesShaderProgram::deleteVertexAndFragment()
 }
 
 
+vesUniform* vesShaderProgram::uniform(const std::string &name)
+{
+  std::list<vesUniform*>::iterator itr =
+    this->m_uniforms.begin();
+
+  for (; itr != this->m_uniforms.end(); ++itr)
+  {
+    if ( ((*itr)->name().compare(name)) == 0 )
+    {
+      return *itr;
+    }
+  }
+
+  return 0;
+}
+
+
+bool vesShaderProgram::uniformExist(const std::string &name)
+{
+  std::list<vesUniform*>::const_iterator constItr =
+    this->m_uniforms.begin();
+
+  for (; constItr != this->m_uniforms.end(); ++constItr)
+  {
+    if ( ((*constItr)->name().compare(name)) == 0 )
+    {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+
+void vesShaderProgram::updateUniforms()
+{
+  std::list<vesUniform*>::const_iterator constItr =
+    this->m_uniforms.begin();
+
+  for (constItr; constItr != this->m_uniforms.end(); ++constItr)
+  {
+    (*constItr)->callGL();
+  }
+}
+
+
 void vesShaderProgram::render(Painter *render)
 {
   // \todo: Check if it is in modified state.
@@ -251,14 +284,14 @@ void vesShaderProgram::render(Painter *render)
 
     if(this->m_programHandle == 0)
     {
-      std::cout << "ERROR: Cannot create Program Object" <<std::endl;
+      std::cerr << "ERROR: Cannot create Program Object" <<std::endl;
       return;
     }
 
     // Compile shaders.
     for (std::list<vesShader*>::iterator it=this->m_shaders.begin();
          it!=this->m_shaders.end(); ++it) {
-      std::cout << "Compiling shaders: " << std::endl;
+      std::cerr << "INFO: Compiling shaders: " << std::endl;
 
       (*it)->compileShader();
 
@@ -269,14 +302,12 @@ void vesShaderProgram::render(Painter *render)
 
     // link program
     if(!this->link()) {
-      std::cout<< "ERROR: Failed to link Program" << std::endl;
+      std::cerr << "ERROR: Failed to link Program" << std::endl;
       this->cleanUp();
     }
-  }
 
-  // bind uniforms
-  // \todo: FixMe.
-  // this->BindUniforms(this->Uniforms);
+    this->bindUniforms();
+  }
 
   // delete the vertex and fragment shaders (dont ask why? Cause I dont know either)
   this->deleteVertexAndFragment();

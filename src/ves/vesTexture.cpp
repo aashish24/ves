@@ -20,6 +20,7 @@
 
 #include "vesTexture.h"
 #include "vesShaderProgram.h"
+#include "vesUniform.h"
 
 // IMPORTANT: Make sure that this struct has no pointers.  All pointers should
 // be put in the class declaration. For all newly defined pointers make sure
@@ -87,11 +88,10 @@ void vesTexture::Render()
 
   // Set uniforms
   vesMatrix4x4f orthoProjection = vesOrtho(-1,1,-1,1,-1,1000);
-  this->ShaderProgram->setUniformMatrix4x4f("u_ortho",orthoProjection);
 
-  // Set Attributes
-  // Enable Vertex Attribs
-
+  vesUniform *orthoProjectionUniform = this->ShaderProgram->uniform("orthoProjection");
+  if(orthoProjectionUniform)
+    orthoProjectionUniform->set(orthoProjection);
 
   // Assign data
   glVertexAttribPointer(vesShaderProgram::Position,
@@ -100,17 +100,19 @@ void vesTexture::Render()
                         0,
                         0,
                         squareVertices);
-  this->ShaderProgram->enableVertexArray(vesShaderProgram::Position);
+  glEnableVertexAttribArray(vesShaderProgram::Position);
   glVertexAttribPointer(vesShaderProgram::TextureCoordinate,
                         2,
                         GL_FLOAT,
                         0,
                         0,
                         textureVertices);
-  this->ShaderProgram->enableVertexArray(vesShaderProgram::TextureCoordinate);
+  glEnableVertexAttribArray(vesShaderProgram::TextureCoordinate);
+
   // Draw arrays
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
   // Disable vertex attributes
-  this->ShaderProgram->disableVertexArray(vesShaderProgram::Position);
-  this->ShaderProgram->disableVertexArray(vesShaderProgram::TextureCoordinate);
+  glDisableVertexAttribArray(vesShaderProgram::Position);
+  glDisableVertexAttribArray(vesShaderProgram::TextureCoordinate);
 }

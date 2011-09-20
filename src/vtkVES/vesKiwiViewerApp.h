@@ -21,14 +21,16 @@
 #ifndef __vesKiwiViewerApp_h
 #define __vesKiwiViewerApp_h
 
-
+// C++ includes
 #include <string>
 
+// Forward declarations
 class vesActor;
 class vesCamera;
 class vesMapper;
 class vesRenderer;
 class vesShaderProgram;
+class vesUniform;
 
 class vesKiwiViewerApp
 {
@@ -54,6 +56,7 @@ public:
   std::string getShadingModel(int index) const;
   bool setShadingModel(const std::string& name);
 
+  bool initializeShaderUniforms();
   bool initializeShaderProgram();
   bool initializeRendering();
 
@@ -75,6 +78,15 @@ public:
 
 protected:
 
+  vesUniform *m_modelViewProjectionUniform;
+  vesUniform *m_normalMatrixUniform;
+  vesUniform *m_lightDirectionUniform;
+  vesUniform *m_opacityUniform;
+  vesUniform *m_enableDiffuseUniform;
+  vesUniform *m_useGouraudShaderUniform;
+  vesUniform *m_useBlinnPhongShaderUniform;
+  vesUniform *m_useToonShaderUniform;
+
   // These accessors are protected so that apps cannot use the APIs of
   // these objects.  Instead, this class should provide public methods to
   // wrap the APIs.  The goal is to allow the ves APIs to be refactored
@@ -87,6 +99,7 @@ protected:
 
   void addBuiltinDataset(const std::string& name, const std::string& filename);
   void addBuiltinShadingModel(const std::string& name);
+
 
 private:
 

@@ -21,6 +21,7 @@ set(sources
   vesShaderProgram.cpp
   vesSTLReader.cpp
   vesTriangleData.cpp
+  vesUniform.cpp
 
   # ------------------------------------------------------------------------vsg
   vsg/vsgVisitor.cpp

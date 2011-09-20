@@ -21,18 +21,27 @@
 
 #include "vesShader.h"
 
+// C/C++ includes
 #include <cstdlib>
 #include <iostream>
+#include <limits>
 
 vesShader::vesShader(ShaderType type) :
-  m_type(type)
+  m_type          (type),
+  m_shaderHandle  (std::numeric_limits<unsigned>::max())
 {
 }
 
 
 vesShader::vesShader(ShaderType type, const std::string &source) :
   m_type        (type),
+  m_shaderHandle(std::numeric_limits<unsigned>::max()),
   m_shaderSource(source)
+{
+}
+
+
+vesShader::~vesShader()
 {
 }
 
@@ -48,15 +57,8 @@ bool vesShader::setShaderType(ShaderType type)
   }
 
   this->m_type = type;
-  return true;
-}
 
-
-bool vesShader::loadShaderSourceFromFile(const std::string& fileName)
-{
-  // \todo: Implement this function.
-  // this->Modified();
-
+  // \todo: Make state dirty.
   return true;
 }
 

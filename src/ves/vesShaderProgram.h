@@ -18,8 +18,8 @@
   limitations under the License.
  ========================================================================*/
 
-#ifndef __vesShaderProgram_h
-#define __vesShaderProgram_h
+#ifndef VESSHADER_PROGRAM_H
+#define VESSHADER_PROGRAM_H
 
 #ifdef ANDROID
 # include <GLES2/gl2.h>
@@ -41,11 +41,13 @@
 
 using namespace std;
 
+// Forward declarations
+class vesUniform;
+
 class vesShaderProgram : public vsgShaderNode
 {
 public:
 
-  // Ease of use.
   typedef std::map<string, unsigned int> AttributeBindingMap;
 
   enum AttributeIndex
@@ -67,30 +69,38 @@ public:
    */
   bool addShader(vesShader *shader);
 
+  bool addUniform(vesUniform *uniform);
+
   bool addBindAttributeLocation(const std::string& name, unsigned int location);
+
+//  void setUniformInt        (const string &str, int value);
+//  void setUniformFloat      (const string &str, float value);
+//  void setUniformMatrix4x4f (const string &str, const vesMatrix4x4f &mat);
+//  void setUniformMatrix3x3f (const string &str, const vesMatrix3x3f &mat);
+//  void setUniformVector3f   (const string &str, const vesVector3f &vector);
+//  void setUniformVector2f   (const string &str, const vesVector2f &vector);
+
+  int  uniformLocation  (string value);
+  int  attributeLocation(string value);
+
+  vesUniform* uniform     (const std::string &name);
+  bool        uniformExist(const std::string &name);
+
+  virtual void updateUniforms();
+
+  bool link();
 
   bool validate();
   void use();
 
-  int uniform(string value);
-  int attribute(string value);
-
-  void deleteProgram();
-
-  void setUniformMatrix4x4f(string str, vesMatrix4x4f& mat);
-  void setUniformMatrix3x3f(string str, vesMatrix3x3f& mat);
-  void setUniformVector3f(string str, vesVector3f point);
-  void setUniformVector2f(string str, vesVector2f point);
-  void setUniformFloat(string str, float value);
-  void setUniformInt(string str, int value);
-
-  void enableVertexArray  (unsigned int location);
-  void disableVertexArray (unsigned int location);
-
-  bool link();
-
   void cleanUp();
+  void deleteProgram();
   void deleteVertexAndFragment();
+
+  inline unsigned int programHandle()
+  {
+    return this->m_programHandle;
+  }
 
   virtual bool read(){;}
 
@@ -112,6 +122,8 @@ private:
   std::list<vesShader*>    m_shaders;
 
   AttributeBindingMap      m_attributes;
+
+  std::list<vesUniform*>   m_uniforms;
 
   vesShaderProgram(const vesShaderProgram&);
   void operator=  (const vesShaderProgram&);
