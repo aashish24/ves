@@ -37,6 +37,7 @@
 
 #include <vtkPolyDataToTriangleData.h>
 
+#include <vesTriangleData.h>
 #include <vesMultitouchCamera.h>
 #include <vesRenderer.h>
 #include <vesShader.h>
@@ -300,8 +301,8 @@ static int engine_init_display(struct engine* engine) {
                                    );
     vesShader* shader = new vesShader(shader_program);    
     vesMapper* mapper = new vesMapper();
-    mapper->SetTriangleData(triangle_data);
-    mapper->SetDrawPoints(true);
+    mapper->setTriangleData(triangle_data);
+    mapper->setDrawPoints(true);
     
     vtkNew<vtkLookupTable> lookupTable;
     lookupTable->Build();
