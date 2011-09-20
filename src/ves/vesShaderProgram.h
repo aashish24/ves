@@ -61,6 +61,10 @@ public:
    vesShaderProgram();
   ~vesShaderProgram();
 
+  /*!
+   * Add shader to a program. For now lifetime of the shader is controlled
+   * by the program.
+   */
   bool addShader(vesShader *shader);
 
   bool addBindAttributeLocation(const std::string& name, unsigned int location);

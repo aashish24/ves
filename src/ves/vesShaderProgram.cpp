@@ -46,6 +46,11 @@ vesShaderProgram::vesShaderProgram()
 
 vesShaderProgram::~vesShaderProgram()
 {
+  for (std::list<vesShader*>::iterator it=this->m_shaders.begin();
+       it!=this->m_shaders.end(); ++it) {
+    delete *it;
+    it = this->m_shaders.erase(it);
+  }
 }
 
 
@@ -159,7 +164,7 @@ bool vesShaderProgram::addShader(vesShader *shader)
       return false;
 
     if((*it)->shaderType() == shader->shaderType()) {
-      this->m_shaders.remove(*it);
+      this->m_shaders.erase(it);
       break;
       }
     }
