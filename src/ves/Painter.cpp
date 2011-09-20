@@ -199,16 +199,16 @@ void Painter::visitShape(vsg::Shape* shape)
 
   // draw vertices
   if (mapper->drawPoints()) {
-//    program->SetUniformVector2f("u_scalarRange", mapper->data()->GetPointScalarRange());
-//    program->EnableVertexArray("a_scalar");
-//    glVertexAttribPointer(program->GetAttribute("a_scalar"),
-//                          1,
-//                          GL_FLOAT,
-//                          0,
-//                          sizeof(float),
-//                          &(mapper->data()->GetPointScalars()[0]));
+    program->setUniformVector2f("u_scalarRange", mapper->data()->GetPointScalarRange());
+    program->enableVertexArray(vesShaderProgram::SCALAR);
+    glVertexAttribPointer(vesShaderProgram::SCALAR,
+                          1,
+                          GL_FLOAT,
+                          0,
+                          sizeof(float),
+                          &(mapper->data()->GetPointScalars()[0]));
 
-//    glDrawArrays(GL_POINTS, 0, mapper->data()->GetPoints().size());
+    glDrawArrays(GL_POINTS, 0, mapper->data()->GetPoints().size());
   }
   else {
     // draw triangles
