@@ -1,4 +1,4 @@
 #this generates an ant based cli build of the android-jni project
-android update project --name HelloGL2 \
+android update project --name PointCloud \
 --path . \
---target android-10
+--target android-12
