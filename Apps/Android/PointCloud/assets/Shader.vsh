@@ -13,12 +13,12 @@
 
  =========================================================================*/
 
-uniform mat4   u_mvpMatrix;     // model-view-projection matrix
-uniform mat3   u_normalMatrix;  // normal matrix
+uniform mat4   modelViewProjectionMatrix;     // model-view-projection matrix
+uniform mat3   normalMatrix;  // normal matrix
 uniform vec3   u_ecLightDir;     // light direction in eye coordinates
 uniform vec2   u_scalarRange;
 
-attribute vec4 a_vertex;         // vertex position
+attribute vec4 vertexPosition;         // vertex position
 attribute vec3 a_normal;         // vertex normal
 attribute vec4 a_texcoord;       // texture coordinates
 attribute float a_scalar;
@@ -37,8 +37,8 @@ void main()
   float val = (a_scalar - u_scalarRange.x) / (u_scalarRange.y - u_scalarRange.x);
   //v_texcoord = vec4(a_scalar, a_scalar, a_scalar, 1);
   v_tcoord = vec2(a_scalar, 0.5);
-  gl_Position = u_mvpMatrix * a_vertex;
+  gl_Position = modelViewProjectionMatrix * vertexPosition;
   gl_PointSize = 1.0;
   //vec2 halfsize = vec2(480.0, 854.0) * 0.5;
-  //screenPos = halfsize + ((gl_Position.xy / gl_Position.w) * halfsize);  
+  //screenPos = halfsize + ((gl_Position.xy / gl_Position.w) * halfsize);
 }

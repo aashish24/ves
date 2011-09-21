@@ -91,13 +91,13 @@ static void checkGlError(const char* op) {
     }
 }
 
-static const char gVertexShader[] = 
+static const char gVertexShader[] =
     "attribute vec4 vPosition;\n"
     "void main() {\n"
     "  gl_Position = vPosition;\n"
     "}\n";
 
-static const char gFragmentShader[] = 
+static const char gFragmentShader[] =
     "precision mediump float;\n"
     "void main() {\n"
     "  gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);\n"
@@ -224,7 +224,7 @@ static int engine_init_display(struct engine* engine) {
     }
 
     engine->renderer = new vesRenderer();
-    
+
     eglQuerySurface(display, surface, EGL_WIDTH, &w);
     eglQuerySurface(display, surface, EGL_HEIGHT, &h);
     LOGI("Width %d, Height %d", w, h);
@@ -240,7 +240,7 @@ static int engine_init_display(struct engine* engine) {
     engine->state.y1 = 0;
     engine->state.isTwoTouches = false;
     engine->renderer->Resize(w, h, 1.0f);
-    
+
     // Initialize GL state.
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 #if 0
@@ -253,9 +253,9 @@ static int engine_init_display(struct engine* engine) {
     glLoadIdentity();
     glOrthof(-2.0, 2.0, -2.0, 2.0, -2.0, 2.0);
     //glFrustumf(-2.0, 2.0, -2.0, 2.0, -2.0, 2.0);
-    
+
 #endif
-    
+
     AAssetManager* assetManager = engine->app->activity->assetManager;
     AAsset* asset = AAssetManager_open(assetManager, "cturtle.vtk", AASSET_MODE_UNKNOWN);
     if (asset == NULL) {
@@ -275,35 +275,35 @@ static int engine_init_display(struct engine* engine) {
     LOGI("b: number of points is %d\n**\n", triangle_data->GetPoints().size());
     vesVector2f range = triangle_data->GetPointScalarRange();
     LOGI("scalar range: %f, %f\n", range[0], range[1]);
-    
+
     AAsset* vertex_asset = AAssetManager_open(assetManager, "Shader.vsh", AASSET_MODE_UNKNOWN);
     AAsset* fragment_asset = AAssetManager_open(assetManager, "Shader.fsh", AASSET_MODE_UNKNOWN);
-    
+
     std::string vertex_source = std::string(static_cast<const char*>(AAsset_getBuffer(vertex_asset)), AAsset_getLength(vertex_asset));
     std::string fragment_source = std::string(static_cast<const char*>(AAsset_getBuffer(fragment_asset)), AAsset_getLength(fragment_asset));
     LOGI("vertex_source: %s\n", vertex_source.c_str());
     LOGI("fragment_source: %s\n", fragment_source.c_str());
-    
+
     createProgram(vertex_source.c_str(), fragment_source.c_str());
-    
+
     vesShaderProgram* shader_program = new vesShaderProgram(
                                    const_cast<char*>(vertex_source.c_str()),
                                    const_cast<char*>(fragment_source.c_str()),
-                                   (_uni("u_mvpMatrix"),
-                                    _uni("u_normalMatrix"),
+                                   (_uni("modelViewProjectionMatrix"),
+                                    _uni("normalMatrix"),
                                     _uni("u_ecLightDir"),
                                     _uni("u_scalarRange"),
                                     _uni("s_texture")),
-                                   (_att("a_vertex"),
+                                   (_att("vertexPosition"),
                                     _att("a_normal"),
                                     _att("a_texcoord"),
                                     _att("a_scalar"))
                                    );
-    vesShader* shader = new vesShader(shader_program);    
+    vesShader* shader = new vesShader(shader_program);
     vesMapper* mapper = new vesMapper();
     mapper->setTriangleData(triangle_data);
     mapper->setDrawPoints(true);
-    
+
     vtkNew<vtkLookupTable> lookupTable;
     lookupTable->Build();
     unsigned char* lookupImage = lookupTable->GetPointer(0);
@@ -327,13 +327,14 @@ static int engine_init_display(struct engine* engine) {
                  lookupImage);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, lookupTableID);
-    
+
     vesActor* actor = new vesActor(shader, mapper);
     engine->renderer->AddActor(actor);
     engine->renderer->ResetCamera();
-    
+    engine->renderer->ResetCameraClippingRange();
+
     AAsset_close(asset);
-    
+
     return 0;
 }
 
@@ -420,18 +421,18 @@ static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) 
 
         vesRenderer* ren = engine->renderer;
         vesCamera *camera = ren->GetCamera();
-        
+
         if (AMotionEvent_getPointerCount(event) == 1) {
             float dx0 = x0 - px0;
             float dy0 = y0 - py0;
-            
+
             double delta_elevation = -20.0 / ren->GetHeight();
             double delta_azimuth = -20.0 / ren->GetWidth();
             double motionFactor = 10.0;
-            
+
             double rxf = dx0 * delta_azimuth * motionFactor;
             double ryf = dy0 * delta_elevation * motionFactor;
-            
+
             camera->Azimuth(rxf);
             camera->Elevation(ryf);
             camera->OrthogonalizeViewUp();
@@ -440,31 +441,31 @@ static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) 
           // Pan camera.
           // Implemented based on vtkInteractorStyleTrackballCamera::Pan().
           //
-      
+
           // Average positions of current and previous two touches.
           // Invert y since vesCamera expects y to go in opposite direction.
           float pcx = (px0 + px1)/2.0;
           float pcy = ren->GetHeight() - (py0 + py1)/2.0;
           float cx = (x0 + x1)/2.0;
           float cy = ren->GetHeight() - (y0 + y1)/2.0;
-          
-          // Calculate the focal depth since we'll be using it a lot   
+
+          // Calculate the focal depth since we'll be using it a lot
           vesVector3f viewFocus = camera->GetFocalPoint();
           vesVector3f viewFocusDisplay = ren->ComputeWorldToDisplay(viewFocus);
           float focalDepth = viewFocusDisplay[2];
-          
+
           vesVector3f newPos(cx,
                              cy,
                              focalDepth);
           vesVector3f newPickPoint = ren->ComputeDisplayToWorld(newPos);
-          
+
           vesVector3f oldPos(pcx,
                              pcy,
                              focalDepth);
           vesVector3f oldPickPoint = ren->ComputeDisplayToWorld(oldPos);
-          
+
           vesVector3f motionVector = oldPickPoint - newPickPoint;
-          
+
           vesVector3f viewPoint = camera->GetPosition();
           vesVector3f newViewFocus = motionVector + viewFocus;
           vesVector3f newViewPoint = motionVector + viewPoint;
@@ -475,38 +476,38 @@ static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) 
           // Zoom camera.
           // Implemented based on vkInteractorStyleTrackballCamera::Dolly().
           //
-          
+
           double previousDist = sqrt((px0 - px1) *
-                                     (px0 - px1) + 
-                                     (py0 - py1) * 
+                                     (px0 - px1) +
+                                     (py0 - py1) *
                                      (py0 - py1));
           double currentDist = sqrt((x0 - x1) *
-                                    (x0 - x1) + 
-                                    (y0 - y1) * 
+                                    (x0 - x1) +
+                                    (y0 - y1) *
                                     (y0 - y1));
           double dy = currentDist - previousDist;
           double dyf = 10.0 * dy / (ren->GetHeight()/2.0);
           double factor = pow(1.1, dyf);
           camera->Dolly(factor);
-          
+
           //
           // Roll camera.
           // Implemented based on vkInteractorStyleTrackballCamera::Spin().
           //
-          
+
           double pi = 3.14159265358979;
           double newAngle = atan2(y0 - y1,
                                   x0 - x1);
           newAngle *= 180.0/pi;
-          
+
           double oldAngle = atan2(py0 - py1,
                                   px0 - px1);
           oldAngle *= 180.0/pi;
-          
+
           camera->Roll(newAngle - oldAngle);
           camera->OrthogonalizeViewUp();
         }
-        
+
         engine->state.x0 = x0;
         engine->state.y0 = y0;
         if (AMotionEvent_getPointerCount(event) > 1) {
@@ -579,7 +580,7 @@ static void engine_handle_cmd(struct android_app* app, int32_t cmd) {
  */
 void android_main(struct android_app* state) {
     struct engine engine;
-    
+
     // Make sure glue isn't stripped.
     app_dummy();
 
