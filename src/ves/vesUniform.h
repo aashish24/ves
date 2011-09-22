@@ -152,7 +152,7 @@ public:
   bool getElement(unsigned int index, vesMatrix3x3f &value) const;
   bool getElement(unsigned int index, vesMatrix4x4f &value) const;
 
-  unsigned int getUniformLocation() const;
+  int getUniformLocation() const;
 
   void bind(vesShaderProgram *shaderProgram);
 
@@ -163,7 +163,7 @@ protected:
 
   vesUniform& operator=(const vesUniform&);
 
-  void setDefaults();
+  void setMinimalDefaults();
 
   bool isCompatibleType(Type type) const;
 
@@ -177,9 +177,9 @@ protected:
 
   Type                m_type;
   std::string         m_name;
-  unsigned int        m_numberElements;
 
-  unsigned int        m_location;
+  unsigned int        m_numberElements;
+  int                 m_location;
 
   IntArray           *m_intArray;
   FloatArray         *m_floatArray;

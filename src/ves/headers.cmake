@@ -19,12 +19,12 @@ set(headers
   vsg/Utility/vsgTypes.h
   vsg/vsgVisitor.h
   Painter.h
-  ProgramShader.h
   vesActorCollection.h
   vesActor.h
   vesByteSwap.h
   vesCamera.h
   vesCameraSensor.h
+  vesFileReader.h
   vesGMTL.h
   vesLegacyReader.h
   vesMapper.h
@@ -40,6 +40,7 @@ set(headers
   vesSTLReader.h
   vesTexture.h
   vesTriangleData.h
+  vesUniform.h
   vsg/Core/vsgBindableNode.h
   vsg/Core/vsgChildNode.h
   vsg/Core/vsgNode.h
@@ -65,7 +66,6 @@ set(headers
   vsg/Rendering/vsgNormalNode.h
   vsg/Shader/ComposedShader.h
   vsg/Shader/FloatVertexAttribute.h
-  vesFileReader.h
 )
 
 set(header_dirs

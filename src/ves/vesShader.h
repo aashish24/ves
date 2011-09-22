@@ -38,6 +38,7 @@ class vesShader
 {
 public:
 
+ // \note: GL* types can be moved to some external header.
  enum ShaderType
  {
      Vertex         = GL_VERTEX_SHADER,
@@ -101,7 +102,7 @@ public:
  void compileShader();
 
  // Attach a glShader to a glProgram.
- void attachShader(GLuint program) const;
+ void attachShader(unsigned int program) const;
 
  // For a given GL context, attach a glShader to a glProgram.
  // \todo: Improvement (support per context shader).
@@ -121,13 +122,13 @@ public:
 
 protected:
 
-   ShaderType  m_type;
+   ShaderType   m_type;
 
-   GLuint      m_shaderHandle;
+   unsigned int m_shaderHandle;
 
-   std::string m_shaderFileName;
+   std::string  m_shaderFileName;
 
-   std::string m_shaderSource;
+   std::string  m_shaderSource;
 };
 
 #endif

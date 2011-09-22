@@ -95,7 +95,7 @@ void vesShader::compileShader()
 }
 
 
-void vesShader::attachShader(GLuint program) const
+void vesShader::attachShader(unsigned int program) const
 {
    glAttachShader(program, this->m_shaderHandle);
 }

@@ -8,9 +8,10 @@
 #include <limits>
 
 vesUniform::vesUniform() :
-  m_type (Undefined)
+  m_type            (Undefined),
+  m_numberElements  (0)
 {
-  this->setDefaults();
+  this->setMinimalDefaults();
 }
 
 
@@ -43,8 +44,6 @@ void vesUniform::setName(const std::string &name)
     return;
 
   this->m_name = name;
-
-  m_location = std::numeric_limits<unsigned>::max();
 }
 
 
@@ -62,7 +61,7 @@ vesUniform::vesUniform(const std::string &name, int value) :
   m_type            (Int),
   m_numberElements  (1)
 {
-  this->setDefaults();
+  this->setMinimalDefaults();
   this->setName(name);
   this->allocateDataArray();
   this->set(value);
@@ -73,7 +72,7 @@ vesUniform::vesUniform(const std::string &name, bool value) :
   m_type            (Bool),
   m_numberElements  (1)
 {
-  this->setDefaults();
+  this->setMinimalDefaults();
   this->setName(name);
   this->allocateDataArray();
   this->set(value);
@@ -84,7 +83,7 @@ vesUniform::vesUniform(const std::string &name, const vesVector2f& vector) :
   m_type            (FloatVec2),
   m_numberElements  (1)
 {
-  this->setDefaults();
+  this->setMinimalDefaults();
   this->setName(name);
   this->allocateDataArray();
   this->set(vector);
@@ -95,7 +94,7 @@ vesUniform::vesUniform( const std::string &name, const vesVector3f& vector ) :
   m_type            (FloatVec3),
   m_numberElements  (1)
 {
-  this->setDefaults();
+  this->setMinimalDefaults();
   this->setName(name);
   this->allocateDataArray();
   this->set(vector);
@@ -106,7 +105,7 @@ vesUniform::vesUniform( const std::string &name, const vesMatrix3x3f& matrix ) :
   m_type            (FloatMat3),
   m_numberElements  (1)
 {
-  this->setDefaults();
+  this->setMinimalDefaults();
   this->setName(name);
   this->allocateDataArray();
   this->set(matrix);
@@ -117,7 +116,7 @@ vesUniform::vesUniform( const std::string &name, const vesMatrix4x4f& matrix ) :
   m_type            (FloatMat4),
   m_numberElements  (1)
 {
-  this->setDefaults();
+  this->setMinimalDefaults();
   this->setName(name);
   this->allocateDataArray();
   this->set(matrix);
@@ -428,7 +427,7 @@ bool vesUniform::getElement(unsigned int index, vesMatrix4x4f &value) const
 }
 
 
-unsigned int vesUniform::getUniformLocation() const
+int vesUniform::getUniformLocation() const
 {
   return this->m_location;
 }
@@ -497,11 +496,11 @@ void vesUniform::callGL() const
 }
 
 
-void vesUniform::setDefaults()
+void vesUniform::setMinimalDefaults()
 {
-  m_location  =  std::numeric_limits<unsigned>::max();
-  m_intArray  =  0;
-  m_floatArray=  0;
+  m_location    = -1;
+  m_intArray    = 0;
+  m_floatArray  = 0;
 }
 
 

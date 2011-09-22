@@ -26,40 +26,42 @@
 #include "Painter.h"
 
 namespace vsg {
+  Appearance::Appearance()
+  {
+  }
 
-Appearance::Appearance()
-{
-}
 
-Appearance::~Appearance()
-{
-}
+  Appearance::~Appearance()
+  {
+  }
 
-void Appearance::addAttribute(vsgAppearanceChildNode* attribute)
-{
-  m_attributes.push_back(attribute);
-}
 
-vsgAppearanceChildNode* Appearance::attribute(unsigned int type)
-{
-  return m_attributes[0];
-}
+  void Appearance::addAttribute(vsgAppearanceChildNode* attribute)
+  {
+    m_attributes.push_back(attribute);
+  }
 
-bool Appearance::accept(vsgVisitor* vsgVisitor)
-{
-  return vsgVisitor->visitAppearance(this);
-}
 
-void Appearance::render(Painter* render)
-{
-  std::cout << "Appearance::render" << std::endl;
-  m_attributes[0]->render(render);
-}
+  vsgAppearanceChildNode* Appearance::attribute(unsigned int type)
+  {
+    return m_attributes[0];
+  }
 
-bool Appearance::read()
-{
-//  this->_shaders[0]->read();
-  return true;
-}
 
+  bool Appearance::accept(vsgVisitor* vsgVisitor)
+  {
+    return vsgVisitor->visitAppearance(this);
+  }
+
+
+  void Appearance::render(Painter* render)
+  {
+    m_attributes[0]->render(render);
+  }
+
+  bool Appearance::read()
+  {
+  //  this->_shaders[0]->read();
+    return true;
+  }
 }
