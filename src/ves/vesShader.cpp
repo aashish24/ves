@@ -71,7 +71,7 @@ void vesShader::compileShader()
   this->m_shaderHandle = glCreateShader(this->m_type);
 
   // Load source
-  const GLchar *source = reinterpret_cast<const GLchar*>(this->m_shaderSource.c_str());
+  const char *source = reinterpret_cast<const char*>(this->m_shaderSource.c_str());
   glShaderSource(this->m_shaderHandle, 1, &source, NULL);
   glCompileShader(this->m_shaderHandle);
 
