@@ -50,10 +50,7 @@ vesShaderProgram::vesShaderProgram()
 
 vesShaderProgram::~vesShaderProgram()
 {
-  for (std::list<vesShader*>::iterator it=this->m_shaders.begin();
-       it!=this->m_shaders.end(); ++it) {
-    delete (*it);
-  }
+  this->cleanUp();
 }
 
 
@@ -103,7 +100,6 @@ bool vesShaderProgram::addUniform(vesUniform *uniform)
   this->m_uniforms.push_back(uniform);
 
   // \todo: Make it modified or dirty.
-  // this->modified();
 }
 
 
@@ -112,7 +108,6 @@ bool vesShaderProgram::addBindAttributeLocation(const std::string &name, unsigne
   this->m_attributes[name] = location;
 
   // \todo: Make it modified or dirty.
-  //  this->Modified();
 }
 
 
@@ -208,6 +203,11 @@ void vesShaderProgram::bindUniforms()
 
 void vesShaderProgram::cleanUp()
 {
+  for (std::list<vesShader*>::iterator it=this->m_shaders.begin();
+       it!=this->m_shaders.end(); ++it) {
+    delete (*it);
+  }
+
   this->deleteVertexAndFragment();
   this->deleteProgram();
 }
@@ -215,17 +215,11 @@ void vesShaderProgram::cleanUp()
 
 void vesShaderProgram::deleteVertexAndFragment()
 {
-// \todo: FixMe.
-//  if (this->VertexShader)
-//  {
-//    glDeleteShader(this->VertexShader);
-//    this->VertexShader = 0;
-//  }
-//  if (this->FragmentShader)
-//  {
-//    glDeleteShader(this->FragmentShader);
-//    this->FragmentShader = 0;
-//  }
+  // Delete a shader object.
+  for (std::list<vesShader*>::iterator it=this->m_shaders.begin();
+       it!=this->m_shaders.end(); ++it) {
+    glDeleteShader( (*it)->shaderHandle() );
+  }
 }
 
 
@@ -308,9 +302,6 @@ void vesShaderProgram::render(Painter *render)
 
     this->bindUniforms();
   }
-
-  // delete the vertex and fragment shaders (dont ask why? Cause I dont know either)
-  this->deleteVertexAndFragment();
 
   render->setShaderProgram(this);
 }

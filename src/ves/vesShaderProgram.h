@@ -73,13 +73,6 @@ public:
 
   bool addBindAttributeLocation(const std::string& name, unsigned int location);
 
-//  void setUniformInt        (const string &str, int value);
-//  void setUniformFloat      (const string &str, float value);
-//  void setUniformMatrix4x4f (const string &str, const vesMatrix4x4f &mat);
-//  void setUniformMatrix3x3f (const string &str, const vesMatrix3x3f &mat);
-//  void setUniformVector3f   (const string &str, const vesVector3f &vector);
-//  void setUniformVector2f   (const string &str, const vesVector2f &vector);
-
   int  uniformLocation  (string value);
   int  attributeLocation(string value);
 

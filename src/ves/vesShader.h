@@ -61,6 +61,8 @@ public:
 
  // \todo: Implement these useful functions.
  // int compare(const vesShader &rhs);
+ inline unsigned int shaderHandle() { return this->m_shaderHandle; }
+
 
  bool setShaderType(ShaderType type);
  inline ShaderType shaderType() const
