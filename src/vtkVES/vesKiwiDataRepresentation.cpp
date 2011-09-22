@@ -25,6 +25,8 @@
 #include "vesActor.h"
 #include "vesRenderer.h"
 #include "vesTriangleData.h"
+#include "vesShaderProgram.h"
+
 #include "vtkPolyDataToTriangleData.h"
 
 #include <vtkNew.h>
@@ -114,14 +116,15 @@ vesTriangleData* vesKiwiDataRepresentation::triangleData() const
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiDataRepresentation::initializeWithShader(vesShader* shader)
+void vesKiwiDataRepresentation::initializeWithShader(vesShaderProgram* shaderProgram)
 {
-  assert(shader);
+  assert(shaderProgram);
   assert(!this->Internal->Mapper && !this->Internal->Actor);
 
   this->Internal->Mapper = new vesMapper();
   this->Internal->Mapper->setTriangleData(new vesTriangleData);
-  this->Internal->Actor = new vesActor(shader, this->Internal->Mapper);
+  this->Internal->Actor = new vesActor(this->Internal->Mapper);
+  this->Internal->Actor->appearance()->addAttribute(shaderProgram);
   this->Internal->Actor->setColor(0.8, 0.8, 0.8, 1.0);
 }
 

@@ -26,53 +26,59 @@
 
 namespace vsg {
 
-// IMPORTANT: Make sure that this struct has no pointers.  All pointers should
-// be put in the class declaration. For all newly defined pointers make sure
-// to update constructor and destructor methods.
-struct ShapeInternal
-{
-  double value; // sample
-};
-
-Shape::Shape()
-{
-  _internal = new ShapeInternal();
-}
-
-Shape::~Shape()
-{
-  delete _internal;
-}
-
-bool Shape::accept(vsgVisitor* vsgVisitor)
-{
-  return vsgVisitor->visitShape(this);
-}
-bool Shape::read()
-{
-  //std::cout << "Read: Shape" <<std::endl;
-  get_appearance()->read();
-  if (get_geometry())
+  // IMPORTANT: Make sure that this struct has no pointers.  All pointers should
+  // be put in the class declaration. For all newly defined pointers make sure
+  // to update constructor and destructor methods.
+  struct ShapeInternal
   {
-    get_geometry()->read();
-  }
-  return true;
-}
+    double value; // sample
+  };
 
-void Shape::render(Painter* render)
-{
-  render->visitShape(this);
-}
 
-void Shape::computeBounds()
-{
-  vesMapper* mapper = (vesMapper*) get_geometry();
-  if(mapper)
+  Shape::Shape()
   {
-    mapper->computeBounds();
-    set_BBoxCenter(mapper->get_min(),mapper->get_max());
-    set_BBoxSize(mapper->get_min(),mapper->get_max());
+    _internal = new ShapeInternal();
   }
-}
 
+
+  Shape::~Shape()
+  {
+    delete _internal;
+  }
+
+
+  bool Shape::accept(vsgVisitor* vsgVisitor)
+  {
+    return vsgVisitor->visitShape(this);
+  }
+
+
+  bool Shape::read()
+  {
+    //std::cout << "Read: Shape" <<std::endl;
+    get_appearance()->read();
+    if (get_geometry())
+    {
+      get_geometry()->read();
+    }
+    return true;
+  }
+
+
+  void Shape::render(Painter* render)
+  {
+    render->visitShape(this);
+  }
+
+
+  void Shape::computeBounds()
+  {
+    vesMapper* mapper = (vesMapper*) get_geometry();
+    if(mapper)
+    {
+      mapper->computeBounds();
+      set_BBoxCenter(mapper->get_min(),mapper->get_max());
+      set_BBoxSize(mapper->get_min(),mapper->get_max());
+    }
+  }
 }

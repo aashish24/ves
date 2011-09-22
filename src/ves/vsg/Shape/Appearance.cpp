@@ -20,43 +20,48 @@
 
 #include "vsg/Shape/Appearance.h"
 
+#include "vsg/Shape/vsgAppearanceChildNode.h"
+
 #include "vsg/vsgVisitor.h"
 #include "Painter.h"
 
 namespace vsg {
+  Appearance::Appearance()
+  {
+  }
 
-// IMPORTANT: Make sure that this struct has no pointers.  All pointers should
-// be put in the class declaration. For all newly defined pointers make sure
-// to update constructor and destructor methods.
-struct AppearanceInternal
-{
-  double value; // sample
-};
 
-Appearance::Appearance()
-{
-  _internal = new AppearanceInternal();
-}
+  Appearance::~Appearance()
+  {
+  }
 
-Appearance::~Appearance()
-{
-  delete _internal;
-}
 
-bool Appearance::accept(vsgVisitor* vsgVisitor)
-{
-  return vsgVisitor->visitAppearance(this);
-}
+  void Appearance::addAttribute(vsgAppearanceChildNode* attribute)
+  {
+    m_attributes.push_back(attribute);
+  }
 
-void Appearance::render(Painter* render)
-{
-  this->_shaders[0]->render(render);
-}
 
-bool Appearance::read()
-{
-  this->_shaders[0]->read();
-  return true;
-}
+  vsgAppearanceChildNode* Appearance::attribute(unsigned int type)
+  {
+    return m_attributes[0];
+  }
 
+
+  bool Appearance::accept(vsgVisitor* vsgVisitor)
+  {
+    return vsgVisitor->visitAppearance(this);
+  }
+
+
+  void Appearance::render(Painter* render)
+  {
+    m_attributes[0]->render(render);
+  }
+
+  bool Appearance::read()
+  {
+  //  this->_shaders[0]->read();
+    return true;
+  }
 }

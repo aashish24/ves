@@ -29,15 +29,15 @@ class vesActorInternal
 {
 };
 
-vesActor::vesActor(vesShader *shader, vesMapper* mapper,
+vesActor::vesActor(vesMapper* mapper,
                    vesMultitouchWidget *widget)
 {
   m_internal = new vesActorInternal();
   m_shape = new vsg::Shape();
   m_appearance = new vsg::Appearance();
-  MFNode shaders;
-  shaders.push_back(shader);
-  m_appearance->set_shaders(shaders);
+//  MFNode shaders;
+//  shaders.push_back(shader);
+//  m_appearance->set_shaders(shaders);
   m_shape->set_geometry(mapper);
   m_shape->set_appearance(m_appearance);
   m_mapper = mapper;        // This is used to make the actor visible again

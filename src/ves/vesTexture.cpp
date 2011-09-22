@@ -20,6 +20,7 @@
 
 #include "vesTexture.h"
 #include "vesShaderProgram.h"
+#include "vesUniform.h"
 
 // IMPORTANT: Make sure that this struct has no pointers.  All pointers should
 // be put in the class declaration. For all newly defined pointers make sure
@@ -80,37 +81,38 @@ void vesTexture::Render()
                  this->Image.data);
     loaded = true;
   }
-  this->ShaderProgram->Use();
+  this->ShaderProgram->use();
 
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, texID);
 
   // Set uniforms
   vesMatrix4x4f orthoProjection = vesOrtho(-1,1,-1,1,-1,1000);
-  this->ShaderProgram->SetUniformMatrix4x4f("u_ortho",orthoProjection);
 
-  // Set Attributes
-  // Enable Vertex Attribs
-
+  vesUniform *orthoProjectionUniform = this->ShaderProgram->uniform("orthoProjection");
+  if(orthoProjectionUniform)
+    orthoProjectionUniform->set(orthoProjection);
 
   // Assign data
-  glVertexAttribPointer(this->ShaderProgram->GetAttribute("a_position"),
+  glVertexAttribPointer(vesShaderProgram::Position,
                         2,
                         GL_FLOAT,
                         0,
                         0,
                         squareVertices);
-  this->ShaderProgram->EnableVertexArray("a_position");
-  glVertexAttribPointer(this->ShaderProgram->GetAttribute("a_texCoord"),
+  glEnableVertexAttribArray(vesShaderProgram::Position);
+  glVertexAttribPointer(vesShaderProgram::TextureCoordinate,
                         2,
                         GL_FLOAT,
                         0,
                         0,
                         textureVertices);
-  this->ShaderProgram->EnableVertexArray("a_texCoord");
+  glEnableVertexAttribArray(vesShaderProgram::TextureCoordinate);
+
   // Draw arrays
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
   // Disable vertex attributes
-  this->ShaderProgram->DisableVertexArray("a_position");
-  this->ShaderProgram->DisableVertexArray("a_texCoord");
+  glDisableVertexAttribArray(vesShaderProgram::Position);
+  glDisableVertexAttribArray(vesShaderProgram::TextureCoordinate);
 }

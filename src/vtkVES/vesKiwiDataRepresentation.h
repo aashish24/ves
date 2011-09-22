@@ -25,7 +25,8 @@ class vesTriangleData;
 class vesActor;
 class vesMapper;
 class vesRenderer;
-class vesShader;
+class vesShaderProgram;
+
 class vtkDataSet;
 
 class vesKiwiDataRepresentation
@@ -35,7 +36,7 @@ public:
   vesKiwiDataRepresentation();
   ~vesKiwiDataRepresentation();
 
-  void initializeWithShader(vesShader* shader);
+  void initializeWithShader(vesShaderProgram* shaderProgram);
 
   void setDataSet(vtkDataSet* data);
   vesTriangleData* triangleData() const;

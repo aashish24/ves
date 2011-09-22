@@ -30,7 +30,7 @@
 #include <vector>
 
 class ProgramShaderInternal;
-class vesShaderProgram;
+class vesShader;
 
 /**
  * \class ProgramShader
@@ -47,7 +47,7 @@ public:
   ProgramShader();
   ~ProgramShader();
 
-  vesSetGetVectorMacro(Programs,vesShaderProgram*)
+  vesSetGetVectorMacro(Shaders,vesShader*)
 
   /** Render.
    * \todo Document these methods.
@@ -59,8 +59,6 @@ public:
    */
   void render(Painter *render);
 
-protected:
-  std::vector<vesShaderProgram*> Programs;
 
 private:
   ProgramShaderInternal *m_internal;

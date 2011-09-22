@@ -28,6 +28,7 @@
 #include "vesShader.h"
 #include "vesShaderProgram.h"
 #include "vesTriangleData.h"
+#include "vesUniform.h"
 
 #include <vtkDataSet.h>
 
@@ -44,20 +45,18 @@ public:
 
   vesInternal()
   {
-    this->Renderer = 0;
-    this->Shader = 0;
+    this->Renderer      = 0;
     this->ShaderProgram = 0;
   }
 
   ~vesInternal()
   {
     delete this->Renderer;
-    delete this->Shader;
     delete this->ShaderProgram;
   }
 
-  vesRenderer* Renderer;
-  vesShader* Shader;
+
+  vesRenderer*      Renderer;
   vesShaderProgram* ShaderProgram;
 
   std::vector<vesKiwiDataRepresentation*> DataRepresentations;
@@ -99,6 +98,15 @@ vesKiwiViewerApp::vesKiwiViewerApp()
 vesKiwiViewerApp::~vesKiwiViewerApp()
 {
   delete this->Internal;
+
+  delete this->m_modelViewProjectionUniform;
+  delete this->m_normalMatrixUniform;
+  delete this->m_lightDirectionUniform;
+  delete this->m_opacityUniform;
+  delete this->m_enableDiffuseUniform;
+  delete this->m_useGouraudShaderUniform;
+  delete this->m_useBlinnPhongShaderUniform;
+  delete this->m_useToonShaderUniform;
 }
 
 //----------------------------------------------------------------------------
@@ -320,24 +328,24 @@ bool vesKiwiViewerApp::setShadingModel(const std::string& name)
 
     if(name.compare("Gouraud") == 0)
     {
-      this->Internal->ShaderProgram->SetUniformInt("enableDiffuse", 1);
-      this->Internal->ShaderProgram->SetUniformInt("useGouraudShader", 1);
-      this->Internal->ShaderProgram->SetUniformInt("useBlinnPhongShader", 0);
-      this->Internal->ShaderProgram->SetUniformInt("useToonShader", 0);
+      this->m_enableDiffuseUniform->set(1);
+      this->m_useGouraudShaderUniform->set(1);
+      this->m_useBlinnPhongShaderUniform->set(0);
+      this->m_useToonShaderUniform->set(0);
     }
     else if(name.compare("Blinn-Phong") == 0)
     {
-      this->Internal->ShaderProgram->SetUniformInt("enableDiffuse", 1);
-      this->Internal->ShaderProgram->SetUniformInt("useGouraudShader", 0);
-      this->Internal->ShaderProgram->SetUniformInt("useBlinnPhongShader", 1);
-      this->Internal->ShaderProgram->SetUniformInt("useToonShader", 0);
+      this->m_enableDiffuseUniform->set(1);
+      this->m_useGouraudShaderUniform->set(0);
+      this->m_useBlinnPhongShaderUniform->set(1);
+      this->m_useToonShaderUniform->set(0);
     }
     else // Must be "Toon" shader.
     {
-      this->Internal->ShaderProgram->SetUniformInt("enableDiffuse", 0);
-      this->Internal->ShaderProgram->SetUniformInt("useGouraudShader", 0);
-      this->Internal->ShaderProgram->SetUniformInt("useBlinnPhongShader", 0);
-      this->Internal->ShaderProgram->SetUniformInt("useToonShader", 1);
+      this->m_enableDiffuseUniform->set(1);
+      this->m_useGouraudShaderUniform->set(0);
+      this->m_useBlinnPhongShaderUniform->set(0);
+      this->m_useToonShaderUniform->set(1);
     }
   }
 
@@ -345,25 +353,42 @@ bool vesKiwiViewerApp::setShadingModel(const std::string& name)
 }
 
 //----------------------------------------------------------------------------
+bool vesKiwiViewerApp::initializeShaderUniforms()
+{
+  this->m_modelViewProjectionUniform = new vesUniform("modelViewProjectionMatrix",
+    vesMatrix4x4f());
+  this->m_normalMatrixUniform = new vesUniform("normalMatrix", vesMatrix3x3f());
+  this->m_lightDirectionUniform = new vesUniform("lightDirection", vesVector3f());
+  this->m_opacityUniform = new vesUniform("opacity", 1.0f);
+
+  this->m_enableDiffuseUniform = new vesUniform("enableDiffuse", 1);
+  this->m_useGouraudShaderUniform = new vesUniform("useGouraudShader", 1);
+  this->m_useBlinnPhongShaderUniform = new vesUniform("useBlinnPhongShader", 0);
+  this->m_useToonShaderUniform = new vesUniform("useToonShader", 0);
+}
+
+//----------------------------------------------------------------------------
 bool vesKiwiViewerApp::initializeShaderProgram()
 {
-  this->Internal->ShaderProgram = new vesShaderProgram(
-                                   const_cast<char*>(this->Internal->VertexShaderSource.c_str()),
-                                   const_cast<char*>(this->Internal->FragmentShaderSource.c_str()),
-                                   (_uni("modelViewProjectionMatrix"),
-                                    _uni("normalMatrix"),
-                                    _uni("lightDirection"),
-                                    _uni("opacity"),
-                                    _uni("enableDiffuse"),
-                                    _uni("useGouraudShader"),
-                                    _uni("useBlinnPhongShader"),
-                                    _uni("useToonShader")),
-                                   (_att("vertexPosition"),
-                                    _att("vertexNormal"),
-                                    _att("vertexColor")));
+  this->Internal->ShaderProgram = new vesShaderProgram();
 
-  this->Internal->Shader = new vesShader(this->Internal->ShaderProgram);
-  this->Internal->ShaderProgram->Use();
+  this->Internal->ShaderProgram->addShader(
+    new vesShader(vesShader::Vertex, this->Internal->VertexShaderSource));
+
+  this->Internal->ShaderProgram->addShader(
+    new vesShader(vesShader::Fragment, this->Internal->FragmentShaderSource));
+
+  this->initializeShaderUniforms();
+
+  this->Internal->ShaderProgram->addUniform(this->m_modelViewProjectionUniform);
+  this->Internal->ShaderProgram->addUniform(this->m_normalMatrixUniform);
+  this->Internal->ShaderProgram->addUniform(this->m_lightDirectionUniform);
+  this->Internal->ShaderProgram->addUniform(this->m_opacityUniform);
+
+  this->Internal->ShaderProgram->addUniform(this->m_enableDiffuseUniform);
+  this->Internal->ShaderProgram->addUniform(this->m_useGouraudShaderUniform);
+  this->Internal->ShaderProgram->addUniform(this->m_useBlinnPhongShaderUniform);
+  this->Internal->ShaderProgram->addUniform(this->m_useToonShaderUniform);
 
   // Set default shading model.
   this->setShadingModel(this->getShadingModel(0));
@@ -374,9 +399,10 @@ bool vesKiwiViewerApp::initializeShaderProgram()
 //----------------------------------------------------------------------------
 bool vesKiwiViewerApp::initializeRendering()
 {
-  assert(this->Internal->Shader);
+  assert(this->Internal->ShaderProgram);
 
   this->Internal->Renderer = new vesRenderer();
+
   return true;
 }
 
@@ -395,7 +421,7 @@ void vesKiwiViewerApp::removeAllDataRepresentations()
 vesKiwiDataRepresentation* vesKiwiViewerApp::addNewDataRepresentation(vtkDataSet* dataSet)
 {
   vesKiwiDataRepresentation* rep = new vesKiwiDataRepresentation();
-  rep->initializeWithShader(this->Internal->Shader);
+  rep->initializeWithShader(this->Internal->ShaderProgram);
   rep->setDataSet(dataSet);
   rep->addSelfToRenderer(this->Internal->Renderer);
   this->Internal->DataRepresentations.push_back(rep);

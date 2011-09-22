@@ -64,30 +64,30 @@
 #include "vsg/Utility/vsgTypes.h"
 #include "vsg/Shape/vsgAppearanceNode.h"
 
-namespace vsg {
+class vsgAppearanceChildNode;
 
-class AppearanceInternal;
-
-class Appearance: public vsgAppearanceNode
+namespace vsg
 {
-public:
-  Appearance();
-  virtual ~Appearance();
-  bool read();              // This will be deleted in the future
-  void render(Painter* render); // This will be deleted in the future
+  class Appearance: public vsgAppearanceNode
+  {
+  public:
+             Appearance();
+    virtual ~Appearance();
 
-  // InOutSF(fillProperties,SFNode)
-  // InOutSF(lineProperties,SFNode)
-  // InOutSF(maternal,SFNode)
-  InOutMF(shaders,MFNode)
-  // InOutSF(texture,SFNode)
-  // InOutSF(textureTransform,SFNode)
-  bool accept(vsgVisitor* vsgVisitor);
+    void addAttribute(vsgAppearanceChildNode* attribute);
 
-private:
-  AppearanceInternal *_internal;
-};
+    vsgAppearanceChildNode* attribute(unsigned int type);
 
+    bool read();              // This will be deleted in the future
+
+    void render(Painter* render); // This will be deleted in the future
+
+    bool accept(vsgVisitor* vsgVisitor);
+
+  private:
+
+    std::vector<vsgAppearanceChildNode*> m_attributes;
+  };
 }
 
 #endif // __Appearance_h

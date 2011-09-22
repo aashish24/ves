@@ -18,41 +18,84 @@
   limitations under the License.
  ========================================================================*/
 
+
 #include "vesShader.h"
 
-#include "vesShaderProgram.h"
-#include "Painter.h"
-#include <vector>
+// C/C++ includes
+#include <cstdlib>
+#include <iostream>
+#include <limits>
 
-// --------------------------------------------------------------------internal
-// IMPORTANT: Make sure that this struct has no pointers.  All pointers should
-// be put in the class declaration. For all newly defined pointers make sure to
-// update constructor and destructor methods.
-struct vesShaderInternal
+vesShader::vesShader(ShaderType type) :
+  m_type          (type),
+  m_shaderHandle  (std::numeric_limits<unsigned>::max())
 {
-  double value; // sample
-};
-
-vesShader::vesShader(vesShaderProgram* shader)
-{
-  std::vector<vesShaderProgram*> temp;
-  temp.push_back(shader);
-  SetPrograms(temp);
-  this->Internal = new vesShaderInternal();
 }
+
+
+vesShader::vesShader(ShaderType type, const std::string &source) :
+  m_type        (type),
+  m_shaderHandle(std::numeric_limits<unsigned>::max()),
+  m_shaderSource(source)
+{
+}
+
 
 vesShader::~vesShader()
 {
-  delete this->Internal;
 }
 
-bool vesShader::read()
+
+bool vesShader::setShaderType(ShaderType type)
 {
-  //std::cout << "Read: Shader" <<std::endl;
+  if (this->m_type == type)
+    return true;
+
+  if (this->m_type != Undefined) {
+    std::cerr << "ERROR: Cannot change type of Shader" << std::endl;
+    return false;
+  }
+
+  this->m_type = type;
+
+  // \todo: Make state dirty.
   return true;
 }
 
-void vesShader::render(Painter *render)
+
+void vesShader::compileShader()
 {
-  render->Shader(this);
+  GLint compiled;
+
+  // Create shader
+  this->m_shaderHandle = glCreateShader(this->m_type);
+
+  // Load source
+  const char *source = reinterpret_cast<const char*>(this->m_shaderSource.c_str());
+  glShaderSource(this->m_shaderHandle, 1, &source, NULL);
+  glCompileShader(this->m_shaderHandle);
+
+  glGetShaderiv(this->m_shaderHandle, GL_COMPILE_STATUS, &compiled);
+  if (!compiled) {
+    GLint infoLen =0;
+    glGetShaderiv(this->m_shaderHandle, GL_INFO_LOG_LENGTH, &infoLen);
+    if (infoLen > 1)
+    {
+      char *infoLog = (char*) malloc(sizeof(char)*infoLen);
+      glGetShaderInfoLog(this->m_shaderHandle,infoLen,NULL,infoLog);
+      std::cout << "Error compiling shader:"
+                << std::endl
+                << infoLog
+                << std::endl;
+      free(infoLog);
+    }
+
+    glDeleteShader(this->m_shaderHandle);
+  }
+}
+
+
+void vesShader::attachShader(unsigned int program) const
+{
+   glAttachShader(program, this->m_shaderHandle);
 }

@@ -23,6 +23,8 @@
 
 #include "vsg/Grouping/Transform.h"
 
+#include "vsg/Shape/Appearance.h"
+
 #include "vesGMTL.h"
 
 namespace vsg
@@ -53,10 +55,18 @@ public:
    * \param mapper The mapper to use to render the item with.
    * \param widget The widget that might be associated with the item.
    */
-  vesActor(vesShader* shader, vesMapper* mapper,
+  vesActor(vesMapper* mapper,
            vesMultitouchWidget *widget = 0);
 
   ~vesActor();
+
+  /**
+   *
+   */
+  vsg::Appearance* appearance()
+  {
+    return m_appearance;
+  }
 
   /**
    * Evaluate the transform associated with the vtkActor.
