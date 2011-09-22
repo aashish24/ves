@@ -19,6 +19,7 @@
  ========================================================================*/
 #include "Painter.h"
 
+// VES includes
 #include "vsgChildNode.h"
 #include "vsgGeometryNode.h"
 #include "vsg/Shape/Appearance.h"
@@ -35,6 +36,8 @@
 #include "vesTriangleData.h"
 #include "vesUniform.h"
 
+// C/C++ includes
+#include <cassert>
 #include <iostream>
 #include <vector>
 
@@ -158,29 +161,22 @@ void Painter::visitShape(vsg::Shape* shape)
   // \todo: This is definately broken. This is not the best way to set
   // unifroms, primarily because there is no guarentee that a program
   // will contain these uniforms.
-  vesUniform *modelViewProjectionUniform = program->uniform("modelViewProjectionMatrix");
-  if (modelViewProjectionUniform)
-  {
-    modelViewProjectionUniform->set(mvp);
-  }
+  vesUniform *modelViewProjectionUniform =
+    program->uniform("modelViewProjectionMatrix");
+  assert(modelViewProjectionUniform && "Uniform not present in the program");
+  modelViewProjectionUniform->set(mvp);
 
   vesUniform *normalMatrixUniform = program->uniform("normalMatrix");
-  if (normalMatrixUniform)
-  {
-    normalMatrixUniform->set(normal_matrix);
-  }
+  assert(normalMatrixUniform && "Uniform not present in the program");
+  normalMatrixUniform->set(normal_matrix);
 
   vesUniform *lightDirectionUniform = program->uniform("lightDirection");
-  if (lightDirectionUniform)
-  {
-    lightDirectionUniform->set(light);
-  }
+  assert(lightDirectionUniform && "Uniform not present in the program");
+  lightDirectionUniform->set(light);
 
   vesUniform *opacityUniform = program->uniform("opacity");
-  if (opacityUniform)
-  {
-    opacityUniform->set(mapper->alpha());
-  }
+  assert(opacityUniform && "Uniform not present in the program");
+  opacityUniform->set(mapper->alpha());
 
   program->updateUniforms();
 
@@ -253,8 +249,8 @@ void Painter::visitShape(vsg::Shape* shape)
 
     // Draw lines
     vesUniform *enableDiffuseUniform = program->uniform("enableDiffuse");
-    if(enableDiffuseUniform)
-      enableDiffuseUniform->set(0);
+    assert(enableDiffuseUniform && "Uniform not present in the program");
+    enableDiffuseUniform->set(0);
 
     program->updateUniforms();
 
