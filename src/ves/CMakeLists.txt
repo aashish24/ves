@@ -1,4 +1,3 @@
-
 set(sources
   Painter.cpp
   vesActor.cpp
@@ -81,9 +80,7 @@ set(sources
   vsg/Shader/FloatVertexAttribute.cpp
   vsg/Shader/Matrix3VertexAttribute.cpp
   vsg/Shader/Matrix4VertexAttribute.cpp
-  #  vsg/Shader/ProgramShader.cpp
   vsg/Shader/ShaderPart.cpp
-  #  vsg/Shader/ShaderProgram.cpp
 )
 
 ves_add_library(ves "${sources}" "")

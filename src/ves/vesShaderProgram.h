@@ -71,7 +71,7 @@ public:
 
   bool addUniform(vesUniform *uniform);
 
-  bool addBindAttributeLocation(const std::string& name, unsigned int location);
+  bool addBindAttributeLocation(const std::string &name, unsigned int location);
 
   int  uniformLocation  (string value);
   int  attributeLocation(string value);
@@ -108,7 +108,7 @@ protected:
 
 private:
 
-  GLuint m_programHandle;
+  unsigned int m_programHandle;
 
   static std::string preDefinedAttributeNames[CountAttributeIndex];
 

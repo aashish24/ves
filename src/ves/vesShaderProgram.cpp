@@ -42,6 +42,8 @@ std::string vesShaderProgram::preDefinedAttributeNames
 
 vesShaderProgram::vesShaderProgram()
 {
+  this->m_programHandle = 0;
+
   // \todo: Delay it further.
   for (size_t i=0; i < CountAttributeIndex; ++i)
     this->addBindAttributeLocation(vesShaderProgram::preDefinedAttributeNames[i], i);

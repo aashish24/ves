@@ -218,6 +218,7 @@ void Painter::visitShape(vsg::Shape* shape)
                         0,
                         6 * sizeof(float),
                         &(mapper->data()->GetPoints()[0]));
+
   glVertexAttribPointer(vesShaderProgram::Normal,
                         3,
                         GL_FLOAT,

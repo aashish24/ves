@@ -52,6 +52,7 @@ public:
   void computeBounds();
   void setColor(float r, float g, float b, float a);
 
+  // \todo: Implement this.
 //  void setVertexAttribute(unsigned int location, vesArray* array);
 
   float red() const { return m_red; }
