@@ -58,17 +58,17 @@ vesShaderProgram::~vesShaderProgram()
 
 bool vesShaderProgram::addShader(vesShader *shader)
 {
-  if(!shader)
+  if (!shader)
     return false;
 
   // \todo: Memory management.
   for (std::list<vesShader*>::iterator it=this->m_shaders.begin();
        it!=this->m_shaders.end(); ++it) {
 
-    if(shader == *it)
+    if (shader == *it)
       return false;
 
-    if((*it)->shaderType() == shader->shaderType()) {
+    if ((*it)->shaderType() == shader->shaderType()) {
       this->m_shaders.erase(it);
       break;
     }
@@ -220,7 +220,7 @@ void vesShaderProgram::deleteVertexAndFragment()
   // Delete a shader object.
   for (std::list<vesShader*>::iterator it=this->m_shaders.begin();
        it!=this->m_shaders.end(); ++it) {
-    glDeleteShader( (*it)->shaderHandle() );
+    glDeleteShader((*it)->shaderHandle());
   }
 }
 
@@ -232,7 +232,7 @@ vesUniform* vesShaderProgram::uniform(const std::string &name)
 
   for (; itr != this->m_uniforms.end(); ++itr)
   {
-    if ( ((*itr)->name().compare(name)) == 0 )
+    if (((*itr)->name().compare(name)) == 0)
     {
       return *itr;
     }
@@ -249,7 +249,7 @@ bool vesShaderProgram::uniformExist(const std::string &name)
 
   for (; constItr != this->m_uniforms.end(); ++constItr)
   {
-    if ( ((*constItr)->name().compare(name)) == 0 )
+    if (((*constItr)->name().compare(name)) == 0)
     {
       return true;
     }
@@ -274,11 +274,11 @@ void vesShaderProgram::updateUniforms()
 void vesShaderProgram::render(Painter *render)
 {
   // \todo: Check if it is in modified state.
-  if(!this->m_programHandle)
+  if (!this->m_programHandle)
   {
     this->m_programHandle = glCreateProgram();
 
-    if(this->m_programHandle == 0)
+    if (this->m_programHandle == 0)
     {
       std::cerr << "ERROR: Cannot create Program Object" <<std::endl;
       return;
@@ -297,7 +297,7 @@ void vesShaderProgram::render(Painter *render)
     this->bindAttributes();
 
     // link program
-    if(!this->link()) {
+    if (!this->link()) {
       std::cerr << "ERROR: Failed to link Program" << std::endl;
       this->cleanUp();
     }

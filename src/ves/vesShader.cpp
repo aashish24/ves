@@ -79,7 +79,7 @@ void vesShader::compileShader()
   if (!compiled) {
     GLint infoLen =0;
     glGetShaderiv(this->m_shaderHandle, GL_INFO_LOG_LENGTH, &infoLen);
-    if(infoLen > 1)
+    if (infoLen > 1)
     {
       char *infoLog = (char*) malloc(sizeof(char)*infoLen);
       glGetShaderInfoLog(this->m_shaderHandle,infoLen,NULL,infoLog);

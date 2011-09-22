@@ -51,6 +51,7 @@ vesUniform::vesUniform(const std::string &name, float value) :
   m_type            (Float),
   m_numberElements  (1)
 {
+  this->setMinimalDefaults();
   this->setName(name);
   this->allocateDataArray();
   this->set(value);
@@ -90,7 +91,7 @@ vesUniform::vesUniform(const std::string &name, const vesVector2f& vector) :
 }
 
 
-vesUniform::vesUniform( const std::string &name, const vesVector3f& vector ) :
+vesUniform::vesUniform(const std::string &name, const vesVector3f& vector) :
   m_type            (FloatVec3),
   m_numberElements  (1)
 {
@@ -101,7 +102,7 @@ vesUniform::vesUniform( const std::string &name, const vesVector3f& vector ) :
 }
 
 
-vesUniform::vesUniform( const std::string &name, const vesMatrix3x3f& matrix ) :
+vesUniform::vesUniform(const std::string &name, const vesMatrix3x3f& matrix) :
   m_type            (FloatMat3),
   m_numberElements  (1)
 {
@@ -112,7 +113,7 @@ vesUniform::vesUniform( const std::string &name, const vesMatrix3x3f& matrix ) :
 }
 
 
-vesUniform::vesUniform( const std::string &name, const vesMatrix4x4f& matrix ) :
+vesUniform::vesUniform(const std::string &name, const vesMatrix4x4f& matrix) :
   m_type            (FloatMat4),
   m_numberElements  (1)
 {
@@ -192,7 +193,7 @@ bool vesUniform::get(float &value) const
 }
 
 
-bool vesUniform::get(vesVector2f &vector ) const
+bool vesUniform::get(vesVector2f &vector) const
 {
   return isScalar() ? getElement(0, vector) : false;
 }
@@ -222,7 +223,7 @@ bool vesUniform::get(int &value) const
 }
 
 
-bool vesUniform::get( bool &value) const
+bool vesUniform::get(bool &value) const
 {
   return isScalar() ? getElement(0, value) : false;
 }
@@ -273,7 +274,7 @@ bool vesUniform::setElement(unsigned int index, bool value)
 }
 
 
-bool vesUniform::setElement( unsigned int index, const vesVector2f &vector )
+bool vesUniform::setElement(unsigned int index, const vesVector2f &vector)
 {
   if (index >= this->m_numberElements || !isCompatibleType(FloatVec2))
     return false;
@@ -289,7 +290,7 @@ bool vesUniform::setElement( unsigned int index, const vesVector2f &vector )
 }
 
 
-bool vesUniform::setElement( unsigned int index, const vesVector3f &vector )
+bool vesUniform::setElement(unsigned int index, const vesVector3f &vector)
 {
   if (index >= this->m_numberElements || !isCompatibleType(FloatVec3))
     return false;
@@ -313,7 +314,7 @@ bool vesUniform::setElement(unsigned int index, const vesMatrix3x3f &matrix)
 
   unsigned int j = index * getTypeNumberOfComponents(this->m_type);
 
-  for( int i = 0; i < 9; ++i )
+  for (int i = 0; i < 9; ++i)
     (*this->m_floatArray)[j+i] = matrix.mData[i];
 
   // \todo: Make state dirty.
@@ -435,7 +436,7 @@ int vesUniform::getUniformLocation() const
 
 void vesUniform::bind(vesShaderProgram *shaderProgram)
 {
-  if(!shaderProgram)
+  if (!shaderProgram)
   {
     return;
   }
@@ -504,7 +505,7 @@ void vesUniform::setMinimalDefaults()
 }
 
 
-bool vesUniform::isCompatibleType( Type type ) const
+bool vesUniform::isCompatibleType(Type type) const
 {
   if (type == Undefined || this->m_type == Undefined)
     return false;
@@ -526,7 +527,7 @@ unsigned int vesUniform::getInternalArrayNumberOfElements() const
 
 int vesUniform::getTypeNumberOfComponents(Type type) const
 {
-  switch(type)
+  switch (type)
   {
     case Float:
     case Int:
@@ -555,9 +556,9 @@ int vesUniform::getTypeNumberOfComponents(Type type) const
 }
 
 
-GLenum vesUniform::getInternalArrayType( Type type ) const
+GLenum vesUniform::getInternalArrayType(Type type) const
 {
-  switch( type )
+  switch (type)
   {
   case Float:
   case FloatVec2:
@@ -583,16 +584,16 @@ GLenum vesUniform::getInternalArrayType( Type type ) const
 void vesUniform::allocateDataArray()
 {
   // Once allocated and valid, job is done.
-  if(this->m_intArray || this->m_floatArray)
+  if (this->m_intArray || this->m_floatArray)
   {
     return;
   }
 
   int arrayNumberOfElements = this->getInternalArrayNumberOfElements();
 
-  if(arrayNumberOfElements)
+  if (arrayNumberOfElements)
   {
-    switch(this->getInternalArrayType(this->m_type))
+    switch (this->getInternalArrayType(this->m_type))
     {
       case GL_FLOAT:
         this->m_floatArray = new FloatArray(arrayNumberOfElements);
@@ -609,5 +610,3 @@ void vesUniform::allocateDataArray()
     }
   }
 }
-
-
