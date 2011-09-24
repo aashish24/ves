@@ -445,29 +445,31 @@
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				HEADER_SEARCH_PATHS = (
-					"../CMakeBuild/build/CMakeExternals/Source/vtkmodular/**",
-					../../../src,
-					../../../src/vtkVES,
-					"../../../src/ves/**",
+					"$(ves_cmakeexternals)/Source/vtkmodular/**",
+					"$(ves_source)/src",
+					"$(ves_source)/src/vtkVES",
+					"$(ves_source)/src/ves/**",
 				);
 				INFOPLIST_FILE = "Kiwi/Kiwi-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				"LIBRARY_SEARCH_PATHS[sdk=iphoneos*][arch=*]" = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Build/vtkmodular-device/lib\"",
-					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Build/ves-device/lib\"",
+					"\"$(ves_cmakeexternals)/Build/vtkmodular-device/lib\"",
+					"\"$(ves_cmakeexternals)/Build/ves-device/lib\"",
 				);
 				"LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*][arch=*]" = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Build/vtkmodular-simulator/lib\"",
-					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Build/ves-simulator/lib\"",
+					"\"$(ves_cmakeexternals)/Build/vtkmodular-simulator/lib\"",
+					"\"$(ves_cmakeexternals)/Build/ves-simulator/lib\"",
 				);
 				PRODUCT_NAME = kiwi;
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
 				VALIDATE_PRODUCT = YES;
+				ves_cmakeexternals = "$(SRCROOT)/../CMakeBuild/build/CMakeExternals";
+				ves_source = "$(SRCROOT)/../../..";
 			};
 			name = Debug;
 		};
@@ -483,23 +485,23 @@
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				HEADER_SEARCH_PATHS = (
-					"../CMakeBuild/build/CMakeExternals/Source/vtkmodular/**",
-					../../../src,
-					../../../src/vtkVES,
-					"../../../src/ves/**",
+					"$(ves_cmakeexternals)/Source/vtkmodular/**",
+					"$(ves_source)/src",
+					"$(ves_source)/src/vtkVES",
+					"$(ves_source)/src/ves/**",
 				);
 				INFOPLIST_FILE = "Kiwi/Kiwi-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				"LIBRARY_SEARCH_PATHS[sdk=iphoneos*][arch=*]" = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Build/vtkmodular-device/lib\"",
-					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Build/ves-device/lib\"",
+					"\"$(ves_cmakeexternals)/Build/vtkmodular-device/lib\"",
+					"\"$(ves_cmakeexternals)/Build/ves-device/lib\"",
 				);
 				"LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*][arch=*]" = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Build/vtkmodular-simulator/lib\"",
-					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Build/ves-simulator/lib\"",
+					"\"$(ves_cmakeexternals)/Build/vtkmodular-simulator/lib\"",
+					"\"$(ves_cmakeexternals)/Build/ves-simulator/lib\"",
 				);
 				PRODUCT_NAME = kiwi;
 				PROVISIONING_PROFILE = "";
@@ -507,6 +509,8 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
 				VALIDATE_PRODUCT = YES;
+				ves_cmakeexternals = "$(SRCROOT)/../CMakeBuild/build/CMakeExternals";
+				ves_source = "$(SRCROOT)/../../..";
 			};
 			name = Release;
 		};
@@ -545,23 +549,23 @@
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				HEADER_SEARCH_PATHS = (
-					"../CMakeBuild/build/CMakeExternals/Source/vtkmodular/**",
-					../../../src,
-					../../../src/vtkVES,
-					"../../../src/ves/**",
+					"$(ves_cmakeexternals)/Source/vtkmodular/**",
+					"$(ves_source)/src",
+					"$(ves_source)/src/vtkVES",
+					"$(ves_source)/src/ves/**",
 				);
 				INFOPLIST_FILE = "Kiwi/Kiwi-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				"LIBRARY_SEARCH_PATHS[sdk=iphoneos*][arch=*]" = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Build/vtkmodular-device/lib\"",
-					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Build/ves-device/lib\"",
+					"\"$(ves_cmakeexternals)/Build/vtkmodular-device/lib\"",
+					"\"$(ves_cmakeexternals)/Build/ves-device/lib\"",
 				);
 				"LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*][arch=*]" = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Build/vtkmodular-simulator/lib\"",
-					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Build/ves-simulator/lib\"",
+					"\"$(ves_cmakeexternals)/Build/vtkmodular-simulator/lib\"",
+					"\"$(ves_cmakeexternals)/Build/ves-simulator/lib\"",
 				);
 				PRODUCT_NAME = kiwi;
 				PROVISIONING_PROFILE = "B8AED505-0041-4D2F-BA3C-8E3073226432";
@@ -569,6 +573,8 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
 				VALIDATE_PRODUCT = YES;
+				ves_cmakeexternals = "$(SRCROOT)/../CMakeBuild/build/CMakeExternals";
+				ves_source = "$(SRCROOT)/../../..";
 			};
 			name = AppStoreDistributionConfiguration;
 		};
@@ -604,23 +610,23 @@
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				HEADER_SEARCH_PATHS = (
-					"../CMakeBuild/build/CMakeExternals/Source/vtkmodular/**",
-					../../../src,
-					../../../src/vtkVES,
-					"../../../src/ves/**",
+					"$(ves_cmakeexternals)/Source/vtkmodular/**",
+					"$(ves_source)/src",
+					"$(ves_source)/src/vtkVES",
+					"$(ves_source)/src/ves/**",
 				);
 				INFOPLIST_FILE = "Kiwi/Kiwi-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				"LIBRARY_SEARCH_PATHS[sdk=iphoneos*][arch=*]" = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Build/vtkmodular-device/lib\"",
-					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Build/ves-device/lib\"",
+					"\"$(ves_cmakeexternals)/Build/vtkmodular-device/lib\"",
+					"\"$(ves_cmakeexternals)/Build/ves-device/lib\"",
 				);
 				"LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*][arch=*]" = (
 					"$(inherited)",
-					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Build/vtkmodular-simulator/lib\"",
-					"\"$(SRCROOT)/../CMakeBuild/build/CMakeExternals/Build/ves-simulator/lib\"",
+					"\"$(ves_cmakeexternals)/Build/vtkmodular-simulator/lib\"",
+					"\"$(ves_cmakeexternals)/Build/ves-simulator/lib\"",
 				);
 				PRODUCT_NAME = kiwi;
 				PROVISIONING_PROFILE = "";
@@ -628,6 +634,8 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
 				VALIDATE_PRODUCT = YES;
+				ves_cmakeexternals = "$(SRCROOT)/../CMakeBuild/build/CMakeExternals";
+				ves_source = "$(SRCROOT)/../../..";
 			};
 			name = RelWithDebug;
 		};
