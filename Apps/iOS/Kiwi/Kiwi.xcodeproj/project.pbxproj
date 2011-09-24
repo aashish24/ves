@@ -48,6 +48,8 @@
 		43BA864E14299EB2000D91C3 /* libvtkjpeg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43BA864C14299EB2000D91C3 /* libvtkjpeg.a */; };
 		43BA864F14299EB2000D91C3 /* libvtkpng.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43BA864D14299EB2000D91C3 /* libvtkpng.a */; };
 		43C1C1CE1410533A00A721F7 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 43C1C1CD1410533A00A721F7 /* Default.png */; };
+		43E0526E1424014300FC4F02 /* head.vti in Resources */ = {isa = PBXBuildFile; fileRef = 43E0526D1424014300FC4F02 /* head.vti */; };
+		43E58D9014299CC100D53D13 /* kiwi.png in Resources */ = {isa = PBXBuildFile; fileRef = 43E58D8F14299CC100D53D13 /* kiwi.png */; };
 		43EB039814105402002F463B /* libvtkVES.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43EB039714105402002F463B /* libvtkVES.a */; };
 		43FA5BE4141705FD00ECC80E /* kiwiAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 43FA5BE3141705FD00ECC80E /* kiwiAppDelegate.mm */; };
 		453036EB1406A298003A861A /* InfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 453036EA1406A298003A861A /* InfoView.xib */; };
@@ -120,6 +122,8 @@
 		43BA864C14299EB2000D91C3 /* libvtkjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkjpeg.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-device/lib/libvtkjpeg.a"; sourceTree = "<group>"; };
 		43BA864D14299EB2000D91C3 /* libvtkpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkpng.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-device/lib/libvtkpng.a"; sourceTree = "<group>"; };
 		43C1C1CD1410533A00A721F7 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
+		43E0526D1424014300FC4F02 /* head.vti */ = {isa = PBXFileReference; lastKnownFileType = file; path = head.vti; sourceTree = "<group>"; };
+		43E58D8F14299CC100D53D13 /* kiwi.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = kiwi.png; sourceTree = "<group>"; };
 		43EB039714105402002F463B /* libvtkVES.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkVES.a; path = "../CMakeBuild/build/CMakeExternals/Build/ves-device/lib/libvtkVES.a"; sourceTree = "<group>"; };
 		43FA5BE3141705FD00ECC80E /* kiwiAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = kiwiAppDelegate.mm; sourceTree = "<group>"; };
 		453036EA1406A298003A861A /* InfoView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InfoView.xib; sourceTree = "<group>"; };
@@ -298,6 +302,8 @@
 		6F25E6F2137D88DD00BF4BCA /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				43E58D8F14299CC100D53D13 /* kiwi.png */,
+				43E0526D1424014300FC4F02 /* head.vti */,
 				435026ED140E93C9000C315D /* caffeine.pdb */,
 				435026EE140E93C9000C315D /* motor.g */,
 				7027671013EC46620089945A /* MountStHelen.vtp */,
@@ -408,6 +414,8 @@
 				435026F0140E93C9000C315D /* motor.g in Resources */,
 				70F2731E140F099100D1677C /* Default@2x.png in Resources */,
 				43C1C1CE1410533A00A721F7 /* Default.png in Resources */,
+				43E0526E1424014300FC4F02 /* head.vti in Resources */,
+				43E58D9014299CC100D53D13 /* kiwi.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -437,6 +445,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -479,6 +488,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Kiwi/Kiwi-Prefix.pch";
@@ -543,6 +553,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Kitware Inc.";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Kiwi/Kiwi-Prefix.pch";
@@ -604,6 +615,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COMPRESS_PNG_FILES = NO;
 				COPY_PHASE_STRIP = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Kiwi/Kiwi-Prefix.pch";
