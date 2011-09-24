@@ -17,7 +17,10 @@ set(deps
   ves
   vtkIOGeometry
   vtkIOXML
-  vtkFiltersCutter)
+  vtkIOImage
+  vtkFiltersCore
+  vtkFiltersSources
+  vtkImagingCore)
 
 ves_add_library(vtkVES "${sources}" "${deps}")
 

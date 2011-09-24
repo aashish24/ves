@@ -12,24 +12,12 @@ set(build_prefix ${base}/Build)
 set(install_prefix ${base}/Install)
 
 set(module_defaults
-  -DModule_vtkCommonComputationalGeometry:BOOL=OFF
-  -DModule_vtkCommonCore:BOOL=OFF
-  -DModule_vtkCommonDataModel:BOOL=OFF
-  -DModule_vtkCommonMath:BOOL=OFF
-  -DModule_vtkCommonMisc:BOOL=OFF
-  -DModule_vtkCommonSystem:BOOL=OFF
-  -DModule_vtkCommonTransforms:BOOL=OFF
-  -DModule_vtkFiltersCutter:BOOL=ON
-  -DModule_vtkFiltersParallelStatistics:BOOL=OFF
-  -DModule_vtkFiltersStatistics:BOOL=OFF
-  -DModule_vtkIOCore:BOOL=OFF
+  -DModule_vtkFiltersCore:BOOL=ON
+  -DModule_vtkFiltersSources:BOOL=ON
   -DModule_vtkIOGeometry:BOOL=ON
-  -DModule_vtkIOMySQL:BOOL=OFF
-  -DModule_vtkIOODBC:BOOL=OFF
-  -DModule_vtkIOPostgreSQL:BOOL=OFF
-  -DModule_vtkIOSQL:BOOL=OFF
   -DModule_vtkIOXML:BOOL=ON
-  -DModule_vtkParallelCore:BOOL=OFF
+  -DModule_vtkIOImage:BOOL=ON
+  -DModule_vtkImagingCore:BOOL=ON
 )
 
 set(proj vtkmodular-host)
@@ -37,7 +25,8 @@ ExternalProject_Add(
   ${proj}
   SOURCE_DIR ${source_prefix}/vtkmodular
   GIT_REPOSITORY git://gitorious.org/~patmarion/kitware/patmarion-vtkmodular.git
-  GIT_TAG origin/kiwi
+  GIT_TAG origin/kiwi-new
+  INSTALL_COMMAND ""
   CMAKE_ARGS
     -DCMAKE_INSTALL_PREFIX:PATH=${install_prefix}/${proj}
     -DCMAKE_BUILD_TYPE:STRING=${build_type}
@@ -50,6 +39,7 @@ macro(crosscompile proj toolchain_file)
     ${proj}
     SOURCE_DIR ${base}/Source/vtkmodular
     DOWNLOAD_COMMAND ""
+    INSTALL_COMMAND ""
     DEPENDS vtkmodular-host
     CMAKE_ARGS
       -DCMAKE_INSTALL_PREFIX:PATH=${install_prefix}/${proj}
