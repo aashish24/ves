@@ -97,6 +97,7 @@ vesKiwiViewerApp::vesKiwiViewerApp()
 //----------------------------------------------------------------------------
 vesKiwiViewerApp::~vesKiwiViewerApp()
 {
+  this->removeAllDataRepresentations();
   delete this->Internal;
 
   delete this->m_modelViewProjectionUniform;
