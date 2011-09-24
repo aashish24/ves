@@ -17,6 +17,8 @@
 		28FD15000DC6FC520079059D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD14FF0DC6FC520079059D /* OpenGLES.framework */; };
 		28FD15080DC6FC5B0079059D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 28FD15070DC6FC5B0079059D /* QuartzCore.framework */; };
 		43006996140842770050DA06 /* GLViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 43006995140842770050DA06 /* GLViewController.m */; };
+		431CFCDE1429A28F00317693 /* BackgroundTexture.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 431CFCD91429A23800317693 /* BackgroundTexture.fsh */; };
+		431CFCDF1429A28F00317693 /* BackgroundTexture.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 431CFCDA1429A23800317693 /* BackgroundTexture.vsh */; };
 		431FC64E1408B7A5006B9246 /* TitleBarViewContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 431FC64C1408B7A5006B9246 /* TitleBarViewContainer.m */; };
 		431FC64F1408B7A5006B9246 /* TitleBarViewContainer.xib in Resources */ = {isa = PBXBuildFile; fileRef = 431FC64D1408B7A5006B9246 /* TitleBarViewContainer.xib */; };
 		432DE14D13D15D81000F8EC0 /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 432DE13013D158B8000F8EC0 /* Shader.fsh */; };
@@ -90,6 +92,8 @@
 		32CA4F630368D1EE00C91783 /* Kiwi-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Kiwi-Prefix.pch"; sourceTree = "<group>"; };
 		43006994140842770050DA06 /* GLViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLViewController.h; sourceTree = "<group>"; };
 		43006995140842770050DA06 /* GLViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLViewController.m; sourceTree = "<group>"; };
+		431CFCD91429A23800317693 /* BackgroundTexture.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = BackgroundTexture.fsh; path = ../../../../src/shaders/BackgroundTexture.fsh; sourceTree = "<group>"; };
+		431CFCDA1429A23800317693 /* BackgroundTexture.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = BackgroundTexture.vsh; path = ../../../../src/shaders/BackgroundTexture.vsh; sourceTree = "<group>"; };
 		431FC64B1408B7A5006B9246 /* TitleBarViewContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TitleBarViewContainer.h; sourceTree = "<group>"; };
 		431FC64C1408B7A5006B9246 /* TitleBarViewContainer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TitleBarViewContainer.m; sourceTree = "<group>"; };
 		431FC64D1408B7A5006B9246 /* TitleBarViewContainer.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TitleBarViewContainer.xib; sourceTree = "<group>"; };
@@ -324,6 +328,8 @@
 		6F25E6F3137D8B5600BF4BCA /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				431CFCD91429A23800317693 /* BackgroundTexture.fsh */,
+				431CFCDA1429A23800317693 /* BackgroundTexture.vsh */,
 				432DE13013D158B8000F8EC0 /* Shader.fsh */,
 				432DE13113D158B8000F8EC0 /* Shader.vsh */,
 				29B97316FDCFA39411CA2CEA /* main.m */,
@@ -385,6 +391,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				431CFCDE1429A28F00317693 /* BackgroundTexture.fsh in Resources */,
+				431CFCDF1429A28F00317693 /* BackgroundTexture.vsh in Resources */,
 				432DE14D13D15D81000F8EC0 /* Shader.fsh in Resources */,
 				432DE14E13D15D81000F8EC0 /* Shader.vsh in Resources */,
 				28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */,
