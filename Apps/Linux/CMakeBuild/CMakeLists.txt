@@ -37,7 +37,7 @@ ExternalProject_Add(
 set(proj ves)
 ExternalProject_Add(
   ${proj}
-  SOURCE_DIR ${CMAKE_SOURCE_DIR}/../../..
+  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../..
   DOWNLOAD_COMMAND ""
   DEPENDS vtkmodular
   CMAKE_ARGS

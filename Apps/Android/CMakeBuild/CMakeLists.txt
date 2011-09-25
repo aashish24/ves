@@ -44,11 +44,11 @@ macro(crosscompile proj toolchain_file)
     CMAKE_ARGS
       -DCMAKE_INSTALL_PREFIX:PATH=${install_prefix}/${proj}
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
-      -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_SOURCE_DIR}/cmake/${toolchain_file}
+      -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_CURRENT_SOURCE_DIR}/cmake/${toolchain_file}
       -DVTKCompileTools_DIR:PATH=${build_prefix}/vtkmodular-host
       -DBUILD_SHARED_LIBS:BOOL=OFF
       ${module_defaults}
-      -C ${CMAKE_SOURCE_DIR}/cmake/TryRunResults.cmake
+      -C ${CMAKE_CURRENT_SOURCE_DIR}/cmake/TryRunResults.cmake
   )
 endmacro()
 
@@ -57,13 +57,13 @@ crosscompile(vtkmodular-android android.toolchain.cmake)
 macro(crosscompile_ves proj toolchain_file)
   ExternalProject_Add(
     ${proj}
-    SOURCE_DIR ${CMAKE_SOURCE_DIR}/../../..
+    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../..
     DOWNLOAD_COMMAND ""
     DEPENDS vtkmodular-android
     CMAKE_ARGS
       -DCMAKE_INSTALL_PREFIX:PATH=${install_prefix}/${proj}
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
-      -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_SOURCE_DIR}/cmake/${toolchain_file}
+      -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_CURRENT_SOURCE_DIR}/cmake/${toolchain_file}
       -DVES_USE_VTK:BOOL=ON
       -DVTK_DIR:PATH=${build_prefix}/vtkmodular-android
   )

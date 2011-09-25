@@ -46,11 +46,11 @@ macro(crosscompile_vtk proj toolchain_file)
     CMAKE_ARGS
       -DCMAKE_INSTALL_PREFIX:PATH=${install_prefix}/${proj}
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
-      -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_SOURCE_DIR}/cmake/${toolchain_file}
+      -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_CURRENT_SOURCE_DIR}/cmake/${toolchain_file}
       -DVTKCompileTools_DIR:PATH=${build_prefix}/vtkmodular-host
       -DBUILD_SHARED_LIBS:BOOL=OFF
       ${module_defaults}
-      -C ${CMAKE_SOURCE_DIR}/cmake/TryRunResults.cmake
+      -C ${CMAKE_CURRENT_SOURCE_DIR}/cmake/TryRunResults.cmake
   )
 endmacro()
 
@@ -61,13 +61,13 @@ crosscompile_vtk(vtkmodular-device toolchain-ios-device.cmake)
 macro(crosscompile_ves proj tag toolchain_file)
   ExternalProject_Add(
     ${proj}
-    SOURCE_DIR ${CMAKE_SOURCE_DIR}/../../..
+    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../..
     DOWNLOAD_COMMAND ""
     DEPENDS vtkmodular-${tag}
     CMAKE_ARGS
       -DCMAKE_INSTALL_PREFIX:PATH=${install_prefix}/${proj}
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
-      -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_SOURCE_DIR}/cmake/${toolchain_file}
+      -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${CMAKE_CURRENT_SOURCE_DIR}/cmake/${toolchain_file}
       -DVES_USE_VTK:BOOL=ON
       -DVTK_DIR:PATH=${build_prefix}/vtkmodular-${tag}
   )
