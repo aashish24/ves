@@ -17,5 +17,5 @@ set(assets
 
 foreach(f ${assets})
   get_filename_component(fname ${f} NAME)
-  configure_file(${f} ${CMAKE_SOURCE_DIR}/assets/${fname} COPYONLY)
+  configure_file(${f} ${CMAKE_BINARY_DIR}/assets/${fname} COPYONLY)
 endforeach()
