@@ -4,7 +4,7 @@ source tools.sh
 
 VTK_DIR=../../CMakeBuild/build/CMakeExternals/Build/vtkmodular-android
 VES_DIR=../../CMakeBuild/build/CMakeExternals/Build/ves-android
-TOOLCHAIN=../../CMakeBuild/cmake/android.toolchain.cmake
+TOOLCHAIN=../../../../CMake/toolchains/android.toolchain.cmake
 
 mkdir -p build
 cd build
