@@ -49,7 +49,7 @@ vesCamera::vesCamera()
   this->ClippingRange[0] = 10.0;
   this->ClippingRange[1] = 1010.0;
 
-  this->ParallelProjection = 0;
+  this->ParallelProjection = false;
   this->ParallelScale = 1.0;
 
   this->WindowCenter[0] = 0.0;
