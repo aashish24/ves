@@ -69,6 +69,8 @@ public:
   void handleSingleTouchPanGesture(double deltaX, double deltaY);
   void handleTwoTouchPinchGesture(double scale);
   void handleTwoTouchRotationGesture(double rotation);
+  void handleSingleTouchDown(int displayX, int displayY);
+  void handleSingleTouchUp();
 
   int numberOfModelFacets() const;
   int numberOfModelVertices() const;

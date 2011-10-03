@@ -261,6 +261,16 @@ void vesKiwiViewerApp::handleSingleTouchPanGesture(double deltaX, double deltaY)
 }
 
 //----------------------------------------------------------------------------
+void vesKiwiViewerApp::handleSingleTouchUp()
+{
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiViewerApp::handleSingleTouchDown(int displayX, int displayY)
+{
+}
+
+//----------------------------------------------------------------------------
 void vesKiwiViewerApp::handleTwoTouchPinchGesture(double scale)
 {
   this->Internal->Renderer->GetCamera()->Dolly(scale);
