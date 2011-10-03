@@ -87,7 +87,7 @@ public:
     return this->m_programHandle;
   }
 
-  virtual bool read(){;}
+  virtual bool read(){ return true; }
 
   virtual void render(Painter *render);
 

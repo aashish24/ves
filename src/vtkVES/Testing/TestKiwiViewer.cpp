@@ -35,7 +35,15 @@
 
 #include <vesKiwiViewerApp.h>
 
-static void write_ppm(const char *filename, const GLubyte *buffer, int width, int height);
+#include <vtkErrorCode.h>
+#include <vtkImageData.h>
+#include <vtkImageDifference.h>
+#include <vtkImageShiftScale.h>
+#include <vtkNew.h>
+#include <vtkPNGReader.h>
+#include <vtkPNGWriter.h>
+#include <vtkSmartPointer.h>
+
 
 //----------------------------------------------------------------------------
 namespace {
@@ -55,6 +63,14 @@ public:
     this->SourceDirectory = dir;
   }
 
+  std::string dataDirectory() {
+    return this->DataDirectory;
+  }
+
+  void setDataDirectory(std::string dir) {
+    this->DataDirectory = dir;
+  }
+
   bool isTesting() {
     return this->IsTesting;
   }
@@ -68,6 +84,7 @@ private:
   vesKiwiViewerApp App;
 
   std::string       SourceDirectory;
+  std::string       DataDirectory;
   bool              IsTesting;
 };
 
@@ -90,25 +107,99 @@ void LoadDefaultData()
 }
 
 //----------------------------------------------------------------------------
-void DoTesting()
+vtkSmartPointer<vtkImageData> ImageFromFile(const std::string filename)
 {
-  // This loads each builtin dataset, renders it, and saves a screenshot
+  vtkNew<vtkPNGReader> reader;
+  reader->SetFileName(filename.c_str());
+  reader->Update();
 
+  if (reader->GetErrorCode() != vtkErrorCode::NoError || reader->GetOutput()->GetNumberOfPoints() <= 1) {
+    return 0;
+  }
+
+  return reader->GetOutput();
+}
+
+//----------------------------------------------------------------------------
+vtkSmartPointer<vtkImageData> ImageFromRenderView()
+{
   int width = testHelper->app()->viewWidth();
   int height = testHelper->app()->viewHeight();
-  GLubyte* buffer = new GLubyte[width * height * 4];
+
+  vtkSmartPointer<vtkImageData> image = vtkSmartPointer<vtkImageData>::New();
+  image->SetDimensions(width, height, 1);
+  image->SetScalarTypeToUnsignedChar();
+  image->SetNumberOfScalarComponents(3);
+  image->AllocateScalars();
+
+  unsigned char* outPtr = static_cast<unsigned char*>(image->GetScalarPointer(0, 0, 0));
+  glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, (void*)outPtr);
+  return image;
+}
+
+//----------------------------------------------------------------------------
+void WritePNG(vtkImageData* image, const std::string& filename)
+{
+  vtkNew<vtkPNGWriter> writer;
+  writer->SetInput(image);
+  writer->SetFileName(filename.c_str());
+  writer->Write();
+}
+
+//----------------------------------------------------------------------------
+bool DoTesting()
+{
+  const double threshold = 10.0;
+  bool allTestsPassed = true;
+
+  // This loads each builtin dataset, renders it, and saves a screenshot
 
   // Note, this loop renders but does not bother to swap buffers
   for (int i = 0; i < testHelper->app()->numberOfBuiltinDatasets(); ++i) {
     LoadData(i);
     testHelper->app()->render();
     std::string datasetName = testHelper->app()->builtinDatasetName(i);
-    std::string imageName = datasetName + ".ppm";
-    glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, (void*)buffer);
-    write_ppm(imageName.c_str(), buffer, width, height);
+  
+    std::string inFile = testHelper->dataDirectory() + "/" + datasetName + ".png";
+    std::string outFile = datasetName + ".png";
+
+    vtkSmartPointer<vtkImageData> baselineImage = ImageFromFile(inFile);
+    vtkSmartPointer<vtkImageData> image = ImageFromRenderView();
+
+    if (!baselineImage) {
+      std::cout << "Could not read baseline image: " << inFile << std::endl;
+      WritePNG(image, outFile.c_str());
+      allTestsPassed = false;
+    }
+    else {
+      vtkNew<vtkImageDifference> imageDiff;
+      imageDiff->SetInput(image);
+      imageDiff->SetImage(baselineImage);
+      imageDiff->Update();
+
+      double thresholdError = imageDiff->GetThresholdedError();
+
+      if (thresholdError > threshold) {
+
+        std::cout << "Dataset '" << datasetName << "' image difference test failed with thresholded error: " << thresholdError << std::endl;
+
+        vtkNew<vtkImageShiftScale> gamma;
+        gamma->SetInputConnection(imageDiff->GetOutputPort());
+        gamma->SetShift(0);
+        gamma->SetScale(10);
+
+        WritePNG(gamma->GetOutput(), datasetName + ".diff.png");
+        WritePNG(image, outFile);
+        allTestsPassed = false;
+      }
+      else {
+        std::cout << "Dataset '" << datasetName << "' image difference test passed with thresholded error: " << thresholdError << std::endl;
+      }
+
+    }
   }
 
-  delete [] buffer;
+  return allTestsPassed;
 }
 
 //----------------------------------------------------------------------------
@@ -143,7 +234,7 @@ void InitRendering()
 bool InitTest(int argc, char* argv[])
 {
   if (argc < 2) {
-    printf("Usage: %s <path to VES source directory> [testing]\n", argv[0]);
+    printf("Usage: %s <path to VES source directory> [path to testing data directory]\n", argv[0]);
     return false;
   }
 
@@ -151,6 +242,7 @@ bool InitTest(int argc, char* argv[])
   testHelper->setSourceDirectory(argv[1]);
 
   if (argc == 3) {
+    testHelper->setDataDirectory(argv[2]);
     testHelper->setTesting(true);
   }
   return true;
@@ -164,32 +256,6 @@ void FinalizeTest()
 
 }; // end namespace
 //----------------------------------------------------------------------------
-
-
-
-static void
-write_ppm(const char *filename, const GLubyte *buffer, int width, int height)
-{
-  FILE *f = fopen(filename, "w");
-  if (f) {
-    int i, x, y;
-    const GLubyte *ptr = buffer;
-    fprintf(f,"P6\n");
-    fprintf(f,"%i %i\n", width, height);
-    fprintf(f,"255\n");
-    fclose(f);
-    f = fopen(filename, "ab");  /* reopen in binary append mode */
-    for (y = height-1; y >= 0; y--) {
-      for (x = 0; x < width; x++) {
-         i = (y*width + x) * 4;
-         fputc(ptr[i], f);   /* write red */
-         fputc(ptr[i+1], f); /* write green */
-         fputc(ptr[i+2], f); /* write blue */
-      }
-    }
-    fclose(f);
-  }
-}
 
 
 /*
@@ -472,11 +538,12 @@ main(int argc, char *argv[])
   eglSwapBuffers(egl_dpy, egl_surf);
 
   // begin the event loop if not in testing mode
+  bool testPassed = true;
   if (!testHelper->isTesting()) {
     event_loop(x_dpy, win, egl_dpy, egl_surf);
   }
   else {
-    DoTesting();
+    testPassed = DoTesting();
   }
 
   FinalizeTest();
@@ -489,5 +556,5 @@ main(int argc, char *argv[])
   XDestroyWindow(x_dpy, win);
   XCloseDisplay(x_dpy);
 
-  return 0;
+  return testPassed ? 0 : 1;
 }

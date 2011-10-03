@@ -12,33 +12,21 @@ set(build_prefix ${base}/Build)
 set(install_prefix ${base}/Install)
 
 set(module_defaults
-  -DModule_CommonComputationalGeometry:BOOL=OFF
-  -DModule_CommonCore:BOOL=OFF
-  -DModule_CommonDataModel:BOOL=OFF
-  -DModule_CommonMath:BOOL=OFF
-  -DModule_CommonMisc:BOOL=OFF
-  -DModule_CommonSystem:BOOL=OFF
-  -DModule_CommonTransforms:BOOL=OFF
-  -DModule_FiltersCutter:BOOL=ON
-  -DModule_FiltersParallelStatistics:BOOL=OFF
-  -DModule_FiltersStatistics:BOOL=OFF
-  -DModule_IOCore:BOOL=OFF
-  -DModule_IOGeometry:BOOL=ON
-  -DModule_IOMySQL:BOOL=OFF
-  -DModule_IOODBC:BOOL=OFF
-  -DModule_IOPostgreSQL:BOOL=OFF
-  -DModule_IOSQL:BOOL=OFF
-  -DModule_IOXML:BOOL=ON
-  -DModule_ParallelCore:BOOL=OFF
+  -DModule_vtkFiltersCore:BOOL=ON
+  -DModule_vtkFiltersSources:BOOL=ON
+  -DModule_vtkIOGeometry:BOOL=ON
+  -DModule_vtkIOXML:BOOL=ON
+  -DModule_vtkIOImage:BOOL=ON
+  -DModule_vtkImagingCore:BOOL=ON
 )
-
 
 set(proj vtkmodular)
 ExternalProject_Add(
   ${proj}
   SOURCE_DIR ${source_prefix}/vtkmodular
   GIT_REPOSITORY git://gitorious.org/~patmarion/kitware/patmarion-vtkmodular.git
-  GIT_TAG origin/kiwi
+  GIT_TAG origin/kiwi-new
+  INSTALL_COMMAND ""
   CMAKE_ARGS
     -DCMAKE_INSTALL_PREFIX:PATH=${install_prefix}/${proj}
     -DCMAKE_BUILD_TYPE:STRING=${build_type}
@@ -49,7 +37,7 @@ ExternalProject_Add(
 set(proj ves)
 ExternalProject_Add(
   ${proj}
-  SOURCE_DIR ${CMAKE_SOURCE_DIR}/../../..
+  SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../..
   DOWNLOAD_COMMAND ""
   DEPENDS vtkmodular
   CMAKE_ARGS

@@ -97,6 +97,7 @@ vesKiwiViewerApp::vesKiwiViewerApp()
 //----------------------------------------------------------------------------
 vesKiwiViewerApp::~vesKiwiViewerApp()
 {
+  this->removeAllDataRepresentations();
   delete this->Internal;
 
   delete this->m_modelViewProjectionUniform;
@@ -365,6 +366,7 @@ bool vesKiwiViewerApp::initializeShaderUniforms()
   this->m_useGouraudShaderUniform = new vesUniform("useGouraudShader", 1);
   this->m_useBlinnPhongShaderUniform = new vesUniform("useBlinnPhongShader", 0);
   this->m_useToonShaderUniform = new vesUniform("useToonShader", 0);
+  return true;
 }
 
 //----------------------------------------------------------------------------

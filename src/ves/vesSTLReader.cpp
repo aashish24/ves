@@ -39,6 +39,8 @@
 #define vtkWarningMacro(x) std::cerr << "WARNING " x
 #define vtkDebugMacro(x)
 
+namespace {
+
 struct SystemTools
 {
   /**
@@ -127,7 +129,6 @@ struct SystemTools
       return static_cast<unsigned long>(fs.st_size);
     }
   }
-
 };
 
 class vtkPoints
@@ -163,6 +164,23 @@ public:
 private:
   std::vector<std::vector<int> > s;
 };
+
+struct VectorCompare
+{
+  bool operator()(const vesVector3f& a, const vesVector3f& b)
+  {
+    for (int i = 0; i < 3; ++i)
+    {
+      if (a[i] != b[i])
+      {
+        return a[i] < b[i];
+      }
+    }
+    return false;
+  }
+};
+
+}; // end namespace
 
 vesTriangleData* vesSTLReader::Read()
 {
@@ -207,21 +225,6 @@ vesTriangleData* vesSTLReader::Read()
   fclose(fp);
   return t;
 }
-
-struct VectorCompare
-{
-  bool operator()(const vesVector3f& a, const vesVector3f& b)
-  {
-    for (int i = 0; i < 3; ++i)
-    {
-      if (a[i] != b[i])
-      {
-        return a[i] < b[i];
-      }
-    }
-    return false;
-  }
-};
 
 int vesSTLReader::ReadBinarySTL(FILE *fp, vesTriangleData* t)
 {
