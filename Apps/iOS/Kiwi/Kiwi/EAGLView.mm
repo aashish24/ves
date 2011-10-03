@@ -350,7 +350,13 @@
   tapGesture.cancelsTouchesInView = NO;
   [self addGestureRecognizer:tapGesture];
   [tapGesture release];
-  
+
+  UITapGestureRecognizer *doubleTapGesture = [[UITapGestureRecognizer alloc]
+                                             initWithTarget:self action:@selector(handleDoubleTapGesture:)];
+  [doubleTapGesture setNumberOfTapsRequired:2];
+  [self addGestureRecognizer:doubleTapGesture];
+  [doubleTapGesture release];
+
   //
   // allow two-finger gestures to work simultaneously
   kwGestureDelegate* gestureDelegate = [[kwGestureDelegate alloc] init];
@@ -472,6 +478,12 @@
   // reset rotation so it won't accumulate
   [sender setRotation:0.0];
   
+  [self scheduleRender];
+}
+
+- (IBAction)handleDoubleTapGesture:(UITapGestureRecognizer *)sender
+{
+  self->renderer.app->handleDoubleTap();
   [self scheduleRender];
 }
 
