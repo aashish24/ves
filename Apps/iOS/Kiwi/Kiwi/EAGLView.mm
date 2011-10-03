@@ -392,7 +392,10 @@
   if (sender.state == UIGestureRecognizerStateEnded ||
       sender.state == UIGestureRecognizerStateCancelled)
     {
-    if (lastRotationMotionNorm > 4.0f)
+    bool imageSliceModeActive = self->renderer.app->scrollSliceModeActive();
+
+    self->renderer.app->handleSingleTouchUp();
+    if (!imageSliceModeActive && lastRotationMotionNorm > 4.0f)
       {
       self->inertialRotationThread = [[NSThread alloc] initWithTarget:self selector:@selector(handleInertialRotation) object:nil];
       [inertialRotationThread start];
