@@ -51,6 +51,7 @@ vesTriangleData* triangleDataFromPolyData(vtkPolyData* polyData)
     polyData = triangleFilter->GetOutput();
     vesTriangleData* triangleData = vtkPolyDataToTriangleData::Convert(polyData);
     vtkPolyDataToTriangleData::ComputeVertexColorFromScalars(polyData, triangleData);
+    vtkPolyDataToTriangleData::ConvertTextureCoordinates(polyData, triangleData);
     return triangleData;
     }
   else
