@@ -130,6 +130,13 @@ void vesKiwiDataRepresentation::initializeWithShader(vesShaderProgram* shaderPro
 }
 
 //----------------------------------------------------------------------------
+void vesKiwiDataRepresentation::setColor(double r, double g, double b, double a)
+{
+  assert(this->Internal->Actor);
+  this->Internal->Actor->setColor(r, g, b, a);
+}
+
+//----------------------------------------------------------------------------
 void vesKiwiDataRepresentation::addSelfToRenderer(vesRenderer* renderer)
 {
   assert(renderer);

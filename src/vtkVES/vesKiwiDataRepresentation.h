@@ -44,6 +44,8 @@ public:
   void addSelfToRenderer(vesRenderer* renderer);
   void removeSelfFromRenderer(vesRenderer* renderer);
 
+  void setColor(double r, double g, double b, double a);
+
 protected:
 
   vesActor* actor() const;
