@@ -25,8 +25,12 @@
 #include "vesActorCollection.h"
 #include "vesCamera.h"
 #include "vesGMTL.h"
+#include "vesVisitor.h"
+
 #include "gmtl/Generate.h"
 #include "gmtl/AxisAngle.h"
+
+// C++ includes
 #include <iostream>
 #include <string>
 
@@ -45,62 +49,84 @@ void PrintMatrix(std::string name, vesMatrix4x4f mv)
 
 vesRenderer::vesRenderer()
 {
-  this->Actor = new vesActorCollection();
-  this->Paint = new Painter();
-  this->Camera = new vesCamera();
-  this->Aspect[0] = this->Aspect[1] = 1.0;
-  this->Width = 100.0f;
-  this->Height = 100.0f;
+  this->m_width  = 100;
+  this->m_height = 100;
+
+  this->m_aspect[0] = this->m_aspect[1] = 1.0;
+
+  this->m_backgroundColor[0] = 0.5f;
+  this->m_backgroundColor[1] = 0.5f;
+  this->m_backgroundColor[2] = 0.5f;
+  this->m_backgroundColor[3] = 1.0f;
+
+  this->m_camera    = new vesCamera();
+  this->m_sceneRoot = 0x0;
 }
+
 
 vesRenderer::~vesRenderer()
 {
-  delete Actor;
-  delete Paint;
-  delete Camera;
+//  delete Actor;
+//  delete Paint;
+  delete this->m_camera; this->m_camera = 0x0;
 }
 
-void vesRenderer::AddActor(vesActor* actor)
+
+void vesRenderer::setSceneRoot(vesActor *root)
 {
-  this->Actor->AddItem(actor);
+  // \todo: Release graphics resources for the last scene root.
+  this->m_sceneRoot = root;
 }
 
-void vesRenderer::RemoveActor(vesActor* actor)
-{
-  this->Actor->RemoveItem(actor);
-}
 
-void vesRenderer::Render()
+void vesRenderer::render()
 {
   // Clear the buffers
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glClearColor(this->m_backgroundColor[0], this->m_backgroundColor[1],
+               this->m_backgroundColor[2], this->m_backgroundColor[3]);
+
   glEnable(GL_DEPTH_TEST);
-  vesMatrix4x4f proj = this->Camera->ComputeProjectionTransform(this->Aspect[1],
+
+  vesMatrix4x4f projectionMatrix =
+    this->m_camera->ComputeProjectionTransform(this->m_aspect[1],
                                                                 -1, 1);
-  vesMatrix4x4f view = this->Camera->ComputeViewTransform();
-  this->Paint->push(proj);
-  this->Paint->push(view);
-  this->Actor->render(this->Paint);
-  this->Paint->pop();
-  this->Paint->pop();
+  vesMatrix4x4f viewMatrix =
+    this->m_camera->ComputeViewTransform();
+
+  // Cull traversal.
+  vesVisitor cullVisitor(vesVisitor::CullVisitor,
+                         vesVisitor::TraverseAllChildren);
+  if (this->m_sceneRoot) {
+    cullVisitor.pushModelViewMatrix(viewMatrix);
+    cullVisitor.pushProjectionMatrix(projectionMatrix);
+    cullVisitor.visit(*this->m_sceneRoot);
+  }
+
+//  this->Paint->push(proj);
+//  this->Paint->push(view);
+//  this->Actor->render(this->Paint);
+//  this->Paint->pop();
+//  this->Paint->pop();
 }
 
-void vesRenderer::Resize(int width, int height, float scale)
+
+void vesRenderer::resize(int width, int height, float scale)
 {
-  this->Width = (width > 0) ? width : 1;
-  this->Height = (height > 0) ? height : 1;
-  this->Aspect[0] = static_cast<double>(this->Height)/this->Width;
-  this->Aspect[1] = static_cast<double>(this->Width)/this->Height;
+  this->m_width  = (width  > 0) ? width  : 1;
+  this->m_height = (height > 0) ? height : 1;
+
+  this->m_aspect[0] = static_cast<double>(this->m_height)/this->m_width;
+  this->m_aspect[1] = static_cast<double>(this->m_width) /this->m_height;
 }
 
-vesVector3f vesRenderer::ComputeWorldToDisplay(vesVector3f world)
+
+vesVector3f vesRenderer::computeWorldToDisplay(vesVector3f world)
 {
-  //
   // WorldToView
-  //
-  vesMatrix4x4f proj_mat = this->Camera->ComputeProjectionTransform(this->Aspect[1],
+  vesMatrix4x4f proj_mat = this->m_camera->ComputeProjectionTransform(this->m_aspect[1],
                                                                     0, 1);
-  vesMatrix4x4f view_mat = this->Camera->ComputeViewTransform();
+  vesMatrix4x4f view_mat = this->m_camera->ComputeViewTransform();
   vesMatrix4x4f mat = proj_mat*view_mat;
   vesVector4f world4(world[0], world[1], world[2], 1);
   vesVector4f view;
@@ -109,33 +135,28 @@ vesVector3f vesRenderer::ComputeWorldToDisplay(vesVector3f world)
   view[1] /= view[3];
   view[2] /= view[3];
 
-  //
   // ViewToDisplay
-  //
   vesVector3f display;
-  display[0] = (view[0] + 1.0f) * this->Width / 2.0f;
-  display[1] = (view[1] + 1.0f) * this->Height / 2.0f;
+  display[0] = (view[0] + 1.0f) * this->m_width / 2.0f;
+  display[1] = (view[1] + 1.0f) * this->m_height / 2.0f;
   display[2] = view[2];
   return display;
 }
 
-vesVector3f vesRenderer::ComputeDisplayToWorld(vesVector3f display)
+
+vesVector3f vesRenderer::computeDisplayToWorld(vesVector3f display)
 {
-  //
   // DisplayToView
-  //
   vesVector4f view;
-  view[0] = 2.0f * display[0] / this->Width - 1.0f;
-  view[1] = 2.0f * display[1] / this->Height - 1.0f;
+  view[0] = 2.0f * display[0] / this->m_width - 1.0f;
+  view[1] = 2.0f * display[1] / this->m_height - 1.0f;
   view[2] = display[2];
   view[3] = 1;
 
-  //
   // ViewToWorld
-  //
-  vesMatrix4x4f proj_mat = this->Camera->ComputeProjectionTransform(this->Aspect[1],
+  vesMatrix4x4f proj_mat = this->m_camera->ComputeProjectionTransform(this->m_aspect[1],
                                                                     0, 1);
-  vesMatrix4x4f view_mat = this->Camera->ComputeViewTransform();
+  vesMatrix4x4f view_mat = this->m_camera->ComputeViewTransform();
   vesMatrix4x4f mat = proj_mat*view_mat;
   vesMatrix4x4f inv;
   gmtl::invertFull(inv, mat);
@@ -147,39 +168,41 @@ vesVector3f vesRenderer::ComputeDisplayToWorld(vesVector3f display)
   return world;
 }
 
-void vesRenderer::ResetCamera()
+
+void vesRenderer::resetCamera()
 {
-  this->Actor->read();
-  this->Actor->computeBounds();
-  vesVector3f center = this->Actor->get_BBoxCenter();
+#if 0
+//  this->Actor->read();
+//  this->Actor->computeBounds();
+//  vesVector3f center = this->Actor->get_BBoxCenter();
 
   double distance;
   vesVector3f vn, vup;
-  if ( this->Camera != NULL )
+  if ( this->m_camera != NULL )
   {
-    vn = this->Camera->GetViewPlaneNormal();
+    vn = this->m_camera->GetViewPlaneNormal();
   }
   else
   {
     std::cout<< "Trying to reset non-existant camera" << std::endl;
     return;
   }
-  double radius = this->Actor->GetBBoxRadius();
+//  double radius = this->Actor->GetBBoxRadius();
   radius = (radius==0)?(.5):(radius);
 
-  double angle=deg2Rad(this->Camera->GetViewAngle());
+  double angle=deg2Rad(this->m_camera->GetViewAngle());
   double parallelScale=radius;
   //this->ComputeAspect();
   if(Aspect[0]>=1.0) // horizontal window, deal with vertical angle|scale
   {
-    if(this->Camera->GetUseHorizontalViewAngle())
+    if(this->m_camera->GetUseHorizontalViewAngle())
     {
       angle=2.0*atan(tan(angle*0.5)/Aspect[0]);
     }
   }
   else // vertical window, deal with horizontal angle|scale
   {
-    if(!this->Camera->GetUseHorizontalViewAngle())
+    if(!this->m_camera->GetUseHorizontalViewAngle())
     {
       angle=2.0*atan(tan(angle*0.5)*Aspect[0]);
     }
@@ -187,7 +210,7 @@ void vesRenderer::ResetCamera()
   }
   distance =radius/sin(angle*0.5);
   // check view-up vector against view plane normal
-  vup = this->Camera->GetViewUp();
+  vup = this->m_camera->GetViewUp();
   if ( fabs(gmtl::dot(vup,vn)) > 0.999 )
   {
     // vtkWarningMacro(<<"Resetting view-up since view plane normal is parallel");
@@ -195,30 +218,32 @@ void vesRenderer::ResetCamera()
     temp[0] = -vup[2];
     temp[1] = vup[0];
     temp[2] = vup[1];
-    this->Camera->SetViewUp(temp);
+    this->m_camera->SetViewUp(temp);
   }
   // update the camera
-  this->Camera->SetFocalPoint(center);
+  this->m_camera->SetFocalPoint(center);
   vesVector3f temp = vn;
   temp*= distance;
   temp+= center;
-  this->Camera->SetPosition(temp);
+  this->m_camera->SetPosition(temp);
 
   float bounds[6];
-  bounds[0] = this->Actor->get_min()[0];
-  bounds[1] = this->Actor->get_max()[0];
-  bounds[2] = this->Actor->get_min()[1];
-  bounds[3] = this->Actor->get_max()[1];
-  bounds[4] = this->Actor->get_min()[2];
-  bounds[5] = this->Actor->get_max()[2];
+//  bounds[0] = this->Actor->get_min()[0];
+//  bounds[1] = this->Actor->get_max()[0];
+//  bounds[2] = this->Actor->get_min()[1];
+//  bounds[3] = this->Actor->get_max()[1];
+//  bounds[4] = this->Actor->get_min()[2];
+//  bounds[5] = this->Actor->get_max()[2];
 
   this->ResetCameraClippingRange(bounds);
   // setup default parallel scale
-  this->Camera->SetParallelScale(parallelScale);
+  this->m_camera->SetParallelScale(parallelScale);
+#endif
 }
 
-void vesRenderer::ResetCameraClippingRange()
+void vesRenderer::resetCameraClippingRange()
 {
+#if 0
   this->Actor->read();
   this->Actor->computeBounds();
   float bounds[6];
@@ -230,9 +255,11 @@ void vesRenderer::ResetCameraClippingRange()
   bounds[5] = this->Actor->get_max()[2];
 
   this->ResetCameraClippingRange(bounds);
+#endif
 }
 
-void vesRenderer::ResetCameraClippingRange(float bounds[6])
+
+void vesRenderer::resetCameraClippingRange(float bounds[6])
 {
   vesVector3f  vn, position;
   float  a, b, c, d;
@@ -240,8 +267,8 @@ void vesRenderer::ResetCameraClippingRange(float bounds[6])
   int     i, j, k;
 
   // Find the plane equation for the camera view plane
-  vn = this->Camera->GetViewPlaneNormal();
-  position = this->Camera->GetPosition();
+  vn = this->m_camera->GetViewPlaneNormal();
+  position = this->m_camera->GetPosition();
 
   a = -vn[0];
   b = -vn[1];
@@ -288,10 +315,20 @@ void vesRenderer::ResetCameraClippingRange(float bounds[6])
   {
     range[0] = NearClippingPlaneTolerance*range[1];
   }
-  this->Camera->SetClippingRange( range[0],range[1] );
+  this->m_camera->SetClippingRange( range[0],range[1] );
 }
 
-void vesRenderer::SetBackground(vesTexture* background)
+
+void vesRenderer::setBackgroundColor(float r, float g, float b, float a)
 {
-  this->Paint->setBackgroundTexture(background);
+  this->m_backgroundColor[0] = r;
+  this->m_backgroundColor[1] = g;
+  this->m_backgroundColor[2] = b;
+  this->m_backgroundColor[3] = a;
+}
+
+
+void vesRenderer::setBackground(vesTexture* background)
+{
+//  this->Paint->setBackgroundTexture(background);
 }

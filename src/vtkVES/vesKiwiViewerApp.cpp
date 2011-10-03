@@ -114,7 +114,7 @@ vesKiwiViewerApp::~vesKiwiViewerApp()
 vesCamera* vesKiwiViewerApp::camera() const
 {
   assert(this->Internal->Renderer);
-  return this->Internal->Renderer->GetCamera();
+  return this->Internal->Renderer->camera();
 }
 
 //----------------------------------------------------------------------------
@@ -171,20 +171,18 @@ void vesKiwiViewerApp::addBuiltinShadingModel(const std::string &name)
 //----------------------------------------------------------------------------
 void vesKiwiViewerApp::render()
 {
-  glClearColor(63/255.0f, 96/255.0f, 144/255.0, 1.0f);
-
   // \Note: We have to call it every render call since the current
   // implementation is not quite right in VES library.
   this->setShadingModel(this->getCurrentShadingModel());
 
-  this->Internal->Renderer->ResetCameraClippingRange();
-  this->Internal->Renderer->Render();
+  this->Internal->Renderer->resetCameraClippingRange();
+  this->Internal->Renderer->render();
 }
 
 //----------------------------------------------------------------------------
 void vesKiwiViewerApp::resizeView(int width, int height)
 {
-  this->Internal->Renderer->Resize(width, height, 1.0f);
+  this->Internal->Renderer->resize(width, height, 1.0f);
   glViewport(0, 0, width, height);
 }
 
@@ -201,19 +199,19 @@ void vesKiwiViewerApp::resetView()
   //
   // set direction to look from
   vesRenderer* renderer = this->Internal->Renderer;
-  renderer->GetCamera()->SetViewPlaneNormal(vesVector3f(0.0, 0.0, 1.0));
+  renderer->camera()->SetViewPlaneNormal(vesVector3f(0.0, 0.0, 1.0));
 
   // dolly so that scene fits window
-  renderer->ResetCamera();
+  renderer->resetCamera();
 
   // The current ResetCamera() method pulls the camera back further than
   // required.  ResetCamera should be fixed.  Until then, perform a dolly
   // with a scale factor of 1.5 (a magic number).
-  renderer->GetCamera()->Dolly(1.5);
+  renderer->camera()->Dolly(1.5);
 
   // now set the view plane normal
-  renderer->GetCamera()->SetViewUp(vesVector3f(0.0, 1.0, 0.0));
-  renderer->GetCamera()->OrthogonalizeViewUp();
+  renderer->camera()->SetViewUp(vesVector3f(0.0, 1.0, 0.0));
+  renderer->camera()->OrthogonalizeViewUp();
 }
 
 //----------------------------------------------------------------------------
@@ -221,15 +219,15 @@ void vesKiwiViewerApp::handleTwoTouchPanGesture(double x0, double y0, double x1,
 {
   // calculate the focal depth so we'll know how far to move
   vesRenderer* ren = this->Internal->Renderer;
-  vesCamera* camera = ren->GetCamera();
+  vesCamera* camera = ren->camera();
   vesVector3f viewFocus = camera->GetFocalPoint();
   vesVector3f viewPoint = camera->GetPosition();
-  vesVector3f viewFocusDisplay = ren->ComputeWorldToDisplay(viewFocus);
+  vesVector3f viewFocusDisplay = ren->computeWorldToDisplay(viewFocus);
   float focalDepth = viewFocusDisplay[2];
 
   // map change into world coordinates
-  vesVector3f oldPickPoint = ren->ComputeDisplayToWorld(vesVector3f(x0, y0, focalDepth));
-  vesVector3f newPickPoint = ren->ComputeDisplayToWorld(vesVector3f(x1, y1, focalDepth));
+  vesVector3f oldPickPoint = ren->computeDisplayToWorld(vesVector3f(x0, y0, focalDepth));
+  vesVector3f newPickPoint = ren->computeDisplayToWorld(vesVector3f(x1, y1, focalDepth));
   vesVector3f motionVector = oldPickPoint - newPickPoint;
 
   vesVector3f newViewFocus = viewFocus + motionVector;
@@ -246,10 +244,11 @@ void vesKiwiViewerApp::handleSingleTouchPanGesture(double deltaX, double deltaY)
   // Based on vtkInteractionStyleTrackballCamera::Rotate().
   //
   vesRenderer* ren = this->Internal->Renderer;
-  vesCamera *camera = ren->GetCamera();
+  vesCamera *camera = ren->camera();
 
-  double delta_elevation = -20.0 / ren->GetHeight();
-  double delta_azimuth = -20.0 / ren->GetWidth();
+  double delta_elevation = -20.0 / ren->height();
+  double delta_azimuth   = -20.0 / ren->width();
+
   double motionFactor = 10.0;
 
   double rxf = deltaX * delta_azimuth * motionFactor;
@@ -263,13 +262,13 @@ void vesKiwiViewerApp::handleSingleTouchPanGesture(double deltaX, double deltaY)
 //----------------------------------------------------------------------------
 void vesKiwiViewerApp::handleTwoTouchPinchGesture(double scale)
 {
-  this->Internal->Renderer->GetCamera()->Dolly(scale);
+  this->Internal->Renderer->camera()->Dolly(scale);
 }
 
 //----------------------------------------------------------------------------
 void vesKiwiViewerApp::handleTwoTouchRotationGesture(double rotation)
 {
-  vesCamera* camera = this->Internal->Renderer->GetCamera();
+  vesCamera* camera = this->Internal->Renderer->camera();
   camera->Roll(rotation * 180.0 / M_PI);
   camera->OrthogonalizeViewUp();
 }
@@ -489,11 +488,11 @@ int vesKiwiViewerApp::numberOfModelLines() const
 //----------------------------------------------------------------------------
 int vesKiwiViewerApp::viewWidth() const
 {
-  return this->Internal->Renderer->GetWidth();
+  return this->Internal->Renderer->width();
 }
 
 //----------------------------------------------------------------------------
 int vesKiwiViewerApp::viewHeight() const
 {
-  return this->Internal->Renderer->GetHeight();
+  return this->Internal->Renderer->height();
 }

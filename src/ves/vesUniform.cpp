@@ -22,13 +22,22 @@ vesUniform::~vesUniform()
 }
 
 
+void vesUniform::update(const vesRenderState   &renderState,
+                        const vesShaderProgram &program)
+{
+  // \note: Do nothing by default.
+}
+
+
 bool vesUniform::setType(Type type)
 {
-  if (this->m_type == type)
+  if (this->m_type == type) {
     return true;
+  }
 
-  if (m_type != Undefined)
+  if (m_type != Undefined) {
     return false;
+  }
 
   this->m_type = type;
 
@@ -428,25 +437,7 @@ bool vesUniform::getElement(unsigned int index, vesMatrix4x4f &value) const
 }
 
 
-int vesUniform::getUniformLocation() const
-{
-  return this->m_location;
-}
-
-
-void vesUniform::bind(vesShaderProgram *shaderProgram)
-{
-  if (!shaderProgram)
-  {
-    return;
-  }
-
-  this->m_location = glGetUniformLocation
-    (shaderProgram->programHandle(), this->m_name.c_str());
-}
-
-
-void vesUniform::callGL() const
+void vesUniform::callGL(int location) const
 {
   if (this->m_numberElements < 1)
     return;
@@ -456,38 +447,38 @@ void vesUniform::callGL() const
     case Bool:
     case Int:
         if (this->m_intArray)
-          glUniform1iv (this->m_location, this->m_numberElements,
-                        &this->m_intArray->front());
+          glUniform1iv(location, this->m_numberElements,
+                       &this->m_intArray->front());
         break;
 
     case Float:
         if (this->m_floatArray)
-          glUniform1fv (this->m_location, this->m_numberElements,
-                        &this->m_floatArray->front());
+          glUniform1fv(location, this->m_numberElements,
+                       &this->m_floatArray->front());
         break;
 
     case FloatVec2:
         if (this->m_floatArray)
-          glUniform2fv (this->m_location, this->m_numberElements,
-                        &this->m_floatArray->front());
+          glUniform2fv(location, this->m_numberElements,
+                       &this->m_floatArray->front());
         break;
 
     case FloatVec3:
         if (this->m_floatArray)
-          glUniform3fv (this->m_location, this->m_numberElements,
-                        &this->m_floatArray->front());
+          glUniform3fv(location, this->m_numberElements,
+                       &this->m_floatArray->front());
         break;
 
     case FloatMat3:
         if (m_floatArray)
-          glUniformMatrix3fv (this->m_location, this->m_numberElements, GL_FALSE,
-                              &this->m_floatArray->front());
+          glUniformMatrix3fv(location, this->m_numberElements, GL_FALSE,
+                             &this->m_floatArray->front());
         break;
 
     case FloatMat4:
         if (this->m_floatArray)
-          glUniformMatrix4fv (m_location, this->m_numberElements, GL_FALSE,
-                              &this->m_floatArray->front());
+          glUniformMatrix4fv(location, this->m_numberElements, GL_FALSE,
+                             &this->m_floatArray->front());
         break;
 
     default:
@@ -499,7 +490,6 @@ void vesUniform::callGL() const
 
 void vesUniform::setMinimalDefaults()
 {
-  m_location    = -1;
   m_intArray    = 0;
   m_floatArray  = 0;
 }

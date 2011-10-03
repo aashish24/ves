@@ -25,17 +25,31 @@
 # include "vsgTypes.h"
 # include <vector>
 
-class vsgVisitor;
+class vesVisitor;
+
 class Painter;
+
+class vsgGroupingNode;
 
 class vsgNode
 {
 public:
-  vsgNode();
-  ~vsgNode();
-  virtual bool accept(vsgVisitor *vsgVisitor){return true;}
-  virtual bool read() = 0;
-  virtual void render(Painter * render) =0;
+           vsgNode();
+  virtual ~vsgNode();
+
+  virtual void accept(vesVisitor &visitor){}
+
+  inline vsgGroupingNode* parent(){ return this->m_parent; }
+
+//  virtual bool read() = 0;
+//  virtual void render(Painter * render) =0;
+
+protected:
+  friend class vsgGroupingNode;
+
+  bool setParent(vsgGroupingNode *parent);
+
+  vsgGroupingNode *m_parent;
 };
 
 typedef vsgNode* SFNode;

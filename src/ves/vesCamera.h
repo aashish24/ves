@@ -31,9 +31,8 @@ public:
   vesCamera();
   ~vesCamera();
   bool read();
-  void render(Painter *render);
+//  void render(Painter *render);
   void computeBounds();
-  void AddActorCollection(vesActorCollection* actor);
 
   vesSetGetMacro(UseHorizontalViewAngle,bool)
   vesSetGetMacro(ViewPlaneNormal,vesVector3f)

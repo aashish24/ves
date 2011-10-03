@@ -20,9 +20,9 @@
 
 #include "vesKiwiDataRepresentation.h"
 
-#include "vesTriangleData.h"
-#include "vesMapper.h"
 #include "vesActor.h"
+#include "vesMapper.h"
+#include "vesMaterial.h"
 #include "vesRenderer.h"
 #include "vesTriangleData.h"
 #include "vesShaderProgram.h"
@@ -34,11 +34,11 @@
 
 #include <cassert>
 
-
 //----------------------------------------------------------------------------
 namespace {
 vesTriangleData* triangleDataFromPolyData(vtkPolyData* polyData)
 {
+#if 0
   // Always use triangle filter for now.  This will ensure that models containing
   // polygons other than tris and quads will be rendered correctly.
   const bool useTriangleFilter = true;
@@ -57,6 +57,7 @@ vesTriangleData* triangleDataFromPolyData(vtkPolyData* polyData)
     {
     return vtkPolyDataToTriangleData::Convert(polyData);
     }
+#endif
 }
 };
 
@@ -74,7 +75,7 @@ public:
   ~vesInternal()
   {
     delete this->Actor;
-    delete this->Mapper->triangleData();
+//    delete this->Mapper->triangleData();
     delete this->Mapper;
   }
 
@@ -102,15 +103,15 @@ void vesKiwiDataRepresentation::setDataSet(vtkDataSet* dataSet)
   assert(this->Internal->Mapper);
 
   vesTriangleData* triangleData = triangleDataFromPolyData(polyData);
-  delete this->Internal->Mapper->triangleData();
-  this->Internal->Mapper->setTriangleData(triangleData);
+  delete this->Internal->Mapper->data();
+  this->Internal->Mapper->setData(triangleData);
 }
 
 //----------------------------------------------------------------------------
 vesTriangleData* vesKiwiDataRepresentation::triangleData() const
 {
   if (this->Internal->Mapper) {
-    return this->Internal->Mapper->triangleData();
+//    return this->Internal->Mapper->triangleData();
   }
   return 0;
 }
@@ -122,24 +123,32 @@ void vesKiwiDataRepresentation::initializeWithShader(vesShaderProgram* shaderPro
   assert(!this->Internal->Mapper && !this->Internal->Actor);
 
   this->Internal->Mapper = new vesMapper();
-  this->Internal->Mapper->setTriangleData(new vesTriangleData);
-  this->Internal->Actor = new vesActor(this->Internal->Mapper);
-  this->Internal->Actor->appearance()->addAttribute(shaderProgram);
-  this->Internal->Actor->setColor(0.8, 0.8, 0.8, 1.0);
+  this->Internal->Mapper->setData(new vesTriangleData);
+
+  this->Internal->Actor = new vesActor();
+  this->Internal->Actor->setMapper(this->Internal->Mapper);
+
+  this->Internal->Actor->material()->addAttribute(shaderProgram);
+
+#if 0
+    this->Internal->Actor->setColor(0.8, 0.8, 0.8, 1.0);
+#endif
 }
 
 //----------------------------------------------------------------------------
 void vesKiwiDataRepresentation::addSelfToRenderer(vesRenderer* renderer)
 {
   assert(renderer);
-  renderer->AddActor(this->Internal->Actor);
+  renderer->setSceneRoot(this->Internal->Actor);
 }
 
 //----------------------------------------------------------------------------
 void vesKiwiDataRepresentation::removeSelfFromRenderer(vesRenderer* renderer)
 {
+#if 0
   assert(renderer);
   renderer->RemoveActor(this->Internal->Actor);
+#endif
 }
 
 //----------------------------------------------------------------------------

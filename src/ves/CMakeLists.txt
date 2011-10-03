@@ -1,7 +1,5 @@
 set(sources
-  Painter.cpp
   vesActor.cpp
-  vesActorCollection.cpp
   vesByteSwap.cpp
   vesCamera.cpp
   vesCameraSensor.cpp
@@ -9,6 +7,7 @@ set(sources
   vesGMTL.cpp
   vesLegacyReader.cpp
   vesMapper.cpp
+  vesMaterial.cpp
   vesMultitouchCamera.cpp
   vesMultitouchWidget.cpp
   vesMultitouchSensorNode.cpp
@@ -21,13 +20,12 @@ set(sources
   vesSTLReader.cpp
   vesTriangleData.cpp
   vesUniform.cpp
+  vesVisitor.cpp
 
   # ------------------------------------------------------------------------vsg
-  vsg/vsgVisitor.cpp
 
   # -----------------------------------------------------------------------Core
   vsg/Core/vsgBindableNode.cpp
-  vsg/Core/vsgChildNode.cpp
   vsg/Core/vsgNode.cpp
   vsg/Core/vsgSensorNode.cpp
 
@@ -43,20 +41,12 @@ set(sources
   vsg/Rendering/vsgGeometricPropertyNode.cpp
   vsg/Rendering/vsgGeometryNode.cpp
   vsg/Rendering/vsgNormalNode.cpp
-  vsg/Rendering/ClipPlane.cpp
-  vsg/Rendering/Color.cpp
-  vsg/Rendering/ColorRGBA.cpp
-  vsg/Rendering/Coordinate.cpp
-  vsg/Rendering/IndexedTriangleSet.cpp
-  vsg/Rendering/Normal.cpp
 
   # ----------------------------------------------------------------------Shape
   vsg/Shape/vsgAppearanceChildNode.cpp
   vsg/Shape/vsgAppearanceNode.cpp
   vsg/Shape/vsgMaterialNode.cpp
-  vsg/Shape/vsgShapeNode.cpp
   vsg/Shape/Appearance.cpp
-  vsg/Shape/Shape.cpp
 
   # --------------------------------------------------------------------Texture
   vsg/Texture/vsgTextureCoordinateNode.cpp
@@ -75,12 +65,6 @@ set(sources
   # ---------------------------------------------------------------------Shader
   vsg/Shader/vsgProgrammableShaderObject.cpp
   vsg/Shader/vsgShaderNode.cpp
-  vsg/Shader/vsgVertexAttributeNode.cpp
-  vsg/Shader/ComposedShader.cpp
-  vsg/Shader/FloatVertexAttribute.cpp
-  vsg/Shader/Matrix3VertexAttribute.cpp
-  vsg/Shader/Matrix4VertexAttribute.cpp
-  vsg/Shader/ShaderPart.cpp
 )
 
 ves_add_library(ves "${sources}" "")

@@ -15,8 +15,10 @@
 
 // VES includes
 #include "vesGMTL.h"
+#include "vesMaterial.h"
 
 // Forward declarations
+class vesRenderState;
 class vesShaderProgram;
 
 #ifndef GL_SAMPLER_1D
@@ -53,7 +55,7 @@ public:
 };
 
 
-class vesUniform
+class vesUniform : public vesMaterialAttribute
 {
 public:
 
@@ -108,6 +110,11 @@ public:
     return this->m_name;
   }
 
+  /*! Update callback. */
+  virtual void update(const vesRenderState   &renderState,
+                      const vesShaderProgram &program);
+
+
   /*! convenient scalar (non-array) constructors w/ assignment */
   explicit vesUniform(const std::string &name, float value);
   explicit vesUniform(const std::string &name, int value);
@@ -152,11 +159,7 @@ public:
   bool getElement(unsigned int index, vesMatrix3x3f &value) const;
   bool getElement(unsigned int index, vesMatrix4x4f &value) const;
 
-  int getUniformLocation() const;
-
-  void bind(vesShaderProgram *shaderProgram);
-
-  void callGL() const;
+  void callGL(int location) const;
 
 
 protected:
@@ -179,7 +182,6 @@ protected:
   std::string         m_name;
 
   unsigned int        m_numberElements;
-  int                 m_location;
 
   IntArray           *m_intArray;
   FloatArray         *m_floatArray;

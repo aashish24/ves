@@ -27,18 +27,21 @@
 
 #include "vesGMTL.h"
 
-#include "Painter.h"
-
-#include <vsg/Shader/vsgShaderNode.h>
+#include "vesMaterial.h"
 
 using namespace std;
 
 // Forward declarations
+class vesShader;
+class vesRenderState;
 class vesUniform;
+class vesVertexAttribute;
 
-class vesShaderProgram : public vsgShaderNode
+class vesShaderProgram : public vesMaterialAttribute
 {
 public:
+  typedef std::map<std::string, int>     UniformNameToLocation;
+  typedef std::map<std::string, int>     VertexAttributeNameToLocation;
 
   typedef std::map<string, unsigned int> AttributeBindingMap;
 
@@ -63,7 +66,7 @@ public:
 
   bool addUniform(vesUniform *uniform);
 
-  bool addBindAttributeLocation(const std::string &name, unsigned int location);
+  bool addBindAttributeLocation(const std::string &name, int location);
 
   int  uniformLocation  (string value);
   int  attributeLocation(string value);
@@ -87,9 +90,13 @@ public:
     return this->m_programHandle;
   }
 
-  virtual bool read(){ return true; }
+  virtual void setupGeneral     (const vesRenderState &renderState);
+  virtual void activateGeneral  (vesRenderState &renderState);
+  virtual void deActivateGeneral(vesRenderState &renderState);
 
-  virtual void render(Painter *render);
+  virtual void setupVertexSpecific(const vesRenderState &renderState);
+  virtual void activateVertexSpecific(vesRenderState &renderState);
+  virtual void deActivateVertexSpecific(vesRenderState &renderState);
 
 
 protected:
@@ -106,9 +113,11 @@ private:
 
   std::list<vesShader*>    m_shaders;
 
-  AttributeBindingMap      m_attributes;
+  std::list<vesUniform*>           m_uniforms;
+  std::list<vesVertexAttribute*>   m_vertexAttributes;
 
-  std::list<vesUniform*>   m_uniforms;
+  UniformNameToLocation         m_uniformNameToLocation;
+  VertexAttributeNameToLocation m_vertexAttributeNameToLocation;
 
   vesShaderProgram(const vesShaderProgram&);
   void operator=  (const vesShaderProgram&);

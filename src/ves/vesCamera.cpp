@@ -281,14 +281,15 @@ void vesCamera::ComputeViewPlaneNormal()
 }
 
 // ----------------------------------------------------------------------public
-void vesCamera::render(Painter *render)
-{
-  render->setCamera(this);
-}
+//void vesCamera::render(Painter *render)
+//{
+//  render->setCamera(this);
+//}
 
 // ----------------------------------------------------------------------public
 void vesCamera::computeBounds()
 {
+#if 0
   vesVector3f allMin(0,0,0);
   vesVector3f allMax(0,0,0);
 
@@ -320,22 +321,19 @@ void vesCamera::computeBounds()
 
   set_BBoxCenter(allMin, allMax);
   set_BBoxSize(allMin, allMax);
+#endif
 }
 
 // ----------------------------------------------------------------------public
 bool vesCamera::read()
 {
+#if 0
   for (int i =0; i<this->get_children().size(); ++i)
   {
     vesActorCollection* child = (vesActorCollection*) this->get_children()[i];
     child->read();
   }
+#endif
   return true;
 }
 
-void vesCamera::AddActorCollection(vesActorCollection* actor)
-{
-  MFNode actorList;
-  actorList.push_back(actor);
-  addChildren(actorList);
-}

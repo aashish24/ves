@@ -22,7 +22,6 @@
 
 #include "vsg/Shape/vsgAppearanceChildNode.h"
 
-#include "vsg/vsgVisitor.h"
 #include "Painter.h"
 
 namespace vsg {
@@ -48,15 +47,9 @@ namespace vsg {
   }
 
 
-  bool Appearance::accept(vsgVisitor* vsgVisitor)
-  {
-    return vsgVisitor->visitAppearance(this);
-  }
-
-
   void Appearance::render(Painter* render)
   {
-    m_attributes[0]->render(render);
+//    m_attributes[0]->render(render);
   }
 
   bool Appearance::read()

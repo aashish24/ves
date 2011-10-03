@@ -20,87 +20,30 @@
 
 #include "vesMapper.h"
 
-#include "Painter.h"
+#include "vesMaterial.h"
+#include "vesRenderStage.h"
 #include "vesShaderProgram.h"
 #include "vesTriangleData.h"
 
-vesMapper::vesMapper(): m_data(NULL), m_initialized(false)
+#ifdef ANDROID
+# include <GLES2/gl2.h>
+# include <GLES2/gl2ext.h>
+#else
+# include <OpenGLES/ES2/gl.h>
+# include <OpenGLES/ES2/glext.h>
+#endif
+
+vesMapper::vesMapper()
 {
-  this->m_isNew = true;
-  this->m_red = 0.8;
-  this->m_green = 0.8;
-  this->m_blue = 0.8;
-  this->m_alpha = 1.0;
-  this->m_drawPoints = false;
+  this->m_initialized = false;
+  this->m_data        = false;
 }
+
+
 vesMapper::~vesMapper()
 {
-  // Release our VBOs before the context is destroyed
-  if (m_initialized) {
-    //glDeleteBuffers(2, mMapperVBO);
+  if (this->m_initialized) {
   }
-}
-
-void vesMapper::setTriangleData(vesTriangleData* data)
-{
-  this->m_data = data;
-}
-
-void vesMapper::setColor(float r, float g, float b, float a)
-{
-  this->m_red = r;
-  this->m_green = g;
-  this->m_blue = b;
-  this->m_alpha =a;
-}
-
-vesMatrix4x4f vesMapper::eval()
-{
-  vesMatrix4x4f temp;
-  return temp;
-  //  vesMatrix4x4f temp= makeTransposeMatrix4x4(makeTransposeMatrix4x4(this->NormalizedMatrix));
-  //  return temp;
-}
-
-bool vesMapper::read()
-{
-  return true;
-}
-
-void vesMapper::render(vesShaderProgram *program)
-{
-  // \note: Not used as of now.
-//  glVertexAttrib4f(program->GetAttribute("a_texcoord"), 0.8, 0.8, 0.8, 1.0);
-//  glVertexAttribPointer(program->GetAttribute("a_vertex"),
-//                        3,
-//                        GL_FLOAT,
-//                        0,
-//                        6 * sizeof(float),
-//                        &this->m_data->GetPoints()[0]);
-//  glVertexAttribPointer(program->GetAttribute("a_normal"),
-//                        3,
-//                        GL_FLOAT,
-//                        0,
-//                        6 * sizeof(float),
-//                        this->m_data->GetPoints()[0].normal.mData);
-
-//  // draw triangles
-//  glDrawElements(GL_TRIANGLES,
-//                 this->m_data->GetTriangles().size() * 3,
-//                 GL_UNSIGNED_SHORT,
-//                 &this->m_data->GetTriangles()[0]);
-
-//  // draw lines
-//  glDrawElements(GL_LINES,
-//                 this->m_data->GetLines().size() * 2,
-//                 GL_UNSIGNED_SHORT,
-//                 &this->m_data->GetLines()[0]);
-}
-
-
-vesTriangleData* vesMapper::triangleData()
-{
-  return this->m_data;
 }
 
 
@@ -110,50 +53,83 @@ void vesMapper::computeBounds()
   vesVector3f max = this->m_data->GetMax();
   set_BBoxSize(min,max);
   set_BBoxCenter(min, max);
-  /*
-  std::cout<< "BBoxSize = [ ";
-  for (int i =0 ; i<3; ++i) {
-    std::cout<<GetBBoxSize()[i]<< " ";
-  }
-  std::cout<<"]"<<std::endl;
-
-  std::cout<< "BBoxCenter = [ ";
-  for (int i =0 ; i<3; ++i) {
-    std::cout<<GetBBoxCenter()[i]<< " ";
-  }
-  std::cout<<"]"<<std::endl;
-  */
 }
+
+
+void vesMapper::accept(vesVisitor &visitor)
+{
+}
+
+
+void vesMapper::setData(vesTriangleData *data)
+{
+  if (data) {
+    this->m_data = data;
+  }
+}
+
 
 void vesMapper::normalize()
 {
-  float r = GetBBoxRadius();
-  this->m_normalizedMatrix =
-      makeScaleMatrix4x4(1/r,1/r,1/r)*
-      makeTranslationMatrix4x4(-get_BBoxCenter());
-  set_BBoxCenter(transformPoint3f(this->m_normalizedMatrix, get_BBoxCenter()));
-  set_BBoxSize(transformPoint3f(this->m_normalizedMatrix, get_BBoxSize()));
-  /*
-  std::cout<< "BBoxSize = [ ";
-  for (int i =0 ; i<3; ++i) {
-    std::cout<<GetBBoxSize()[i]<< " ";
-  }
-  std::cout<<"]"<<std::endl;
-
-  std::cout<< "BBoxCenter = [ ";
-  for (int i =0 ; i<3; ++i) {
-    std::cout<<GetBBoxCenter()[i]<< " ";
-  }
-  std::cout<<"]"<<std::endl;
-  */
+//  float r = GetBBoxRadius();
+//  this->m_normalizedMatrix =
+//      makeScaleMatrix4x4(1/r,1/r,1/r)*
+//      makeTranslationMatrix4x4(-get_BBoxCenter());
+//  set_BBoxCenter(transformPoint3f(this->m_normalizedMatrix, get_BBoxCenter()));
+//  set_BBoxSize(transformPoint3f(this->m_normalizedMatrix, get_BBoxSize()));
 }
 
-void vesMapper::render(Painter* render)
+
+void vesMapper::render(const vesRenderState &renderState)
 {
+  if (!this->m_initialized) {
+    this->setupDrawObjects(renderState);
+  }
+
+  renderState.m_material->activateVertexSpecific(renderState);
+  glBindBuffer(GL_ARRAY_BUFFER, this->m_buffer);
+  renderState.m_material->deActivateVertexSpecific(renderState);
+//  glDrawElements(GL_TRIANGLES,
+//                 mapper->data()->GetTriangles().size() * 3,
+//                 GL_UNSIGNED_SHORT,
+//                 &mapper->data()->GetTriangles()[0]);
 }
 
-vesTriangleData* vesMapper::data()
+
+void vesMapper::setupDrawObjects(const vesRenderState &renderState)
 {
-  return this->m_data;
-}
 
+//  glVertexAttribPointer(vesShaderProgram::Color,
+//                        3,
+//                        GL_FLOAT,
+//                        0,
+//                        3*sizeof(float),
+//                        &(mapper->data()->GetVertexColors()[0]));
+//  }
+
+//glVertexAttribPointer(vesShaderProgram::Position,
+//                      3,
+//                      GL_FLOAT,
+//                      0,
+//                      6 * sizeof(float),
+//                      &(mapper->data()->GetPoints()[0]));
+
+//glVertexAttribPointer(vesShaderProgram::Normal,
+//                      3,
+//                      GL_FLOAT,
+//                      0,
+//                      6 * sizeof(float),
+//                      mapper->data()->GetPoints()[0].normal.mData);
+
+  size_t sizeOfPositions = sizeof(&(this->m_data->GetPoints()[0]));
+  size_t sizeOfNormals   = sizeof(this->m_data->GetPoints()[0].normal.mData);
+
+  // \todo: Put a GL log.
+  glGenBuffers(1, &this->m_buffer);
+  glBindBuffer(GL_ARRAY_BUFFER, this->m_buffer);
+  glBufferData(GL_ARRAY_BUFFER, sizeOfPositions + sizeOfNormals, NULL, GL_STATIC_DRAW);
+  glBufferSubData(GL_ARRAY_BUFFER, 0, sizeOfPositions, &(this->m_data->GetPoints()[0]));
+  glBufferSubData(GL_ARRAY_BUFFER, sizeOfPositions, sizeOfNormals, this->m_data->GetPoints()[0].normal.mData);
+
+  renderState.m_material->setupVertexSpecific(renderState);
+}

@@ -21,19 +21,31 @@
 #ifndef __vsgGroupingNode_h
 #define __vsgGroupingNode_h
 
-# include "vsg/Utility/vsgMacro.h"
-# include "vsg/Utility/vsgTypes.h"
-# include "vsg/Core/vsgChildNode.h"
-# include "vsg/Grouping/vsgBoundedObject.h"
+#include "vsg/Utility/vsgMacro.h"
+#include "vsg/Utility/vsgTypes.h"
 
-class vsgGroupingNode: public vsgChildNode, public vsgBoundedObject
+#include "vsg/Core/vsgNode.h"
+#include "vsg/Grouping/vsgBoundedObject.h"
+
+#include <list>
+
+class vsgGroupingNode: public vsgNode, public vsgBoundedObject
 {
 public:
-  vsgGroupingNode();
+           vsgGroupingNode();
   virtual ~vsgGroupingNode();
-  void addChildren(MFNode &children);
-  void removeChildren(MFNode &children);
-  InOutMF(children,MFNode)
+
+  typedef std::list<vsgNode*> Children;
+
+  bool addChild   (vsgNode *child);
+  bool removeChild(vsgNode *child);
+
+  Children&       children()       { return this->m_children; }
+  const Children& children() const { return this->m_children; }
+
+
+protected:
+  Children m_children;
 };
 
 #endif // __vsgGroupingNode_h

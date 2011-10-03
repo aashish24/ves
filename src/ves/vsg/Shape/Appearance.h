@@ -82,8 +82,6 @@ namespace vsg
 
     void render(Painter* render); // This will be deleted in the future
 
-    bool accept(vsgVisitor* vsgVisitor);
-
   private:
 
     std::vector<vsgAppearanceChildNode*> m_attributes;

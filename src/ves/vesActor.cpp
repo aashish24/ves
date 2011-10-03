@@ -17,113 +17,144 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
+
 #include "vesActor.h"
 
 #include "vesMapper.h"
-#include "vesShader.h"
-#include "Painter.h"
-#include "vsg/Shape/Shape.h"
-#include "vsg/Shape/Appearance.h"
+#include "vesVisitor.h"
 
-class vesActorInternal
+#include "vesMaterial.h"
+
+class vesActor::vesActorInternal
 {
 };
 
-vesActor::vesActor(vesMapper* mapper,
-                   vesMultitouchWidget *widget)
+
+vesActor::vesActor()
 {
-  m_internal = new vesActorInternal();
-  m_shape = new vsg::Shape();
-  m_appearance = new vsg::Appearance();
-//  MFNode shaders;
-//  shaders.push_back(shader);
-//  m_appearance->set_shaders(shaders);
-  m_shape->set_geometry(mapper);
-  m_shape->set_appearance(m_appearance);
-  m_mapper = mapper;        // This is used to make the actor visible again
-  addShapeChild(m_shape);
-  if(widget) {
-    m_sensor = true;
-    m_widget = widget;
-  }
-  else {
-    m_sensor = false;
-  }
-  m_visible = true;
+  this->m_sensor      = false;
+  this->m_visible     = true;
+  this->m_mapper      = 0x0;
+  this->m_material    = 0x0;
+  this->m_widget      = 0x0;
+  this->m_internal    = new vesActorInternal();
+
+  // \todo: Create a default apperance.
 }
+
 
 vesActor::~vesActor()
 {
-  delete m_internal;
-  delete m_appearance;
-  delete m_shape;
+  delete this->m_internal; this->m_internal = 0x0;
 }
 
-void vesActor::setColor(float r, float g, float b, float a)
-{
-  m_mapper->setColor(r, g, b, a);
-}
 
-vesMatrix4x4f vesActor::eval()
+vesMatrix4x4f vesActor::modelViewMatrix()
 {
   return this->Transform::eval();
 }
 
-bool vesActor::read()
-{
-  for (int i = 0; i < this->get_children().size(); ++i)
-    this->get_children()[i]->read();
-
-  return true;
-}
-
-void vesActor::render(Painter* render)
-{
-  render->Actor(this);
-}
-
-void vesActor::addShapeChild(vsg::Shape* shape)
-{
-  MFNode temp;
-  temp.push_back(shape);
-  set_children(temp);
-}
 
 void vesActor::computeBounds()
 {
-  m_shape->computeBounds();
-  vesVector3f min = transformPoint3f(this->eval(), m_shape->get_min());
-  vesVector3f max = transformPoint3f(this->eval(), m_shape->get_max());
-  set_BBoxCenter(min, max);
-  set_BBoxSize(min, max);
+  if (this->m_mapper) {
+    this->m_mapper->computeBounds();
+    vesVector3f min = transformPoint3f(this->eval(), this->m_mapper->get_min());
+    vesVector3f max = transformPoint3f(this->eval(), this->m_mapper->get_max());
+    set_BBoxCenter(min, max);
+    set_BBoxSize(min, max);
+  }
 }
+
 
 void vesActor::setVisible(bool value)
 {
-  if(value)
-    m_shape->set_geometry(m_mapper);
-  else
-    m_shape->set_geometry(NULL);
-
-  m_visible = value;
+  this->m_visible = value;
 }
+
 
 void vesActor::setTranslation(const vesVector3f& translation)
 {
-  set_translation(translation);
+//  set_translation(translation);
 }
 
 vesVector3f vesActor::translation() const
 {
-  return get_translation();
+//  return get_translation();
 }
+
 
 void vesActor::setRotation(const vesVector4f& rotation)
 {
-  set_rotation(rotation);
+//  set_rotation(rotation);
 }
+
 
 vesVector4f vesActor::rotation() const
 {
-  return get_rotation();
+//  return get_rotation();
+}
+
+
+void vesActor::setWidget(vesMultitouchWidget *widget)
+{
+  if (widget) {
+    this->m_widget = widget;
+  }
+}
+
+
+void vesActor::setMapper(vesMapper *mapper)
+{
+  if (mapper) {
+    this->m_mapper = mapper;
+  }
+}
+
+
+void vesActor::setMaterial(vesMaterial *material)
+{
+  if (material) {
+    this->m_material = material;
+  }
+}
+
+
+void vesActor::accept(vesVisitor &visitor)
+{
+  // \todo: Implement this.
+  if (visitor.type() && vesVisitor::CullVisitor) {
+  }
+
+  if (this->m_material) {
+    this->m_material->accept(visitor);
+  }
+
+  if (this->m_mapper) {
+    this->m_mapper->accept(visitor);
+  }
+
+
+  this->traverse(visitor);
+}
+
+
+void vesActor::ascend(vesVisitor &visitor)
+{
+  // \todo: Implement this.
+}
+
+
+void vesActor::traverse(vesVisitor &visitor)
+{
+  Children::iterator itr = this->m_children.begin();
+
+  if (visitor.mode() == vesVisitor::TraverseAllChildren) {
+    for (itr; itr != this->m_children.end(); ++itr) {
+      (*itr)->accept(visitor);
+    }
+  }
+  else if (visitor.mode() == vesVisitor::TraverseActiveChildren) {
+    // \todo: Implement this.
+  }
 }

@@ -23,8 +23,7 @@
 // VES includes
 #include "vesShader.h"
 #include "vesUniform.h"
-
-#include "Painter.h"
+#include "vesVertexAttribute.h"
 
 // C++ includes
 #include <vector>
@@ -40,13 +39,18 @@ std::string vesShaderProgram::preDefinedAttributeNames
 };
 
 
-vesShaderProgram::vesShaderProgram()
+vesShaderProgram::vesShaderProgram() : vesMaterialAttribute()
 {
   this->m_programHandle = 0;
 
   // \todo: Delay it further.
-  for (size_t i=0; i < CountAttributeIndex; ++i)
-    this->addBindAttributeLocation(vesShaderProgram::preDefinedAttributeNames[i], i);
+  std::list<vesVertexAttribute*>::const_iterator constItr =
+    this->m_vertexAttributes.begin();
+
+  int i=0;
+  for (constItr; constItr != this->m_vertexAttributes.end(); ++constItr) {
+    this->addBindAttributeLocation((*constItr)->name(), ++i);
+  }
 }
 
 
@@ -105,9 +109,10 @@ bool vesShaderProgram::addUniform(vesUniform *uniform)
 }
 
 
-bool vesShaderProgram::addBindAttributeLocation(const std::string &name, unsigned int location)
+bool vesShaderProgram::addBindAttributeLocation(const std::string &name,
+                                                int location)
 {
-  this->m_attributes[name] = location;
+  this->m_vertexAttributeNameToLocation[name] = location;
 
   // \todo: Make it modified or dirty.
 }
@@ -186,10 +191,12 @@ bool vesShaderProgram::validate()
 
 void vesShaderProgram::bindAttributes()
 {
-  AttributeBindingMap::const_iterator constItr = this->m_attributes.begin();
+  std::list<vesVertexAttribute*>::const_iterator constItr =
+    this->m_vertexAttributes.begin();
 
-  for (;constItr != this->m_attributes.end(); ++constItr) {
-    glBindAttribLocation(this->m_programHandle, constItr->second, constItr->first.c_str());
+  for (;constItr != this->m_vertexAttributes.end(); ++constItr) {
+    glBindAttribLocation(this->m_programHandle, this->attributeLocation((*constItr)->name()),
+                         (*constItr)->name().c_str());
   }
 }
 
@@ -198,7 +205,8 @@ void vesShaderProgram::bindUniforms()
   std::list<vesUniform*>::const_iterator constItr = this->m_uniforms.begin();
   for (;constItr != this->m_uniforms.end(); ++constItr)
   {
-    (*constItr)->bind(this);
+    this->m_uniformNameToLocation[(*constItr)->name()] =
+      uniformLocation((*constItr)->name());
   }
 }
 
@@ -266,16 +274,19 @@ void vesShaderProgram::updateUniforms()
 
   for (constItr; constItr != this->m_uniforms.end(); ++constItr)
   {
-    (*constItr)->callGL();
+    (*constItr)->callGL(this->m_uniformNameToLocation[(*constItr)->name()]);
   }
 }
 
 
-void vesShaderProgram::render(Painter *render)
+void vesShaderProgram::setupGeneral(const vesRenderState &renderState)
 {
-  // \todo: Check if it is in modified state.
-  if (!this->m_programHandle)
-  {
+}
+
+
+void vesShaderProgram::activateGeneral(vesRenderState &renderState)
+{
+  if (!this->m_programHandle) {
     this->m_programHandle = glCreateProgram();
 
     if (this->m_programHandle == 0)
@@ -305,5 +316,39 @@ void vesShaderProgram::render(Painter *render)
     this->bindUniforms();
   }
 
-  render->setShaderProgram(this);
+  // Call update callback.
+  std::list<vesUniform*>::const_iterator constItr =
+    this->m_uniforms.begin();
+
+  for (constItr; constItr != this->m_uniforms.end(); ++constItr) {
+    (*constItr)->update(renderState, *this);
+  }
+
+  // Now update values to GL.
+  this->updateUniforms();
 }
+
+
+
+void vesShaderProgram::deActivateGeneral(vesRenderState &renderState)
+{
+  // \todo: Implement this.
+}
+
+
+void vesShaderProgram::setupVertexSpecific(const vesRenderState &renderState)
+{
+}
+
+
+void vesShaderProgram::activateVertexSpecific(vesRenderState &renderState)
+{
+  // \todo: Implement this.
+}
+
+
+void vesShaderProgram::deActivateVertexSpecific(vesRenderState &renderState)
+{
+  // \todo: Implement this.
+}
+
