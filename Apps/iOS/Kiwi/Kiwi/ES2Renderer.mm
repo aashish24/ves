@@ -43,6 +43,16 @@
     self->mApp->setFragmentShaderSource([fragmentSourceStr UTF8String]);
     self->mApp->initializeShaderProgram();
     self->mApp->initializeRendering();
+
+    vertShaderPathname = [[NSBundle mainBundle] pathForResource:@"BackgroundTexture" ofType:@"vsh"];
+    fragShaderPathname = [[NSBundle mainBundle] pathForResource:@"BackgroundTexture" ofType:@"fsh"];
+    vertexSourceStr = [NSString stringWithContentsOfFile:vertShaderPathname
+                                          encoding:NSUTF8StringEncoding error:nil];
+    fragmentSourceStr = [NSString stringWithContentsOfFile:fragShaderPathname
+                                            encoding:NSUTF8StringEncoding error:nil];
+    self->mApp->setVertexShaderSource([vertexSourceStr UTF8String]);
+    self->mApp->setFragmentShaderSource([fragmentSourceStr UTF8String]);
+    self->mApp->initializeTextureShader();
   }
 
   return self;
