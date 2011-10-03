@@ -57,6 +57,9 @@ struct vesKiwiViewerApp;
   CGPoint lastMovementXYUnitDelta;
   float lastRotationMotionNorm;  
   NSThread* inertialRotationThread;
+  
+  CGPoint accumulatedRotationDelta;
+  NSLock* rotationDataLock;
 }
 
 // animation loop
@@ -79,7 +82,8 @@ struct vesKiwiViewerApp;
 - (IBAction)handle2DRotationGesture:(UIRotationGestureRecognizer *)sender;
 - (IBAction)handleTapGesture:(UITapGestureRecognizer *)sender;
 
-- (void)rotate: (CGPoint)delta;
+- (void)scheduleRotate:(CGPoint)delta;
+- (void)rotate;
 
 // inertia handling
 - (void)handleInertialRotation;
