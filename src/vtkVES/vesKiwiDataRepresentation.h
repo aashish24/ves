@@ -46,10 +46,15 @@ public:
 
   void setColor(double r, double g, double b, double a);
 
+
+  // todo:
+  // move this back to protected
+  vesMapper* mapper() const;
+
 protected:
 
   vesActor* actor() const;
-  vesMapper* mapper() const;
+
 
 private:
 

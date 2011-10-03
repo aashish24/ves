@@ -32,13 +32,16 @@ class vesTexture
 public:
   vesTexture(vesShaderProgram *program, SFImage image);
   virtual ~vesTexture();
+
+  void load();
   void Render();
 
-private:
-  vesTextureInternal *_internal;
   vesShaderProgram *ShaderProgram;
   SFImage Image;
   unsigned int texID;
   bool loaded;
+
+private:
+  vesTextureInternal *_internal;
 };
 #endif // __vesTexture_h
