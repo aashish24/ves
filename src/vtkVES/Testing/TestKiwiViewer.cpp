@@ -228,6 +228,19 @@ void InitRendering()
 
   testHelper->app()->initializeShaderProgram();
   testHelper->app()->initializeRendering();
+
+  // background texture
+  vertexShaderFile = testHelper->sourceDirectory() + "/src/shaders/BackgroundTexture.vsh";
+  fragmentShaderFile = testHelper->sourceDirectory() + "/src/shaders/BackgroundTexture.fsh";
+
+  vertexSourceStr = GetFileContents(vertexShaderFile);
+  fragmentSourceStr = GetFileContents(fragmentShaderFile);
+
+  testHelper->app()->setVertexShaderSource(vertexSourceStr);
+  testHelper->app()->setFragmentShaderSource(fragmentSourceStr);
+
+  testHelper->app()->initializeTextureShader();
+  //testHelper->app()->setBackgroundTexture(testHelper->sourceDirectory() + "/Apps/iOS/Kiwi/Kiwi/Data/kiwi.png");
 }
 
 //----------------------------------------------------------------------------
