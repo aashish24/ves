@@ -22,6 +22,9 @@
 
 #include <vtkSmartPointer.h>
 #include <vtkXMLPolyDataReader.h>
+#include <vtkXMLImageDataReader.h>
+#include <vtkPNGReader.h>
+#include <vtkJPEGReader.h>
 #include <vtkPolyDataReader.h>
 #include <vtkOBJReader.h>
 #include <vtkSTLReader.h>
@@ -174,11 +177,29 @@ vtkSmartPointer<vtkDataSet> vesKiwiDataLoader::loadDataset(const std::string& fi
 
     return this->datasetFromAlgorithm(append.GetPointer());
     }
-  else if (this->hasEnding(filename, "g"))
+  else if (this->hasEnding(filename, ".g"))
     {
     vtkSmartPointer<vtkBYUReader> reader = vtkSmartPointer<vtkBYUReader>::New();
     reader->SetFileName(filename.c_str());
     return this->datasetFromAlgorithm(reader);
+    }
+  else if (this->hasEnding(filename, "vti"))
+    {
+    vtkSmartPointer<vtkXMLImageDataReader> reader = vtkSmartPointer<vtkXMLImageDataReader>::New();
+    reader->SetFileName(filename.c_str());
+    return datasetFromAlgorithm(reader);
+    }
+  else if (this->hasEnding(filename, "png"))
+    {
+    vtkSmartPointer<vtkPNGReader> reader = vtkSmartPointer<vtkPNGReader>::New();
+    reader->SetFileName(filename.c_str());
+    return datasetFromAlgorithm(reader);
+    }
+  else if (this->hasEnding(filename, "jpg"))
+    {
+    vtkSmartPointer<vtkJPEGReader> reader = vtkSmartPointer<vtkJPEGReader>::New();
+    reader->SetFileName(filename.c_str());
+    return datasetFromAlgorithm(reader);
     }
   else
     {
