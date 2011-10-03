@@ -322,7 +322,7 @@ make_x_window(Display *x_dpy, EGLDisplay egl_dpy,
    attr.background_pixel = 0;
    attr.border_pixel = 0;
    attr.colormap = XCreateColormap( x_dpy, root, visInfo->visual, AllocNone);
-   attr.event_mask = StructureNotifyMask | ExposureMask | KeyPressMask;
+   attr.event_mask = StructureNotifyMask | ExposureMask | KeyPressMask | ButtonPressMask | ButtonReleaseMask | ButtonMotionMask;
    mask = CWBackPixel | CWBorderPixel | CWColormap | CWEventMask;
 
    win = XCreateWindow( x_dpy, root, 0, 0, width, height,
@@ -402,6 +402,18 @@ event_loop(Display *dpy, Window win,
       case ConfigureNotify:
          testHelper->app()->resizeView(event.xconfigure.width, event.xconfigure.height);
          break;
+
+      case ButtonPress:
+        testHelper->app()->handleSingleTouchDown(event.xbutton.x, event.xbutton.y);
+        break;
+
+      case ButtonRelease:
+        testHelper->app()->handleSingleTouchUp();
+        break;
+
+      case MotionNotify:
+        break;
+
       case KeyPress:
          {
             int panDelta = 100;
