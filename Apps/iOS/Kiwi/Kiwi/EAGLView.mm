@@ -405,7 +405,13 @@
   //
   // get current translation and (then zero it out so it won't accumulate)
   CGPoint currentTranslation = [sender translationInView:self];
+  CGPoint currentLocation = [sender locationInView:self];
   [sender setTranslation:CGPointZero inView:self];
+
+  if (sender.state == UIGestureRecognizerStateBegan)
+    {
+    self->renderer.app->handleSingleTouchDown(currentLocation.x, currentLocation.y);
+    }
   
   // 
   // update data for inertial rotation
