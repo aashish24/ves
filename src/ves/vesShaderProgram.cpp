@@ -205,11 +205,6 @@ void vesShaderProgram::bindUniforms()
 
 void vesShaderProgram::cleanUp()
 {
-  for (std::list<vesShader*>::iterator it=this->m_shaders.begin();
-       it!=this->m_shaders.end(); ++it) {
-    delete (*it);
-  }
-
   this->deleteVertexAndFragment();
   this->deleteProgram();
 }
@@ -221,6 +216,7 @@ void vesShaderProgram::deleteVertexAndFragment()
   for (std::list<vesShader*>::iterator it=this->m_shaders.begin();
        it!=this->m_shaders.end(); ++it) {
     glDeleteShader((*it)->shaderHandle());
+    delete (*it);
   }
 }
 
