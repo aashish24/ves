@@ -15,6 +15,10 @@ public:
     Texture   = 0x2
   };
 
+  virtual ~vesMaterialAttribute()
+  {
+  }
+
   AttributeType type()       { return this->m_type; }
   AttributeType type() const { return this->m_type; }
 
@@ -40,6 +44,10 @@ public:
            vesMaterial();
   virtual ~vesMaterial();
 
+  void setBinNumber(int number) { this->m_binNumber = number; }
+  int  binNumber() { return this->m_binNumber; }
+  const int  binNumber() const { return this->m_binNumber; }
+
   bool addAttribute(vesMaterialAttribute *attribute);
   vesMaterialAttribute* attribute(vesMaterialAttribute::AttributeType type);
 
@@ -54,7 +62,10 @@ public:
   virtual void activateVertexSpecific   (const vesRenderState &renderState);
   virtual void deActivateVertexSpecific (const vesRenderState &renderState);
 
+
 protected:
+
+  int m_binNumber;
 
   class vesInternal;
   vesInternal *m_internal;

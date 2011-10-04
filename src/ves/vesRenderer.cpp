@@ -18,13 +18,14 @@
   limitations under the License.
  ========================================================================*/
 
-#include "vesRenderer.h"
-#include "vesFileReader.h"
-#include "vesMultitouchCamera.h"
-#include "vesShaderProgram.h"
-#include "vesActorCollection.h"
 #include "vesCamera.h"
+#include "vesCullVisitor.h"
+#include "vesFileReader.h"
 #include "vesGMTL.h"
+#include "vesMultitouchCamera.h"
+#include "vesRenderer.h"
+#include "vesRenderStage.h"
+#include "vesShaderProgram.h"
 #include "vesVisitor.h"
 
 #include "gmtl/Generate.h"
@@ -61,6 +62,8 @@ vesRenderer::vesRenderer()
 
   this->m_camera    = new vesCamera();
   this->m_sceneRoot = 0x0;
+
+  this->m_renderStage = new vesRenderStage();
 }
 
 
@@ -94,20 +97,18 @@ void vesRenderer::render()
   vesMatrix4x4f viewMatrix =
     this->m_camera->ComputeViewTransform();
 
-  // Cull traversal.
-  vesVisitor cullVisitor(vesVisitor::CullVisitor,
-                         vesVisitor::TraverseAllChildren);
   if (this->m_sceneRoot) {
+    // Cull traversal.
+    vesCullVisitor cullVisitor;
+
     cullVisitor.pushModelViewMatrix(viewMatrix);
     cullVisitor.pushProjectionMatrix(projectionMatrix);
+    cullVisitor.setRenderStage(this->m_renderStage);
     cullVisitor.visit(*this->m_sceneRoot);
   }
 
-//  this->Paint->push(proj);
-//  this->Paint->push(view);
-//  this->Actor->render(this->Paint);
-//  this->Paint->pop();
-//  this->Paint->pop();
+  vesRenderState renderState;
+  this->m_renderStage->render(renderState, 0);
 }
 
 

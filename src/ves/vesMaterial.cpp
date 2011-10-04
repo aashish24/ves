@@ -29,16 +29,17 @@ vesMaterial::~vesMaterial()
 
 bool vesMaterial::addAttribute(vesMaterialAttribute *attribute)
 {
-  if (!attribute)
-  {
+  if (!attribute) {
     return false;
   }
 
-  vesInternal::Attributes::iterator itr =
-    this->m_internal->m_attributes.find( attribute->type() );
+  if (attribute->type() != vesMaterialAttribute::Texture) {
+    vesInternal::Attributes::iterator itr =
+      this->m_internal->m_attributes.find( attribute->type() );
 
-  if (itr != this->m_internal->m_attributes.end() && ( (itr->second) != attribute )) {
-    this->m_internal->m_attributes[attribute->type()] = attribute;
+    if (itr == this->m_internal->m_attributes.end() || ( (itr->second) != attribute )) {
+      this->m_internal->m_attributes[attribute->type()] = attribute;
+    }
   }
 }
 
@@ -79,6 +80,7 @@ void vesMaterial::setupVertexSpecific(const vesRenderState &renderState)
     this->m_internal->m_attributes.begin();
 
   for (itr; itr != this->m_internal->m_attributes.end(); ++itr) {
+    std::cerr << "vesMaterial::setupVertexSpecific " << std::endl;
     itr->second->setupVertexSpecific(renderState);
   }
 }

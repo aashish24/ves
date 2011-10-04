@@ -65,11 +65,12 @@ public:
   bool addShader(vesShader *shader);
 
   bool addUniform(vesUniform *uniform);
+  bool addVertexAttribute(vesVertexAttribute *attribute);
 
   bool addBindAttributeLocation(const std::string &name, int location);
 
-  int  uniformLocation  (string value);
-  int  attributeLocation(string value);
+  int  uniformLocation  (const std::string &name) const;
+  int  attributeLocation(const std::string &name) const;
 
   vesUniform* uniform     (const std::string &name);
   bool        uniformExist(const std::string &name);
@@ -91,15 +92,18 @@ public:
   }
 
   virtual void setupGeneral     (const vesRenderState &renderState);
-  virtual void activateGeneral  (vesRenderState &renderState);
-  virtual void deActivateGeneral(vesRenderState &renderState);
+  virtual void activateGeneral  (const vesRenderState &renderState);
+  virtual void deActivateGeneral(const vesRenderState &renderState);
 
   virtual void setupVertexSpecific(const vesRenderState &renderState);
-  virtual void activateVertexSpecific(vesRenderState &renderState);
-  virtual void deActivateVertexSpecific(vesRenderState &renderState);
+  virtual void activateVertexSpecific(const vesRenderState &renderState);
+  virtual void deActivateVertexSpecific(const vesRenderState &renderState);
 
 
 protected:
+
+  int  queryUniformLocation  (const std::string &value);
+  int  queryAttributeLocation(const std::string &value);
 
   void bindAttributes();
   void bindUniforms();

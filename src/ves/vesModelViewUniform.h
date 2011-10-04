@@ -8,19 +8,22 @@
 #include "vesGMTL.h"
 #include "vesRenderStage.h"
 
+// C++ includes
+#include <string>
+
 class vesModelViewUniform : public vesUniform
 {
 public:
 
   vesModelViewUniform(const std::string &name="modelViewMatrix") :
-    vesUniform(name, vesMatrix4x4f)
+    vesUniform(name, vesMatrix4x4f())
   {
   }
 
 
   virtual void update(const vesRenderState &renderState, const vesShaderProgram &program)
   {
-    this->set(program.location(this->m_name), renderState.m_modelViewMatrix);
+    this->set(*renderState.m_modelViewMatrix);
   }
 };
 

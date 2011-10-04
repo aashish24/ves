@@ -7,19 +7,19 @@
 // VES includes
 #include "vesRenderStage.h"
 
-class vesModelViewUniform : public vesUniform
+class vesProjectionUniform : public vesUniform
 {
 public:
 
-  vesModelViewUniform(const std::string &name="projectionMatrix") :
-    vesUniform(name, vesMatrix4x4f)
+  vesProjectionUniform(const std::string &name="projectionMatrix") :
+    vesUniform(name, vesMatrix4x4f())
   {
   }
 
 
   virtual void update(const vesRenderState &renderState, const vesShaderProgram &program)
   {
-    this->set(program.location(this->m_name), renderState.m_projectionMatrix);
+    this->set(renderState.m_projectionMatrix);
   }
 };
 

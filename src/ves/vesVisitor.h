@@ -40,8 +40,8 @@ public:
   void  pushProjectionMatrix(const vesMatrix4x4f& matrix);
   void  popProjectionMatrix ();
 
-  vesMatrix4x4f& modelViewMatrix();
-  vesMatrix4x4f& projectionMatrix();
+  vesMatrix4x4f modelViewMatrix();
+  vesMatrix4x4f projectionMatrix();
 
   inline void traverse(vesActor& actor)
   {

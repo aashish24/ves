@@ -36,29 +36,27 @@
 
 //----------------------------------------------------------------------------
 namespace {
-vesTriangleData* triangleDataFromPolyData(vtkPolyData* polyData)
-{
-#if 0
-  // Always use triangle filter for now.  This will ensure that models containing
-  // polygons other than tris and quads will be rendered correctly.
-  const bool useTriangleFilter = true;
-  if (useTriangleFilter)
-    {
-    vtkNew<vtkTriangleFilter> triangleFilter;
-    triangleFilter->PassLinesOn();
-    triangleFilter->SetInput(polyData);
-    triangleFilter->Update();
-    polyData = triangleFilter->GetOutput();
-    vesTriangleData* triangleData = vtkPolyDataToTriangleData::Convert(polyData);
-    vtkPolyDataToTriangleData::ComputeVertexColorFromScalars(polyData, triangleData);
-    return triangleData;
-    }
-  else
-    {
-    return vtkPolyDataToTriangleData::Convert(polyData);
-    }
-#endif
-}
+  vesTriangleData* triangleDataFromPolyData(vtkPolyData* polyData)
+  {
+    // Always use triangle filter for now.  This will ensure that models containing
+    // polygons other than tris and quads will be rendered correctly.
+    const bool useTriangleFilter = true;
+    if (useTriangleFilter)
+      {
+      vtkNew<vtkTriangleFilter> triangleFilter;
+      triangleFilter->PassLinesOn();
+      triangleFilter->SetInput(polyData);
+      triangleFilter->Update();
+      polyData = triangleFilter->GetOutput();
+      vesTriangleData* triangleData = vtkPolyDataToTriangleData::Convert(polyData);
+      vtkPolyDataToTriangleData::ComputeVertexColorFromScalars(polyData, triangleData);
+      return triangleData;
+      }
+    else
+      {
+      return vtkPolyDataToTriangleData::Convert(polyData);
+      }
+  }
 };
 
 //----------------------------------------------------------------------------
@@ -70,17 +68,20 @@ public:
   {
     this->Actor = 0;
     this->Mapper = 0;
+    this->Material = 0;
   }
 
   ~vesInternal()
   {
     delete this->Actor;
-//    delete this->Mapper->triangleData();
+    delete this->Mapper->data();
     delete this->Mapper;
+    delete this->Material;
   }
 
-  vesActor* Actor;
-  vesMapper* Mapper;
+  vesActor*     Actor;
+  vesMapper*    Mapper;
+  vesMaterial*  Material;
 };
 
 //----------------------------------------------------------------------------
@@ -111,7 +112,7 @@ void vesKiwiDataRepresentation::setDataSet(vtkDataSet* dataSet)
 vesTriangleData* vesKiwiDataRepresentation::triangleData() const
 {
   if (this->Internal->Mapper) {
-//    return this->Internal->Mapper->triangleData();
+    return this->Internal->Mapper->data();
   }
   return 0;
 }
@@ -119,6 +120,7 @@ vesTriangleData* vesKiwiDataRepresentation::triangleData() const
 //----------------------------------------------------------------------------
 void vesKiwiDataRepresentation::initializeWithShader(vesShaderProgram* shaderProgram)
 {
+  std::cout << "vesKiwiDataRepresentation::initializeWithShader " << std::endl;
   assert(shaderProgram);
   assert(!this->Internal->Mapper && !this->Internal->Actor);
 
@@ -127,6 +129,9 @@ void vesKiwiDataRepresentation::initializeWithShader(vesShaderProgram* shaderPro
 
   this->Internal->Actor = new vesActor();
   this->Internal->Actor->setMapper(this->Internal->Mapper);
+
+  this->Internal->Material = new vesMaterial();
+  this->Internal->Actor->setMaterial(this->Internal->Material);
 
   this->Internal->Actor->material()->addAttribute(shaderProgram);
 

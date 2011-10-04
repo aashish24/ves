@@ -6,13 +6,14 @@
 
 // VES includes
 #include "vesGMTL.h"
+#include "vesRenderStage.h"
 
-class vesModelViewUniform : public vesUniform
+class vesNormalMatrixUniform : public vesUniform
 {
 public:
 
-  vesModelViewUniform(const std::string &name="normalMatrix") :
-    vesUniform(name, vesMatrix3x3f)
+  vesNormalMatrixUniform(const std::string &name="normalMatrix") :
+    vesUniform(name, vesMatrix3x3f())
   {
   }
 
@@ -20,9 +21,10 @@ public:
   virtual void update(const vesRenderState &renderState, const vesShaderProgram &program)
   {
     vesMatrix3x3f normalMatrix =
-      makeNormalMatrix3x3f(makeTransposeMatrix4x4(makeInverseMatrix4x4 (mv)));
+      makeNormalMatrix3x3f(makeTransposeMatrix4x4(makeInverseMatrix4x4
+      (*(renderState.m_modelViewMatrix))));
 
-    this->set(program.location(this->m_name), normalMatrix);
+    this->set(normalMatrix);
   }
 };
 

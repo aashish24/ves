@@ -38,6 +38,13 @@
 #include <string>
 #include <vector>
 
+// \todo: Move it to proper locations.
+#include "vesVertexAttribute.h"
+#include "vesModelViewUniform.h"
+#include "vesProjectionUniform.h"
+#include "vesNormalMatrixUniform.h"
+
+
 //----------------------------------------------------------------------------
 class vesKiwiViewerApp::vesInternal
 {
@@ -71,6 +78,13 @@ public:
 
   std::string CurrentShadingModel;
   std::vector<std::string> BuiltinShadingModels;
+
+  vesModelViewUniform     *ModelViewUniform;
+  vesProjectionUniform    *ProjectionUnifom;
+  vesNormalMatrixUniform  *NormalMatrixUniform;
+
+  vesPositionVertexAttribute *PositionVertexAttribute;
+  vesNormalVertexAttribute   *NormalVertexAttribute;
 };
 
 //----------------------------------------------------------------------------
@@ -315,39 +329,39 @@ bool vesKiwiViewerApp::setShadingModel(const std::string& name)
 {
   bool success = false;
 
-  std::vector<std::string>::iterator itr;
-  itr = std::find(this->Internal->BuiltinShadingModels.begin(),
-                  this->Internal->BuiltinShadingModels.end(),
-                  name);
+//  std::vector<std::string>::iterator itr;
+//  itr = std::find(this->Internal->BuiltinShadingModels.begin(),
+//                  this->Internal->BuiltinShadingModels.end(),
+//                  name);
 
-  if(itr != this->Internal->BuiltinShadingModels.end())
-  {
-    success = true;
+//  if(itr != this->Internal->BuiltinShadingModels.end())
+//  {
+//    success = true;
 
-    this->Internal->CurrentShadingModel = name;
+//    this->Internal->CurrentShadingModel = name;
 
-    if(name.compare("Gouraud") == 0)
-    {
-      this->m_enableDiffuseUniform->set(1);
-      this->m_useGouraudShaderUniform->set(1);
-      this->m_useBlinnPhongShaderUniform->set(0);
-      this->m_useToonShaderUniform->set(0);
-    }
-    else if(name.compare("Blinn-Phong") == 0)
-    {
-      this->m_enableDiffuseUniform->set(1);
-      this->m_useGouraudShaderUniform->set(0);
-      this->m_useBlinnPhongShaderUniform->set(1);
-      this->m_useToonShaderUniform->set(0);
-    }
-    else // Must be "Toon" shader.
-    {
-      this->m_enableDiffuseUniform->set(1);
-      this->m_useGouraudShaderUniform->set(0);
-      this->m_useBlinnPhongShaderUniform->set(0);
-      this->m_useToonShaderUniform->set(1);
-    }
-  }
+//    if(name.compare("Gouraud") == 0)
+//    {
+//      this->m_enableDiffuseUniform->set(1);
+//      this->m_useGouraudShaderUniform->set(1);
+//      this->m_useBlinnPhongShaderUniform->set(0);
+//      this->m_useToonShaderUniform->set(0);
+//    }
+//    else if(name.compare("Blinn-Phong") == 0)
+//    {
+//      this->m_enableDiffuseUniform->set(1);
+//      this->m_useGouraudShaderUniform->set(0);
+//      this->m_useBlinnPhongShaderUniform->set(1);
+//      this->m_useToonShaderUniform->set(0);
+//    }
+//    else // Must be "Toon" shader.
+//    {
+//      this->m_enableDiffuseUniform->set(1);
+//      this->m_useGouraudShaderUniform->set(0);
+//      this->m_useBlinnPhongShaderUniform->set(0);
+//      this->m_useToonShaderUniform->set(1);
+//    }
+//  }
 
   return success;
 }
@@ -355,22 +369,24 @@ bool vesKiwiViewerApp::setShadingModel(const std::string& name)
 //----------------------------------------------------------------------------
 bool vesKiwiViewerApp::initializeShaderUniforms()
 {
-  this->m_modelViewProjectionUniform = new vesUniform("modelViewProjectionMatrix",
-    vesMatrix4x4f());
-  this->m_normalMatrixUniform = new vesUniform("normalMatrix", vesMatrix3x3f());
-  this->m_lightDirectionUniform = new vesUniform("lightDirection", vesVector3f());
-  this->m_opacityUniform = new vesUniform("opacity", 1.0f);
+//  this->m_modelViewProjectionUniform = new vesUniform("modelViewProjectionMatrix",
+//    vesMatrix4x4f());
+//  this->m_normalMatrixUniform = new vesUniform("normalMatrix", vesMatrix3x3f());
+//  this->m_lightDirectionUniform = new vesUniform("lightDirection", vesVector3f());
+//  this->m_opacityUniform = new vesUniform("opacity", 1.0f);
 
-  this->m_enableDiffuseUniform = new vesUniform("enableDiffuse", 1);
-  this->m_useGouraudShaderUniform = new vesUniform("useGouraudShader", 1);
-  this->m_useBlinnPhongShaderUniform = new vesUniform("useBlinnPhongShader", 0);
-  this->m_useToonShaderUniform = new vesUniform("useToonShader", 0);
+//  this->m_enableDiffuseUniform = new vesUniform("enableDiffuse", 1);
+//  this->m_useGouraudShaderUniform = new vesUniform("useGouraudShader", 1);
+//  this->m_useBlinnPhongShaderUniform = new vesUniform("useBlinnPhongShader", 0);
+//  this->m_useToonShaderUniform = new vesUniform("useToonShader", 0);
   return true;
 }
 
 //----------------------------------------------------------------------------
 bool vesKiwiViewerApp::initializeShaderProgram()
 {
+  std::cout << "vesKiwiViewerApp::initializeShaderProgram " << std::endl;
+
   this->Internal->ShaderProgram = new vesShaderProgram();
 
   this->Internal->ShaderProgram->addShader(
@@ -379,20 +395,36 @@ bool vesKiwiViewerApp::initializeShaderProgram()
   this->Internal->ShaderProgram->addShader(
     new vesShader(vesShader::Fragment, this->Internal->FragmentShaderSource));
 
-  this->initializeShaderUniforms();
 
-  this->Internal->ShaderProgram->addUniform(this->m_modelViewProjectionUniform);
-  this->Internal->ShaderProgram->addUniform(this->m_normalMatrixUniform);
-  this->Internal->ShaderProgram->addUniform(this->m_lightDirectionUniform);
-  this->Internal->ShaderProgram->addUniform(this->m_opacityUniform);
+  // \todo: Delete this during destructions.
+  this->Internal->ModelViewUniform = new vesModelViewUniform();
+  this->Internal->ProjectionUnifom = new vesProjectionUniform();
+  this->Internal->NormalMatrixUniform = new vesNormalMatrixUniform();
 
-  this->Internal->ShaderProgram->addUniform(this->m_enableDiffuseUniform);
-  this->Internal->ShaderProgram->addUniform(this->m_useGouraudShaderUniform);
-  this->Internal->ShaderProgram->addUniform(this->m_useBlinnPhongShaderUniform);
-  this->Internal->ShaderProgram->addUniform(this->m_useToonShaderUniform);
+  this->Internal->PositionVertexAttribute = new vesPositionVertexAttribute();
+  this->Internal->NormalVertexAttribute   = new vesNormalVertexAttribute();
+
+  this->Internal->ShaderProgram->addUniform(this->Internal->ModelViewUniform);
+  this->Internal->ShaderProgram->addUniform(this->Internal->ProjectionUnifom);
+  this->Internal->ShaderProgram->addUniform(this->Internal->NormalMatrixUniform);
+
+  this->Internal->ShaderProgram->addVertexAttribute(this->Internal->PositionVertexAttribute);
+  this->Internal->ShaderProgram->addVertexAttribute(this->Internal->NormalVertexAttribute);
+
+//  this->initializeShaderUniforms();
+
+//  this->Internal->ShaderProgram->addUniform(this->m_modelViewProjectionUniform);
+//  this->Internal->ShaderProgram->addUniform(this->m_normalMatrixUniform);
+//  this->Internal->ShaderProgram->addUniform(this->m_lightDirectionUniform);
+//  this->Internal->ShaderProgram->addUniform(this->m_opacityUniform);
+
+//  this->Internal->ShaderProgram->addUniform(this->m_enableDiffuseUniform);
+//  this->Internal->ShaderProgram->addUniform(this->m_useGouraudShaderUniform);
+//  this->Internal->ShaderProgram->addUniform(this->m_useBlinnPhongShaderUniform);
+//  this->Internal->ShaderProgram->addUniform(this->m_useToonShaderUniform);
 
   // Set default shading model.
-  this->setShadingModel(this->getShadingModel(0));
+//  this->setShadingModel(this->getShadingModel(0));
 
   return true;
 }

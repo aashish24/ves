@@ -86,13 +86,15 @@ void vesMapper::render(const vesRenderState &renderState)
     this->setupDrawObjects(renderState);
   }
 
+  std::cerr << "this->m_buffer " << this->m_buffer << std::endl;
+
   renderState.m_material->activateVertexSpecific(renderState);
   glBindBuffer(GL_ARRAY_BUFFER, this->m_buffer);
+  glDrawElements(GL_TRIANGLES,
+                 this->m_data->GetTriangles().size() * 3,
+                 GL_UNSIGNED_SHORT,
+                 &this->m_data->GetTriangles()[0]);
   renderState.m_material->deActivateVertexSpecific(renderState);
-//  glDrawElements(GL_TRIANGLES,
-//                 mapper->data()->GetTriangles().size() * 3,
-//                 GL_UNSIGNED_SHORT,
-//                 &mapper->data()->GetTriangles()[0]);
 }
 
 
@@ -132,4 +134,6 @@ void vesMapper::setupDrawObjects(const vesRenderState &renderState)
   glBufferSubData(GL_ARRAY_BUFFER, sizeOfPositions, sizeOfNormals, this->m_data->GetPoints()[0].normal.mData);
 
   renderState.m_material->setupVertexSpecific(renderState);
+
+  this->m_initialized = true;
 }

@@ -28,6 +28,7 @@ vesVisitor::vesVisitor(VisitorType type, TraversalMode mode) :
 
 vesVisitor::~vesVisitor()
 {
+  delete this->m_internal;
 }
 
 
@@ -76,6 +77,30 @@ void vesVisitor::pushProjectionMatrix(const vesMatrix4x4f &matrix)
 void vesVisitor::popProjectionMatrix()
 {
   this->m_internal->m_projectionMatrixStack.pop_back();
+}
+
+
+vesMatrix4x4f vesVisitor::modelViewMatrix()
+{
+  vesMatrix4x4f matrix;
+  size_t count = this->m_internal->m_modelViewMatrixStack.size();
+  for (size_t i = 0; i < count ; ++i) {
+    matrix *= *this->m_internal->m_modelViewMatrixStack[i];
+  }
+
+  return matrix;
+}
+
+
+vesMatrix4x4f vesVisitor::projectionMatrix()
+{
+  vesMatrix4x4f matrix;
+  size_t count = this->m_internal->m_projectionMatrixStack.size();
+  for (size_t i = 0; i < count; ++i) {
+    matrix *= *this->m_internal->m_projectionMatrixStack [i];
+  }
+
+  return matrix;
 }
 
 

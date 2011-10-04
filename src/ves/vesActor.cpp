@@ -122,10 +122,6 @@ void vesActor::setMaterial(vesMaterial *material)
 
 void vesActor::accept(vesVisitor &visitor)
 {
-  // \todo: Implement this.
-  if (visitor.type() && vesVisitor::CullVisitor) {
-  }
-
   if (this->m_material) {
     this->m_material->accept(visitor);
   }

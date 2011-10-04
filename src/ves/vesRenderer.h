@@ -40,6 +40,7 @@
 #include "vesCamera.h"
 
 // Forward declarations
+class vesRenderStage;
 class vesTexture;
 
 class vesRenderer
@@ -83,6 +84,8 @@ private:
 
   vesCamera *m_camera;
   vesActor  *m_sceneRoot;
+
+  vesRenderStage *m_renderStage;
 };
 
 #endif

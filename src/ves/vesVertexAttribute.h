@@ -48,7 +48,7 @@ class vesPositionVertexAttribute : public vesVertexAttribute
 {
 public:
 
-  vesPositionVertexAttribute(const std::string &name="vertexPositions") :
+  vesPositionVertexAttribute(const std::string &name="vertexPosition") :
     vesVertexAttribute(name)
   {
   }
@@ -96,7 +96,7 @@ class vesNormalVertexAttribute : public vesVertexAttribute
 {
 public:
 
-  vesNormalVertexAttribute(const std::string &name="vertexNormals") :
+  vesNormalVertexAttribute(const std::string &name="vertexNormal") :
     vesVertexAttribute(name)
   {
   }
