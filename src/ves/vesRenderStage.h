@@ -134,7 +134,8 @@ public:
   // \todo: Use it later.
   enum SortMode
   {
-    BackToFront,
+    BackToFront = 0x0,
+    FrontToBack,
     SortByState
   };
 
@@ -163,8 +164,6 @@ public:
 
   void render(vesRenderState &renderState, vesRenderLeaf *previous)
   {
-    std::cerr << "render " << std::endl;
-
     BinRenderLeavesMap::iterator itr = this->m_binRenderLeavesMap.begin();
     RenderLeaves::iterator rlsItr;
 
@@ -176,6 +175,12 @@ public:
         previous = &(*rlsItr);
       }
     }
+  }
+
+
+  void clearAll()
+  {
+    this->m_binRenderLeavesMap.clear();
   }
 
 

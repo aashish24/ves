@@ -28,25 +28,10 @@
 #include "vesShaderProgram.h"
 #include "vesVisitor.h"
 
-#include "gmtl/Generate.h"
-#include "gmtl/AxisAngle.h"
-
 // C++ includes
 #include <iostream>
 #include <string>
 
-namespace {
-void PrintMatrix(std::string name, vesMatrix4x4f mv)
-{
-  std::cerr << name << ":" << std::endl;
-  for (int i = 0; i < 4; ++i)
-  {
-    std::cerr << mv[i][0] << "," << mv[i][1] << "," << mv[i][2] << ","
-              << mv[i][3] << std::endl;
-  }
-  std::cerr << std::endl;
-}
-}
 
 vesRenderer::vesRenderer()
 {
@@ -69,8 +54,6 @@ vesRenderer::vesRenderer()
 
 vesRenderer::~vesRenderer()
 {
-//  delete Actor;
-//  delete Paint;
   delete this->m_camera; this->m_camera = 0x0;
 }
 
@@ -108,7 +91,13 @@ void vesRenderer::render()
   }
 
   vesRenderState renderState;
+
   this->m_renderStage->render(renderState, 0);
+
+  // \note: For now clear the stage.
+  // \todo: Add an optimization where we could save whole or
+  // part of the the stage.
+  this->m_renderStage->clearAll();
 }
 
 

@@ -32,7 +32,7 @@ void main()
   varNormal = normalize(normalMatrix * vertexNormal);
 
   // Save light direction (direction light for now)
-  varLightDirection = normalize(vec3(0.0, 10.0, -100.0));
+  varLightDirection = normalize(vec3(0.0, 10.0, 100.0));
 
   lowp float nDotL = max(dot(varNormal, varLightDirection), 0.0);
 

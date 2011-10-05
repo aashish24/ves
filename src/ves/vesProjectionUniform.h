@@ -1,5 +1,5 @@
-#ifndef VESPROJECTIONUNIFORM_H
-#define VESPROJECTIONUNIFORM_H
+#ifndef VESPROJECTION_UNIFORM_H
+#define VESPROJECTION_UNIFORM_H
 
 // Base class
 #include "vesUniform.h"
@@ -20,9 +20,8 @@ public:
   virtual void update(const vesRenderState &renderState,
                       const vesShaderProgram &program)
   {
-    std::cerr << "Projection Matrix " << std::endl;
-    this->set(renderState.m_projectionMatrix);
+    this->set(*renderState.m_projectionMatrix);
   }
 };
 
-#endif // VESPROJECTIONUNIFORM_H
+#endif // VESPROJECTION_UNIFORM_H
