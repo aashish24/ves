@@ -63,7 +63,7 @@ void vesMaterial::render(const vesRenderState &renderState)
     this->m_internal->m_attributes.begin();
 
   for (itr; itr != this->m_internal->m_attributes.end(); ++itr) {
-    itr->second->activateGeneral(renderState);
+    itr->second->bind(renderState);
   }
 }
 
@@ -74,35 +74,68 @@ void vesMaterial::remove(const vesRenderState &renderState)
 }
 
 
-void vesMaterial::setupVertexSpecific(const vesRenderState &renderState)
+void vesMaterial::setup(const vesRenderState &renderState)
 {
   vesInternal::Attributes::iterator itr =
     this->m_internal->m_attributes.begin();
 
   for (itr; itr != this->m_internal->m_attributes.end(); ++itr) {
-    std::cerr << "vesMaterial::setupVertexSpecific " << std::endl;
-    itr->second->setupVertexSpecific(renderState);
+
+    itr->second->setup(renderState);
   }
 }
 
 
-void vesMaterial::activateVertexSpecific(const vesRenderState &renderState)
+void vesMaterial::bind(const vesRenderState &renderState)
 {
   vesInternal::Attributes::iterator itr =
     this->m_internal->m_attributes.begin();
 
   for (itr; itr != this->m_internal->m_attributes.end(); ++itr) {
-    itr->second->activateVertexSpecific(renderState);
+    itr->second->bind(renderState);
   }
 }
 
 
-void vesMaterial::deActivateVertexSpecific(const vesRenderState &renderState)
+void vesMaterial::unbind(const vesRenderState &renderState)
 {
   vesInternal::Attributes::iterator itr =
     this->m_internal->m_attributes.begin();
 
   for (itr; itr != this->m_internal->m_attributes.end(); ++itr) {
-    itr->second->deActivateVertexSpecific(renderState);
+    itr->second->unbind(renderState);
+  }
+}
+
+
+void vesMaterial::setupVertexData(const vesRenderState &renderState)
+{
+  vesInternal::Attributes::iterator itr =
+    this->m_internal->m_attributes.begin();
+
+  for (itr; itr != this->m_internal->m_attributes.end(); ++itr) {
+    itr->second->setupVertexData(renderState);
+  }
+}
+
+
+void vesMaterial::bindVertexData(const vesRenderState &renderState)
+{
+  vesInternal::Attributes::iterator itr =
+    this->m_internal->m_attributes.begin();
+
+  for (itr; itr != this->m_internal->m_attributes.end(); ++itr) {
+    itr->second->bindVertexData(renderState);
+  }
+}
+
+
+void vesMaterial::unbindVertexData(const vesRenderState &renderState)
+{
+  vesInternal::Attributes::iterator itr =
+    this->m_internal->m_attributes.begin();
+
+  for (itr; itr != this->m_internal->m_attributes.end(); ++itr) {
+    itr->second->unbindVertexData(renderState);
   }
 }

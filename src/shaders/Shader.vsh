@@ -6,7 +6,7 @@ uniform mat3   normalMatrix;
 uniform vec3   lightDirection;
 
 // Vertex attributes.
-attribute vec4 vertexPosition;
+attribute vec3 vertexPosition;
 attribute vec3 vertexNormal;
 
 // Varying attributes.
@@ -23,16 +23,16 @@ void main()
   varAmbientColor = vec4(0.01, 0.01, 0.01, 0.0);
 
   // Default diffuse color for now.
-  varDiffuseColor = vec4(0.1, 0.1, 0.1, 0.0);
+  varDiffuseColor = vec4(0.8, 0.8, 0.8, 1.0);
 
   // Save position for shading later.
-  varPosition = projectionMatrix * modelViewMatrix * vertexPosition;
+  varPosition = projectionMatrix * modelViewMatrix * vec4(vertexPosition, 1.0);
 
   // Transform vertex normal into eye space.
   varNormal = normalize(normalMatrix * vertexNormal);
 
   // Save light direction (direction light for now)
-  varLightDirection = normalize(vec3(0.0, 0.0, 100.0));
+  varLightDirection = normalize(vec3(0.0, 10.0, -100.0));
 
   lowp float nDotL = max(dot(varNormal, varLightDirection), 0.0);
 

@@ -248,8 +248,10 @@ void vesShaderProgram::bindAttributes()
   int i=0;
   for (;constItr != this->m_vertexAttributes.end(); ++constItr) {
     std::cout << "binding " << (*constItr)->name() << "  " << i << std::endl;
-    glBindAttribLocation(this->m_programHandle, i++,
+    glBindAttribLocation(this->m_programHandle, i,
                          (*constItr)->name().c_str());
+    this->m_vertexAttributeNameToLocation[(*constItr)->name()] = i;
+    ++i;
   }
 }
 
@@ -332,12 +334,12 @@ void vesShaderProgram::updateUniforms()
 }
 
 
-void vesShaderProgram::setupGeneral(const vesRenderState &renderState)
+void vesShaderProgram::setup(const vesRenderState &renderState)
 {
 }
 
 
-void vesShaderProgram::activateGeneral(const vesRenderState &renderState)
+void vesShaderProgram::bind(const vesRenderState &renderState)
 {
   if (!this->m_programHandle) {
     this->m_programHandle = glCreateProgram();
@@ -366,7 +368,13 @@ void vesShaderProgram::activateGeneral(const vesRenderState &renderState)
       this->cleanUp();
     }
 
+    this->use();
+
     this->bindUniforms();
+  }
+  else
+  {
+    this->use();
   }
 
   // Call update callback.
@@ -383,41 +391,41 @@ void vesShaderProgram::activateGeneral(const vesRenderState &renderState)
 
 
 
-void vesShaderProgram::deActivateGeneral(const vesRenderState &renderState)
+void vesShaderProgram::unbind(const vesRenderState &renderState)
 {
   // \todo: Implement this.
 }
 
 
-void vesShaderProgram::setupVertexSpecific(const vesRenderState &renderState)
+void vesShaderProgram::setupVertexData(const vesRenderState &renderState)
 {
   std::list<vesVertexAttribute*>::iterator itr =
     this->m_vertexAttributes.begin();
 
   for (; itr != this->m_vertexAttributes.end(); ++itr) {
-    (*itr)->setupVertexSpecific(renderState);
+    (*itr)->setupVertexData(renderState);
   }
 }
 
 
-void vesShaderProgram::activateVertexSpecific(const vesRenderState &renderState)
+void vesShaderProgram::bindVertexData(const vesRenderState &renderState)
 {
   std::list<vesVertexAttribute*>::iterator itr =
     this->m_vertexAttributes.begin();
 
   for (; itr != this->m_vertexAttributes.end(); ++itr) {
-    (*itr)->activateVertexSpecific(renderState);
+    (*itr)->bindVertexData(renderState);
   }
 }
 
 
-void vesShaderProgram::deActivateVertexSpecific(const vesRenderState &renderState)
+void vesShaderProgram::unbindVertexData(const vesRenderState &renderState)
 {
   std::list<vesVertexAttribute*>::iterator itr =
     this->m_vertexAttributes.begin();
 
   for (; itr != this->m_vertexAttributes.end(); ++itr) {
-    (*itr)->deActivateVertexSpecific(renderState);
+    (*itr)->unbindVertexData(renderState);
   }
 }
 

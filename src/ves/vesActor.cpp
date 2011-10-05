@@ -59,8 +59,10 @@ void vesActor::computeBounds()
 {
   if (this->m_mapper) {
     this->m_mapper->computeBounds();
+
     vesVector3f min = transformPoint3f(this->eval(), this->m_mapper->get_min());
     vesVector3f max = transformPoint3f(this->eval(), this->m_mapper->get_max());
+
     set_BBoxCenter(min, max);
     set_BBoxSize(min, max);
   }

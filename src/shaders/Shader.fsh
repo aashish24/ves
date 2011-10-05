@@ -46,18 +46,16 @@ void main()
   nDotL = max(dot(n, normalize(varLightDirection)), 0.0);
 
   // Apply diffuse only for upper half dome.
-  if(nDotL > 0.0)
-  {
+  if (nDotL > 0.0)  {
     nDotH = max(dot(n, halfVector), 0.0);
 
     color += (varDiffuseColor) * nDotL +
              specularColor * pow(nDotH, specularShininess);
   }
-  else
-  {
+  else {
   }
 
   color.w = 1.0;
 
-  gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+  gl_FragColor = color;
 }

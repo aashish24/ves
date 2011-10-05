@@ -31,10 +31,6 @@ public:
 
   const std::string& name() const { return this->m_name; }
 
-  virtual void setupVertexSpecific      (const vesRenderState &renderState){}
-  virtual void activateVertexSpecific   (const vesRenderState &renderState){}
-  virtual void deActivateVertexSpecific (const vesRenderState &renderState){}
-
   virtual void update(const vesRenderState &renderState,
                       const vesShaderProgram &shaderProgram){;}
 
@@ -54,40 +50,25 @@ public:
   }
 
 
-  virtual void setupVertexSpecific(const vesRenderState &renderState)
+  virtual void bindVertexData(const vesRenderState &renderState)
   {
     vesShaderProgram *program =
       static_cast<vesShaderProgram*>( renderState.m_material->attribute(
       vesMaterialAttribute::Shader) );
 
-    glVertexAttribPointer(program->attributeLocation(this->m_name), 3, GL_FLOAT, 0,
-                          6 * sizeof(float), &(renderState.m_mapper ->data()->GetPoints()[0]));
-  }
-
-
-  virtual void activateVertexSpecific(const vesRenderState &renderState)
-  {
-    vesShaderProgram *program =
-      static_cast<vesShaderProgram*>( renderState.m_material->attribute(
-      vesMaterialAttribute::Shader) );
-
+    glVertexAttribPointer(program->attributeLocation(this->m_name), 3, GL_FLOAT,
+                          GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(program->attributeLocation(this->m_name));
   }
 
 
-  virtual void deActivateVertexSpecific(const vesRenderState &renderState)
+  virtual void unbindVertexData(const vesRenderState &renderState)
   {
-    vesShaderProgram *program =
-      static_cast<vesShaderProgram*>( renderState.m_material->attribute(
-      vesMaterialAttribute::Shader) );
+      vesShaderProgram *program =
+        static_cast<vesShaderProgram*>( renderState.m_material->attribute(
+        vesMaterialAttribute::Shader) );
 
     glDisableVertexAttribArray(program->attributeLocation(this->m_name));
-  }
-
-
-  virtual void update(const vesRenderState &renderState,
-                      const vesShaderProgram &shaderProgram)
-  {
   }
 };
 
@@ -101,38 +82,25 @@ public:
   {
   }
 
-
-  virtual void setupVertexSpecific(const vesRenderState &renderState)
+  virtual void bindVertexData(const vesRenderState &renderState)
   {
     vesShaderProgram *program =
       static_cast<vesShaderProgram*>( renderState.m_material->attribute(
       vesMaterialAttribute::Shader) );
-    glVertexAttribPointer(program->attributeLocation(this->m_name), 3, GL_FLOAT, 0, 6 * sizeof(float),
-                          renderState.m_mapper->data()->GetPoints()[0].normal.mData);
-  }
 
-
-  virtual void activateVertexSpecific(const vesRenderState &renderState)
-  {
-    vesShaderProgram *program =
-      static_cast<vesShaderProgram*>( renderState.m_material->attribute(
-      vesMaterialAttribute::Shader) );
+    glVertexAttribPointer(program->attributeLocation(this->m_name), 3,
+                          GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)12);
     glEnableVertexAttribArray(program->attributeLocation(this->m_name));
   }
 
 
-  virtual void deActivateVertexSpecific(const vesRenderState &renderState)
+  virtual void unbindVertexData(const vesRenderState &renderState)
   {
-    vesShaderProgram *program =
-      static_cast<vesShaderProgram*>( renderState.m_material->attribute(
-      vesMaterialAttribute::Shader) );
+      vesShaderProgram *program =
+        static_cast<vesShaderProgram*>( renderState.m_material->attribute(
+        vesMaterialAttribute::Shader) );
+
     glDisableVertexAttribArray(program->attributeLocation(this->m_name));
-  }
-
-
-  virtual void update(const vesRenderState &renderState,
-                      const vesShaderProgram &shaderProgram)
-  {
   }
 };
 

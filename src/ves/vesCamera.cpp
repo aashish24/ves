@@ -24,18 +24,18 @@
 #include "gmtl/Generate.h"
 
 namespace {
-void PrintMatrix(std::string name, vesMatrix4x4f mv)
-{
-  std::cerr << name << ":" << std::endl;
-  for (int i = 0; i < 4; ++i)
-  {
-    std::cerr << mv[i][0] << "," << mv[i][1] << "," << mv[i][2] << "," << mv[i][3] << std::endl;
-  }
-  std::cerr << std::endl;
-}
+    void PrintMatrix(std::string name, vesMatrix4x4f mv)
+    {
+      std::cerr << name << ":" << std::endl;
+      for (int i = 0; i < 4; ++i)
+      {
+        std::cerr << mv[i][0] << "," << mv[i][1] << "," << mv[i][2] << "," << mv[i][3] << std::endl;
+      }
+      std::cerr << std::endl;
+    }
 }
 
-// -----------------------------------------------------------------------cnstr
+
 vesCamera::vesCamera()
 {
   this->FocalPoint[0] = 0.0;
@@ -57,8 +57,6 @@ vesCamera::vesCamera()
   this->ViewAngle = 30.0;
   this->UseHorizontalViewAngle = 0;
 
-  //this->ClippingRange[0] = 0.01;
-  //this->ClippingRange[1] = 1000.01;
   this->ClippingRange[0] = 10.0;
   this->ClippingRange[1] = 1010.0;
 
@@ -71,12 +69,12 @@ vesCamera::vesCamera()
   this->ComputeDistance();
 }
 
-// -----------------------------------------------------------------------destr
+
 vesCamera::~vesCamera()
 {
 }
 
-// ----------------------------------------------------------------------public
+
 vesMatrix4x4f vesCamera::ComputeViewTransform()
 {
   return vesLookAt (this->Position,
@@ -84,7 +82,7 @@ vesMatrix4x4f vesCamera::ComputeViewTransform()
                     this->ViewUp);
 }
 
-// ----------------------------------------------------------------------public
+
 vesMatrix4x4f vesCamera::ComputeProjectionTransform(float aspect,
                                                     float nearz,
                                                     float farz)
@@ -143,7 +141,7 @@ vesMatrix4x4f vesCamera::ComputeProjectionTransform(float aspect,
   }
 }
 
-//----------------------------------------------------------------------------
+
 // Rotate the camera about the view up vector centered at the focal point.
 void vesCamera::Azimuth(double angle)
 {
@@ -164,7 +162,7 @@ void vesCamera::Azimuth(double angle)
   this->ComputeDistance();
 }
 
-//----------------------------------------------------------------------------
+
 // Rotate the camera about the cross product of the negative of the
 // direction of projection and the view up vector centered on the focal point.
 void vesCamera::Elevation(double angle)
@@ -190,11 +188,10 @@ void vesCamera::Elevation(double angle)
   this->ComputeDistance();
 }
 
-// ----------------------------------------------------------------------public
+
 void vesCamera::Dolly(double factor)
 {
-  if (factor <= 0.0)
-  {
+  if (factor <= 0.0) {
     return;
   }
 
@@ -207,7 +204,7 @@ void vesCamera::Dolly(double factor)
   this->ComputeDistance();
 }
 
-//-----------------------------------------------------------------------public
+
 void vesCamera::Roll(double angle)
 {
   // rotate ViewUp about the Direction of Projection
@@ -220,21 +217,21 @@ void vesCamera::Roll(double angle)
   this->SetViewUp(newViewUp);
 }
 
-//----------------------------------------------------------------------------
+
 void vesCamera::SetWindowCenter(double x, double y)
 {
   this->WindowCenter[0] = x;
   this->WindowCenter[1] = y;
 }
 
-// ----------------------------------------------------------------------public
+
 void vesCamera::SetClippingRange(float near, float far)
 {
   this->ClippingRange[0] = near;
   this->ClippingRange[1] = far;
 }
 
-//----------------------------------------------------------------------------
+
 void vesCamera::OrthogonalizeViewUp()
 {
   // the orthogonalized ViewUp is just the second row of the view matrix
@@ -244,7 +241,7 @@ void vesCamera::OrthogonalizeViewUp()
   this->ViewUp[2] = view[1][2];
 }
 
-//----------------------------------------------------------------------------
+
 // This method must be called when the focal point or camera position changes
 void vesCamera::ComputeDistance()
 {
@@ -272,7 +269,7 @@ void vesCamera::ComputeDistance()
   this->ComputeViewPlaneNormal();
 }
 
-// ----------------------------------------------------------------------public
+
 void vesCamera::ComputeViewPlaneNormal()
 {
   this->ViewPlaneNormal[0] = -this->DirectionOfProjection[0];
@@ -280,60 +277,38 @@ void vesCamera::ComputeViewPlaneNormal()
   this->ViewPlaneNormal[2] = -this->DirectionOfProjection[2];
 }
 
-// ----------------------------------------------------------------------public
-//void vesCamera::render(Painter *render)
+
+//void vesCamera::computeBounds()
 //{
-//  render->setCamera(this);
+//  vesVector3f allMin(0,0,0);
+//  vesVector3f allMax(0,0,0);
+
+//  for (int i =0; i<this->get_children().size(); ++i)
+//  {
+//    vesActorCollection* child = (vesActorCollection*) this->get_children()[i];
+//    child->computeBounds();
+//    vesVector3f min = child->get_min();
+//    vesVector3f max = child->get_max();
+
+//    if (i == 0)
+//    {
+//      allMin = min;
+//      allMax = max;
+//    }
+
+//    for (int i = 0; i < 3; ++i)
+//    {
+//      if (max[i] > allMax[i])
+//      {
+//        allMax[i] = max[i];
+//      }
+//      if (min[i] < allMin[i])
+//      {
+//        allMin[i] = min[i];
+//      }
+//    }
+//  }
+
+//  set_BBoxCenter(allMin, allMax);
+//  set_BBoxSize(allMin, allMax);
 //}
-
-// ----------------------------------------------------------------------public
-void vesCamera::computeBounds()
-{
-#if 0
-  vesVector3f allMin(0,0,0);
-  vesVector3f allMax(0,0,0);
-
-  for (int i =0; i<this->get_children().size(); ++i)
-  {
-    vesActorCollection* child = (vesActorCollection*) this->get_children()[i];
-    child->computeBounds();
-    vesVector3f min = child->get_min();
-    vesVector3f max = child->get_max();
-
-    if (i == 0)
-    {
-      allMin = min;
-      allMax = max;
-    }
-
-    for (int i = 0; i < 3; ++i)
-    {
-      if (max[i] > allMax[i])
-      {
-        allMax[i] = max[i];
-      }
-      if (min[i] < allMin[i])
-      {
-        allMin[i] = min[i];
-      }
-    }
-  }
-
-  set_BBoxCenter(allMin, allMax);
-  set_BBoxSize(allMin, allMax);
-#endif
-}
-
-// ----------------------------------------------------------------------public
-bool vesCamera::read()
-{
-#if 0
-  for (int i =0; i<this->get_children().size(); ++i)
-  {
-    vesActorCollection* child = (vesActorCollection*) this->get_children()[i];
-    child->read();
-  }
-#endif
-  return true;
-}
-

@@ -92,8 +92,8 @@ void vesRenderer::render()
   glEnable(GL_DEPTH_TEST);
 
   vesMatrix4x4f projectionMatrix =
-    this->m_camera->ComputeProjectionTransform(this->m_aspect[1],
-                                                                -1, 1);
+    this->m_camera->ComputeProjectionTransform(this->m_aspect[1], -1, 1);
+
   vesMatrix4x4f viewMatrix =
     this->m_camera->ComputeViewTransform();
 
@@ -172,48 +172,46 @@ vesVector3f vesRenderer::computeDisplayToWorld(vesVector3f display)
 
 void vesRenderer::resetCamera()
 {
-#if 0
-//  this->Actor->read();
-//  this->Actor->computeBounds();
-//  vesVector3f center = this->Actor->get_BBoxCenter();
+  this->m_sceneRoot->computeBounds();
+  vesVector3f center = this->m_sceneRoot->get_BBoxCenter();
 
   double distance;
   vesVector3f vn, vup;
-  if ( this->m_camera != NULL )
-  {
+
+  if ( this->m_camera != NULL ) {
     vn = this->m_camera->GetViewPlaneNormal();
   }
   else
   {
-    std::cout<< "Trying to reset non-existant camera" << std::endl;
+    std::cerr<< "Trying to reset non-existant camera" << std::endl;
     return;
   }
-//  double radius = this->Actor->GetBBoxRadius();
-  radius = (radius==0)?(.5):(radius);
 
-  double angle=deg2Rad(this->m_camera->GetViewAngle());
-  double parallelScale=radius;
-  //this->ComputeAspect();
-  if(Aspect[0]>=1.0) // horizontal window, deal with vertical angle|scale
-  {
-    if(this->m_camera->GetUseHorizontalViewAngle())
-    {
-      angle=2.0*atan(tan(angle*0.5)/Aspect[0]);
+  double radius = this->m_sceneRoot->GetBBoxRadius();
+  radius = (radius==0)? (.5) : (radius);
+
+  double angle = deg2Rad(this->m_camera->GetViewAngle());
+  double parallelScale = radius;
+
+  // Horizontal window, deal with vertical angle|scale
+  if (this->m_aspect[0]>=1.0) {
+    if (this->m_camera->GetUseHorizontalViewAngle()) {
+      angle=2.0*atan(tan(angle*0.5)/this->m_aspect[0]);
     }
   }
-  else // vertical window, deal with horizontal angle|scale
-  {
-    if(!this->m_camera->GetUseHorizontalViewAngle())
-    {
-      angle=2.0*atan(tan(angle*0.5)*Aspect[0]);
+  // Vertical window, deal with horizontal angle|scale
+  else {
+    if (!this->m_camera->GetUseHorizontalViewAngle() ) {
+      angle=2.0*atan(tan(angle*0.5)*this->m_aspect[0]);
     }
-    parallelScale=parallelScale/Aspect[0];
+    parallelScale=parallelScale/this->m_aspect[0];
   }
+
   distance =radius/sin(angle*0.5);
-  // check view-up vector against view plane normal
+
+  // Check view-up vector against view plane normal
   vup = this->m_camera->GetViewUp();
-  if ( fabs(gmtl::dot(vup,vn)) > 0.999 )
-  {
+  if ( fabs(gmtl::dot(vup,vn)) > 0.999 ) {
     // vtkWarningMacro(<<"Resetting view-up since view plane normal is parallel");
     vesVector3f temp;
     temp[0] = -vup[2];
@@ -221,42 +219,34 @@ void vesRenderer::resetCamera()
     temp[2] = vup[1];
     this->m_camera->SetViewUp(temp);
   }
-  // update the camera
+
+  // Update the camera
   this->m_camera->SetFocalPoint(center);
   vesVector3f temp = vn;
   temp*= distance;
   temp+= center;
   this->m_camera->SetPosition(temp);
 
-  float bounds[6];
-//  bounds[0] = this->Actor->get_min()[0];
-//  bounds[1] = this->Actor->get_max()[0];
-//  bounds[2] = this->Actor->get_min()[1];
-//  bounds[3] = this->Actor->get_max()[1];
-//  bounds[4] = this->Actor->get_min()[2];
-//  bounds[5] = this->Actor->get_max()[2];
+  this->resetCameraClippingRange();
 
-  this->ResetCameraClippingRange(bounds);
-  // setup default parallel scale
+  // Setup default parallel scale
   this->m_camera->SetParallelScale(parallelScale);
-#endif
 }
+
 
 void vesRenderer::resetCameraClippingRange()
 {
-#if 0
-  this->Actor->read();
-  this->Actor->computeBounds();
-  float bounds[6];
-  bounds[0] = this->Actor->get_min()[0];
-  bounds[1] = this->Actor->get_max()[0];
-  bounds[2] = this->Actor->get_min()[1];
-  bounds[3] = this->Actor->get_max()[1];
-  bounds[4] = this->Actor->get_min()[2];
-  bounds[5] = this->Actor->get_max()[2];
+  this->m_sceneRoot->computeBounds();
 
-  this->ResetCameraClippingRange(bounds);
-#endif
+  float bounds[6];
+  bounds[0] = this->m_sceneRoot->get_min()[0];
+  bounds[1] = this->m_sceneRoot->get_max()[0];
+  bounds[2] = this->m_sceneRoot->get_min()[1];
+  bounds[3] = this->m_sceneRoot->get_max()[1];
+  bounds[4] = this->m_sceneRoot->get_min()[2];
+  bounds[5] = this->m_sceneRoot->get_max()[2];
+
+  this->resetCameraClippingRange(bounds);
 }
 
 
@@ -264,8 +254,8 @@ void vesRenderer::resetCameraClippingRange(float bounds[6])
 {
   vesVector3f  vn, position;
   float  a, b, c, d;
-  double  range[2], dist;
-  int     i, j, k;
+  double range[2], dist;
+  int    i, j, k;
 
   // Find the plane equation for the camera view plane
   vn = this->m_camera->GetViewPlaneNormal();
@@ -295,10 +285,10 @@ void vesRenderer::resetCameraClippingRange(float bounds[6])
   }
 
   // Do not let the range behind the camera throw off the calculation.
-  if (range[0] < 0.0)
-  {
+  if (range[0] < 0.0) {
     range[0] = 0.0;
   }
+
   // Give ourselves a little breathing room
   range[0] = 0.99*range[0] - (range[1] - range[0])*0.5;
   range[1] = 1.01*range[1] + (range[1] - range[0])*0.5;
@@ -308,12 +298,11 @@ void vesRenderer::resetCameraClippingRange(float bounds[6])
 
   float NearClippingPlaneTolerance = 0.01;
 
-  // make sure the front clipping range is not too far from the far clippnig
+  // Make sure the front clipping range is not too far from the far clippnig
   // range, this is to make sure that the zbuffer resolution is effectively
-  // used
+  // used.
 
-  if (range[0] < NearClippingPlaneTolerance*range[1])
-  {
+  if (range[0] < NearClippingPlaneTolerance*range[1]) {
     range[0] = NearClippingPlaneTolerance*range[1];
   }
   this->m_camera->SetClippingRange( range[0],range[1] );
@@ -331,5 +320,5 @@ void vesRenderer::setBackgroundColor(float r, float g, float b, float a)
 
 void vesRenderer::setBackground(vesTexture* background)
 {
-//  this->Paint->setBackgroundTexture(background);
+    // \todo: Implement this.
 }

@@ -99,6 +99,7 @@ vesKiwiDataRepresentation::~vesKiwiDataRepresentation()
 //----------------------------------------------------------------------------
 void vesKiwiDataRepresentation::setDataSet(vtkDataSet* dataSet)
 {
+  std::cout << "Setting data " << std::endl;
   vtkPolyData* polyData = vtkPolyData::SafeDownCast(dataSet);
   assert(polyData);
   assert(this->Internal->Mapper);

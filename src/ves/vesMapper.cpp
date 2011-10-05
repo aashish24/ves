@@ -51,7 +51,8 @@ void vesMapper::computeBounds()
 {
   vesVector3f min = this->m_data->GetMin();
   vesVector3f max = this->m_data->GetMax();
-  set_BBoxSize(min,max);
+
+  set_BBoxSize  (min, max);
   set_BBoxCenter(min, max);
 }
 
@@ -71,12 +72,12 @@ void vesMapper::setData(vesTriangleData *data)
 
 void vesMapper::normalize()
 {
-//  float r = GetBBoxRadius();
-//  this->m_normalizedMatrix =
-//      makeScaleMatrix4x4(1/r,1/r,1/r)*
-//      makeTranslationMatrix4x4(-get_BBoxCenter());
-//  set_BBoxCenter(transformPoint3f(this->m_normalizedMatrix, get_BBoxCenter()));
-//  set_BBoxSize(transformPoint3f(this->m_normalizedMatrix, get_BBoxSize()));
+  float r = GetBBoxRadius();
+  this->m_normalizedMatrix =
+      makeScaleMatrix4x4(1/r,1/r,1/r)*
+      makeTranslationMatrix4x4(-get_BBoxCenter());
+  set_BBoxCenter(transformPoint3f(this->m_normalizedMatrix, get_BBoxCenter()));
+  set_BBoxSize(transformPoint3f(this->m_normalizedMatrix, get_BBoxSize()));
 }
 
 
@@ -86,54 +87,34 @@ void vesMapper::render(const vesRenderState &renderState)
     this->setupDrawObjects(renderState);
   }
 
-  std::cerr << "this->m_buffer " << this->m_buffer << std::endl;
+  glBindBuffer(GL_ARRAY_BUFFER, this->m_buffer[0]);
 
-  renderState.m_material->activateVertexSpecific(renderState);
-  glBindBuffer(GL_ARRAY_BUFFER, this->m_buffer);
-  glDrawElements(GL_TRIANGLES,
-                 this->m_data->GetTriangles().size() * 3,
-                 GL_UNSIGNED_SHORT,
-                 &this->m_data->GetTriangles()[0]);
-  renderState.m_material->deActivateVertexSpecific(renderState);
+  renderState.m_material->bindVertexData(renderState);
+
+
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_buffer[1]);
+  glDrawElements(GL_TRIANGLES, this->m_data->GetTriangles().size() * 3, GL_UNSIGNED_SHORT, (void*)0);
+
+  renderState.m_material->unbindVertexData(renderState);
+
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 
 void vesMapper::setupDrawObjects(const vesRenderState &renderState)
 {
-
-//  glVertexAttribPointer(vesShaderProgram::Color,
-//                        3,
-//                        GL_FLOAT,
-//                        0,
-//                        3*sizeof(float),
-//                        &(mapper->data()->GetVertexColors()[0]));
-//  }
-
-//glVertexAttribPointer(vesShaderProgram::Position,
-//                      3,
-//                      GL_FLOAT,
-//                      0,
-//                      6 * sizeof(float),
-//                      &(mapper->data()->GetPoints()[0]));
-
-//glVertexAttribPointer(vesShaderProgram::Normal,
-//                      3,
-//                      GL_FLOAT,
-//                      0,
-//                      6 * sizeof(float),
-//                      mapper->data()->GetPoints()[0].normal.mData);
-
-  size_t sizeOfPositions = sizeof(&(this->m_data->GetPoints()[0]));
-  size_t sizeOfNormals   = sizeof(this->m_data->GetPoints()[0].normal.mData);
+  const int numberOfFloats = 6;
+  size_t sizeOfPositions = (this->m_data->GetPoints().size() * numberOfFloats * sizeof(float));
 
   // \todo: Put a GL log.
-  glGenBuffers(1, &this->m_buffer);
-  glBindBuffer(GL_ARRAY_BUFFER, this->m_buffer);
-  glBufferData(GL_ARRAY_BUFFER, sizeOfPositions + sizeOfNormals, NULL, GL_STATIC_DRAW);
-  glBufferSubData(GL_ARRAY_BUFFER, 0, sizeOfPositions, &(this->m_data->GetPoints()[0]));
-  glBufferSubData(GL_ARRAY_BUFFER, sizeOfPositions, sizeOfNormals, this->m_data->GetPoints()[0].normal.mData);
+  glGenBuffers(1, &this->m_buffer[0]);
+  glBindBuffer(GL_ARRAY_BUFFER, this->m_buffer[0]);
+  glBufferData(GL_ARRAY_BUFFER, sizeOfPositions, &this->m_data->GetPoints()[0], GL_STATIC_DRAW);
 
-  renderState.m_material->setupVertexSpecific(renderState);
+  glGenBuffers(1, &this->m_buffer[1]);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_buffer[1]);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->m_data->GetTriangles().size() *sizeof(unsigned short) * 3,
+      &this->m_data->GetTriangles()[0], GL_STATIC_DRAW);
 
   this->m_initialized = true;
 }

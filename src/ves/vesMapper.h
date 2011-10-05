@@ -61,7 +61,7 @@ protected:
 
   bool m_initialized;
 
-  unsigned int     m_buffer;
+  unsigned int     m_buffer[2];
 
   vesTriangleData *m_data;
 };

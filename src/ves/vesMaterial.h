@@ -23,13 +23,13 @@ public:
   AttributeType type() const { return this->m_type; }
 
   //  \todo: Fix not used warning
-  virtual void setupGeneral     (const vesRenderState &renderState){}
-  virtual void activateGeneral  (const vesRenderState &renderState){}
-  virtual void deActivateGeneral(const vesRenderState &renderState){}
+  virtual void bind         (const vesRenderState &renderState){}
+  virtual void unbind       (const vesRenderState &renderState){}
+  virtual void setup        (const vesRenderState &renderState){}
 
-  virtual void setupVertexSpecific      (const vesRenderState &renderState){}
-  virtual void activateVertexSpecific   (const vesRenderState &renderState){}
-  virtual void deActivateVertexSpecific (const vesRenderState &renderState){}
+  virtual void bindVertexData   (const vesRenderState &renderState){}
+  virtual void unbindVertexData (const vesRenderState &renderState){}
+  virtual void setupVertexData  (const vesRenderState &renderState){}
 
 protected:
 
@@ -54,13 +54,13 @@ public:
   virtual void render(const vesRenderState &renderState);
   virtual void remove(const vesRenderState &renderState);
 
-  virtual void setupGeneral     (const vesRenderState &renderState){}
-  virtual void activateGeneral  (const vesRenderState &renderState){}
-  virtual void deActivateGeneral(const vesRenderState &renderState){}
+  virtual void bind         (const vesRenderState &renderState);
+  virtual void unbind       (const vesRenderState &renderState);
+  virtual void setup        (const vesRenderState &renderState);
 
-  virtual void setupVertexSpecific      (const vesRenderState &renderState);
-  virtual void activateVertexSpecific   (const vesRenderState &renderState);
-  virtual void deActivateVertexSpecific (const vesRenderState &renderState);
+  virtual void bindVertexData   (const vesRenderState &renderState);
+  virtual void unbindVertexData (const vesRenderState &renderState);
+  virtual void setupVertexData  (const vesRenderState &renderState);
 
 
 protected:

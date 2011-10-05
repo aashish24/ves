@@ -28,11 +28,12 @@
 class vesCamera: public vsg::Transform
 {
 public:
-  vesCamera();
-  ~vesCamera();
-  bool read();
-//  void render(Painter *render);
-  void computeBounds();
+           vesCamera();
+  virtual  ~vesCamera();
+
+  bool read(){}
+
+  virtual void computeBounds(){}
 
   vesSetGetMacro(UseHorizontalViewAngle,bool)
   vesSetGetMacro(ViewPlaneNormal,vesVector3f)

@@ -17,8 +17,10 @@ public:
   }
 
 
-  virtual void update(const vesRenderState &renderState, const vesShaderProgram &program)
+  virtual void update(const vesRenderState &renderState,
+                      const vesShaderProgram &program)
   {
+    std::cerr << "Projection Matrix " << std::endl;
     this->set(renderState.m_projectionMatrix);
   }
 };
