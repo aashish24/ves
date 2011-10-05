@@ -21,7 +21,10 @@
 #ifndef vesTriangleData_H
 #define vesTriangleData_H
 
+// VES includes
 #include "vesGMTL.h"
+
+// C++ includes
 #include <vector>
 
 // Small struct packing a point and normal together in a vertex

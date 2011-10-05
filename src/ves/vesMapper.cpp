@@ -93,7 +93,12 @@ void vesMapper::render(const vesRenderState &renderState)
 
 
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_buffer[1]);
-  glDrawElements(GL_TRIANGLES, this->m_data->GetTriangles().size() * 3, GL_UNSIGNED_SHORT, (void*)0);
+  glDrawElements(GL_TRIANGLES, this->m_data->GetTriangles().size() * 3,
+                 GL_UNSIGNED_SHORT, (void*)0);
+
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_buffer[2]);
+  glDrawElements(GL_LINES, this->m_data->GetLines().size() * 2,
+                 GL_UNSIGNED_SHORT, (void*)0);
 
   renderState.m_material->unbindVertexData(renderState);
 
@@ -107,14 +112,21 @@ void vesMapper::setupDrawObjects(const vesRenderState &renderState)
   size_t sizeOfPositions = (this->m_data->GetPoints().size() * numberOfFloats * sizeof(float));
 
   // \todo: Put a GL log.
-  glGenBuffers(1, &this->m_buffer[0]);
-  glBindBuffer(GL_ARRAY_BUFFER, this->m_buffer[0]);
-  glBufferData(GL_ARRAY_BUFFER, sizeOfPositions, &this->m_data->GetPoints()[0], GL_STATIC_DRAW);
+  glGenBuffers(3, &this->m_buffer[0]);
 
-  glGenBuffers(1, &this->m_buffer[1]);
+  glBindBuffer(GL_ARRAY_BUFFER, this->m_buffer[0]);
+  glBufferData(GL_ARRAY_BUFFER, sizeOfPositions,
+               &this->m_data->GetPoints()[0], GL_STATIC_DRAW);
+
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_buffer[1]);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, this->m_data->GetTriangles().size() *sizeof(unsigned short) * 3,
-      &this->m_data->GetTriangles()[0], GL_STATIC_DRAW);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+               this->m_data->GetTriangles().size() *sizeof(unsigned short) * 3,
+               &this->m_data->GetTriangles()[0], GL_STATIC_DRAW);
+
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_buffer[2]);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+               this->m_data->GetLines().size() *sizeof(unsigned short) * 2,
+               &this->m_data->GetLines()[0], GL_STATIC_DRAW);
 
   this->m_initialized = true;
 }

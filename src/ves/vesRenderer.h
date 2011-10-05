@@ -18,8 +18,8 @@
   limitations under the License.
  ========================================================================*/
 
-#ifndef __vesRenderer_h
-#define __vesRenderer_h
+#ifndef VESRENDERER_H
+#define VESRENDERER_H
 
 #ifdef ANDROID
 #include <GLES2/gl2.h>
@@ -29,8 +29,7 @@
 #import <OpenGLES/ES2/glext.h>
 #endif
 
-#include <string>
-
+// VES includes
 #include "vesGMTL.h"
 #include "vesMultitouchCamera.h"
 #include "vesShaderProgram.h"
@@ -38,6 +37,9 @@
 #include "vesSceneRender.h"
 #include "vesRenderStage.h"
 #include "vesCamera.h"
+
+// C++ includes
+#include <string>
 
 // Forward declarations
 class vesRenderStage;
@@ -75,8 +77,6 @@ protected:
 
 
 private:
-//  vesActorCollection *Actor;
-//  Painter* Paint;
   double     m_aspect[2];
   int        m_width;
   int        m_height;

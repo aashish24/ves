@@ -309,5 +309,5 @@ void vesRenderer::setBackgroundColor(float r, float g, float b, float a)
 
 void vesRenderer::setBackground(vesTexture* background)
 {
-    // \todo: Implement this.
+  // \todo: Implement this.
 }

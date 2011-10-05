@@ -129,6 +129,7 @@ void Painter::ActorCollection(vesActorCollection *actor)
   this->pop();
 }
 
+
 void Painter::visitShape(vsg::Shape* shape)
 {
   shape->get_appearance()->render(this);
