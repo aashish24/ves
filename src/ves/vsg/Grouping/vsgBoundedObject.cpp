@@ -22,6 +22,8 @@
 
 vsgBoundedObject::vsgBoundedObject()
 {
+  this->m_boundsDirty = true;
+
   this->m_boundsCenter[0] = 0;
   this->m_boundsCenter[1] = 0;
   this->m_boundsCenter[2] = 0;
@@ -70,6 +72,7 @@ void vsgBoundedObject::setBounds(vesVector3f min, vesVector3f max)
       this->m_boundsSize *= -1;
     }
   }
+
 }
 
 
@@ -80,4 +83,10 @@ float vsgBoundedObject::boundsRadius()
   return sqrt(temp[0]*temp[0]+
               temp[1]*temp[1]+
               temp[2]*temp[2]);
+}
+
+
+void vsgBoundedObject::setBoundsDirty(bool value)
+{
+  this->m_boundsDirty = value;
 }

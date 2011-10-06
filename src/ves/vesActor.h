@@ -23,14 +23,7 @@
 
 #include "vsg/Grouping/Transform.h"
 
-#include "vsg/Shape/Appearance.h"
-
 #include "vesGMTL.h"
-
-namespace vsg
-{
-  class Shape;
-}
 
 // Forward declarations
 class vesMapper;
@@ -54,12 +47,6 @@ public:
       \return The 4x4 matrix of the actor.
   */
   vesMatrix4x4f modelViewMatrix();
-
-  /*!
-      Compute the bounds of the actor.
-  */
-  void computeBounds();
-
 
   /*!
       Set the translation for the actor.
@@ -120,8 +107,13 @@ public:
 
 
 protected:
+
+  virtual void updateBounds(const vesActor *child);
+  virtual void computeBounds();
+
   bool                  m_sensor;
   bool                  m_visible;
+  bool                  m_boundsDirty;
 
   vesMapper            *m_mapper;
   vesMaterial          *m_material;
@@ -129,8 +121,6 @@ protected:
 
 
 private:
-  class vesActorInternal;
-  vesActorInternal     *m_internal;
 };
 
 #endif // VESACTOR_H

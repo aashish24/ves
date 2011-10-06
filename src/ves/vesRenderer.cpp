@@ -74,30 +74,23 @@ void vesRenderer::render()
 
   glEnable(GL_DEPTH_TEST);
 
-  vesMatrix4x4f projectionMatrix =
-    this->m_camera->ComputeProjectionTransform(this->m_aspect[1], -1, 1);
-
-  vesMatrix4x4f viewMatrix =
-    this->m_camera->ComputeViewTransform();
-
   if (this->m_sceneRoot) {
+
+    // Update traversal.
+    this->updateTraverseScene();
+
     // Cull traversal.
-    vesCullVisitor cullVisitor;
+    this->cullTraverseScene();
 
-    cullVisitor.pushModelViewMatrix(viewMatrix);
-    cullVisitor.pushProjectionMatrix(projectionMatrix);
-    cullVisitor.setRenderStage(this->m_renderStage);
-    cullVisitor.visit(*this->m_sceneRoot);
+    vesRenderState renderState;
+
+    this->m_renderStage->render(renderState, 0);
+
+    // \note: For now clear the stage.
+    // \todo: Add an optimization where we could save whole or
+    // part of the the stage.
+    this->m_renderStage->clearAll();
   }
-
-  vesRenderState renderState;
-
-  this->m_renderStage->render(renderState, 0);
-
-  // \note: For now clear the stage.
-  // \todo: Add an optimization where we could save whole or
-  // part of the the stage.
-  this->m_renderStage->clearAll();
 }
 
 
@@ -161,7 +154,16 @@ vesVector3f vesRenderer::computeDisplayToWorld(vesVector3f display)
 
 void vesRenderer::resetCamera()
 {
-  this->m_sceneRoot->computeBounds();
+  if (!this->m_sceneRoot) {
+    return;
+  }
+
+  // If bounds of scene are dirty make a update traversal
+  // to make bounds upto date.
+  if (this->m_sceneRoot->boundsDirty()) {
+    this->updateTraverseScene();
+  }
+
   vesVector3f center = this->m_sceneRoot->boundsCenter();
 
   double distance;
@@ -225,7 +227,15 @@ void vesRenderer::resetCamera()
 
 void vesRenderer::resetCameraClippingRange()
 {
-  this->m_sceneRoot->computeBounds();
+  if (!this->m_sceneRoot) {
+    return;
+  }
+
+  // If bounds of scene are dirty make a update traversal
+  // to make bounds upto date.
+  if (this->m_sceneRoot->boundsDirty()) {
+    this->updateTraverseScene();
+  }
 
   float bounds[6];
 
@@ -315,3 +325,30 @@ void vesRenderer::setBackground(vesTexture* background)
 {
   // \todo: Implement this.
 }
+
+
+void vesRenderer::updateTraverseScene()
+{
+  // Update traversal.
+  vesVisitor     updateVisitor(vesVisitor::UpdateVisitor,
+                               vesVisitor::TraverseAllChildren);
+  updateVisitor.visit(*this->m_sceneRoot);
+}
+
+
+void vesRenderer::cullTraverseScene()
+{
+  vesCullVisitor cullVisitor;
+
+  vesMatrix4x4f projectionMatrix =
+    this->m_camera->ComputeProjectionTransform(this->m_aspect[1], -1, 1);
+
+  vesMatrix4x4f viewMatrix =
+    this->m_camera->ComputeViewTransform();
+
+  cullVisitor.pushModelViewMatrix(viewMatrix);
+  cullVisitor.pushProjectionMatrix(projectionMatrix);
+  cullVisitor.setRenderStage(this->m_renderStage);
+  cullVisitor.visit(*this->m_sceneRoot);
+}
+

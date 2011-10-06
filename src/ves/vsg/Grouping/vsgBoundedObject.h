@@ -51,7 +51,13 @@ public:
 
   float boundsRadius();
 
+  void setBoundsDirty(bool value);
+  bool boundsDirty()        { return this->m_boundsDirty; }
+  bool boundsDirty() const  { return this->m_boundsDirty; }
+
 protected:
+
+  bool    m_boundsDirty;
 
   SFVec3f m_boundsCenter;
   SFVec3f m_boundsSize;

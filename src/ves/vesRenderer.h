@@ -73,6 +73,9 @@ public:
 
 protected:
 
+  virtual void updateTraverseScene();
+  virtual void cullTraverseScene();
+
   void resetCameraClippingRange(float bounds[6]);
 
 

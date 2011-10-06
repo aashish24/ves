@@ -213,6 +213,7 @@ void vesKiwiViewerApp::resetView()
   //
   // set direction to look from
   vesRenderer* renderer = this->Internal->Renderer;
+
   renderer->camera()->SetViewPlaneNormal(vesVector3f(0.0, 0.0, 1.0));
 
   // dolly so that scene fits window

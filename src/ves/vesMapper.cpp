@@ -54,6 +54,8 @@ void vesMapper::computeBounds()
   vesVector3f max = this->m_data->GetMax();
 
   this->setBounds(min, max);
+
+  this->setBoundsDirty(false);
 }
 
 

@@ -20,32 +20,25 @@
 
 #include "vesActor.h"
 
+// VES includes
 #include "vesMapper.h"
+#include "vesMaterial.h"
 #include "vesVisitor.h"
 
-#include "vesMaterial.h"
 
-class vesActor::vesActorInternal
+vesActor::vesActor() : vsg::Transform(),
+  m_sensor  (false),
+  m_visible (true),
+  m_mapper  (0x0),
+  m_material(0x0),
+  m_widget  (0x0)
 {
-};
-
-
-vesActor::vesActor()
-{
-  this->m_sensor      = false;
-  this->m_visible     = true;
-  this->m_mapper      = 0x0;
-  this->m_material    = 0x0;
-  this->m_widget      = 0x0;
-  this->m_internal    = new vesActorInternal();
-
   // \todo: Create a default apperance.
 }
 
 
 vesActor::~vesActor()
 {
-  delete this->m_internal; this->m_internal = 0x0;
 }
 
 
@@ -55,15 +48,24 @@ vesMatrix4x4f vesActor::modelViewMatrix()
 }
 
 
-void vesActor::computeBounds()
+void vesActor::updateBounds(const vesActor *child)
 {
-  if (this->m_mapper) {
-    this->m_mapper->computeBounds();
+  vesVector3f min = child->boundsMinimum();
+  vesVector3f max = child->boundsMaximum();
 
-    vesVector3f min = transformPoint3f(this->eval(), this->m_mapper->boundsMinimum());
-    vesVector3f max = transformPoint3f(this->eval(), this->m_mapper->boundsMaximum());
-
+  if (!this->m_mapper) {
     this->setBounds(min, max);
+  }
+  else
+  {
+    for (int i = 0; i < 3; ++i) {
+      if (max[i] > this->m_boundsMaximum[i]) {
+        this->m_boundsMaximum[i] = max[i];
+      }
+      if (min[i] < this->m_boundsMinimum[i]) {
+        this->m_boundsMinimum[i] = min[i];
+      }
+    }
   }
 }
 
@@ -138,12 +140,62 @@ void vesActor::traverse(vesVisitor &visitor)
 {
   Children::iterator itr = this->m_children.begin();
 
-  if (visitor.mode() == vesVisitor::TraverseAllChildren) {
-    for (itr; itr != this->m_children.end(); ++itr) {
-      (*itr)->accept(visitor);
+  // Update
+  switch(visitor.type())
+  {
+    case vesVisitor::UpdateVisitor:
+    {
+      this->computeBounds();
+
+      if (visitor.mode() == vesVisitor::TraverseAllChildren) {
+        for (itr; itr != this->m_children.end(); ++itr) {
+          (*itr)->accept(visitor);
+          {
+            (*itr)->accept(visitor);
+
+            this->updateBounds(static_cast<vesActor*>(*itr));
+          }
+        }
+      }
+
+      if (this->m_parent && this->boundsDirty()) {
+        // Flag parents bounds dirty.
+        this->m_parent->setBoundsDirty(true);
+      }
+      this->setBoundsDirty(false);
+
+      break;
     }
-  }
-  else if (visitor.mode() == vesVisitor::TraverseActiveChildren) {
-    // \todo: Implement this.
+    case vesVisitor::CullVisitor:
+    {
+      // Cull
+      if (visitor.mode() == vesVisitor::TraverseAllChildren) {
+        for (itr; itr != this->m_children.end(); ++itr) {
+          (*itr)->accept(visitor);
+        }
+      }
+      else if (visitor.mode() == vesVisitor::TraverseActiveChildren) {
+        // \todo: Implement this.
+      }
+
+      break;
+    }
+    default:
+    {
+      // Do nothing.
+    }
+  };
+}
+
+
+void vesActor::computeBounds()
+{
+  if (this->m_mapper && this->m_mapper->boundsDirty()) {
+    this->m_mapper->computeBounds();
+
+    vesVector3f min = transformPoint3f(this->eval(), this->m_mapper->boundsMinimum());
+    vesVector3f max = transformPoint3f(this->eval(), this->m_mapper->boundsMaximum());
+
+    this->setBounds(min, max);
   }
 }
