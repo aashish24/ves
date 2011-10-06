@@ -33,16 +33,17 @@
 # include <OpenGLES/ES2/glext.h>
 #endif
 
-vesMapper::vesMapper()
+vesMapper::vesMapper() : vsgBoundedObject(),
+  m_initialized(false),
+  m_data       (0x0)
 {
-  this->m_initialized = false;
-  this->m_data        = false;
 }
 
 
 vesMapper::~vesMapper()
 {
   if (this->m_initialized) {
+    // \todo: Need to implement release graphics resources.
   }
 }
 
@@ -54,11 +55,6 @@ void vesMapper::computeBounds()
 
   set_BBoxSize  (min, max);
   set_BBoxCenter(min, max);
-}
-
-
-void vesMapper::accept(vesVisitor &visitor)
-{
 }
 
 

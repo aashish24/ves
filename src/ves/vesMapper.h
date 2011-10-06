@@ -21,7 +21,6 @@
 #ifndef VESMAPPER_H
 #define VESMAPPER_H
 
-#include "vsgGeometryNode.h"
 #include "vsgBoundedObject.h"
 
 #include "vesGMTL.h" // Needed for vesMatrix4x4f return.
@@ -31,15 +30,13 @@ class vesVisitor;
 class vesTriangleData;
 class vesRenderState;
 
-class vesMapper : public vsgGeometryNode, public vsgBoundedObject
+class vesMapper : public vsgBoundedObject
 {
 public:
     vesMapper();
    ~vesMapper();
 
   virtual void computeBounds();
-
-  virtual void accept(vesVisitor &visitor);
 
   void                   setData(vesTriangleData *data);
   vesTriangleData*       data()       { return this->m_data; }

@@ -1,12 +1,11 @@
 #ifndef VESMATERIAL_H
 #define VESMATERIAL_H
 
-#include "vsg/Core/vsgNode.h"
-
 // Forward declarations
 class vesRenderState;
+class vesShaderProgram;
 
-class vesMaterialAttribute : public vsgNode
+class vesMaterialAttribute
 {
 public:
   enum AttributeType
@@ -37,9 +36,23 @@ protected:
 };
 
 
-class vesMaterial : public vsgNode
+class vesMaterial
 {
 public:
+  enum RenderHint
+  {
+    DefaultBin    = 0,
+    OpaqueBin     = 1,
+    TransparentBin =2
+  };
+
+
+  enum RenderBin
+  {
+    Default     = 0,
+    Opaque      = 1,
+    Transparent = 10
+  };
 
            vesMaterial();
   virtual ~vesMaterial();
@@ -50,6 +63,10 @@ public:
 
   bool addAttribute(vesMaterialAttribute *attribute);
   vesMaterialAttribute* attribute(vesMaterialAttribute::AttributeType type);
+
+  /*! Provide quick acces to shader program */
+  vesShaderProgram* shaderProgram()             { return this->m_shaderProgram; }
+  const vesShaderProgram* shaderProgram() const { return this->m_shaderProgram; }
 
   virtual void render(const vesRenderState &renderState);
   virtual void remove(const vesRenderState &renderState);
@@ -66,6 +83,8 @@ public:
 protected:
 
   int m_binNumber;
+
+  vesShaderProgram *m_shaderProgram;
 
   class vesInternal;
   vesInternal *m_internal;

@@ -124,15 +124,6 @@ void vesActor::setMaterial(vesMaterial *material)
 
 void vesActor::accept(vesVisitor &visitor)
 {
-  if (this->m_material) {
-    this->m_material->accept(visitor);
-  }
-
-  if (this->m_mapper) {
-    this->m_mapper->accept(visitor);
-  }
-
-
   this->traverse(visitor);
 }
 

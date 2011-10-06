@@ -247,7 +247,6 @@ void vesShaderProgram::bindAttributes()
 
   int i=0;
   for (;constItr != this->m_vertexAttributes.end(); ++constItr) {
-    std::cout << "binding " << (*constItr)->name() << "  " << i << std::endl;
     glBindAttribLocation(this->m_programHandle, i,
                          (*constItr)->name().c_str());
     this->m_vertexAttributeNameToLocation[(*constItr)->name()] = i;

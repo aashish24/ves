@@ -54,7 +54,6 @@ public:
   }
 
   virtual void visit(vesActor  &actor);
-  virtual void visit(vesMapper &mapper);
 
 #if 0
   virtual void visit(vesMaterial& material);

@@ -106,20 +106,5 @@ vesMatrix4x4f vesVisitor::projectionMatrix()
 
 void vesVisitor::visit(vesActor &actor)
 {
-  std::cout << "visiting actor " << std::endl;
   actor.accept(*this);
 }
-
-
-void vesVisitor::visit(vesMapper &mapper)
-{
-  mapper.accept(*this);
-}
-
-
-//void vesVisitor::visit(vesMaterial &material)
-//{
-//  material.accept(this);
-//}
-
-

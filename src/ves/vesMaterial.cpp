@@ -1,9 +1,11 @@
 
 #include "vesMaterial.h"
 
+// VES includes
+#include "vesShaderProgram.h"
+
 // C++ includes
 #include <map>
-
 
 class vesMaterial::vesInternal
 {
@@ -15,7 +17,9 @@ public:
 };
 
 
-vesMaterial::vesMaterial() : vsgNode()
+vesMaterial::vesMaterial() :
+  m_binNumber     (Default),
+  m_shaderProgram (0x0)
 {
   this->m_internal = new vesInternal;
 }
@@ -37,14 +41,20 @@ bool vesMaterial::addAttribute(vesMaterialAttribute *attribute)
     vesInternal::Attributes::iterator itr =
       this->m_internal->m_attributes.find( attribute->type() );
 
-    if (itr == this->m_internal->m_attributes.end() || ( (itr->second) != attribute )) {
+    if (itr == this->m_internal->m_attributes.end() ||
+        ( (itr->second) != attribute )) {
       this->m_internal->m_attributes[attribute->type()] = attribute;
+
+      if (attribute->type() == vesMaterialAttribute::Shader) {
+        this->m_shaderProgram = static_cast<vesShaderProgram*>(attribute);
+      }
     }
   }
 }
 
 
-vesMaterialAttribute* vesMaterial::attribute(vesMaterialAttribute::AttributeType type)
+vesMaterialAttribute* vesMaterial::attribute(
+  vesMaterialAttribute::AttributeType type)
 {
   vesInternal::Attributes::iterator itr =
     this->m_internal->m_attributes.find( type );

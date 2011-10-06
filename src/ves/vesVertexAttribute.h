@@ -1,15 +1,15 @@
 #ifndef VESVERTEXATTRIBUTE_H
 #define VESVERTEXATTRIBUTE_H
 
-// Base class
 #include "vesMaterial.h"
 
 // VES includes
-#include "vesRenderStage.h"
+#include "vesRenderState.h"
 #include "vesShaderProgram.h"
 #include "vesTriangleData.h"
 
 // C++ includes
+#include <cassert>
 #include <string>
 
 #ifdef ANDROID
@@ -24,9 +24,9 @@ class vesVertexAttribute : public vesMaterialAttribute
 {
 public:
 
-  vesVertexAttribute(const std::string &name)
+  vesVertexAttribute(const std::string &name) :
+    m_name(name)
   {
-    this->m_name = name;
   }
 
   const std::string& name() const { return this->m_name; }
@@ -34,9 +34,10 @@ public:
   virtual void update(const vesRenderState &renderState,
                       const vesShaderProgram &shaderProgram){;}
 
-protected:
-  std::string m_name;
 
+protected:
+
+  std::string m_name;
 };
 
 
@@ -52,23 +53,22 @@ public:
 
   virtual void bindVertexData(const vesRenderState &renderState)
   {
-    vesShaderProgram *program =
-      static_cast<vesShaderProgram*>( renderState.m_material->attribute(
-      vesMaterialAttribute::Shader) );
+    assert(renderState.m_material && renderState.m_material->shaderProgram());
 
-    glVertexAttribPointer(program->attributeLocation(this->m_name), 3, GL_FLOAT,
+    glVertexAttribPointer(renderState.m_material->shaderProgram()->
+                          attributeLocation(this->m_name), 3, GL_FLOAT,
                           GL_FALSE, 6 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(program->attributeLocation(this->m_name));
+    glEnableVertexAttribArray(renderState.m_material->shaderProgram()->
+                              attributeLocation(this->m_name));
   }
 
 
   virtual void unbindVertexData(const vesRenderState &renderState)
   {
-      vesShaderProgram *program =
-        static_cast<vesShaderProgram*>( renderState.m_material->attribute(
-        vesMaterialAttribute::Shader) );
+    assert(renderState.m_material && renderState.m_material->shaderProgram());
 
-    glDisableVertexAttribArray(program->attributeLocation(this->m_name));
+    glDisableVertexAttribArray(renderState.m_material->shaderProgram()->
+                               attributeLocation(this->m_name));
   }
 };
 
@@ -84,23 +84,22 @@ public:
 
   virtual void bindVertexData(const vesRenderState &renderState)
   {
-    vesShaderProgram *program =
-      static_cast<vesShaderProgram*>( renderState.m_material->attribute(
-      vesMaterialAttribute::Shader) );
+    assert(renderState.m_material && renderState.m_material->shaderProgram());
 
-    glVertexAttribPointer(program->attributeLocation(this->m_name), 3,
+    glVertexAttribPointer(renderState.m_material->shaderProgram()->
+                          attributeLocation(this->m_name), 3,
                           GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)12);
-    glEnableVertexAttribArray(program->attributeLocation(this->m_name));
+    glEnableVertexAttribArray(renderState.m_material->shaderProgram()->
+                              attributeLocation(this->m_name));
   }
 
 
   virtual void unbindVertexData(const vesRenderState &renderState)
   {
-      vesShaderProgram *program =
-        static_cast<vesShaderProgram*>( renderState.m_material->attribute(
-        vesMaterialAttribute::Shader) );
+    assert(renderState.m_material && renderState.m_material->shaderProgram());
 
-    glDisableVertexAttribArray(program->attributeLocation(this->m_name));
+    glDisableVertexAttribArray(renderState.m_material->shaderProgram()->
+                               attributeLocation(this->m_name));
   }
 };
 
