@@ -53,8 +53,7 @@ void vesMapper::computeBounds()
   vesVector3f min = this->m_data->GetMin();
   vesVector3f max = this->m_data->GetMax();
 
-  set_BBoxSize  (min, max);
-  set_BBoxCenter(min, max);
+  this->setBounds(min, max);
 }
 
 
@@ -68,12 +67,14 @@ void vesMapper::setData(vesTriangleData *data)
 
 void vesMapper::normalize()
 {
-  float r = GetBBoxRadius();
+  float r = this->boundsRadius();
+
   this->m_normalizedMatrix =
       makeScaleMatrix4x4(1/r,1/r,1/r)*
-      makeTranslationMatrix4x4(-get_BBoxCenter());
-  set_BBoxCenter(transformPoint3f(this->m_normalizedMatrix, get_BBoxCenter()));
-  set_BBoxSize(transformPoint3f(this->m_normalizedMatrix, get_BBoxSize()));
+      makeTranslationMatrix4x4(-this->boundsCenter());
+
+  this->setBoundsCenter(transformPoint3f(this->m_normalizedMatrix, this->boundsCenter()));
+  this->setBoundsSize(transformPoint3f(this->m_normalizedMatrix, this->boundsSize()));
 }
 
 

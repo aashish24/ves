@@ -1,5 +1,5 @@
-#ifndef VESPROJECTION_UNIFORM_H
-#define VESPROJECTION_UNIFORM_H
+#ifndef VESPROJECTIONUNIFORM_H
+#define VESPROJECTIONUNIFORM_H
 
 // Base class
 #include "vesUniform.h"
@@ -24,4 +24,4 @@ public:
   }
 };
 
-#endif // VESPROJECTION_UNIFORM_H
+#endif // VESPROJECTIONUNIFORM_H

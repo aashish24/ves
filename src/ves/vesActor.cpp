@@ -60,11 +60,10 @@ void vesActor::computeBounds()
   if (this->m_mapper) {
     this->m_mapper->computeBounds();
 
-    vesVector3f min = transformPoint3f(this->eval(), this->m_mapper->get_min());
-    vesVector3f max = transformPoint3f(this->eval(), this->m_mapper->get_max());
+    vesVector3f min = transformPoint3f(this->eval(), this->m_mapper->boundsMinimum());
+    vesVector3f max = transformPoint3f(this->eval(), this->m_mapper->boundsMaximum());
 
-    set_BBoxCenter(min, max);
-    set_BBoxSize(min, max);
+    this->setBounds(min, max);
   }
 }
 
@@ -77,24 +76,25 @@ void vesActor::setVisible(bool value)
 
 void vesActor::setTranslation(const vesVector3f& translation)
 {
-//  set_translation(translation);
+  set_translation(translation);
 }
+
 
 vesVector3f vesActor::translation() const
 {
-//  return get_translation();
+  return get_translation();
 }
 
 
 void vesActor::setRotation(const vesVector4f& rotation)
 {
-//  set_rotation(rotation);
+  set_rotation(rotation);
 }
 
 
 vesVector4f vesActor::rotation() const
 {
-//  return get_rotation();
+  return get_rotation();
 }
 
 

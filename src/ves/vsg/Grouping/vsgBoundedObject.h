@@ -33,17 +33,31 @@
 class vsgBoundedObject
 {
 public:
-  vsgBoundedObject();
-  ~vsgBoundedObject();
-  virtual void computeBounds()=0;
-  InOutSF(BBoxCenter,SFVec3f)
-  InOutSF(BBoxSize, SFVec3f)
-  InOutSF(min,SFVec3f)
-  InOutSF(max,SFVec3f)
+           vsgBoundedObject();
+  virtual ~vsgBoundedObject();
 
-  void set_BBoxCenter(vesVector3f min, vesVector3f max);
-  void set_BBoxSize(vesVector3f min, vesVector3f max);
-  virtual float GetBBoxRadius();
+  virtual void computeBounds()=0;
+
+  const SFVec3f& boundsMinimum() const {return this->m_boundsMinimum;}
+  const SFVec3f& boundsMaximum() const {return this->m_boundsMaximum;}
+
+  const SFVec3f& boundsCenter() const {return this->m_boundsCenter;}
+  const SFVec3f& boundsSize()   const {return this->m_boundsSize;}
+
+  void setBoundsCenter(const vesVector3f& center);
+  void setBoundsSize  (const vesVector3f& size);
+
+  void  setBounds(vesVector3f min, vesVector3f max);
+
+  float boundsRadius();
+
+protected:
+
+  SFVec3f m_boundsCenter;
+  SFVec3f m_boundsSize;
+
+  SFVec3f m_boundsMinimum;
+  SFVec3f m_boundsMaximum;
 };
 
 #endif // __vsgBoundedObject_h

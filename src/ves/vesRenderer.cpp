@@ -162,7 +162,7 @@ vesVector3f vesRenderer::computeDisplayToWorld(vesVector3f display)
 void vesRenderer::resetCamera()
 {
   this->m_sceneRoot->computeBounds();
-  vesVector3f center = this->m_sceneRoot->get_BBoxCenter();
+  vesVector3f center = this->m_sceneRoot->boundsCenter();
 
   double distance;
   vesVector3f vn, vup;
@@ -176,7 +176,7 @@ void vesRenderer::resetCamera()
     return;
   }
 
-  double radius = this->m_sceneRoot->GetBBoxRadius();
+  double radius = this->m_sceneRoot->boundsRadius();
   radius = (radius==0)? (.5) : (radius);
 
   double angle = deg2Rad(this->m_camera->GetViewAngle());
@@ -228,12 +228,16 @@ void vesRenderer::resetCameraClippingRange()
   this->m_sceneRoot->computeBounds();
 
   float bounds[6];
-  bounds[0] = this->m_sceneRoot->get_min()[0];
-  bounds[1] = this->m_sceneRoot->get_max()[0];
-  bounds[2] = this->m_sceneRoot->get_min()[1];
-  bounds[3] = this->m_sceneRoot->get_max()[1];
-  bounds[4] = this->m_sceneRoot->get_min()[2];
-  bounds[5] = this->m_sceneRoot->get_max()[2];
+
+  vesVector3f minimumBounds = this->m_sceneRoot->boundsMinimum();
+  vesVector3f maximumBounds = this->m_sceneRoot->boundsMaximum();
+
+  bounds[0] = minimumBounds[0];
+  bounds[1] = maximumBounds[0];
+  bounds[2] = minimumBounds[1];
+  bounds[3] = maximumBounds[1];
+  bounds[4] = minimumBounds[2];
+  bounds[5] = maximumBounds[2];
 
   this->resetCameraClippingRange(bounds);
 }
