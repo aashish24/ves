@@ -157,6 +157,13 @@ bool DoTesting()
   // Note, this loop renders but does not bother to swap buffers
   for (int i = 0; i < testHelper->app()->numberOfBuiltinDatasets(); ++i) {
     LoadData(i);
+
+    // Enable the background image for the final image regression test
+    if (i == testHelper->app()->numberOfBuiltinDatasets()-1)
+      {
+      testHelper->app()->setBackgroundTexture(testHelper->sourceDirectory() + "/Apps/iOS/Kiwi/Kiwi/Data/kiwi.png");
+      }
+
     testHelper->app()->render();
     std::string datasetName = testHelper->app()->builtinDatasetName(i);
   
@@ -240,7 +247,6 @@ void InitRendering()
   testHelper->app()->setFragmentShaderSource(fragmentSourceStr);
 
   testHelper->app()->initializeTextureShader();
-  //testHelper->app()->setBackgroundTexture(testHelper->sourceDirectory() + "/Apps/iOS/Kiwi/Kiwi/Data/kiwi.png");
 }
 
 //----------------------------------------------------------------------------
