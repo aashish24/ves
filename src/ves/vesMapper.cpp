@@ -20,88 +20,53 @@
 
 #include "vesMapper.h"
 
-#include "Painter.h"
+// VES includes
+#include "vesMaterial.h"
+#include "vesRenderStage.h"
 #include "vesShaderProgram.h"
 #include "vesTriangleData.h"
+#include "vesVertexAttributeKeys.h"
 
-vesMapper::vesMapper(): m_data(NULL), m_initialized(false)
+#ifdef ANDROID
+# include <GLES2/gl2.h>
+# include <GLES2/gl2ext.h>
+#else
+# include <OpenGLES/ES2/gl.h>
+# include <OpenGLES/ES2/glext.h>
+#endif
+
+// C++ includes
+#include <vector>
+
+class vesMapper::vesInternal
 {
-  this->m_isNew = true;
-  this->m_red = 0.8;
-  this->m_green = 0.8;
-  this->m_blue = 0.8;
-  this->m_alpha = 1.0;
-  this->m_drawPoints = false;
-  this->m_texture = NULL;
+public:
+  ~vesInternal()
+  {
+    this->m_bufferVertexAttributeMap.clear();
+  }
+
+  std::map< unsigned int, std::vector<int> > m_bufferVertexAttributeMap;
+};
+
+
+
+vesMapper::vesMapper() : vsgBoundedObject(),
+  m_initialized(false),
+  m_data       (0x0),
+  m_internal   (0x0)
+{
+  this->m_internal = new vesInternal();
 }
+
+
 vesMapper::~vesMapper()
 {
-  // Release our VBOs before the context is destroyed
-  if (m_initialized) {
-    //glDeleteBuffers(2, mMapperVBO);
+  if (this->m_initialized) {
+    // \todo: Need to implement release graphics resources.
   }
-}
 
-void vesMapper::setTriangleData(vesTriangleData* data)
-{
-  this->m_data = data;
-}
-
-void vesMapper::setColor(float r, float g, float b, float a)
-{
-  this->m_red = r;
-  this->m_green = g;
-  this->m_blue = b;
-  this->m_alpha =a;
-}
-
-vesMatrix4x4f vesMapper::eval()
-{
-  vesMatrix4x4f temp;
-  return temp;
-  //  vesMatrix4x4f temp= makeTransposeMatrix4x4(makeTransposeMatrix4x4(this->NormalizedMatrix));
-  //  return temp;
-}
-
-bool vesMapper::read()
-{
-  return true;
-}
-
-void vesMapper::render(vesShaderProgram *program)
-{
-  // \note: Not used as of now.
-//  glVertexAttrib4f(program->GetAttribute("a_texcoord"), 0.8, 0.8, 0.8, 1.0);
-//  glVertexAttribPointer(program->GetAttribute("a_vertex"),
-//                        3,
-//                        GL_FLOAT,
-//                        0,
-//                        6 * sizeof(float),
-//                        &this->m_data->GetPoints()[0]);
-//  glVertexAttribPointer(program->GetAttribute("a_normal"),
-//                        3,
-//                        GL_FLOAT,
-//                        0,
-//                        6 * sizeof(float),
-//                        this->m_data->GetPoints()[0].normal.mData);
-
-//  // draw triangles
-//  glDrawElements(GL_TRIANGLES,
-//                 this->m_data->GetTriangles().size() * 3,
-//                 GL_UNSIGNED_SHORT,
-//                 &this->m_data->GetTriangles()[0]);
-
-//  // draw lines
-//  glDrawElements(GL_LINES,
-//                 this->m_data->GetLines().size() * 2,
-//                 GL_UNSIGNED_SHORT,
-//                 &this->m_data->GetLines()[0]);
-}
-
-
-vesTriangleData* vesMapper::triangleData()
-{
-  return this->m_data;
+  delete this->m_internal; this->m_internal = 0x0;
 }
 
 
@@ -109,52 +74,103 @@ void vesMapper::computeBounds()
 {
   vesVector3f min = this->m_data->GetMin();
   vesVector3f max = this->m_data->GetMax();
-  set_BBoxSize(min,max);
-  set_BBoxCenter(min, max);
-  /*
-  std::cout<< "BBoxSize = [ ";
-  for (int i =0 ; i<3; ++i) {
-    std::cout<<GetBBoxSize()[i]<< " ";
-  }
-  std::cout<<"]"<<std::endl;
 
-  std::cout<< "BBoxCenter = [ ";
-  for (int i =0 ; i<3; ++i) {
-    std::cout<<GetBBoxCenter()[i]<< " ";
-  }
-  std::cout<<"]"<<std::endl;
-  */
+  this->setBounds(min, max);
+
+  this->setBoundsDirty(false);
 }
+
+
+void vesMapper::setData(vesTriangleData *data)
+{
+  if (data) {
+    this->m_data = data;
+  }
+}
+
 
 void vesMapper::normalize()
 {
-  float r = GetBBoxRadius();
+  float r = this->boundsRadius();
+
   this->m_normalizedMatrix =
       makeScaleMatrix4x4(1/r,1/r,1/r)*
-      makeTranslationMatrix4x4(-get_BBoxCenter());
-  set_BBoxCenter(transformPoint3f(this->m_normalizedMatrix, get_BBoxCenter()));
-  set_BBoxSize(transformPoint3f(this->m_normalizedMatrix, get_BBoxSize()));
-  /*
-  std::cout<< "BBoxSize = [ ";
-  for (int i =0 ; i<3; ++i) {
-    std::cout<<GetBBoxSize()[i]<< " ";
-  }
-  std::cout<<"]"<<std::endl;
+      makeTranslationMatrix4x4(-this->boundsCenter());
 
-  std::cout<< "BBoxCenter = [ ";
-  for (int i =0 ; i<3; ++i) {
-    std::cout<<GetBBoxCenter()[i]<< " ";
-  }
-  std::cout<<"]"<<std::endl;
-  */
+  this->setBoundsCenter(transformPoint3f(this->m_normalizedMatrix, this->boundsCenter()));
+  this->setBoundsSize(transformPoint3f(this->m_normalizedMatrix, this->boundsSize()));
 }
 
-void vesMapper::render(Painter* render)
+
+void vesMapper::render(const vesRenderState &renderState)
 {
+  if (!this->m_initialized) {
+    this->setupDrawObjects(renderState);
+  }
+
+  std::map<unsigned int, std::vector<int> >::const_iterator constItr
+    = this->m_internal->m_bufferVertexAttributeMap.begin();
+
+  for (constItr; constItr != this->m_internal->m_bufferVertexAttributeMap.end(); ++constItr) {
+    glBindBuffer(GL_ARRAY_BUFFER, constItr->first);
+    for (size_t i = 0; i < constItr->second.size(); ++i) {
+      renderState.m_material->bindVertexData(renderState, constItr->second[i]);
+    }
+  }
+
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_buffer[2]);
+  glDrawElements(GL_TRIANGLES, this->m_data->GetTriangles().size() * 3,
+                 GL_UNSIGNED_SHORT, (void*)0);
+
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_buffer[3]);
+  glDrawElements(GL_LINES, this->m_data->GetLines().size() * 2,
+                 GL_UNSIGNED_SHORT, (void*)0);
+
+  constItr = this->m_internal->m_bufferVertexAttributeMap.begin();
+  for (constItr; constItr != this->m_internal->m_bufferVertexAttributeMap.end(); ++constItr) {
+    glBindBuffer(GL_ARRAY_BUFFER, constItr->first);
+    for (size_t i = 0; i < constItr->second.size(); ++i) {
+      renderState.m_material->unbindVertexData(renderState, constItr->second[i]);
+    }
+  }
+
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-vesTriangleData* vesMapper::data()
+
+void vesMapper::setupDrawObjects(const vesRenderState &renderState)
 {
-  return this->m_data;
-}
+  const int numberOfFloats = 6;
+  size_t sizeOfPositions = (this->m_data->GetPoints().size() * numberOfFloats * sizeof(float));
 
+  // \todo: Put a GL log.
+  glGenBuffers(4, &this->m_buffer[0]);
+
+  glBindBuffer(GL_ARRAY_BUFFER, this->m_buffer[0]);
+  glBufferData(GL_ARRAY_BUFFER, sizeOfPositions,
+               &this->m_data->GetPoints()[0], GL_STATIC_DRAW);
+
+  glBindBuffer(GL_ARRAY_BUFFER, this->m_buffer[1]);
+  glBufferData(GL_ARRAY_BUFFER, this->m_data->GetVertexColors().size() * sizeof(float) * 3,
+               &this->m_data->GetVertexColors()[0], GL_STATIC_DRAW);
+
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_buffer[2]);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+               this->m_data->GetTriangles().size() *sizeof(unsigned short) * 3,
+               &this->m_data->GetTriangles()[0], GL_STATIC_DRAW);
+
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_buffer[3]);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+               this->m_data->GetLines().size() *sizeof(unsigned short) * 2,
+               &this->m_data->GetLines()[0], GL_STATIC_DRAW);
+
+  // \todo: Hard coded for now.
+  this->m_internal->m_bufferVertexAttributeMap[this->m_buffer[0]].push_back(
+    vesVertexAttributeKeys::Position);
+  this->m_internal->m_bufferVertexAttributeMap[this->m_buffer[0]].push_back(
+    vesVertexAttributeKeys::Normal);
+  this->m_internal->m_bufferVertexAttributeMap[this->m_buffer[1]].push_back(
+    vesVertexAttributeKeys::Color);
+
+  this->m_initialized = true;
+}

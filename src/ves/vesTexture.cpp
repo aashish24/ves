@@ -86,7 +86,7 @@ void vesTexture::load()
 
 void vesTexture::Render()
 {
-
+#if 0
   if(!loaded)
   {
     this->load();
@@ -132,4 +132,5 @@ void vesTexture::Render()
   glDisableVertexAttribArray(vesShaderProgram::TextureCoordinate);
 
   glDisable(GL_BLEND);
+#endif 
 }

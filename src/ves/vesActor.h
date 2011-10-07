@@ -18,132 +18,109 @@
   limitations under the License.
  ========================================================================*/
 
-#ifndef __vesActor_h
-#define __vesActor_h
+#ifndef VESACTOR_H
+#define VESACTOR_H
 
 #include "vsg/Grouping/Transform.h"
 
-#include "vsg/Shape/Appearance.h"
-
 #include "vesGMTL.h"
 
-namespace vsg
-{
-class Shape;
-class Appearance;
-}
-
-class vesActorInternal;
-class vesShader;
+// Forward declarations
 class vesMapper;
+class vesMaterial;
 class vesMultitouchWidget;
+class vesVisitor;
 
-/**
- * \class vesActor
- * \brief Defines an entity in the scene.
- *
- * The vesActor class defines an entity in the scene, and aims to provide API
- * analagous to the vtkActor classes.
- */
+/*!
+    \class vesActor
+    \brief Defines an entity in the scene.
+*/
 
 class vesActor : public vsg::Transform
 {
 public:
-  /**
-   * Constructor.
-   * \param shader The shader object to render the item with.
-   * \param mapper The mapper to use to render the item with.
-   * \param widget The widget that might be associated with the item.
-   */
-  vesActor(vesMapper* mapper,
-           vesMultitouchWidget *widget = 0);
-
+   vesActor();
   ~vesActor();
 
-  /**
-   *
-   */
-  vsg::Appearance* appearance()
-  {
-    return m_appearance;
-  }
+  /*!
+      Evaluate the transform associated with the vtkActor.
+      \return The 4x4 matrix of the actor.
+  */
+  vesMatrix4x4f modelViewMatrix();
 
-  /**
-   * Evaluate the transform associated with the vtkActor.
-   * \return The 4x4 matrix of the actor.
-   */
-  vesMatrix4x4f eval();
+  /*!
+      Set the translation for the actor.
+      \param translation Translation of the actor from the origin.
+  */
+  void setTranslation(const vesVector3f &translation);
 
-  /** Read the current actor. */
-  bool read();
-
-  /** Compute the bounds of the actor. */
-  void computeBounds();
-
-  /** Render the actor. */
-  void render(Painter* render);
-
-  /** Set the translation for the actor.
-   * \param translation Translation of the actor from the origin.
-   */
-  void setTranslation(const vesVector3f& translation);
-
-  /** Get the translation for the actor.
-   * \return The translation of the actor from the origin.
-   */
+  /*!
+      Get the translation for the actor.
+      \return The translation of the actor from the origin.
+  */
   vesVector3f translation() const;
 
-  /** Set the rotation for the actor.
-   * \param rotation Rotation of the actor.
-   */
-  void setRotation(const vesVector4f& rotation);
+  /*!
+      Set the rotation for the actor.
+      \param rotation Rotation of the actor.
+  */
+  void setRotation(const vesVector4f &rotation);
 
   /** Get the rotation for the actor.
    * \return The rotation of the actor from the origin.
    */
   vesVector4f rotation() const;
 
-  /** Mark the actor as a sensor (true denotes an actor that is a sensor).
-   * \param isSensor True to mark the actor as a sensor in the scene.
-   */
+  /*!
+      Mark the actor as a sensor (true denotes an actor that is a sensor).
+      \param isSensor True to mark the actor as a sensor in the scene.
+  */
   void setSensor(bool isSensor) { m_sensor = isSensor; }
 
-  /** Check if this actor instance is a sensor.
-   * \return true if the actor is a sensor.
-   */
+  /*!
+      Check if this actor instance is a sensor.
+      \return true if the actor is a sensor.
+  */
   bool isSensor() const { return m_sensor; }
 
-  void setWidget(vesMultitouchWidget* widget) { m_widget = widget; }
-  vesMultitouchWidget* widget() { return m_widget; }
-  const vesMultitouchWidget* widget() const { return m_widget; }
+  void                       setWidget(vesMultitouchWidget *widget);
+  vesMultitouchWidget*       widget()       { return this->m_widget; }
+  const vesMultitouchWidget* widget() const { return this->m_widget; }
 
   void setVisible(bool value);
   bool isVisible() const { return m_visible; }
 
-  vesMapper* mapper() { return m_mapper; }
-  const vesMapper* mapper() const { return m_mapper; }
+  void             setMapper(vesMapper *mapper);
+  vesMapper*       mapper()       { return this->m_mapper; }
+  const vesMapper* mapper() const { return this->m_mapper; }
 
-  /**
-   * Set the color of the actor.
-   * \param r Red component.
-   * \param g Green component.
-   * \param b Blue component.
-   * \param a Alpha compoent.
-   */
-  void setColor(float r, float g, float b, float a);
+  void                setMaterial(vesMaterial *material);
+  vesMaterial*        material()       { return this->m_material; }
+  const vesMaterial*  material() const { return this->m_material; }
+
+
+  virtual void accept(vesVisitor &visitor);
+
+  virtual void ascend(vesVisitor &visitor);
+
+  virtual void traverse(vesVisitor &visitor);
+
 
 protected:
-  vsg::Appearance *m_appearance;
-  vsg::Shape *m_shape;
-  bool m_sensor;
-  vesMultitouchWidget* m_widget;
-  vesMapper *m_mapper;
-  bool m_visible;
 
-  void addShapeChild(vsg::Shape* shape);
+  virtual void updateBounds(const vesActor *child);
+  virtual void computeBounds();
+
+  bool                  m_sensor;
+  bool                  m_visible;
+  bool                  m_boundsDirty;
+
+  vesMapper            *m_mapper;
+  vesMaterial          *m_material;
+  vesMultitouchWidget  *m_widget;
+
 
 private:
-  vesActorInternal *m_internal;
 };
 
-#endif // __vesActor_h
+#endif // VESACTOR_H

@@ -20,12 +20,6 @@
 
 #include "vesMultitouchCamera.h"
 
-// --------------------------------------------------------------------includes
-#include "Painter.h"
-
-// -----------------------------------------------------------------------macro
-
-// -----------------------------------------------------------------------cnstr
 vesMultitouchCamera::vesMultitouchCamera()
 {
 #ifndef ANDROID
@@ -48,7 +42,7 @@ vesMultitouchCamera::vesMultitouchCamera()
 #endif
 }
 
-// -----------------------------------------------------------------------destr
+
 vesMultitouchCamera::~vesMultitouchCamera()
 {
 }

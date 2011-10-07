@@ -1,3 +1,23 @@
+/*========================================================================
+  VES --- VTK OpenGL ES Rendering Toolkit
+
+      http://www.kitware.com/ves
+
+  Copyright 2011 Kitware, Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ ========================================================================*/
+
 #ifndef VESUNIFORM_H
 #define VESUNIFORM_H
 
@@ -15,8 +35,10 @@
 
 // VES includes
 #include "vesGMTL.h"
+#include "vesMaterial.h"
 
 // Forward declarations
+class vesRenderState;
 class vesShaderProgram;
 
 #ifndef GL_SAMPLER_1D
@@ -53,7 +75,7 @@ public:
 };
 
 
-class vesUniform
+class vesUniform : public vesMaterialAttribute
 {
 public:
 
@@ -108,6 +130,11 @@ public:
     return this->m_name;
   }
 
+  /*! Update callback. */
+  virtual void update(const vesRenderState   &renderState,
+                      const vesShaderProgram &program);
+
+
   /*! convenient scalar (non-array) constructors w/ assignment */
   explicit vesUniform(const std::string &name, float value);
   explicit vesUniform(const std::string &name, int value);
@@ -152,11 +179,7 @@ public:
   bool getElement(unsigned int index, vesMatrix3x3f &value) const;
   bool getElement(unsigned int index, vesMatrix4x4f &value) const;
 
-  int getUniformLocation() const;
-
-  void bind(vesShaderProgram *shaderProgram);
-
-  void callGL() const;
+  void callGL(int location) const;
 
 
 protected:
@@ -179,7 +202,6 @@ protected:
   std::string         m_name;
 
   unsigned int        m_numberElements;
-  int                 m_location;
 
   IntArray           *m_intArray;
   FloatArray         *m_floatArray;

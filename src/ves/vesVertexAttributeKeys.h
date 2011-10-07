@@ -18,50 +18,20 @@
   limitations under the License.
  ========================================================================*/
 
-#include "vsg/Shape/Appearance.h"
+#ifndef VESVERTEXATTRIBUTEKEYS_H
+#define VESVERTEXATTRIBUTEKEYS_H
 
-#include "vsg/Shape/vsgAppearanceChildNode.h"
-
-#include "vsg/vsgVisitor.h"
-#include "Painter.h"
-
-namespace vsg {
-  Appearance::Appearance()
+struct vesVertexAttributeKeys
+{
+  enum Key
   {
-  }
+    Position            = 0,
+    Normal              = 1,
+    TextureCoordinate   = 2,
+    Color               = 3,
+    Scalar              = 4,
+    CountAttributeIndex = 5
+  };
+};
 
-
-  Appearance::~Appearance()
-  {
-  }
-
-
-  void Appearance::addAttribute(vsgAppearanceChildNode* attribute)
-  {
-    m_attributes.push_back(attribute);
-  }
-
-
-  vsgAppearanceChildNode* Appearance::attribute(unsigned int type)
-  {
-    return m_attributes[0];
-  }
-
-
-  bool Appearance::accept(vsgVisitor* vsgVisitor)
-  {
-    return vsgVisitor->visitAppearance(this);
-  }
-
-
-  void Appearance::render(Painter* render)
-  {
-    m_attributes[0]->render(render);
-  }
-
-  bool Appearance::read()
-  {
-  //  this->_shaders[0]->read();
-    return true;
-  }
-}
+#endif // VESVERTEXATTRIBUTEKEYS_H

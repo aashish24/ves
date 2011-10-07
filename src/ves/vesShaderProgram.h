@@ -21,39 +21,24 @@
 #ifndef VESSHADER_PROGRAM_H
 #define VESSHADER_PROGRAM_H
 
-#include <list>
-#include <map>
+// VES includes
+#include "vesGMTL.h"
+#include "vesMaterial.h"
+
+// C++ includes
 #include <string>
 
-#include "vesGMTL.h"
-
-#include "Painter.h"
-
-#include <vsg/Shader/vsgShaderNode.h>
-
-using namespace std;
-
 // Forward declarations
+class vesShader;
+class vesRenderState;
 class vesUniform;
+class vesVertexAttribute;
 
-class vesShaderProgram : public vsgShaderNode
+class vesShaderProgram : public vesMaterialAttribute
 {
 public:
-
-  typedef std::map<string, unsigned int> AttributeBindingMap;
-
-  enum AttributeIndex
-  {
-    Position            = 0,
-    Normal              = 1,
-    TextureCoordinate   = 2,
-    Color               = 3,
-    Scalar              = 4,
-    CountAttributeIndex = 5
-  };
-
-   vesShaderProgram();
-  ~vesShaderProgram();
+            vesShaderProgram();
+   virtual ~vesShaderProgram();
 
   /*!
    * Add shader to a program. For now lifetime of the shader is controlled
@@ -62,11 +47,12 @@ public:
   bool addShader(vesShader *shader);
 
   bool addUniform(vesUniform *uniform);
+  bool addVertexAttribute(vesVertexAttribute *attribute, int key);
 
-  bool addBindAttributeLocation(const std::string &name, unsigned int location);
+  bool addBindAttributeLocation(const std::string &name, int location);
 
-  int  uniformLocation  (string value);
-  int  attributeLocation(string value);
+  int  uniformLocation  (const std::string &name) const;
+  int  attributeLocation(const std::string &name) const;
 
   vesUniform* uniform     (const std::string &name);
   bool        uniformExist(const std::string &name);
@@ -82,17 +68,22 @@ public:
   void deleteProgram();
   void deleteVertexAndFragment();
 
-  inline unsigned int programHandle()
-  {
-    return this->m_programHandle;
-  }
+  unsigned int        programHandle();
+  const unsigned int& programHandle() const;
 
-  virtual bool read(){ return true; }
+  virtual void bind         (const vesRenderState &renderState);
+  virtual void unbind       (const vesRenderState &renderState);
+  virtual void setup        (const vesRenderState &renderState);
 
-  virtual void render(Painter *render);
+  virtual void bindVertexData   (const vesRenderState &renderState, int key);
+  virtual void unbindVertexData (const vesRenderState &renderState, int key);
+  virtual void setupVertexData  (const vesRenderState &renderState, int key);
 
 
 protected:
+
+  int  queryUniformLocation  (const std::string &value);
+  int  queryAttributeLocation(const std::string &value);
 
   void bindAttributes();
   void bindUniforms();
@@ -100,15 +91,8 @@ protected:
 
 private:
 
-  static std::string preDefinedAttributeNames[CountAttributeIndex];
-
-  unsigned int             m_programHandle;
-
-  std::list<vesShader*>    m_shaders;
-
-  AttributeBindingMap      m_attributes;
-
-  std::list<vesUniform*>   m_uniforms;
+  class vesInternal;
+  vesInternal *m_internal;
 
   vesShaderProgram(const vesShaderProgram&);
   void operator=  (const vesShaderProgram&);

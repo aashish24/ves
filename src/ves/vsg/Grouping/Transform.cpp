@@ -20,8 +20,6 @@
 
 #include "Transform.h"
 
-#include "vsg/vsgVisitor.h"
-
 namespace vsg{
 // ....................................................................internal
 // IMPORTANT: Make sure that this struct has no pointers.  All pointers should
@@ -99,11 +97,6 @@ SFMatrix4f Transform::eval()
 {
   setInternals();
   return _internal->Eval();
-}
-
-bool Transform::accept(vsgVisitor* vsgVisitor)
-{
-  return vsgVisitor->visitTransform(this);
 }
 
 }

@@ -20,9 +20,9 @@
 
 #include "vesKiwiDataRepresentation.h"
 
-#include "vesTriangleData.h"
-#include "vesMapper.h"
 #include "vesActor.h"
+#include "vesMapper.h"
+#include "vesMaterial.h"
 #include "vesRenderer.h"
 #include "vesTriangleData.h"
 #include "vesShaderProgram.h"
@@ -33,7 +33,6 @@
 #include <vtkTriangleFilter.h>
 
 #include <cassert>
-
 
 //----------------------------------------------------------------------------
 namespace {
@@ -70,17 +69,20 @@ public:
   {
     this->Actor = 0;
     this->Mapper = 0;
+    this->Material = 0;
   }
 
   ~vesInternal()
   {
     delete this->Actor;
-    delete this->Mapper->triangleData();
+    delete this->Mapper->data();
     delete this->Mapper;
+    delete this->Material;
   }
 
-  vesActor* Actor;
-  vesMapper* Mapper;
+  vesActor*     Actor;
+  vesMapper*    Mapper;
+  vesMaterial*  Material;
 };
 
 //----------------------------------------------------------------------------
@@ -98,20 +100,21 @@ vesKiwiDataRepresentation::~vesKiwiDataRepresentation()
 //----------------------------------------------------------------------------
 void vesKiwiDataRepresentation::setDataSet(vtkDataSet* dataSet)
 {
+  std::cout << "Setting data " << std::endl;
   vtkPolyData* polyData = vtkPolyData::SafeDownCast(dataSet);
   assert(polyData);
   assert(this->Internal->Mapper);
 
   vesTriangleData* triangleData = triangleDataFromPolyData(polyData);
-  delete this->Internal->Mapper->triangleData();
-  this->Internal->Mapper->setTriangleData(triangleData);
+  delete this->Internal->Mapper->data();
+  this->Internal->Mapper->setData(triangleData);
 }
 
 //----------------------------------------------------------------------------
 vesTriangleData* vesKiwiDataRepresentation::triangleData() const
 {
   if (this->Internal->Mapper) {
-    return this->Internal->Mapper->triangleData();
+    return this->Internal->Mapper->data();
   }
   return 0;
 }
@@ -119,35 +122,49 @@ vesTriangleData* vesKiwiDataRepresentation::triangleData() const
 //----------------------------------------------------------------------------
 void vesKiwiDataRepresentation::initializeWithShader(vesShaderProgram* shaderProgram)
 {
+  std::cout << "vesKiwiDataRepresentation::initializeWithShader " << std::endl;
   assert(shaderProgram);
   assert(!this->Internal->Mapper && !this->Internal->Actor);
 
   this->Internal->Mapper = new vesMapper();
-  this->Internal->Mapper->setTriangleData(new vesTriangleData);
-  this->Internal->Actor = new vesActor(this->Internal->Mapper);
-  this->Internal->Actor->appearance()->addAttribute(shaderProgram);
-  this->Internal->Actor->setColor(0.8, 0.8, 0.8, 1.0);
+  this->Internal->Mapper->setData(new vesTriangleData);
+
+  this->Internal->Actor = new vesActor();
+  this->Internal->Actor->setMapper(this->Internal->Mapper);
+
+  this->Internal->Material = new vesMaterial();
+  this->Internal->Actor->setMaterial(this->Internal->Material);
+
+  this->Internal->Actor->material()->addAttribute(shaderProgram);
+
+#if 0
+    this->Internal->Actor->setColor(0.8, 0.8, 0.8, 1.0);
+#endif
 }
 
 //----------------------------------------------------------------------------
 void vesKiwiDataRepresentation::setColor(double r, double g, double b, double a)
 {
   assert(this->Internal->Actor);
+#if 0
   this->Internal->Actor->setColor(r, g, b, a);
+#endif 
 }
 
 //----------------------------------------------------------------------------
 void vesKiwiDataRepresentation::addSelfToRenderer(vesRenderer* renderer)
 {
   assert(renderer);
-  renderer->AddActor(this->Internal->Actor);
+  renderer->setSceneRoot(this->Internal->Actor);
 }
 
 //----------------------------------------------------------------------------
 void vesKiwiDataRepresentation::removeSelfFromRenderer(vesRenderer* renderer)
 {
+#if 0
   assert(renderer);
   renderer->RemoveActor(this->Internal->Actor);
+#endif
 }
 
 //----------------------------------------------------------------------------

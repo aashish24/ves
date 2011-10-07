@@ -20,52 +20,54 @@
 
 # include "vsgGroupingNode.h"
 
+
 vsgGroupingNode::vsgGroupingNode()
 {
 }
+
 
 vsgGroupingNode::~vsgGroupingNode()
 {
 }
 
-void vsgGroupingNode::addChildren(MFNode &children)
+
+bool vsgGroupingNode::addChild(vsgNode *child)
 {
-  for (int i=0; i<children.size(); i++)
-  {
-    vsgChildNode *current = (vsgChildNode*) children[i];
-    bool present = false;
-    for (int j =0; j< _children.size(); j++)
-    {
-      if(current == _children[j])
-      {
-        present = true;
-        break;
-      }
-    }
-    if(!present)
-    {
-      _children.push_back(current);
+  if (!child) {
+    return false;
+  }
+
+  Children::iterator itr = this->m_children.begin();
+
+  for (itr; itr != this->m_children.end(); ++itr) {
+    if ( (*itr) == child ) {
+      return false;
     }
   }
+
+  child->setParent(this);
+
+  this->m_children.push_back(child);
+
+  return true;
 }
 
-void vsgGroupingNode::removeChildren(MFNode &children)
+
+bool vsgGroupingNode::removeChild(vsgNode *child)
 {
-  for (int i=0; i<children.size(); i++)
-  {
-    vsgChildNode *current = (vsgChildNode*) children[i];
-    bool present = false;
-    int j;
-    for (j =0; j< _children.size(); j++) {
-      if(current == _children[j])
-      {
-        present = true;
-        break;
-      }
-    }
-    if(present)
-    {
-      _children.erase(_children.begin()+j);
-    }
+  if (!child) {
+    return false;
   }
+
+  // \note:No check if the child really existed. This is for performance
+  // reasons.
+
+  // \note: Ensure that parent of this node is "this" group node.
+  if (child->parent() == this) {
+    this->m_children.remove(child);
+
+    return true;
+  }
+
+  return false;
 }
