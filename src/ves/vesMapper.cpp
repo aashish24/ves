@@ -32,6 +32,7 @@ vesMapper::vesMapper(): m_data(NULL), m_initialized(false)
   this->m_blue = 0.8;
   this->m_alpha = 1.0;
   this->m_drawPoints = false;
+  this->m_texture = NULL;
 }
 vesMapper::~vesMapper()
 {

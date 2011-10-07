@@ -157,6 +157,13 @@ bool DoTesting()
   // Note, this loop renders but does not bother to swap buffers
   for (int i = 0; i < testHelper->app()->numberOfBuiltinDatasets(); ++i) {
     LoadData(i);
+
+    // Enable the background image for the final image regression test
+    if (i == testHelper->app()->numberOfBuiltinDatasets()-1)
+      {
+      testHelper->app()->setBackgroundTexture(testHelper->sourceDirectory() + "/Apps/iOS/Kiwi/Kiwi/Data/kiwi.png");
+      }
+
     testHelper->app()->render();
     std::string datasetName = testHelper->app()->builtinDatasetName(i);
   
@@ -228,6 +235,18 @@ void InitRendering()
 
   testHelper->app()->initializeShaderProgram();
   testHelper->app()->initializeRendering();
+
+  // background texture
+  vertexShaderFile = testHelper->sourceDirectory() + "/src/shaders/BackgroundTexture.vsh";
+  fragmentShaderFile = testHelper->sourceDirectory() + "/src/shaders/BackgroundTexture.fsh";
+
+  vertexSourceStr = GetFileContents(vertexShaderFile);
+  fragmentSourceStr = GetFileContents(fragmentShaderFile);
+
+  testHelper->app()->setVertexShaderSource(vertexSourceStr);
+  testHelper->app()->setFragmentShaderSource(fragmentSourceStr);
+
+  testHelper->app()->initializeTextureShader();
 }
 
 //----------------------------------------------------------------------------
@@ -322,7 +341,7 @@ make_x_window(Display *x_dpy, EGLDisplay egl_dpy,
    attr.background_pixel = 0;
    attr.border_pixel = 0;
    attr.colormap = XCreateColormap( x_dpy, root, visInfo->visual, AllocNone);
-   attr.event_mask = StructureNotifyMask | ExposureMask | KeyPressMask;
+   attr.event_mask = StructureNotifyMask | ExposureMask | KeyPressMask | ButtonPressMask | ButtonReleaseMask | ButtonMotionMask;
    mask = CWBackPixel | CWBorderPixel | CWColormap | CWEventMask;
 
    win = XCreateWindow( x_dpy, root, 0, 0, width, height,
@@ -402,6 +421,18 @@ event_loop(Display *dpy, Window win,
       case ConfigureNotify:
          testHelper->app()->resizeView(event.xconfigure.width, event.xconfigure.height);
          break;
+
+      case ButtonPress:
+        testHelper->app()->handleSingleTouchDown(event.xbutton.x, event.xbutton.y);
+        break;
+
+      case ButtonRelease:
+        testHelper->app()->handleSingleTouchUp();
+        break;
+
+      case MotionNotify:
+        break;
+
       case KeyPress:
          {
             int panDelta = 100;

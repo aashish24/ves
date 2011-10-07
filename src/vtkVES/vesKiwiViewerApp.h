@@ -29,9 +29,12 @@ class vesCamera;
 class vesKiwiDataRepresentation;
 class vesRenderer;
 class vesShaderProgram;
+class vesTexture;
 class vesUniform;
 
 class vtkDataSet;
+class vtkPolyData;
+class vtkImageData;
 
 class vesKiwiViewerApp
 {
@@ -65,10 +68,19 @@ public:
   void resetView();
   void resizeView(int width, int height);
 
+  void initializeTextureShader();
+  void setBackgroundTexture(const std::string& filename);
+
   void handleTwoTouchPanGesture(double x0, double y0, double x1, double y1);
   void handleSingleTouchPanGesture(double deltaX, double deltaY);
   void handleTwoTouchPinchGesture(double scale);
   void handleTwoTouchRotationGesture(double rotation);
+  void handleSingleTouchDown(int displayX, int displayY);
+  void handleSingleTouchUp();
+  void handleDoubleTap();
+
+  void scrollImageSlice(double delta);
+  bool scrollSliceModeActive() const;
 
   int numberOfModelFacets() const;
   int numberOfModelVertices() const;
@@ -100,7 +112,10 @@ protected:
   void addBuiltinShadingModel(const std::string& name);
 
   void removeAllDataRepresentations();
-  vesKiwiDataRepresentation* addNewDataRepresentation(vtkDataSet* dataSet);
+  void addRepresentationsForDataSet(vtkDataSet* dataSet);
+  vesKiwiDataRepresentation* addPolyDataRepresentation(vtkPolyData* dataSet);
+
+  vesTexture* newTextureFromImage(vtkImageData* image);
 
 
 private:

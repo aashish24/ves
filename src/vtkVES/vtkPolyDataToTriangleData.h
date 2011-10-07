@@ -44,4 +44,10 @@ public:
   // If no array is found, this method doesn't do anything.
   static void ComputeVertexColorFromScalars(vtkPolyData* polyData, vesTriangleData* triangleData);
 
+  // This is a convenience method for populating the TextureCoordinates array on
+  // a vesTriangleData object.  It searchs the point data of the given polyData
+  // for a two component array with the name 'tcoords'.  If found, the array
+  // will be copied into the vesTriangleData.
+  static void ConvertTextureCoordinates(vtkPolyData* polyData, vesTriangleData* triangleData);
+
 };

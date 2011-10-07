@@ -29,6 +29,7 @@
 #include "vtkUnsignedCharArray.h"
 #include "vtkLookupTable.h"
 
+#include <cassert>
 
 void vtkPolyDataToTriangleData::ComputeVertexColorFromScalars(vtkPolyData* polyData, vesTriangleData* triangleData)
 {
@@ -63,6 +64,25 @@ void vtkPolyDataToTriangleData::ComputeVertexColorFromScalars(vtkPolyData* polyD
         triangleData->GetVertexColors().push_back(vesVector3f(rgb[0], rgb[1], rgb[2]));
         }
       break;
+      }
+    }
+}
+
+void vtkPolyDataToTriangleData::ConvertTextureCoordinates(vtkPolyData* polyData, vesTriangleData* triangleData)
+{
+  assert(polyData && triangleData);
+  const size_t nPoints = triangleData->GetPoints().size();
+  for (vtkIdType i = 0; i < polyData->GetPointData()->GetNumberOfArrays(); ++i)
+    {
+    vtkDataArray* tcoords = polyData->GetPointData()->GetArray(i);
+    if (tcoords->GetNumberOfComponents() == 2 && tcoords->GetName() && (tcoords->GetName() == std::string("tcoords")))
+      {
+      assert(tcoords->GetNumberOfTuples() == nPoints);
+      for (size_t t = 0; t < nPoints; ++t)
+        {
+        double* values = tcoords->GetTuple(t);
+        triangleData->GetTextureCoordinates().push_back(vesVector2f(values[0], values[1]));
+        }
       }
     }
 }

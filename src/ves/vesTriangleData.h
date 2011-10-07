@@ -40,6 +40,7 @@ public:
   std::vector<vesVector3us>& GetTriangles() { return this->Triangles; }
   std::vector<vesVector2us>& GetLines() { return this->Lines; }
   std::vector<vesVector3f>& GetVertexColors() { return this->VertexColors; }
+  std::vector<vesVector2f>& GetTextureCoordinates() { return this->TextureCoordinates; }
   vesVector3f GetMin();
   vesVector3f GetMax();
   void SetHasNormals(bool b) { this->HasNormals = b; }
@@ -53,6 +54,7 @@ protected:
   std::vector<vesVector3us> Triangles;
   std::vector<vesVector2us> Lines;
   std::vector<vesVector3f> VertexColors;
+  std::vector<vesVector2f> TextureCoordinates;
   std::vector<float> PointScalars;
   vesVector3f Min;
   vesVector3f Max;

@@ -28,6 +28,7 @@
 
 class vesShaderProgram;
 class vesTriangleData;
+class vesTexture;
 
 /**
  * \class vesMapper
@@ -63,6 +64,9 @@ public:
   void setDrawPoints(bool drawPoints) { m_drawPoints = drawPoints; }
   bool drawPoints() const { return m_drawPoints; }
 
+  void setTexture(vesTexture* texture) { m_texture = texture; }
+  vesTexture* texture() { return m_texture; }
+
 private:
   void normalize();
   vesMatrix4x4f m_normalizedMatrix;
@@ -71,6 +75,7 @@ protected:
   float m_red, m_green, m_blue, m_alpha;
   bool m_isNew;
   vesTriangleData *m_data;
+  vesTexture *m_texture;
   bool m_initialized;
   bool m_drawPoints;
 

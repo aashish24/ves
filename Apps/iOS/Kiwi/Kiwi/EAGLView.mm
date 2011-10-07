@@ -113,6 +113,10 @@
 
     [self createGestureRecognizers];
     self.multipleTouchEnabled = YES;
+    
+    self->rotationDataLock = [NSLock new];
+    self->accumulatedRotationDelta.x = 0.0;
+    self->accumulatedRotationDelta.y = 0.0;
     }
   
   self->shouldRender = NO;
@@ -159,6 +163,7 @@
   // set up animation loop
   self->displayLink = [self.window.screen displayLinkWithTarget:self selector:@selector(drawView:)];
   [self->displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rotate) name:@"willRender" object:nil];
   
   [self forceRender];
 }
@@ -271,15 +276,19 @@
 {    
   if (self->shouldRender)
     {
-    NSDate* startRenderDate = [NSDate date];
+    NSDate* startRenderTotalDate = [NSDate date];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"willRender" object:nil];
+    NSDate* startRenderOnlyDate = [NSDate date];
     [EAGLContext setCurrentContext:context];
     glBindFramebuffer(GL_FRAMEBUFFER, viewFramebuffer);
     [renderer render];
     glBindRenderbuffer(GL_RENDERBUFFER, viewRenderbuffer);
     [context presentRenderbuffer:GL_RENDERBUFFER];
     self->shouldRender = NO;
-    float currentFPS = 1.0 / [[NSDate date] timeIntervalSinceDate:startRenderDate];
-    //NSLog(@"Render @ %4.1f fps", currentFPS);
+    float currentFPS = 1.0 / [[NSDate date] timeIntervalSinceDate:startRenderOnlyDate];
+    NSLog(@"Render Only @ %4.1f fps", currentFPS);
+    currentFPS = 1.0 / [[NSDate date] timeIntervalSinceDate:startRenderTotalDate];
+    NSLog(@"Total Render @ %4.1f fps", currentFPS);
     [self updateRefreshRate:currentFPS];
     }
 }
@@ -293,6 +302,8 @@
   [context release];
   context = nil;
   [renderer release];
+  [self->rotationDataLock release];
+  self->rotationDataLock = nil;
   [super dealloc];
 }
 
@@ -350,7 +361,13 @@
   tapGesture.cancelsTouchesInView = NO;
   [self addGestureRecognizer:tapGesture];
   [tapGesture release];
-  
+
+  UITapGestureRecognizer *doubleTapGesture = [[UITapGestureRecognizer alloc]
+                                             initWithTarget:self action:@selector(handleDoubleTapGesture:)];
+  [doubleTapGesture setNumberOfTapsRequired:2];
+  [self addGestureRecognizer:doubleTapGesture];
+  [doubleTapGesture release];
+
   //
   // allow two-finger gestures to work simultaneously
   kwGestureDelegate* gestureDelegate = [[kwGestureDelegate alloc] init];
@@ -392,7 +409,10 @@
   if (sender.state == UIGestureRecognizerStateEnded ||
       sender.state == UIGestureRecognizerStateCancelled)
     {
-    if (lastRotationMotionNorm > 4.0f)
+    bool imageSliceModeActive = self->renderer.app->scrollSliceModeActive();
+
+    self->renderer.app->handleSingleTouchUp();
+    if (!imageSliceModeActive && lastRotationMotionNorm > 4.0f)
       {
       self->inertialRotationThread = [[NSThread alloc] initWithTarget:self selector:@selector(handleInertialRotation) object:nil];
       [inertialRotationThread start];
@@ -405,7 +425,13 @@
   //
   // get current translation and (then zero it out so it won't accumulate)
   CGPoint currentTranslation = [sender translationInView:self];
+  CGPoint currentLocation = [sender locationInView:self];
   [sender setTranslation:CGPointZero inView:self];
+
+  if (sender.state == UIGestureRecognizerStateBegan)
+    {
+    self->renderer.app->handleSingleTouchDown(currentLocation.x, currentLocation.y);
+    }
   
   // 
   // update data for inertial rotation
@@ -418,7 +444,7 @@
     
     //
     // apply the rotation and rerender
-    [self rotate:currentTranslation];
+    [self scheduleRotate:currentTranslation];
     [self scheduleRender];
     }
   else
@@ -466,14 +492,37 @@
   [self scheduleRender];
 }
 
+- (IBAction)handleDoubleTapGesture:(UITapGestureRecognizer *)sender
+{
+  self->renderer.app->handleDoubleTap();
+  [self scheduleRender];
+}
+
 - (IBAction)handleTapGesture:(UITapGestureRecognizer *)sender
 { 
   [self stopInertialMotion];
 }
 
-- (void)rotate: (CGPoint)delta
+-(void)scheduleRotate:(CGPoint)delta
 {
-  self->renderer.app->handleSingleTouchPanGesture(delta.x, delta.y); 
+  [self->rotationDataLock lock];
+  self->accumulatedRotationDelta.x += delta.x;
+  self->accumulatedRotationDelta.y += delta.y;
+  [self->rotationDataLock unlock];
+}
+
+- (void)rotate
+{
+  [self->rotationDataLock lock];
+  if (self->accumulatedRotationDelta.x != 0.0 ||
+      self->accumulatedRotationDelta.y != 0.0)
+  {
+    self->renderer.app->handleSingleTouchPanGesture(self->accumulatedRotationDelta.x, 
+                                                    self->accumulatedRotationDelta.y); 
+    self->accumulatedRotationDelta.x = 0.0;
+    self->accumulatedRotationDelta.y = 0.0;
+  }
+  [self->rotationDataLock unlock];
 }
 
 - (void)handleInertialRotation
@@ -491,7 +540,7 @@
     
     delta.x = lastRotationMotionNorm*lastMovementXYUnitDelta.x;
     delta.y = lastRotationMotionNorm*lastMovementXYUnitDelta.y;
-    [self rotate:delta];
+    [self scheduleRotate:delta];
     
     [self scheduleRender];
     lastRotationMotionNorm *= 0.9;

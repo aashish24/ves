@@ -66,6 +66,7 @@ Painter::~Painter()
 
 void Painter::Texture(vesTexture* textureBackground)
 {
+  this->Shader(textureBackground->ShaderProgram);
   textureBackground->Render();
 }
 
@@ -145,6 +146,18 @@ void Painter::visitShape(vsg::Shape* shape)
 
   vesMapper* mapper = (vesMapper*)shape->get_geometry();
 
+  if (mapper->texture())
+  {
+    program = mapper->texture()->ShaderProgram;
+    this->Shader(program);
+
+    if (!mapper->texture()->loaded)
+      mapper->texture()->load();
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, mapper->texture()->texID);
+  }
+
   // Model-view matrix is everything except the top level matrix (the projection
   // matrix). This is needed for normal calculation.
   vesMatrix4x4f mv = this->eval(1);
@@ -178,6 +191,10 @@ void Painter::visitShape(vsg::Shape* shape)
   assert(opacityUniform && "Uniform not present in the program");
   opacityUniform->set(mapper->alpha());
 
+  vesUniform *diffuseUniform = program->uniform("enableDiffuse");
+  assert(diffuseUniform && "Uniform not present in the program");
+  diffuseUniform->set(1);
+
   program->updateUniforms();
 
   glEnable(GL_BLEND);
@@ -206,6 +223,17 @@ void Painter::visitShape(vsg::Shape* shape)
                           0,
                           3*sizeof(float),
                           &(mapper->data()->GetVertexColors()[0]));
+    }
+
+
+  if (mapper->data()->GetTextureCoordinates().size() > 0) {
+    glEnableVertexAttribArray(vesShaderProgram::TextureCoordinate);
+    glVertexAttribPointer(vesShaderProgram::TextureCoordinate,
+                          2,
+                          GL_FLOAT,
+                          0,
+                          2*sizeof(float),
+                          &(mapper->data()->GetTextureCoordinates()[0]));
     }
 
   glVertexAttribPointer(vesShaderProgram::Position,
@@ -248,19 +276,13 @@ void Painter::visitShape(vsg::Shape* shape)
                    &mapper->data()->GetTriangles()[0]);
 
     // Draw lines
-    vesUniform *enableDiffuseUniform = program->uniform("enableDiffuse");
-    assert(enableDiffuseUniform && "Uniform not present in the program");
-    enableDiffuseUniform->set(0);
-
+    diffuseUniform->set(0);
     program->updateUniforms();
 
     glDrawElements(GL_LINES,
                    mapper->data()->GetLines().size() * 2,
                    GL_UNSIGNED_SHORT,
                    &mapper->data()->GetLines()[0]);
-
-    if(enableDiffuseUniform)
-      enableDiffuseUniform->set(1);
   }
 
   glDisable(GL_CULL_FACE);
@@ -269,6 +291,7 @@ void Painter::visitShape(vsg::Shape* shape)
   glDisableVertexAttribArray(vesShaderProgram::Position);
   glDisableVertexAttribArray(vesShaderProgram::Normal);
   glDisableVertexAttribArray(vesShaderProgram::Color);
+  glDisableVertexAttribArray(vesShaderProgram::TextureCoordinate);
 }
 
 void Painter::push(const vesMatrix4x4f& mat)

@@ -51,6 +51,7 @@ vesTriangleData* triangleDataFromPolyData(vtkPolyData* polyData)
     polyData = triangleFilter->GetOutput();
     vesTriangleData* triangleData = vtkPolyDataToTriangleData::Convert(polyData);
     vtkPolyDataToTriangleData::ComputeVertexColorFromScalars(polyData, triangleData);
+    vtkPolyDataToTriangleData::ConvertTextureCoordinates(polyData, triangleData);
     return triangleData;
     }
   else
@@ -126,6 +127,13 @@ void vesKiwiDataRepresentation::initializeWithShader(vesShaderProgram* shaderPro
   this->Internal->Actor = new vesActor(this->Internal->Mapper);
   this->Internal->Actor->appearance()->addAttribute(shaderProgram);
   this->Internal->Actor->setColor(0.8, 0.8, 0.8, 1.0);
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiDataRepresentation::setColor(double r, double g, double b, double a)
+{
+  assert(this->Internal->Actor);
+  this->Internal->Actor->setColor(r, g, b, a);
 }
 
 //----------------------------------------------------------------------------
