@@ -118,34 +118,34 @@ void vesMaterial::unbind(const vesRenderState &renderState)
 }
 
 
-void vesMaterial::setupVertexData(const vesRenderState &renderState)
+void vesMaterial::setupVertexData(const vesRenderState &renderState, int key)
 {
   vesInternal::Attributes::iterator itr =
     this->m_internal->m_attributes.begin();
 
   for (itr; itr != this->m_internal->m_attributes.end(); ++itr) {
-    itr->second->setupVertexData(renderState);
+    itr->second->setupVertexData(renderState, key);
   }
 }
 
 
-void vesMaterial::bindVertexData(const vesRenderState &renderState)
+void vesMaterial::bindVertexData(const vesRenderState &renderState, int key)
 {
   vesInternal::Attributes::iterator itr =
     this->m_internal->m_attributes.begin();
 
   for (itr; itr != this->m_internal->m_attributes.end(); ++itr) {
-    itr->second->bindVertexData(renderState);
+    itr->second->bindVertexData(renderState, key);
   }
 }
 
 
-void vesMaterial::unbindVertexData(const vesRenderState &renderState)
+void vesMaterial::unbindVertexData(const vesRenderState &renderState, int key)
 {
   vesInternal::Attributes::iterator itr =
     this->m_internal->m_attributes.begin();
 
   for (itr; itr != this->m_internal->m_attributes.end(); ++itr) {
-    itr->second->unbindVertexData(renderState);
+    itr->second->unbindVertexData(renderState, key);
   }
 }

@@ -18,33 +18,20 @@
   limitations under the License.
  ========================================================================*/
 
-#ifndef VESMODELVIEWUNIFORM_H
-#define VESMODELVIEWUNIFORM_H
+#ifndef VESVERTEXATTRIBUTEKEYS_H
+#define VESVERTEXATTRIBUTEKEYS_H
 
-#include "vesUniform.h"
-
-// VES includes
-#include "vesGMTL.h"
-#include "vesRenderStage.h"
-
-// C++ includes
-#include <string>
-
-class vesModelViewUniform : public vesUniform
+struct vesVertexAttributeKeys
 {
-public:
-
-  vesModelViewUniform(const std::string &name="modelViewMatrix") :
-    vesUniform(name, vesMatrix4x4f())
+  enum Key
   {
-  }
-
-
-  virtual void update(const vesRenderState &renderState, const vesShaderProgram &program)
-  {
-    this->set(*renderState.m_modelViewMatrix);
-  }
+    Position            = 0,
+    Normal              = 1,
+    TextureCoordinate   = 2,
+    Color               = 3,
+    Scalar              = 4,
+    CountAttributeIndex = 5
+  };
 };
 
-
-#endif // VESMODELVIEWUNIFORM_H
+#endif // VESVERTEXATTRIBUTEKEYS_H

@@ -11,7 +11,8 @@ class vesCullVisitor : public vesVisitor
 {
 public:
   vesCullVisitor(TraversalMode mode=TraverseAllChildren) :
-    vesVisitor(CullVisitor, mode)
+    vesVisitor    (CullVisitor, mode),
+    m_renderStage (0x0)
   {
   }
 

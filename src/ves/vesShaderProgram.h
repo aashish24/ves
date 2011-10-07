@@ -25,11 +25,9 @@
 #include <map>
 #include <string>
 
+// VES includes
 #include "vesGMTL.h"
-
 #include "vesMaterial.h"
-
-using namespace std;
 
 // Forward declarations
 class vesShader;
@@ -43,20 +41,10 @@ public:
   typedef std::map<std::string, int>     UniformNameToLocation;
   typedef std::map<std::string, int>     VertexAttributeNameToLocation;
 
-  typedef std::map<string, unsigned int> AttributeBindingMap;
+  typedef std::map<std::string, unsigned int> AttributeBindingMap;
 
-  enum AttributeIndex
-  {
-    Position            = 0,
-    Normal              = 1,
-    TextureCoordinate   = 2,
-    Color               = 3,
-    Scalar              = 4,
-    CountAttributeIndex = 5
-  };
-
-   vesShaderProgram();
-  ~vesShaderProgram();
+            vesShaderProgram();
+   virtual ~vesShaderProgram();
 
   /*!
    * Add shader to a program. For now lifetime of the shader is controlled
@@ -65,7 +53,7 @@ public:
   bool addShader(vesShader *shader);
 
   bool addUniform(vesUniform *uniform);
-  bool addVertexAttribute(vesVertexAttribute *attribute);
+  bool addVertexAttribute(vesVertexAttribute *attribute, int key);
 
   bool addBindAttributeLocation(const std::string &name, int location);
 
@@ -95,9 +83,9 @@ public:
   virtual void unbind       (const vesRenderState &renderState);
   virtual void setup        (const vesRenderState &renderState);
 
-  virtual void bindVertexData   (const vesRenderState &renderState);
-  virtual void unbindVertexData (const vesRenderState &renderState);
-  virtual void setupVertexData  (const vesRenderState &renderState);
+  virtual void bindVertexData   (const vesRenderState &renderState, int key);
+  virtual void unbindVertexData (const vesRenderState &renderState, int key);
+  virtual void setupVertexData  (const vesRenderState &renderState, int key);
 
 
 protected:
@@ -111,14 +99,12 @@ protected:
 
 private:
 
-  static std::string preDefinedAttributeNames[CountAttributeIndex];
-
   unsigned int             m_programHandle;
 
   std::list<vesShader*>    m_shaders;
 
-  std::list<vesUniform*>           m_uniforms;
-  std::list<vesVertexAttribute*>   m_vertexAttributes;
+  std::list<vesUniform*>               m_uniforms;
+  std::map<int, vesVertexAttribute*>   m_vertexAttributes;
 
   UniformNameToLocation         m_uniformNameToLocation;
   VertexAttributeNameToLocation m_vertexAttributeNameToLocation;

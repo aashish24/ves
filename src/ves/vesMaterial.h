@@ -26,9 +26,9 @@ public:
   virtual void unbind       (const vesRenderState &renderState){}
   virtual void setup        (const vesRenderState &renderState){}
 
-  virtual void bindVertexData   (const vesRenderState &renderState){}
-  virtual void unbindVertexData (const vesRenderState &renderState){}
-  virtual void setupVertexData  (const vesRenderState &renderState){}
+  virtual void bindVertexData   (const vesRenderState &renderState, int key){}
+  virtual void unbindVertexData (const vesRenderState &renderState, int key){}
+  virtual void setupVertexData  (const vesRenderState &renderState, int key){}
 
 protected:
 
@@ -75,9 +75,9 @@ public:
   virtual void unbind       (const vesRenderState &renderState);
   virtual void setup        (const vesRenderState &renderState);
 
-  virtual void bindVertexData   (const vesRenderState &renderState);
-  virtual void unbindVertexData (const vesRenderState &renderState);
-  virtual void setupVertexData  (const vesRenderState &renderState);
+  virtual void bindVertexData   (const vesRenderState &renderState, int key);
+  virtual void unbindVertexData (const vesRenderState &renderState, int key);
+  virtual void setupVertexData  (const vesRenderState &renderState, int key);
 
 
 protected:

@@ -60,7 +60,7 @@ vesTexture::~vesTexture()
 
 void vesTexture::Render()
 {
-
+#if 0
   if(!loaded)
   {
     glGenTextures(1,&texID);
@@ -115,4 +115,5 @@ void vesTexture::Render()
   // Disable vertex attributes
   glDisableVertexAttribArray(vesShaderProgram::Position);
   glDisableVertexAttribArray(vesShaderProgram::TextureCoordinate);
+ #endif
 }

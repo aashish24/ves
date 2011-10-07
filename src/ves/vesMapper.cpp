@@ -20,10 +20,12 @@
 
 #include "vesMapper.h"
 
+// VES includes
 #include "vesMaterial.h"
 #include "vesRenderStage.h"
 #include "vesShaderProgram.h"
 #include "vesTriangleData.h"
+#include "vesVertexAttributeKeys.h"
 
 #ifdef ANDROID
 # include <GLES2/gl2.h>
@@ -33,10 +35,28 @@
 # include <OpenGLES/ES2/glext.h>
 #endif
 
+// C++ includes
+#include <vector>
+
+class vesMapper::vesInternal
+{
+public:
+  ~vesInternal()
+  {
+    this->m_bufferVertexAttributeMap.clear();
+  }
+
+  std::map<unsigned int, std::vector<int> > m_bufferVertexAttributeMap;
+};
+
+
+
 vesMapper::vesMapper() : vsgBoundedObject(),
   m_initialized(false),
-  m_data       (0x0)
+  m_data       (0x0),
+  m_internal   (0x0)
 {
+  this->m_internal = new vesInternal();
 }
 
 
@@ -45,6 +65,8 @@ vesMapper::~vesMapper()
   if (this->m_initialized) {
     // \todo: Need to implement release graphics resources.
   }
+
+  delete this->m_internal; this->m_internal = 0x0;
 }
 
 
@@ -86,20 +108,31 @@ void vesMapper::render(const vesRenderState &renderState)
     this->setupDrawObjects(renderState);
   }
 
-  glBindBuffer(GL_ARRAY_BUFFER, this->m_buffer[0]);
+  std::map<unsigned int, std::vector<int> >::const_iterator constItr
+    = this->m_internal->m_bufferVertexAttributeMap.begin();
 
-  renderState.m_material->bindVertexData(renderState);
+  for (constItr; constItr != this->m_internal->m_bufferVertexAttributeMap.end(); ++constItr) {
+    glBindBuffer(GL_ARRAY_BUFFER, constItr->first);
+    for (size_t i = 0; i < constItr->second.size(); ++i) {
+      renderState.m_material->bindVertexData(renderState, constItr->second[i]);
+    }
+  }
 
-
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_buffer[1]);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_buffer[2]);
   glDrawElements(GL_TRIANGLES, this->m_data->GetTriangles().size() * 3,
                  GL_UNSIGNED_SHORT, (void*)0);
 
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_buffer[2]);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_buffer[3]);
   glDrawElements(GL_LINES, this->m_data->GetLines().size() * 2,
                  GL_UNSIGNED_SHORT, (void*)0);
 
-  renderState.m_material->unbindVertexData(renderState);
+  constItr = this->m_internal->m_bufferVertexAttributeMap.begin();
+  for (constItr; constItr != this->m_internal->m_bufferVertexAttributeMap.end(); ++constItr) {
+    glBindBuffer(GL_ARRAY_BUFFER, constItr->first);
+    for (size_t i = 0; i < constItr->second.size(); ++i) {
+      renderState.m_material->unbindVertexData(renderState, constItr->second[i]);
+    }
+  }
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
@@ -111,21 +144,33 @@ void vesMapper::setupDrawObjects(const vesRenderState &renderState)
   size_t sizeOfPositions = (this->m_data->GetPoints().size() * numberOfFloats * sizeof(float));
 
   // \todo: Put a GL log.
-  glGenBuffers(3, &this->m_buffer[0]);
+  glGenBuffers(4, &this->m_buffer[0]);
 
   glBindBuffer(GL_ARRAY_BUFFER, this->m_buffer[0]);
   glBufferData(GL_ARRAY_BUFFER, sizeOfPositions,
                &this->m_data->GetPoints()[0], GL_STATIC_DRAW);
 
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_buffer[1]);
+  glBindBuffer(GL_ARRAY_BUFFER, this->m_buffer[1]);
+  glBufferData(GL_ARRAY_BUFFER, this->m_data->GetVertexColors().size() * sizeof(float) * 3,
+               &this->m_data->GetVertexColors()[0], GL_STATIC_DRAW);
+
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_buffer[2]);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER,
                this->m_data->GetTriangles().size() *sizeof(unsigned short) * 3,
                &this->m_data->GetTriangles()[0], GL_STATIC_DRAW);
 
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_buffer[2]);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_buffer[3]);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER,
                this->m_data->GetLines().size() *sizeof(unsigned short) * 2,
                &this->m_data->GetLines()[0], GL_STATIC_DRAW);
+
+  // \todo: Hard coded for now.
+  this->m_internal->m_bufferVertexAttributeMap[this->m_buffer[0]].push_back(
+    vesVertexAttributeKeys::Position);
+  this->m_internal->m_bufferVertexAttributeMap[this->m_buffer[0]].push_back(
+    vesVertexAttributeKeys::Normal);
+  this->m_internal->m_bufferVertexAttributeMap[this->m_buffer[1]].push_back(
+    vesVertexAttributeKeys::Color);
 
   this->m_initialized = true;
 }

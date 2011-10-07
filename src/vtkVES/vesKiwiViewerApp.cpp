@@ -60,6 +60,13 @@ public:
   {
     delete this->Renderer;
     delete this->ShaderProgram;
+
+    delete this->ModelViewUniform;
+    delete this->ProjectionUnifom;
+    delete this->NormalMatrixUniform;
+    delete this->PositionVertexAttribute;
+    delete this->NormalVertexAttribute;
+    delete this->ColorVertexAttribute;
   }
 
 
@@ -79,12 +86,13 @@ public:
   std::string CurrentShadingModel;
   std::vector<std::string> BuiltinShadingModels;
 
-  vesModelViewUniform     *ModelViewUniform;
-  vesProjectionUniform    *ProjectionUnifom;
-  vesNormalMatrixUniform  *NormalMatrixUniform;
+  vesModelViewUniform         *ModelViewUniform;
+  vesProjectionUniform        *ProjectionUnifom;
+  vesNormalMatrixUniform      *NormalMatrixUniform;
 
-  vesPositionVertexAttribute *PositionVertexAttribute;
-  vesNormalVertexAttribute   *NormalVertexAttribute;
+  vesPositionVertexAttribute  *PositionVertexAttribute;
+  vesNormalVertexAttribute    *NormalVertexAttribute;
+  vesColorVertexAttribute     *ColorVertexAttribute;
 };
 
 //----------------------------------------------------------------------------
@@ -113,15 +121,6 @@ vesKiwiViewerApp::~vesKiwiViewerApp()
 {
   this->removeAllDataRepresentations();
   delete this->Internal;
-
-  delete this->m_modelViewProjectionUniform;
-  delete this->m_normalMatrixUniform;
-  delete this->m_lightDirectionUniform;
-  delete this->m_opacityUniform;
-  delete this->m_enableDiffuseUniform;
-  delete this->m_useGouraudShaderUniform;
-  delete this->m_useBlinnPhongShaderUniform;
-  delete this->m_useToonShaderUniform;
 }
 
 //----------------------------------------------------------------------------
@@ -328,58 +327,14 @@ std::string vesKiwiViewerApp::getShadingModel(int index) const
 //----------------------------------------------------------------------------
 bool vesKiwiViewerApp::setShadingModel(const std::string& name)
 {
-  bool success = false;
-
-//  std::vector<std::string>::iterator itr;
-//  itr = std::find(this->Internal->BuiltinShadingModels.begin(),
-//                  this->Internal->BuiltinShadingModels.end(),
-//                  name);
-
-//  if(itr != this->Internal->BuiltinShadingModels.end())
-//  {
-//    success = true;
-
-//    this->Internal->CurrentShadingModel = name;
-
-//    if(name.compare("Gouraud") == 0)
-//    {
-//      this->m_enableDiffuseUniform->set(1);
-//      this->m_useGouraudShaderUniform->set(1);
-//      this->m_useBlinnPhongShaderUniform->set(0);
-//      this->m_useToonShaderUniform->set(0);
-//    }
-//    else if(name.compare("Blinn-Phong") == 0)
-//    {
-//      this->m_enableDiffuseUniform->set(1);
-//      this->m_useGouraudShaderUniform->set(0);
-//      this->m_useBlinnPhongShaderUniform->set(1);
-//      this->m_useToonShaderUniform->set(0);
-//    }
-//    else // Must be "Toon" shader.
-//    {
-//      this->m_enableDiffuseUniform->set(1);
-//      this->m_useGouraudShaderUniform->set(0);
-//      this->m_useBlinnPhongShaderUniform->set(0);
-//      this->m_useToonShaderUniform->set(1);
-//    }
-//  }
-
+  bool success = true;
   return success;
 }
 
 //----------------------------------------------------------------------------
 bool vesKiwiViewerApp::initializeShaderUniforms()
 {
-//  this->m_modelViewProjectionUniform = new vesUniform("modelViewProjectionMatrix",
-//    vesMatrix4x4f());
-//  this->m_normalMatrixUniform = new vesUniform("normalMatrix", vesMatrix3x3f());
-//  this->m_lightDirectionUniform = new vesUniform("lightDirection", vesVector3f());
-//  this->m_opacityUniform = new vesUniform("opacity", 1.0f);
-
-//  this->m_enableDiffuseUniform = new vesUniform("enableDiffuse", 1);
-//  this->m_useGouraudShaderUniform = new vesUniform("useGouraudShader", 1);
-//  this->m_useBlinnPhongShaderUniform = new vesUniform("useBlinnPhongShader", 0);
-//  this->m_useToonShaderUniform = new vesUniform("useToonShader", 0);
+  // Do nothing.
   return true;
 }
 
@@ -404,28 +359,15 @@ bool vesKiwiViewerApp::initializeShaderProgram()
 
   this->Internal->PositionVertexAttribute = new vesPositionVertexAttribute();
   this->Internal->NormalVertexAttribute   = new vesNormalVertexAttribute();
+  this->Internal->ColorVertexAttribute    = new vesColorVertexAttribute();
 
   this->Internal->ShaderProgram->addUniform(this->Internal->ModelViewUniform);
   this->Internal->ShaderProgram->addUniform(this->Internal->ProjectionUnifom);
   this->Internal->ShaderProgram->addUniform(this->Internal->NormalMatrixUniform);
 
-  this->Internal->ShaderProgram->addVertexAttribute(this->Internal->PositionVertexAttribute);
-  this->Internal->ShaderProgram->addVertexAttribute(this->Internal->NormalVertexAttribute);
-
-//  this->initializeShaderUniforms();
-
-//  this->Internal->ShaderProgram->addUniform(this->m_modelViewProjectionUniform);
-//  this->Internal->ShaderProgram->addUniform(this->m_normalMatrixUniform);
-//  this->Internal->ShaderProgram->addUniform(this->m_lightDirectionUniform);
-//  this->Internal->ShaderProgram->addUniform(this->m_opacityUniform);
-
-//  this->Internal->ShaderProgram->addUniform(this->m_enableDiffuseUniform);
-//  this->Internal->ShaderProgram->addUniform(this->m_useGouraudShaderUniform);
-//  this->Internal->ShaderProgram->addUniform(this->m_useBlinnPhongShaderUniform);
-//  this->Internal->ShaderProgram->addUniform(this->m_useToonShaderUniform);
-
-  // Set default shading model.
-//  this->setShadingModel(this->getShadingModel(0));
+  this->Internal->ShaderProgram->addVertexAttribute(this->Internal->PositionVertexAttribute, 0);
+  this->Internal->ShaderProgram->addVertexAttribute(this->Internal->NormalVertexAttribute, 1);
+  this->Internal->ShaderProgram->addVertexAttribute(this->Internal->ColorVertexAttribute, 3);
 
   return true;
 }

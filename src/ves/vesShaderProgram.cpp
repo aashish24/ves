@@ -28,30 +28,11 @@
 // C++ includes
 #include <vector>
 
-std::string vesShaderProgram::preDefinedAttributeNames
-  [vesShaderProgram::CountAttributeIndex] =
-{
-  "vertexPosition",
-  "vertexNormal",
-  "vertexTextureCoordinate",
-  "vertexColor",
-  "vertexScalar"
-};
-
 
 vesShaderProgram::vesShaderProgram() : vesMaterialAttribute()
 {
   this->m_type = Shader;
   this->m_programHandle = 0;
-
-  // \todo: Delay it further.
-  std::list<vesVertexAttribute*>::const_iterator constItr =
-    this->m_vertexAttributes.begin();
-
-  int i=0;
-  for (constItr; constItr != this->m_vertexAttributes.end(); ++constItr) {
-    this->addBindAttributeLocation((*constItr)->name(), ++i);
-  }
 }
 
 
@@ -110,23 +91,14 @@ bool vesShaderProgram::addUniform(vesUniform *uniform)
 }
 
 
-bool vesShaderProgram::addVertexAttribute(vesVertexAttribute *attribute)
+bool vesShaderProgram::addVertexAttribute(vesVertexAttribute *attribute, int key)
 {
   if (!attribute)
   {
     return false;
   }
 
-  std::list<vesVertexAttribute*>::const_iterator constItr =
-    this->m_vertexAttributes.begin();
-
-  for (constItr; constItr != this->m_vertexAttributes.end(); ++constItr)
-  {
-    if (attribute == *constItr)
-      return false;
-  }
-
-  this->m_vertexAttributes.push_back(attribute);
+  this->m_vertexAttributes[key] = attribute;
 
   // \todo: Make it modified or dirty.
 }
@@ -242,14 +214,14 @@ bool vesShaderProgram::validate()
 
 void vesShaderProgram::bindAttributes()
 {
-  std::list<vesVertexAttribute*>::const_iterator constItr =
+  std::map<int, vesVertexAttribute*>::const_iterator constItr =
     this->m_vertexAttributes.begin();
 
   int i=0;
   for (;constItr != this->m_vertexAttributes.end(); ++constItr) {
     glBindAttribLocation(this->m_programHandle, i,
-                         (*constItr)->name().c_str());
-    this->m_vertexAttributeNameToLocation[(*constItr)->name()] = i;
+                         constItr->second->name().c_str());
+    this->m_vertexAttributeNameToLocation[constItr->second->name()] = i;
     ++i;
   }
 }
@@ -267,12 +239,13 @@ void vesShaderProgram::bindUniforms()
 
 void vesShaderProgram::cleanUp()
 {
+  this->deleteVertexAndFragment();
+
   for (std::list<vesShader*>::iterator it=this->m_shaders.begin();
        it!=this->m_shaders.end(); ++it) {
     delete (*it);
   }
 
-  this->deleteVertexAndFragment();
   this->deleteProgram();
 }
 
@@ -396,35 +369,35 @@ void vesShaderProgram::unbind(const vesRenderState &renderState)
 }
 
 
-void vesShaderProgram::setupVertexData(const vesRenderState &renderState)
+void vesShaderProgram::setupVertexData(const vesRenderState &renderState, int key)
 {
-  std::list<vesVertexAttribute*>::iterator itr =
-    this->m_vertexAttributes.begin();
+  std::map<int, vesVertexAttribute*>::const_iterator constItr =
+    this->m_vertexAttributes.find(key);
 
-  for (; itr != this->m_vertexAttributes.end(); ++itr) {
-    (*itr)->setupVertexData(renderState);
+  if (constItr != this->m_vertexAttributes.end()) {
+    this->m_vertexAttributes[key]->setupVertexData(renderState, key);
   }
 }
 
 
-void vesShaderProgram::bindVertexData(const vesRenderState &renderState)
+void vesShaderProgram::bindVertexData(const vesRenderState &renderState, int key)
 {
-  std::list<vesVertexAttribute*>::iterator itr =
-    this->m_vertexAttributes.begin();
+  std::map<int, vesVertexAttribute*>::const_iterator constItr =
+    this->m_vertexAttributes.find(key);
 
-  for (; itr != this->m_vertexAttributes.end(); ++itr) {
-    (*itr)->bindVertexData(renderState);
+  if (constItr != this->m_vertexAttributes.end()) {
+    this->m_vertexAttributes[key]->bindVertexData(renderState, key);
   }
 }
 
 
-void vesShaderProgram::unbindVertexData(const vesRenderState &renderState)
+void vesShaderProgram::unbindVertexData(const vesRenderState &renderState, int key)
 {
-  std::list<vesVertexAttribute*>::iterator itr =
-    this->m_vertexAttributes.begin();
+  std::map<int, vesVertexAttribute*>::const_iterator constItr =
+    this->m_vertexAttributes.find(key);
 
-  for (; itr != this->m_vertexAttributes.end(); ++itr) {
-    (*itr)->unbindVertexData(renderState);
+  if (constItr != this->m_vertexAttributes.end()) {
+    this->m_vertexAttributes[key]->bindVertexData(renderState, key);
   }
 }
 
