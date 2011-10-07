@@ -140,9 +140,9 @@ void vesActor::traverse(vesVisitor &visitor)
 {
   Children::iterator itr = this->m_children.begin();
 
-  // Update
   switch(visitor.type())
   {
+    // Update
     case vesVisitor::UpdateVisitor:
     {
       this->computeBounds();

@@ -13,8 +13,6 @@ set(sources
   vesMultitouchWidget.cpp
   vesMultitouchSensorNode.cpp
   vesRenderer.cpp
-  vesSceneElement.cpp
-  vesSceneRender.cpp
   vesShader.cpp
   vesTexture.cpp
   vesShaderProgram.cpp
@@ -47,7 +45,6 @@ set(sources
   vsg/Shape/vsgAppearanceChildNode.cpp
   vsg/Shape/vsgAppearanceNode.cpp
   vsg/Shape/vsgMaterialNode.cpp
-  vsg/Shape/Appearance.cpp
 
   # --------------------------------------------------------------------Texture
   vsg/Texture/vsgTextureCoordinateNode.cpp

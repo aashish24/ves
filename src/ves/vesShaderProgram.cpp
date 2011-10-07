@@ -26,13 +26,32 @@
 #include "vesVertexAttribute.h"
 
 // C++ includes
+#include <map>
 #include <vector>
+
+class vesShaderProgram::vesInternal
+{
+public:
+  typedef std::map<std::string, int>          UniformNameToLocation;
+  typedef std::map<std::string, int>          VertexAttributeNameToLocation;
+  typedef std::map<std::string, unsigned int> AttributeBindingMap;
+
+  unsigned int m_programHandle;
+
+  std::vector<vesShader*>             m_shaders;
+  std::vector<vesUniform*>            m_uniforms;
+  std::map<int, vesVertexAttribute*>  m_vertexAttributes;
+
+  UniformNameToLocation         m_uniformNameToLocation;
+  VertexAttributeNameToLocation m_vertexAttributeNameToLocation;
+};
 
 
 vesShaderProgram::vesShaderProgram() : vesMaterialAttribute()
 {
+  this->m_internal = new vesInternal();
+
   this->m_type = Shader;
-  this->m_programHandle = 0;
 }
 
 
@@ -48,19 +67,19 @@ bool vesShaderProgram::addShader(vesShader *shader)
     return false;
 
   // \todo: Memory management.
-  for (std::list<vesShader*>::iterator it=this->m_shaders.begin();
-       it!=this->m_shaders.end(); ++it) {
+  for (std::vector<vesShader*>::iterator it=this->m_internal->m_shaders.begin();
+       it!=this->m_internal->m_shaders.end(); ++it) {
 
     if (shader == *it)
       return false;
 
     if ((*it)->shaderType() == shader->shaderType()) {
-      this->m_shaders.erase(it);
+      this->m_internal->m_shaders.erase(it);
       break;
     }
   }
 
-  this->m_shaders.push_back(shader);
+  this->m_internal->m_shaders.push_back(shader);
 
   // \todo: Implement this and make its state dirty.
   // shader->addProgramReference(this);
@@ -76,16 +95,15 @@ bool vesShaderProgram::addUniform(vesUniform *uniform)
     return false;
   }
 
-  std::list<vesUniform*>::const_iterator constItr =
-    this->m_uniforms.begin();
+  std::vector<vesUniform*>::const_iterator constItr =
+    this->m_internal->m_uniforms.begin();
 
-  for (constItr; constItr != this->m_uniforms.end(); ++constItr)
-  {
+  for (constItr; constItr != this->m_internal->m_uniforms.end(); ++constItr) {
     if (uniform == *constItr)
       return false;
   }
 
-  this->m_uniforms.push_back(uniform);
+  this->m_internal->m_uniforms.push_back(uniform);
 
   // \todo: Make it modified or dirty.
 }
@@ -98,7 +116,7 @@ bool vesShaderProgram::addVertexAttribute(vesVertexAttribute *attribute, int key
     return false;
   }
 
-  this->m_vertexAttributes[key] = attribute;
+  this->m_internal->m_vertexAttributes[key] = attribute;
 
   // \todo: Make it modified or dirty.
 }
@@ -107,7 +125,7 @@ bool vesShaderProgram::addVertexAttribute(vesVertexAttribute *attribute, int key
 bool vesShaderProgram::addBindAttributeLocation(const std::string &name,
                                                 int location)
 {
-  this->m_vertexAttributeNameToLocation[name] = location;
+  this->m_internal->m_vertexAttributeNameToLocation[name] = location;
 
   // \todo: Make it modified or dirty.
 }
@@ -115,10 +133,10 @@ bool vesShaderProgram::addBindAttributeLocation(const std::string &name,
 
 int vesShaderProgram::uniformLocation(const std::string &name) const
 {
-  UniformNameToLocation::const_iterator constItr =
-    this->m_uniformNameToLocation.find(name);
+  vesInternal::UniformNameToLocation::const_iterator constItr =
+    this->m_internal->m_uniformNameToLocation.find(name);
 
-  if (constItr != this->m_uniformNameToLocation.end()) {
+  if (constItr != this->m_internal->m_uniformNameToLocation.end()) {
     return constItr->second;
   }
   else {
@@ -129,10 +147,10 @@ int vesShaderProgram::uniformLocation(const std::string &name) const
 
 int vesShaderProgram::attributeLocation(const std::string &name) const
 {
-  VertexAttributeNameToLocation::const_iterator constItr =
-    this->m_vertexAttributeNameToLocation.find(name);
+  vesInternal::VertexAttributeNameToLocation::const_iterator constItr =
+    this->m_internal->m_vertexAttributeNameToLocation.find(name);
 
-  if (constItr != this->m_vertexAttributeNameToLocation.end()) {
+  if (constItr != this->m_internal->m_vertexAttributeNameToLocation.end()) {
     return constItr->second;
   }
   else {
@@ -143,27 +161,27 @@ int vesShaderProgram::attributeLocation(const std::string &name) const
 
 void vesShaderProgram::use()
 {
-  glUseProgram(this->m_programHandle);
+  glUseProgram(this->m_internal->m_programHandle);
 }
 
 
 int vesShaderProgram::queryUniformLocation(const std::string &value)
 {
-  return glGetUniformLocation(this->m_programHandle, value.c_str());
+  return glGetUniformLocation(this->m_internal->m_programHandle, value.c_str());
 }
 
 
 int vesShaderProgram::queryAttributeLocation(const std::string &value)
 {
-  return glGetAttribLocation(this->m_programHandle, value.c_str());
+  return glGetAttribLocation(this->m_internal->m_programHandle, value.c_str());
 }
 
 
 void vesShaderProgram::deleteProgram()
 {
-  if (this->m_programHandle) {
-    glDeleteProgram(this->m_programHandle);
-    this->m_programHandle = 0;
+  if (this->m_internal->m_programHandle) {
+    glDeleteProgram(this->m_internal->m_programHandle);
+    this->m_internal->m_programHandle = 0;
   }
 }
 
@@ -172,18 +190,18 @@ bool vesShaderProgram::link()
 {
   GLint status;
 
-  glLinkProgram(this->m_programHandle);
+  glLinkProgram(this->m_internal->m_programHandle);
 
   GLint logLength;
-  glGetProgramiv(this->m_programHandle, GL_INFO_LOG_LENGTH, &logLength);
+  glGetProgramiv(this->m_internal->m_programHandle, GL_INFO_LOG_LENGTH, &logLength);
   if (logLength > 0) {
     char *log = (char *)malloc(logLength);
-    glGetProgramInfoLog(this->m_programHandle, logLength, &logLength, log);
+    glGetProgramInfoLog(this->m_internal->m_programHandle, logLength, &logLength, log);
     std::cerr  << "Program link log:" << std::endl << log << std::endl;
     free(log);
   }
 
-  glGetProgramiv(this->m_programHandle, GL_LINK_STATUS, &status);
+  glGetProgramiv(this->m_internal->m_programHandle, GL_LINK_STATUS, &status);
   if (status == 0)
     return false;
 
@@ -195,16 +213,16 @@ bool vesShaderProgram::validate()
 {
   GLint logLength, status;
 
-  glValidateProgram(this->m_programHandle);
-  glGetProgramiv(this->m_programHandle, GL_INFO_LOG_LENGTH, &logLength);
+  glValidateProgram(this->m_internal->m_programHandle);
+  glGetProgramiv(this->m_internal->m_programHandle, GL_INFO_LOG_LENGTH, &logLength);
   if (logLength > 0) {
     char *log = (char *)malloc(logLength);
-    glGetProgramInfoLog(this->m_programHandle, logLength, &logLength, log);
+    glGetProgramInfoLog(this->m_internal->m_programHandle, logLength, &logLength, log);
     std::cerr << "Program validate log:" <<std::endl << log << std::endl;
     free(log);
   }
 
-  glGetProgramiv(this->m_programHandle, GL_VALIDATE_STATUS, &status);
+  glGetProgramiv(this->m_internal->m_programHandle, GL_VALIDATE_STATUS, &status);
   if (status == 0)
     return false;
 
@@ -215,23 +233,24 @@ bool vesShaderProgram::validate()
 void vesShaderProgram::bindAttributes()
 {
   std::map<int, vesVertexAttribute*>::const_iterator constItr =
-    this->m_vertexAttributes.begin();
+    this->m_internal->m_vertexAttributes.begin();
 
   int i=0;
-  for (;constItr != this->m_vertexAttributes.end(); ++constItr) {
-    glBindAttribLocation(this->m_programHandle, i,
+  for (;constItr != this->m_internal->m_vertexAttributes.end(); ++constItr) {
+    glBindAttribLocation(this->m_internal->m_programHandle, i,
                          constItr->second->name().c_str());
-    this->m_vertexAttributeNameToLocation[constItr->second->name()] = i;
+    this->m_internal->m_vertexAttributeNameToLocation[constItr->second->name()] = i;
     ++i;
   }
 }
 
 void vesShaderProgram::bindUniforms()
 {
-  std::list<vesUniform*>::const_iterator constItr = this->m_uniforms.begin();
-  for (;constItr != this->m_uniforms.end(); ++constItr)
-  {
-    this->m_uniformNameToLocation[(*constItr)->name()] =
+  std::vector<vesUniform*>::const_iterator constItr =
+    this->m_internal->m_uniforms.begin();
+
+  for (;constItr != this->m_internal->m_uniforms.end(); ++constItr) {
+    this->m_internal->m_uniformNameToLocation[(*constItr)->name()] =
       queryUniformLocation((*constItr)->name());
   }
 }
@@ -241,31 +260,46 @@ void vesShaderProgram::cleanUp()
 {
   this->deleteVertexAndFragment();
 
-  for (std::list<vesShader*>::iterator it=this->m_shaders.begin();
-       it!=this->m_shaders.end(); ++it) {
+  for (std::vector<vesShader*>::iterator it=this->m_internal->m_shaders.begin();
+       it!=this->m_internal->m_shaders.end(); ++it) {
     delete (*it);
   }
 
   this->deleteProgram();
+
+  delete this->m_internal; this->m_internal = 0x0;
 }
 
 
 void vesShaderProgram::deleteVertexAndFragment()
 {
   // Delete a shader object.
-  for (std::list<vesShader*>::iterator it=this->m_shaders.begin();
-       it!=this->m_shaders.end(); ++it) {
+  for (std::vector<vesShader*>::iterator it=this->m_internal->m_shaders.begin();
+       it!=this->m_internal->m_shaders.end(); ++it) {
     glDeleteShader((*it)->shaderHandle());
   }
 }
 
 
+unsigned int vesShaderProgram::programHandle()
+{
+  return this->m_internal->m_programHandle;
+}
+
+
+const unsigned int& vesShaderProgram::programHandle() const
+{
+  return this->m_internal->m_programHandle;
+}
+
+
+
 vesUniform* vesShaderProgram::uniform(const std::string &name)
 {
-  std::list<vesUniform*>::iterator itr =
-    this->m_uniforms.begin();
+  std::vector<vesUniform*>::iterator itr =
+    this->m_internal->m_uniforms.begin();
 
-  for (; itr != this->m_uniforms.end(); ++itr)
+  for (; itr != this->m_internal->m_uniforms.end(); ++itr)
   {
     if (((*itr)->name().compare(name)) == 0)
     {
@@ -279,13 +313,11 @@ vesUniform* vesShaderProgram::uniform(const std::string &name)
 
 bool vesShaderProgram::uniformExist(const std::string &name)
 {
-  std::list<vesUniform*>::const_iterator constItr =
-    this->m_uniforms.begin();
+  std::vector<vesUniform*>::const_iterator constItr =
+    this->m_internal->m_uniforms.begin();
 
-  for (; constItr != this->m_uniforms.end(); ++constItr)
-  {
-    if (((*constItr)->name().compare(name)) == 0)
-    {
+  for (; constItr != this->m_internal->m_uniforms.end(); ++constItr) {
+    if (((*constItr)->name().compare(name)) == 0) {
       return true;
     }
   }
@@ -296,12 +328,11 @@ bool vesShaderProgram::uniformExist(const std::string &name)
 
 void vesShaderProgram::updateUniforms()
 {
-  std::list<vesUniform*>::const_iterator constItr =
-    this->m_uniforms.begin();
+  std::vector<vesUniform*>::const_iterator constItr =
+    this->m_internal->m_uniforms.begin();
 
-  for (constItr; constItr != this->m_uniforms.end(); ++constItr)
-  {
-    (*constItr)->callGL(this->m_uniformNameToLocation[(*constItr)->name()]);
+  for (constItr; constItr != this->m_internal->m_uniforms.end(); ++constItr) {
+    (*constItr)->callGL(this->m_internal->m_uniformNameToLocation[(*constItr)->name()]);
   }
 }
 
@@ -313,23 +344,23 @@ void vesShaderProgram::setup(const vesRenderState &renderState)
 
 void vesShaderProgram::bind(const vesRenderState &renderState)
 {
-  if (!this->m_programHandle) {
-    this->m_programHandle = glCreateProgram();
+  if (!this->m_internal->m_programHandle) {
+    this->m_internal->m_programHandle = glCreateProgram();
 
-    if (this->m_programHandle == 0)
+    if (this->m_internal->m_programHandle == 0)
     {
       std::cerr << "ERROR: Cannot create Program Object" <<std::endl;
       return;
     }
 
     // Compile shaders.
-    for (std::list<vesShader*>::iterator it=this->m_shaders.begin();
-         it!=this->m_shaders.end(); ++it) {
+    for (std::vector<vesShader*>::iterator it = this->m_internal->m_shaders.begin();
+         it!=this->m_internal->m_shaders.end(); ++it) {
       std::cerr << "INFO: Compiling shaders: " << std::endl;
 
       (*it)->compileShader();
 
-      (*it)->attachShader(this->m_programHandle);
+      (*it)->attachShader(this->m_internal->m_programHandle);
     }
 
     this->bindAttributes();
@@ -350,10 +381,10 @@ void vesShaderProgram::bind(const vesRenderState &renderState)
   }
 
   // Call update callback.
-  std::list<vesUniform*>::const_iterator constItr =
-    this->m_uniforms.begin();
+  std::vector<vesUniform*>::const_iterator constItr =
+    this->m_internal->m_uniforms.begin();
 
-  for (constItr; constItr != this->m_uniforms.end(); ++constItr) {
+  for (constItr; constItr != this->m_internal->m_uniforms.end(); ++constItr) {
     (*constItr)->update(renderState, *this);
   }
 
@@ -372,10 +403,10 @@ void vesShaderProgram::unbind(const vesRenderState &renderState)
 void vesShaderProgram::setupVertexData(const vesRenderState &renderState, int key)
 {
   std::map<int, vesVertexAttribute*>::const_iterator constItr =
-    this->m_vertexAttributes.find(key);
+    this->m_internal->m_vertexAttributes.find(key);
 
-  if (constItr != this->m_vertexAttributes.end()) {
-    this->m_vertexAttributes[key]->setupVertexData(renderState, key);
+  if (constItr != this->m_internal->m_vertexAttributes.end()) {
+    this->m_internal->m_vertexAttributes[key]->setupVertexData(renderState, key);
   }
 }
 
@@ -383,10 +414,10 @@ void vesShaderProgram::setupVertexData(const vesRenderState &renderState, int ke
 void vesShaderProgram::bindVertexData(const vesRenderState &renderState, int key)
 {
   std::map<int, vesVertexAttribute*>::const_iterator constItr =
-    this->m_vertexAttributes.find(key);
+    this->m_internal->m_vertexAttributes.find(key);
 
-  if (constItr != this->m_vertexAttributes.end()) {
-    this->m_vertexAttributes[key]->bindVertexData(renderState, key);
+  if (constItr != this->m_internal->m_vertexAttributes.end()) {
+    this->m_internal->m_vertexAttributes[key]->bindVertexData(renderState, key);
   }
 }
 
@@ -394,10 +425,10 @@ void vesShaderProgram::bindVertexData(const vesRenderState &renderState, int key
 void vesShaderProgram::unbindVertexData(const vesRenderState &renderState, int key)
 {
   std::map<int, vesVertexAttribute*>::const_iterator constItr =
-    this->m_vertexAttributes.find(key);
+    this->m_internal->m_vertexAttributes.find(key);
 
-  if (constItr != this->m_vertexAttributes.end()) {
-    this->m_vertexAttributes[key]->bindVertexData(renderState, key);
+  if (constItr != this->m_internal->m_vertexAttributes.end()) {
+    this->m_internal->m_vertexAttributes[key]->bindVertexData(renderState, key);
   }
 }
 

@@ -23,7 +23,6 @@
 #include "vesGMTL.h"
 #include "vsg/Grouping/Transform.h"
 #include "vesSetGet.h"
-#include "vesActorCollection.h"
 
 class vesCamera: public vsg::Transform
 {

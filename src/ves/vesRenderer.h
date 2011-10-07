@@ -31,17 +31,13 @@
 
 // VES includes
 #include "vesGMTL.h"
-#include "vesMultitouchCamera.h"
-#include "vesShaderProgram.h"
-#include "vesActor.h"
-#include "vesSceneRender.h"
-#include "vesRenderStage.h"
-#include "vesCamera.h"
 
 // C++ includes
 #include <string>
 
 // Forward declarations
+class vesActor;
+class vesCamera;
 class vesRenderStage;
 class vesTexture;
 

@@ -19,22 +19,11 @@
  ========================================================================*/
 #include "vesCamera.h"
 #include "vesGMTL.h"
-#include <iostream>
-#include "Painter.h"
+
 #include "gmtl/Generate.h"
 
-namespace {
-    void PrintMatrix(std::string name, vesMatrix4x4f mv)
-    {
-      std::cerr << name << ":" << std::endl;
-      for (int i = 0; i < 4; ++i)
-      {
-        std::cerr << mv[i][0] << "," << mv[i][1] << "," << mv[i][2] << "," << mv[i][3] << std::endl;
-      }
-      std::cerr << std::endl;
-    }
-}
-
+// C++ includes
+#include <iostream>
 
 vesCamera::vesCamera()
 {

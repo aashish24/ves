@@ -33,8 +33,8 @@ class vesRenderState;
 class vesMapper : public vsgBoundedObject
 {
 public:
-    vesMapper();
-   ~vesMapper();
+           vesMapper();
+  virtual ~vesMapper();
 
   virtual void computeBounds();
 
@@ -49,7 +49,7 @@ private:
 
   virtual void setupDrawObjects(const vesRenderState &renderState);
 
-  //\todo: Figure out this.
+  //\todo: Why do we need this?
   void normalize();
   vesMatrix4x4f m_normalizedMatrix;
 
@@ -58,7 +58,7 @@ protected:
 
   bool m_initialized;
 
-  unsigned int     m_buffer[4];
+  unsigned int m_buffer[4];
 
   vesTriangleData *m_data;
 

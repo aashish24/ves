@@ -22,7 +22,6 @@
 #include "vesCullVisitor.h"
 #include "vesFileReader.h"
 #include "vesGMTL.h"
-#include "vesMultitouchCamera.h"
 #include "vesRenderer.h"
 #include "vesRenderStage.h"
 #include "vesShaderProgram.h"

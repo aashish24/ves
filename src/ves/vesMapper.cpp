@@ -46,7 +46,7 @@ public:
     this->m_bufferVertexAttributeMap.clear();
   }
 
-  std::map<unsigned int, std::vector<int> > m_bufferVertexAttributeMap;
+  std::map< unsigned int, std::vector<int> > m_bufferVertexAttributeMap;
 };
 
 

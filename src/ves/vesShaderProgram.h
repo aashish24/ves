@@ -21,13 +21,12 @@
 #ifndef VESSHADER_PROGRAM_H
 #define VESSHADER_PROGRAM_H
 
-#include <list>
-#include <map>
-#include <string>
-
 // VES includes
 #include "vesGMTL.h"
 #include "vesMaterial.h"
+
+// C++ includes
+#include <string>
 
 // Forward declarations
 class vesShader;
@@ -38,11 +37,6 @@ class vesVertexAttribute;
 class vesShaderProgram : public vesMaterialAttribute
 {
 public:
-  typedef std::map<std::string, int>     UniformNameToLocation;
-  typedef std::map<std::string, int>     VertexAttributeNameToLocation;
-
-  typedef std::map<std::string, unsigned int> AttributeBindingMap;
-
             vesShaderProgram();
    virtual ~vesShaderProgram();
 
@@ -74,10 +68,8 @@ public:
   void deleteProgram();
   void deleteVertexAndFragment();
 
-  inline unsigned int programHandle()
-  {
-    return this->m_programHandle;
-  }
+  unsigned int        programHandle();
+  const unsigned int& programHandle() const;
 
   virtual void bind         (const vesRenderState &renderState);
   virtual void unbind       (const vesRenderState &renderState);
@@ -99,15 +91,8 @@ protected:
 
 private:
 
-  unsigned int             m_programHandle;
-
-  std::list<vesShader*>    m_shaders;
-
-  std::list<vesUniform*>               m_uniforms;
-  std::map<int, vesVertexAttribute*>   m_vertexAttributes;
-
-  UniformNameToLocation         m_uniformNameToLocation;
-  VertexAttributeNameToLocation m_vertexAttributeNameToLocation;
+  class vesInternal;
+  vesInternal *m_internal;
 
   vesShaderProgram(const vesShaderProgram&);
   void operator=  (const vesShaderProgram&);
