@@ -34,13 +34,11 @@ vsgNode::~vsgNode()
 
 bool vsgNode::setParent(vsgGroupingNode *parent)
 {
-  if (!parent) {
-    return false;
-  }
-
   if (this->m_parent) {
     this->m_parent->removeChild(this);
-
-    this->m_parent = parent;
   }
+
+  this->m_parent = parent;
+
+  return true;
 }

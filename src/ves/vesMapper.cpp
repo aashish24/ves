@@ -149,7 +149,7 @@ void vesMapper::setupDrawObjects(const vesRenderState &renderState)
 
   unsigned int bufferId;
 
-  if (this->m_data->GetPoints().size()) {
+  if (!this->m_data->GetPoints().empty()) {
     glGenBuffers(1, &bufferId);
     this->m_internal->m_buffers.push_back(bufferId);
     glBindBuffer(GL_ARRAY_BUFFER, this->m_internal->m_buffers.back());
@@ -160,13 +160,12 @@ void vesMapper::setupDrawObjects(const vesRenderState &renderState)
         this->m_internal->m_buffers.back()].push_back(vesVertexAttributeKeys::Position);
 
     if (this->m_data->GetHasNormals()) {
-      std::cout << "has normals " << std::endl;
       this->m_internal->m_bufferVertexAttributeMap[
         this->m_internal->m_buffers.back()].push_back(vesVertexAttributeKeys::Normal);
       }
     }
 
-  if (this->m_data->GetVertexColors().size()) {
+  if (!this->m_data->GetVertexColors().empty()) {
     glGenBuffers(1, &bufferId);
     this->m_internal->m_buffers.push_back(bufferId);
     glBindBuffer(GL_ARRAY_BUFFER, this->m_internal->m_buffers.back());
@@ -177,7 +176,7 @@ void vesMapper::setupDrawObjects(const vesRenderState &renderState)
       this->m_internal->m_buffers.back()].push_back(vesVertexAttributeKeys::Color);
     }
 
-  if (this->m_data->GetTriangles().size()) {
+  if (!this->m_data->GetTriangles().empty()) {
     glGenBuffers(1, &bufferId);
     this->m_internal->m_buffers.push_back(bufferId);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_internal->m_buffers.back());
@@ -186,7 +185,7 @@ void vesMapper::setupDrawObjects(const vesRenderState &renderState)
                  &this->m_data->GetTriangles()[0], GL_STATIC_DRAW);
     }
 
-  if (this->m_data->GetLines().size()) {
+  if (!this->m_data->GetLines().empty()) {
     glGenBuffers(1, &bufferId);
     this->m_internal->m_buffers.push_back(bufferId);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_internal->m_buffers.back());

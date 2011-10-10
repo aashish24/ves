@@ -45,9 +45,11 @@ bool vsgGroupingNode::addChild(vsgNode *child)
     }
   }
 
-  child->setParent(this);
+  child->m_parent = this;
 
   this->m_children.push_back(child);
+
+  this->setBoundsDirty(true);
 
   return true;
 }
@@ -65,6 +67,10 @@ bool vsgGroupingNode::removeChild(vsgNode *child)
   // \note: Ensure that parent of this node is "this" group node.
   if (child->parent() == this) {
     this->m_children.remove(child);
+
+    child->m_parent = 0x0;
+
+    this->setBoundsDirty(true);
 
     return true;
   }

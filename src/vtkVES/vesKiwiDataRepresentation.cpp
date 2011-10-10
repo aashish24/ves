@@ -155,16 +155,14 @@ void vesKiwiDataRepresentation::setColor(double r, double g, double b, double a)
 void vesKiwiDataRepresentation::addSelfToRenderer(vesRenderer* renderer)
 {
   assert(renderer);
-  renderer->setSceneRoot(this->Internal->Actor);
+  renderer->addActor(this->Internal->Actor);
 }
 
 //----------------------------------------------------------------------------
 void vesKiwiDataRepresentation::removeSelfFromRenderer(vesRenderer* renderer)
 {
-#if 0
   assert(renderer);
-  renderer->RemoveActor(this->Internal->Actor);
-#endif
+  renderer->removeActor(this->Internal->Actor);
 }
 
 //----------------------------------------------------------------------------

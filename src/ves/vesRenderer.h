@@ -56,6 +56,9 @@ public:
   virtual void setBackgroundColor(float r, float g, float b, float a=1.0f);
   virtual void setBackground(vesTexture *background);
 
+  virtual void addActor   (vesActor *actor);
+  virtual void removeActor(vesActor *actor);
+
   void setSceneRoot(vesActor *root);
 
   inline vesCamera* camera(){ return this->m_camera; }

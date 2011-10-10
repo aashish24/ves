@@ -50,7 +50,7 @@ public:
 
   void applyMaterial(vesMaterial *&material)
   {
-    if (material != this->m_material) {
+    if (material && material != this->m_material) {
       this->m_material = material;
 
       this->m_material->render(*this);
@@ -60,7 +60,7 @@ public:
 
   void invokeMaterial(vesMaterial *&material)
   {
-    if (material == this->m_material) {
+    if (material && material == this->m_material) {
       this->m_material->remove(*this);
     }
   }
@@ -68,7 +68,7 @@ public:
 
   void applyMapper(vesMapper *&mapper)
   {
-    if (mapper != this->m_mapper) {
+    if (mapper && mapper != this->m_mapper) {
       this->m_mapper = mapper;
     }
   }
@@ -76,7 +76,7 @@ public:
 
   void applyModelViewMatrix(vesMatrix4x4f *modelViewMatrix)
   {
-    if (modelViewMatrix != m_modelViewMatrix && modelViewMatrix) {
+    if (modelViewMatrix && modelViewMatrix != this->m_modelViewMatrix) {
       this->m_modelViewMatrix = modelViewMatrix;
     }
   }
@@ -84,7 +84,7 @@ public:
 
   void applyProjectionMatrix(vesMatrix4x4f *projectionMatrix)
   {
-    if (projectionMatrix != m_projectionMatrix && projectionMatrix) {
+    if (projectionMatrix  && projectionMatrix != m_projectionMatrix) {
       this->m_projectionMatrix = projectionMatrix;
     }
   }

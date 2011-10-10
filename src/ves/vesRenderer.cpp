@@ -45,7 +45,7 @@ vesRenderer::vesRenderer()
   this->m_backgroundColor[3] = 1.0f;
 
   this->m_camera    = new vesCamera();
-  this->m_sceneRoot = 0x0;
+  this->m_sceneRoot = new vesActor();
 
   this->m_renderStage = new vesRenderStage();
 }
@@ -326,6 +326,23 @@ void vesRenderer::setBackground(vesTexture* background)
 }
 
 
+void vesRenderer::addActor(vesActor *actor)
+{
+  if (actor) {
+    std::cout << "Adding actor " << std::endl;
+    this->m_sceneRoot->addChild(actor);
+  }
+}
+
+
+void vesRenderer::removeActor(vesActor *actor)
+{
+  if (actor) {
+    this->m_sceneRoot->removeChild(actor);
+  }
+}
+
+
 void vesRenderer::updateTraverseScene()
 {
   // Update traversal.
@@ -345,9 +362,11 @@ void vesRenderer::cullTraverseScene()
   vesMatrix4x4f viewMatrix =
     this->m_camera->ComputeViewTransform();
 
-  cullVisitor.pushModelViewMatrix(viewMatrix);
   cullVisitor.pushProjectionMatrix(projectionMatrix);
+  cullVisitor.pushModelViewMatrix(viewMatrix);
   cullVisitor.setRenderStage(this->m_renderStage);
   cullVisitor.visit(*this->m_sceneRoot);
+  cullVisitor.popModelViewMatrix();
+  cullVisitor.popProjectionMatrix();
 }
 

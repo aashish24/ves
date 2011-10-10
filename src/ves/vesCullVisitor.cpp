@@ -24,6 +24,23 @@
 #include "vesActor.h"
 #include "vesRenderStage.h"
 
+namespace
+{
+  // \todo: Take it out.
+  void printMatrix(vesMatrix4x4f matrix)
+  {
+    for(int i=0; i < 4; ++i)
+    {
+      for(int j=0; j < 4; ++j)
+      {
+        std::cout << matrix[i][j] << " ";
+      }
+
+      std::cout << std::endl;
+    }
+  }
+}
+
 
 void vesCullVisitor::addGeometryAndStates(vesMapper *mapper, vesMaterial *material,
                                           const vesMatrix4x4f &modelViewMatrix,
@@ -31,7 +48,7 @@ void vesCullVisitor::addGeometryAndStates(vesMapper *mapper, vesMaterial *materi
                                           float depth)
 {
   this->m_renderStage->addRenderLeaf(
-    vesRenderLeaf(depth, modelViewMatrix, projectionMatrix, *material, *mapper));
+    vesRenderLeaf(depth, modelViewMatrix, projectionMatrix, material, mapper));
 }
 
 
@@ -45,4 +62,6 @@ void vesCullVisitor::visit(vesActor &actor)
                              1);
 
   this->vesVisitor::visit(actor);
+
+  this->popModelViewMatrix();
 }

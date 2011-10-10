@@ -34,14 +34,22 @@ class vesRenderLeaf
 public:
   vesRenderLeaf(int depth, const vesMatrix4x4f &modelViewMatrix,
                 const vesMatrix4x4f &projectionMatrix,
-                vesMaterial &material, vesMapper &mapper)
+                vesMaterial *material, vesMapper *mapper)
   {
     this->m_depth            = depth;
-    this->m_bin              = material.binNumber();
     this->m_modelViewMatrix  = modelViewMatrix;
     this->m_projectionMatrix = projectionMatrix;
-    this->m_material         = &material;
-    this->m_mapper           = &mapper;
+
+    this->m_material = material;
+
+    if (material) {
+      this->m_bin = material->binNumber();
+    }
+    else {
+      this->m_bin = vesMaterial::DefaultBin;
+    }
+
+    this->m_mapper = mapper;
   }
 
 
@@ -58,10 +66,15 @@ public:
 
     renderState.applyProjectionMatrix (&this->m_projectionMatrix);
     renderState.applyModelViewMatrix  (&this->m_modelViewMatrix);
-    renderState.applyMapper(this->m_mapper);
-    renderState.applyMaterial(this->m_material);
 
-    this->m_mapper->render(renderState);
+    if (this->m_material) {
+      renderState.applyMaterial(this->m_material);
+    }
+
+    if (this->m_mapper) {
+      renderState.applyMapper(this->m_mapper);
+      this->m_mapper->render(renderState);
+    }
   }
 
 

@@ -149,12 +149,10 @@ void vesActor::traverse(vesVisitor &visitor)
 
       if (visitor.mode() == vesVisitor::TraverseAllChildren) {
         for (itr; itr != this->m_children.end(); ++itr) {
-          (*itr)->accept(visitor);
-          {
-            (*itr)->accept(visitor);
 
-            this->updateBounds(static_cast<vesActor*>(*itr));
-          }
+          visitor.visit(*(static_cast<vesActor*>(*itr)));
+
+          this->updateBounds(static_cast<vesActor*>(*itr));
         }
       }
 
@@ -169,9 +167,12 @@ void vesActor::traverse(vesVisitor &visitor)
     case vesVisitor::CullVisitor:
     {
       // Cull
+      int i=0;
       if (visitor.mode() == vesVisitor::TraverseAllChildren) {
         for (itr; itr != this->m_children.end(); ++itr) {
-          (*itr)->accept(visitor);
+          // \todo: Take it out.
+          std::cout << "Visiting children " << i << std::endl;
+          visitor.visit(*(static_cast<vesActor*>(*itr)));
         }
       }
       else if (visitor.mode() == vesVisitor::TraverseActiveChildren) {
