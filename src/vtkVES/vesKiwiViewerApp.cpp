@@ -213,8 +213,8 @@ vesKiwiViewerApp::vesKiwiViewerApp()
   this->addBuiltinDataset("Buckyball", "Buckyball.vtp");
   this->addBuiltinDataset("Motor", "motor.g");
   this->addBuiltinDataset("Caffeine", "caffeine.pdb");
-  this->addBuiltinDataset("Head", "head.vti");
-  this->addBuiltinDataset("KiwiViewer Logo", "kiwi.png");
+//  this->addBuiltinDataset("Head", "head.vti");
+//  this->addBuiltinDataset("KiwiViewer Logo", "kiwi.png");
 
   this->addBuiltinShadingModel("Gouraud");
   this->addBuiltinShadingModel("Blinn-Phong");
@@ -459,7 +459,7 @@ void vesKiwiViewerApp::handleDoubleTap()
       this->Internal->ContourRep->addSelfToRenderer(this->Internal->Renderer);
 #if 0
       this->Internal->ContourRep->mapper()->setColor(0.8, 0.8, 0.8, 0.3);
-#endif 
+#endif
     }
     else {
 #if 0

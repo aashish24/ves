@@ -148,7 +148,7 @@ void vesKiwiDataRepresentation::setColor(double r, double g, double b, double a)
   assert(this->Internal->Actor);
 #if 0
   this->Internal->Actor->setColor(r, g, b, a);
-#endif 
+#endif
 }
 
 //----------------------------------------------------------------------------

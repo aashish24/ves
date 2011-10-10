@@ -166,7 +166,7 @@ bool DoTesting()
 
     testHelper->app()->render();
     std::string datasetName = testHelper->app()->builtinDatasetName(i);
-  
+
     std::string inFile = testHelper->dataDirectory() + "/" + datasetName + ".png";
     std::string outFile = datasetName + ".png";
 

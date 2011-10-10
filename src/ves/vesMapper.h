@@ -58,8 +58,6 @@ protected:
   bool m_isNew;
   bool m_initialized;
 
-  unsigned int m_buffer[4];
-
   vesTriangleData *m_data;
 
   class vesInternal;

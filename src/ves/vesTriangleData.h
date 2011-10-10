@@ -47,6 +47,7 @@ public:
   vesVector3f GetMin();
   vesVector3f GetMax();
   void SetHasNormals(bool b) { this->HasNormals = b; }
+  bool GetHasNormals() { return this->HasNormals; }
   void ComputeNormals();
   void SetHasBounds(bool b) { this->HasBounds = b; }
   void ComputeBounds();
