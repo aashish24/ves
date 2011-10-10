@@ -11,8 +11,12 @@ set(assets
   ${kiwi_data}/shuttle.vtp
   ${kiwi_data}/teapot.vtp
   ${kiwi_data}/visible-woman-hand.vtp
+  ${kiwi_data}/head.vti
+  ${kiwi_data}/kiwi.png
   ../../../src/shaders/Shader.fsh
   ../../../src/shaders/Shader.vsh
+  ../../../src/shaders/BackgroundTexture.fsh
+  ../../../src/shaders/BackgroundTexture.vsh
 )
 
 foreach(f ${assets})

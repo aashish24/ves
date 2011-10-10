@@ -92,25 +92,37 @@ void loadNextDataset()
 }
 
 //----------------------------------------------------------------------------
+std::string getContentsOfAssetFile(const std::string filename)
+{
+  AAsset* assetFile = AAssetManager_open(assetManager, filename.c_str(), AASSET_MODE_UNKNOWN);
+  std::string contents = std::string(static_cast<const char*>(AAsset_getBuffer(assetFile)), AAsset_getLength(assetFile));
+  AAsset_close(assetFile);
+  return contents;
+}
+
+//----------------------------------------------------------------------------
 bool setupGraphics(int w, int h)
 {
   // Pipe VTK messages into the android log
   vtkAndroidOutputWindow::Install();
 
-  AAsset* vertex_asset = AAssetManager_open(assetManager, "Shader.vsh", AASSET_MODE_UNKNOWN);
-  AAsset* fragment_asset = AAssetManager_open(assetManager, "Shader.fsh", AASSET_MODE_UNKNOWN);
-  std::string vertex_source = std::string(static_cast<const char*>(AAsset_getBuffer(vertex_asset)), AAsset_getLength(vertex_asset));
-  std::string fragment_source = std::string(static_cast<const char*>(AAsset_getBuffer(fragment_asset)), AAsset_getLength(fragment_asset));
+  std::string vertex_source = getContentsOfAssetFile("Shader.vsh");
+  std::string fragment_source = getContentsOfAssetFile("Shader.fsh");
   //LOGI("vertex_source: %s\n", vertex_source.c_str());
   //LOGI("fragment_source: %s\n", fragment_source.c_str());
-  AAsset_close(vertex_asset);
-  AAsset_close(fragment_asset);
 
   app = new vesKiwiViewerApp();
   app->setVertexShaderSource(vertex_source);
   app->setFragmentShaderSource(fragment_source);
   app->initializeShaderProgram();
   app->initializeRendering();
+
+  vertex_source = getContentsOfAssetFile("BackgroundTexture.vsh");
+  fragment_source = getContentsOfAssetFile("BackgroundTexture.fsh");
+  app->setVertexShaderSource(vertex_source);
+  app->setFragmentShaderSource(fragment_source);
+  app->initializeTextureShader();
+
   loadDataset(app->defaultBuiltinDatasetIndex());
   app->resizeView(w, h);
   app->resetView();
