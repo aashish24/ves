@@ -67,9 +67,9 @@ void vesRenderer::setSceneRoot(vesActor *root)
 void vesRenderer::render()
 {
   // Clear the buffers
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glClearColor(this->m_backgroundColor[0], this->m_backgroundColor[1],
                this->m_backgroundColor[2], this->m_backgroundColor[3]);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   glEnable(GL_DEPTH_TEST);
 
