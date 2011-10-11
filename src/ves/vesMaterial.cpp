@@ -169,3 +169,15 @@ void vesMaterial::unbindVertexData(const vesRenderState &renderState, int key)
     itr->second->unbindVertexData(renderState, key);
   }
 }
+
+
+void vesMaterial::bindRenderData(const vesRenderState &renderState,
+                                 const vesRenderData  &renderData)
+{
+  vesInternal::Attributes::iterator itr =
+    this->m_internal->m_attributes.begin();
+
+  for (itr; itr != this->m_internal->m_attributes.end(); ++itr) {
+    itr->second->bindRenderData(renderState, renderData);
+  }
+}

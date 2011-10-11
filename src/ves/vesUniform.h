@@ -129,10 +129,9 @@ public:
     return this->m_name;
   }
 
-  /*! Update callback. */
+  /*! Update */
   virtual void update(const vesRenderState   &renderState,
                       const vesShaderProgram &program);
-
 
   /*! convenient scalar (non-array) constructors w/ assignment */
   explicit vesUniform(const std::string &name, float value);

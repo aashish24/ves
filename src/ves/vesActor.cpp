@@ -170,8 +170,6 @@ void vesActor::traverse(vesVisitor &visitor)
       int i=0;
       if (visitor.mode() == vesVisitor::TraverseAllChildren) {
         for (itr; itr != this->m_children.end(); ++itr) {
-          // \todo: Take it out.
-          std::cout << "Visiting children " << i << std::endl;
           visitor.visit(*(static_cast<vesActor*>(*itr)));
         }
       }

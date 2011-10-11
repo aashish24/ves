@@ -51,6 +51,9 @@ public:
   virtual void unbindVertexData (const vesRenderState &renderState, int key){}
   virtual void setupVertexData  (const vesRenderState &renderState, int key){}
 
+  virtual void bindRenderData   (const vesRenderState &renderState,
+                                 const vesRenderData  &renderData){}
+
 protected:
 
   AttributeType m_type;
@@ -100,6 +103,8 @@ public:
   virtual void unbindVertexData (const vesRenderState &renderState, int key);
   virtual void setupVertexData  (const vesRenderState &renderState, int key);
 
+  virtual void bindRenderData   (const vesRenderState &renderState,
+                                 const vesRenderData  &renderData);
 
 protected:
 

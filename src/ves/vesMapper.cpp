@@ -22,6 +22,8 @@
 
 // VES includes
 #include "vesMaterial.h"
+#include "vesGLTypes.h"
+#include "vesRenderData.h"
 #include "vesRenderStage.h"
 #include "vesShaderProgram.h"
 #include "vesTriangleData.h"
@@ -125,12 +127,13 @@ void vesMapper::render(const vesRenderState &renderState)
 
   if (this->m_data->GetTriangles().size()) {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_internal->m_buffers[bufferIndex++]);
+    renderState.m_material->bindRenderData(renderState, vesRenderData(vesGLTypes::Triangles));
     glDrawElements(GL_TRIANGLES, this->m_data->GetTriangles().size() * 3,
                    GL_UNSIGNED_SHORT, (void*)0);
     }
 
-
   if (this->m_data->GetLines().size()) {
+    renderState.m_material->bindRenderData(renderState, vesRenderData(vesGLTypes::Lines));
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_internal->m_buffers[bufferIndex++]);
     glDrawElements(GL_LINES, this->m_data->GetLines().size() * 2,
                    GL_UNSIGNED_SHORT, (void*)0);

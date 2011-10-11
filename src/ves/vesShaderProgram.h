@@ -40,10 +40,6 @@ public:
             vesShaderProgram();
    virtual ~vesShaderProgram();
 
-  /*!
-   * Add shader to a program. For now lifetime of the shader is controlled
-   * by the program.
-   */
   bool addShader(vesShader *shader);
 
   bool addUniform(vesUniform *uniform);
@@ -78,6 +74,9 @@ public:
   virtual void bindVertexData   (const vesRenderState &renderState, int key);
   virtual void unbindVertexData (const vesRenderState &renderState, int key);
   virtual void setupVertexData  (const vesRenderState &renderState, int key);
+
+  virtual void bindRenderData   (const vesRenderState &renderState,
+                                 const vesRenderData &renderData);
 
 
 protected:

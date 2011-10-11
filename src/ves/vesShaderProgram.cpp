@@ -22,6 +22,7 @@
 
 // VES includes
 #include "vesBooleanUniform.h"
+#include "vesEngineUniform.h"
 #include "vesShader.h"
 #include "vesUniform.h"
 #include "vesVertexAttribute.h"
@@ -37,7 +38,6 @@ public:
     vesInternal()
     {
       this->m_programHandle = 0;
-      this->m_hasVertexColorsUniform = new vesHasVertexColorsUniform();
     }
 
 
@@ -49,7 +49,9 @@ public:
       this->m_uniformNameToLocation.clear();
       this->m_vertexAttributeNameToLocation.clear();
 
-      delete this->m_hasVertexColorsUniform; this->m_hasVertexColorsUniform = 0x0;
+      for (size_t i=0; i < this->m_engineUniforms.size(); ++i) {
+        delete this->m_engineUniforms[i];
+      }
     }
 
   typedef std::map<std::string, int>          UniformNameToLocation;
@@ -65,7 +67,7 @@ public:
   UniformNameToLocation         m_uniformNameToLocation;
   VertexAttributeNameToLocation m_vertexAttributeNameToLocation;
 
-  vesHasVertexColorsUniform     *m_hasVertexColorsUniform;
+  std::vector<vesEngineUniform*>  m_engineUniforms;
 };
 
 
@@ -75,7 +77,12 @@ vesShaderProgram::vesShaderProgram() : vesMaterialAttribute()
 
   this->m_type = Shader;
 
-  this->addUniform(this->m_internal->m_hasVertexColorsUniform);
+  this->m_internal->m_engineUniforms.push_back(new vesHasVertexColors());
+  this->m_internal->m_engineUniforms.push_back(new vesPrimitiveType());
+
+  for (size_t i=0; i < this->m_internal->m_engineUniforms.size(); ++i) {
+    this->addUniform(this->m_internal->m_engineUniforms[i]->uniform());
+  }
 }
 
 
@@ -284,11 +291,6 @@ void vesShaderProgram::cleanUp()
 {
   this->deleteVertexAndFragment();
 
-  for (std::vector<vesShader*>::iterator it=this->m_internal->m_shaders.begin();
-       it!=this->m_internal->m_shaders.end(); ++it) {
-    delete (*it);
-  }
-
   this->deleteProgram();
 
   delete this->m_internal; this->m_internal = 0x0;
@@ -457,3 +459,12 @@ void vesShaderProgram::unbindVertexData(const vesRenderState &renderState, int k
   }
 }
 
+
+void vesShaderProgram::bindRenderData(const vesRenderState &renderState,
+                                      const vesRenderData  &renderData)
+{
+  for (size_t i=0; i < this->m_internal->m_engineUniforms.size(); ++i) {
+    this->m_internal->m_engineUniforms[i]->bindRenderData(
+      renderState, renderData);
+  }
+}

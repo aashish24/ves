@@ -7,6 +7,8 @@ uniform vec3   lightDirection;
 
 uniform bool   hasVertexColors;
 
+uniform int    primitiveType;
+
 // Vertex attributes.
 attribute vec3 vertexPosition;
 attribute vec3 vertexNormal;
@@ -33,19 +35,21 @@ void main()
     varDiffuseColor = vec4(0.8, 0.8, 0.8, 1.0);
   }
 
-
   // Save position for shading later.
   varPosition = projectionMatrix * modelViewMatrix * vec4(vertexPosition, 1.0);
 
-  // Transform vertex normal into eye space.
-  varNormal = normalize(normalMatrix * vertexNormal);
+  // 3 is line
+  if (primitiveType != 3) {
+    // Transform vertex normal into eye space.
+    varNormal = normalize(normalMatrix * vertexNormal);
 
-  // Save light direction (direction light for now)
-  varLightDirection = normalize(vec3(0.0, 10.0, 100.0));
+    // Save light direction (direction light for now)
+    varLightDirection = normalize(vec3(0.0, 10.0, 100.0));
 
-  lowp float nDotL = max(dot(varNormal, varLightDirection), 0.0);
+    lowp float nDotL = max(dot(varNormal, varLightDirection), 0.0);
 
-  varDiffuseColor = (varDiffuseColor) * nDotL;
+    varDiffuseColor = (varDiffuseColor) * nDotL;
+  }
 
   // GLSL still requires this.
   gl_Position = varPosition;

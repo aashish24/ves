@@ -83,9 +83,6 @@ public:
   {
     assert(renderState.m_material && renderState.m_material->shaderProgram());
 
-    // \todo: Take it out.
-    std::cout << "Key is " << key << std::endl;
-
     glVertexAttribPointer(renderState.m_material->shaderProgram()->
                           attributeLocation(this->m_name), 3, GL_FLOAT,
                           GL_FALSE, 6 * sizeof(float), (void*)0);

@@ -8,30 +8,15 @@
 #include "vesRenderState.h"
 #include "vesTriangleData.h"
 
+// C++ includes
+#include <string>
+
 class vesBooleanUniform : public vesUniform
 {
 public:
 
   vesBooleanUniform(const std::string &name="booleanUniform") :
     vesUniform(name, false)
-  {
-  }
-
-
-  virtual void update(const vesRenderState &renderState,
-                      const vesShaderProgram &program)
-  {
-    // \note: Do nothing.
-  }
-};
-
-
-class vesHasVertexNormalsUniform : public vesBooleanUniform
-{
-public:
-
-  vesHasVertexNormalsUniform(const std::string &name="hasVertexNormals") :
-    vesBooleanUniform(name)
   {
   }
 
@@ -64,6 +49,11 @@ public:
     {
       this->set(false);
     }
+  }
+
+  virtual vesUniform* asUniform()
+  {
+    return (static_cast<vesUniform*>(this));
   }
 };
 
