@@ -112,8 +112,9 @@ bool vesShaderProgram::addShader(vesShader *shader)
 
   this->m_internal->m_shaders.push_back(shader);
 
-  // \todo: Implement this and make its state dirty.
   // shader->addProgramReference(this);
+
+  this->setDirtyStateOn();
 
   return true;
 }
@@ -135,9 +136,9 @@ bool vesShaderProgram::addUniform(vesUniform *uniform)
 
   this->m_internal->m_uniforms.push_back(uniform);
 
-  return true;
+  this->setDirtyStateOn();
 
-  // \todo: Make it modified or dirty.
+  return true;
 }
 
 
@@ -150,9 +151,9 @@ bool vesShaderProgram::addVertexAttribute(vesVertexAttribute *attribute, int key
 
   this->m_internal->m_vertexAttributes[key] = attribute;
 
-  return true;
+  this->setDirtyStateOn();
 
-  // \todo: Make it modified or dirty.
+  return true;
 }
 
 
@@ -161,9 +162,9 @@ bool vesShaderProgram::addBindAttributeLocation(const std::string &name,
 {
   this->m_internal->m_vertexAttributeNameToLocation[name] = location;
 
-  return true;
+  this->setDirtyStateOn();
 
-  // \todo: Make it modified or dirty.
+  return true;
 }
 
 
@@ -376,7 +377,8 @@ void vesShaderProgram::setup(const vesRenderState &renderState)
 
 void vesShaderProgram::bind(const vesRenderState &renderState)
 {
-  if (!this->m_internal->m_programHandle) {
+  if (!this->m_internal->m_programHandle || this->dirtyState()) {
+
     this->m_internal->m_programHandle = glCreateProgram();
 
     if (this->m_internal->m_programHandle == 0)
@@ -406,6 +408,8 @@ void vesShaderProgram::bind(const vesRenderState &renderState)
     this->use();
 
     this->bindUniforms();
+
+    this->setDirtyStateOff();
   }
   else
   {

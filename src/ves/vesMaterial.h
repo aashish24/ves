@@ -31,13 +31,30 @@ class vesMaterialAttribute
 public:
   enum AttributeType
   {
+    Undefined = 0x0,
     Shader    = 0x1,
     Texture   = 0x2
   };
 
+  vesMaterialAttribute() :
+    m_dirtyState(true),
+    m_type      (Undefined)
+  {
+  }
+
+
   virtual ~vesMaterialAttribute()
   {
   }
+
+
+  void        setDirty(const bool &value)
+                                    { this->m_dirtyState = value; }
+  void        setDirtyStateOn()     { this->setDirty(true); }
+  void        setDirtyStateOff()    { this->setDirty(false); }
+  bool        dirtyState()          { return this->m_dirtyState; }
+  const bool& dirtyState() const    { return this->m_dirtyState; }
+
 
   AttributeType type()       { return this->m_type; }
   AttributeType type() const { return this->m_type; }
@@ -55,6 +72,8 @@ public:
                                  const vesRenderData  &renderData){}
 
 protected:
+
+  bool          m_dirtyState;
 
   AttributeType m_type;
 };
