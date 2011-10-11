@@ -21,16 +21,13 @@
 #include "vesTexture.h"
 #include "vesShaderProgram.h"
 #include "vesUniform.h"
+#include "vesRenderState.h"
+
+#include "vesGL.h"
 
 #include <cassert>
+#include <cstdio>
 
-// IMPORTANT: Make sure that this struct has no pointers.  All pointers should
-// be put in the class declaration. For all newly defined pointers make sure
-// to update constructor and destructor methods.
-struct vesTextureInternal
-{
-  double value; // sample
-};
 
 static const GLfloat squareVertices[] = {
   1.0f,  1.0f,
@@ -46,42 +43,59 @@ static const GLfloat textureVertices[] = {
   0.0f,  0.0f,
 };
 
-vesTexture::vesTexture(vesShaderProgram *shader,
-                       SFImage image)
+vesTexture::vesTexture()
 {
-  _internal = new vesTextureInternal();
-  this->ShaderProgram = shader;
-  this->Image = image;
-  this->loaded = false;
 }
 
 vesTexture::~vesTexture()
 {
-  delete _internal;
 }
 
-void vesTexture::load()
+void vesTexture::bind(const vesRenderState &renderState)
 {
-  if (this->loaded)
-    return;
+  glEnable(GL_TEXTURE_2D);
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, this->texID);
 
-  glGenTextures(1,&texID);
-  glBindTexture(GL_TEXTURE_2D,texID);
-  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-  glTexImage2D(GL_TEXTURE_2D,
-               0,
-               GL_RGBA,
-               this->Image.width,
-               this->Image.height,
-               0,
-               GL_RGBA,
-               GL_UNSIGNED_BYTE,
-               this->Image.data);
-  this->loaded = true;
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+}
+
+void vesTexture::unbind(const vesRenderState &renderState)
+{
+  glBindTexture(GL_TEXTURE_2D, 0);
+  glDisable(GL_TEXTURE_2D);
+  glDisable(GL_BLEND);
+}
+
+void vesTexture::setImageData(SFImage image)
+{
+  this->Image = image;
+  this->setDirtyStateOn();
+}
+
+void vesTexture::setup(const vesRenderState &renderState)
+{
+  if (this->dirtyState()) {
+    glGenTextures(1, &this->texID);
+    glBindTexture(GL_TEXTURE_2D, this->texID);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    glTexImage2D(GL_TEXTURE_2D,
+                 0,
+                 GL_RGBA,
+                 this->Image.width,
+                 this->Image.height,
+                 0,
+                 GL_RGBA,
+                 GL_UNSIGNED_BYTE,
+                 this->Image.data);
+
+    this->setDirtyStateOff();
+  }
 }
 
 void vesTexture::Render()

@@ -34,6 +34,7 @@
 // C++ includes
 #include <map>
 #include <vector>
+#include <cstdio>
 
 class vesMapper::vesInternal
 {
@@ -83,6 +84,7 @@ void vesMapper::setData(vesTriangleData *data)
 {
   if (data) {
     this->m_data = data;
+    this->m_initialized = false;
   }
 }
 
@@ -140,6 +142,9 @@ void vesMapper::render(const vesRenderState &renderState)
 
 void vesMapper::setupDrawObjects(const vesRenderState &renderState)
 {
+  this->m_internal->m_bufferVertexAttributeMap.clear();
+  this->m_internal->m_buffers.clear();
+
   const int numberOfFloats = 6;
   size_t sizeOfData =
     this->m_data->GetPoints().size() * numberOfFloats * sizeof(float);
@@ -171,6 +176,17 @@ void vesMapper::setupDrawObjects(const vesRenderState &renderState)
 
     this->m_internal->m_bufferVertexAttributeMap[
       this->m_internal->m_buffers.back()].push_back(vesVertexAttributeKeys::Color);
+    }
+
+  if (!this->m_data->GetTextureCoordinates().empty()) {
+    glGenBuffers(1, &bufferId);
+    this->m_internal->m_buffers.push_back(bufferId);
+    glBindBuffer(GL_ARRAY_BUFFER, this->m_internal->m_buffers.back());
+    glBufferData(GL_ARRAY_BUFFER, this->m_data->GetTextureCoordinates().size() * sizeof(float) * 2,
+                 &this->m_data->GetTextureCoordinates()[0], GL_STATIC_DRAW);
+
+    this->m_internal->m_bufferVertexAttributeMap[
+      this->m_internal->m_buffers.back()].push_back(vesVertexAttributeKeys::TextureCoordinate);
     }
 
   if (!this->m_data->GetTriangles().empty()) {

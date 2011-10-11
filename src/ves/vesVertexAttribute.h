@@ -157,4 +157,37 @@ public:
   }
 };
 
+
+
+class vesTextureCoordinateVertexAttribute : public vesVertexAttribute
+{
+public:
+
+  vesTextureCoordinateVertexAttribute(const std::string &name="vertexTextureCoordinate") :
+    vesVertexAttribute(name)
+  {
+  }
+
+  virtual void bindVertexData(const vesRenderState &renderState, int key)
+  {
+    assert(renderState.m_material && renderState.m_material->shaderProgram());
+
+    glVertexAttribPointer(renderState.m_material->shaderProgram()->
+                          attributeLocation(this->m_name), 2, GL_FLOAT, GL_FALSE,
+                          2 * sizeof(float), (void*) 0);
+
+    glEnableVertexAttribArray(renderState.m_material->shaderProgram()->
+                              attributeLocation(this->m_name));
+  }
+
+
+  virtual void unbindVertexData(const vesRenderState &renderState, int key)
+  {
+    assert(renderState.m_material && renderState.m_material->shaderProgram());
+
+    glDisableVertexAttribArray(renderState.m_material->shaderProgram()->
+                               attributeLocation(this->m_name));
+  }
+};
+
 #endif // VESVERTEXATTRIBUTE_H

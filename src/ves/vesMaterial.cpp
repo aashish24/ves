@@ -26,6 +26,7 @@
 
 // C++ includes
 #include <map>
+#include <cstdio>
 
 class vesMaterial::vesInternal
 {
@@ -92,12 +93,7 @@ vesMaterialAttribute* vesMaterial::attribute(
 
 void vesMaterial::render(const vesRenderState &renderState)
 {
-  vesInternal::Attributes::iterator itr =
-    this->m_internal->m_attributes.begin();
-
-  for (itr; itr != this->m_internal->m_attributes.end(); ++itr) {
-    itr->second->bind(renderState);
-  }
+  this->bind(renderState);
 }
 
 
@@ -113,7 +109,6 @@ void vesMaterial::setup(const vesRenderState &renderState)
     this->m_internal->m_attributes.begin();
 
   for (; itr != this->m_internal->m_attributes.end(); ++itr) {
-
     itr->second->setup(renderState);
   }
 }
@@ -121,6 +116,8 @@ void vesMaterial::setup(const vesRenderState &renderState)
 
 void vesMaterial::bind(const vesRenderState &renderState)
 {
+  this->setup(renderState);
+
   vesInternal::Attributes::iterator itr =
     this->m_internal->m_attributes.begin();
 

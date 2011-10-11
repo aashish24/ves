@@ -26,6 +26,7 @@
 #include "vesRenderer.h"
 #include "vesTriangleData.h"
 #include "vesShaderProgram.h"
+#include "vesTexture.h"
 
 #include "vtkPolyDataToTriangleData.h"
 
@@ -70,6 +71,7 @@ public:
     this->Actor = 0;
     this->Mapper = 0;
     this->Material = 0;
+    this->Texture = 0;
   }
 
   ~vesInternal()
@@ -78,11 +80,13 @@ public:
     delete this->Mapper->data();
     delete this->Mapper;
     delete this->Material;
+    delete this->Texture;
   }
 
   vesActor*     Actor;
   vesMapper*    Mapper;
   vesMaterial*  Material;
+  vesTexture*   Texture;
 };
 
 //----------------------------------------------------------------------------
@@ -100,7 +104,6 @@ vesKiwiDataRepresentation::~vesKiwiDataRepresentation()
 //----------------------------------------------------------------------------
 void vesKiwiDataRepresentation::setDataSet(vtkDataSet* dataSet)
 {
-  std::cout << "Setting data " << std::endl;
   vtkPolyData* polyData = vtkPolyData::SafeDownCast(dataSet);
   assert(polyData);
   assert(this->Internal->Mapper);
@@ -122,7 +125,6 @@ vesTriangleData* vesKiwiDataRepresentation::triangleData() const
 //----------------------------------------------------------------------------
 void vesKiwiDataRepresentation::initializeWithShader(vesShaderProgram* shaderProgram)
 {
-  std::cout << "vesKiwiDataRepresentation::initializeWithShader " << std::endl;
   assert(shaderProgram);
   assert(!this->Internal->Mapper && !this->Internal->Actor);
 
@@ -140,6 +142,19 @@ void vesKiwiDataRepresentation::initializeWithShader(vesShaderProgram* shaderPro
 #if 0
     this->Internal->Actor->setColor(0.8, 0.8, 0.8, 1.0);
 #endif
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiDataRepresentation::setTexture(vesTexture* texture)
+{
+  this->Internal->Texture = texture;
+  this->Internal->Actor->material()->addAttribute(texture);
+}
+
+//----------------------------------------------------------------------------
+vesTexture* vesKiwiDataRepresentation::texture() const
+{
+  return this->Internal->Texture;
 }
 
 //----------------------------------------------------------------------------

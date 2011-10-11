@@ -136,6 +136,7 @@ vtkSmartPointer<vtkPolyData> GetPolyDataForImagePlane(vtkImageData* image)
 #include "vesModelViewUniform.h"
 #include "vesProjectionUniform.h"
 #include "vesNormalMatrixUniform.h"
+#include "vesVertexAttributeKeys.h"
 
 
 //----------------------------------------------------------------------------
@@ -196,6 +197,7 @@ public:
   vesPositionVertexAttribute  *PositionVertexAttribute;
   vesNormalVertexAttribute    *NormalVertexAttribute;
   vesColorVertexAttribute     *ColorVertexAttribute;
+  vesTextureCoordinateVertexAttribute *TextureCoordinateVertexAttribute;
 };
 
 //----------------------------------------------------------------------------
@@ -213,8 +215,8 @@ vesKiwiViewerApp::vesKiwiViewerApp()
   this->addBuiltinDataset("Buckyball", "Buckyball.vtp");
   this->addBuiltinDataset("Motor", "motor.g");
   this->addBuiltinDataset("Caffeine", "caffeine.pdb");
-//  this->addBuiltinDataset("Head", "head.vti");
-//  this->addBuiltinDataset("KiwiViewer Logo", "kiwi.png");
+  this->addBuiltinDataset("Head", "head.vti");
+  this->addBuiltinDataset("KiwiViewer Logo", "kiwi.png");
 
   this->addBuiltinShadingModel("Gouraud");
   this->addBuiltinShadingModel("Blinn-Phong");
@@ -256,7 +258,7 @@ int vesKiwiViewerApp::numberOfBuiltinDatasets() const
 //----------------------------------------------------------------------------
 int vesKiwiViewerApp::defaultBuiltinDatasetIndex() const
 {
-  return 6;
+  return 10;
 }
 
 //----------------------------------------------------------------------------
@@ -410,12 +412,8 @@ void vesKiwiViewerApp::scrollImageSlice(double delta)
   vesKiwiDataRepresentation* rep = this->Internal->SliceReps[flatDimension];
   rep->setDataSet(imagePlane);
 
-#if 0
-  this->Internal->TextureStorage.erase(rep->mapper()->texture());
-  delete rep->mapper()->texture();
-
-  rep->mapper()->setTexture(this->newTextureFromImage(sliceImage));
-#endif
+  this->Internal->TextureStorage.erase(rep->texture());
+  this->setTextureFromImage(rep->texture(), sliceImage);
 }
 
 //----------------------------------------------------------------------------
@@ -603,8 +601,6 @@ bool vesKiwiViewerApp::initializeShaderUniforms()
 //----------------------------------------------------------------------------
 bool vesKiwiViewerApp::initializeShaderProgram()
 {
-  std::cout << "vesKiwiViewerApp::initializeShaderProgram " << std::endl;
-
   this->Internal->ShaderProgram = new vesShaderProgram();
 
   this->Internal->ShaderProgram->addShader(
@@ -640,6 +636,7 @@ bool vesKiwiViewerApp::initializeRendering()
   assert(this->Internal->ShaderProgram);
 
   this->Internal->Renderer = new vesRenderer();
+  this->Internal->Renderer->setBackgroundColor(63/255.0, 96/255.0, 144/255.0, 1.0f);
 
   return true;
 }
@@ -652,12 +649,11 @@ void vesKiwiViewerApp::removeAllDataRepresentations()
     vesKiwiDataRepresentation* rep = this->Internal->DataRepresentations[i];
 
     rep->removeSelfFromRenderer(this->Internal->Renderer);
-#if 0
-    if (rep->mapper()->texture()) {
-      this->Internal->TextureStorage.erase(rep->mapper()->texture());
-      delete rep->mapper()->texture();
+
+    if (rep->texture()) {
+      this->Internal->TextureStorage.erase(rep->texture());
     }
-#endif
+
     delete rep;
   }
 
@@ -675,7 +671,7 @@ void vesKiwiViewerApp::addRepresentationsForDataSet(vtkDataSet* dataSet)
 {
 
   if (vtkPolyData::SafeDownCast(dataSet)) {
-    this->addPolyDataRepresentation(vtkPolyData::SafeDownCast(dataSet));
+    this->addPolyDataRepresentation(vtkPolyData::SafeDownCast(dataSet), this->Internal->ShaderProgram);
   }
   else if (vtkImageData::SafeDownCast(dataSet)) {
 
@@ -720,7 +716,7 @@ void vesKiwiViewerApp::addRepresentationsForDataSet(vtkDataSet* dataSet)
       vtkNew<vtkOutlineFilter> outline;
       outline->SetInput(image);
       outline->Update();
-      this->addPolyDataRepresentation(outline->GetOutput());
+      this->addPolyDataRepresentation(outline->GetOutput(), this->Internal->ShaderProgram);
 
       if (image->GetNumberOfPoints() < 600000) {
         vtkNew<vtkContourFilter> contour;
@@ -730,7 +726,7 @@ void vesKiwiViewerApp::addRepresentationsForDataSet(vtkDataSet* dataSet)
         contour->ComputeScalarsOff();
         contour->ComputeNormalsOff();
         contour->Update();
-        vesKiwiDataRepresentation* contourRep = this->addPolyDataRepresentation(contour->GetOutput());
+        vesKiwiDataRepresentation* contourRep = this->addPolyDataRepresentation(contour->GetOutput(), this->Internal->ShaderProgram);
         contourRep->setColor(0.8, 0.8, 0.8, 0.4);
         this->Internal->ContourVis = 1;
         this->Internal->ContourRep = contourRep;
@@ -742,11 +738,10 @@ void vesKiwiViewerApp::addRepresentationsForDataSet(vtkDataSet* dataSet)
 
       vtkSmartPointer<vtkPolyData> imagePlane = GetPolyDataForImagePlane(image);
 
-      vesKiwiDataRepresentation* rep = this->addPolyDataRepresentation(imagePlane);
+      vesKiwiDataRepresentation* rep = this->addPolyDataRepresentation(imagePlane, this->Internal->TextureShader);
       vesTexture* texture = this->newTextureFromImage(image);
-#if 0
-      rep->mapper()->setTexture(texture);
-#endif
+
+      rep->setTexture(texture);
 
       // only do this when the append filter is present, which means this 2d image
       // is one slice from a 3d image
@@ -760,10 +755,10 @@ void vesKiwiViewerApp::addRepresentationsForDataSet(vtkDataSet* dataSet)
 }
 
 //----------------------------------------------------------------------------
-vesKiwiDataRepresentation* vesKiwiViewerApp::addPolyDataRepresentation(vtkPolyData* dataSet)
+vesKiwiDataRepresentation* vesKiwiViewerApp::addPolyDataRepresentation(vtkPolyData* dataSet, vesShaderProgram* program)
 {
   vesKiwiDataRepresentation* rep = new vesKiwiDataRepresentation();
-  rep->initializeWithShader(this->Internal->ShaderProgram);
+  rep->initializeWithShader(program);
   rep->setDataSet(dataSet);
   rep->addSelfToRenderer(this->Internal->Renderer);
   this->Internal->DataRepresentations.push_back(rep);
@@ -779,11 +774,24 @@ void vesKiwiViewerApp::initializeTextureShader()
   this->Internal->TextureShader->addShader(
     new vesShader(vesShader::Fragment, this->Internal->FragmentShaderSource));
 
-  this->Internal->TextureShader->addUniform(new vesUniform("modelViewProjectionMatrix", vesMatrix4x4f()));
-  this->Internal->TextureShader->addUniform(new vesUniform("normalMatrix", vesMatrix3x3f()));
-  this->Internal->TextureShader->addUniform(new vesUniform("lightDirection", vesVector3f()));
-  this->Internal->TextureShader->addUniform(new vesUniform("opacity", 1.0f));
-  this->Internal->TextureShader->addUniform(new vesUniform("enableDiffuse", 1));
+  // \todo: Delete this during destructions.
+  this->Internal->ModelViewUniform = new vesModelViewUniform();
+  this->Internal->ProjectionUnifom = new vesProjectionUniform();
+  this->Internal->NormalMatrixUniform = new vesNormalMatrixUniform();
+
+  this->Internal->PositionVertexAttribute = new vesPositionVertexAttribute();
+  this->Internal->NormalVertexAttribute   = new vesNormalVertexAttribute();
+  this->Internal->ColorVertexAttribute    = new vesColorVertexAttribute();
+  this->Internal->TextureCoordinateVertexAttribute    = new vesTextureCoordinateVertexAttribute();
+
+  this->Internal->TextureShader->addUniform(this->Internal->ModelViewUniform);
+  this->Internal->TextureShader->addUniform(this->Internal->ProjectionUnifom);
+  this->Internal->TextureShader->addUniform(this->Internal->NormalMatrixUniform);
+
+  this->Internal->TextureShader->addVertexAttribute(this->Internal->PositionVertexAttribute, vesVertexAttributeKeys::Position);
+  this->Internal->TextureShader->addVertexAttribute(this->Internal->NormalVertexAttribute, vesVertexAttributeKeys::Normal);
+  this->Internal->TextureShader->addVertexAttribute(this->Internal->ColorVertexAttribute, vesVertexAttributeKeys::Color);
+  this->Internal->TextureShader->addVertexAttribute(this->Internal->TextureCoordinateVertexAttribute, vesVertexAttributeKeys::TextureCoordinate);
 }
 
 //----------------------------------------------------------------------------
@@ -797,7 +805,14 @@ void vesKiwiViewerApp::setBackgroundTexture(const std::string& filename)
 //----------------------------------------------------------------------------
 vesTexture* vesKiwiViewerApp::newTextureFromImage(vtkImageData* image)
 {
-  assert(this->Internal->TextureShader);
+  vesTexture* texture = new vesTexture();
+  this->setTextureFromImage(texture, image);
+  return texture;
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiViewerApp::setTextureFromImage(vesTexture* texture, vtkImageData* image)
+{
   assert(image);
   assert(image->GetDataDimension() == 2);
   assert(image->GetPointData()->GetScalars());
@@ -851,10 +866,9 @@ vesTexture* vesKiwiViewerApp::newTextureFromImage(vtkImageData* image)
 
   sfimage.data = scalars->WriteVoidPointer(0,0);
 
-  vesTexture* texture = new vesTexture(this->Internal->TextureShader, sfimage);
+  texture->setImageData(sfimage);
   this->Internal->TextureStorage[texture] = scalars;
-  return texture;
-}
+};
 
 //----------------------------------------------------------------------------
 bool vesKiwiViewerApp::loadDataset(const std::string& filename)

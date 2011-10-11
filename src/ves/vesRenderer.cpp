@@ -329,7 +329,6 @@ void vesRenderer::setBackground(vesTexture* background)
 void vesRenderer::addActor(vesActor *actor)
 {
   if (actor) {
-    std::cout << "Adding actor " << std::endl;
     this->m_sceneRoot->addChild(actor);
   }
 }

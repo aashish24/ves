@@ -21,27 +21,33 @@
 #ifndef __vesTexture_h
 #define __vesTexture_h
 
+#include "vesMaterial.h"
+
 #include "vsg/Utility/vsgMacro.h"
 #include "vsg/Utility/vsgTypes.h"
 
-class vesTextureInternal;
-class vesShaderProgram;
 
-class vesTexture
+class vesTexture : public vesMaterialAttribute
 {
 public:
-  vesTexture(vesShaderProgram *program, SFImage image);
+
+  vesTexture();
   virtual ~vesTexture();
 
-  void load();
+  virtual void bind         (const vesRenderState &renderState);
+  virtual void unbind       (const vesRenderState &renderState);
+  virtual void setup        (const vesRenderState &renderState);
+
   void Render();
 
-  vesShaderProgram *ShaderProgram;
+  void setImageData(SFImage image);
+
+protected:
+
   SFImage Image;
   unsigned int texID;
-  bool loaded;
 
 private:
-  vesTextureInternal *_internal;
+
 };
 #endif // __vesTexture_h
