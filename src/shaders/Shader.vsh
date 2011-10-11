@@ -5,6 +5,8 @@ uniform mat4   projectionMatrix;
 uniform mat3   normalMatrix;
 uniform vec3   lightDirection;
 
+uniform bool   hasVertexColors;
+
 // Vertex attributes.
 attribute vec3 vertexPosition;
 attribute vec3 vertexNormal;
@@ -24,7 +26,13 @@ void main()
   varAmbientColor = vec4(0.01, 0.01, 0.01, 0.0);
 
   // Default diffuse color for now.
-  varDiffuseColor = vec4(0.2, 0.2, 0.2, 1.0) + vec4(vertexColor, 1.0);
+  if (hasVertexColors) {
+    varDiffuseColor = vec4(0.2, 0.2, 0.2, 1.0) + vec4(vertexColor, 1.0);
+  }
+  else {
+    varDiffuseColor = vec4(0.8, 0.8, 0.8, 1.0);
+  }
+
 
   // Save position for shading later.
   varPosition = projectionMatrix * modelViewMatrix * vec4(vertexPosition, 1.0);

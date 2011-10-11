@@ -73,6 +73,8 @@ public:
 
     if (this->m_mapper) {
       renderState.applyMapper(this->m_mapper);
+
+      this->m_material->render(renderState);
       this->m_mapper->render(renderState);
     }
   }

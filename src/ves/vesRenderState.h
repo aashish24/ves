@@ -52,8 +52,6 @@ public:
   {
     if (material && material != this->m_material) {
       this->m_material = material;
-
-      this->m_material->render(*this);
     }
   }
 

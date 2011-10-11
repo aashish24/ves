@@ -40,7 +40,7 @@
 # include <OpenGLES/ES2/glext.h>
 #endif
 
-class vesVertexAttribute : public vesMaterialAttribute
+class vesVertexAttribute
 {
 public:
 
@@ -50,6 +50,14 @@ public:
   }
 
   const std::string& name() const { return this->m_name; }
+
+  virtual void bind         (const vesRenderState &renderState){}
+  virtual void unbind       (const vesRenderState &renderState){}
+  virtual void setup        (const vesRenderState &renderState){}
+
+  virtual void bindVertexData   (const vesRenderState &renderState, int key){}
+  virtual void unbindVertexData (const vesRenderState &renderState, int key){}
+  virtual void setupVertexData  (const vesRenderState &renderState, int key){}
 
   virtual void update(const vesRenderState &renderState,
                       const vesShaderProgram &shaderProgram, int key){;}

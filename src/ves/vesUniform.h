@@ -35,7 +35,6 @@
 
 // VES includes
 #include "vesGMTL.h"
-#include "vesMaterial.h"
 
 // Forward declarations
 class vesRenderState;
@@ -75,7 +74,7 @@ public:
 };
 
 
-class vesUniform : public vesMaterialAttribute
+class vesUniform
 {
 public:
 

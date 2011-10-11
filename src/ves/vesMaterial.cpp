@@ -21,6 +21,7 @@
 #include "vesMaterial.h"
 
 // VES includes
+#include "vesRenderData.h"
 #include "vesShaderProgram.h"
 
 // C++ includes

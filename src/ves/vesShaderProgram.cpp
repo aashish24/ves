@@ -21,6 +21,7 @@
 #include "vesShaderProgram.h"
 
 // VES includes
+#include "vesBooleanUniform.h"
 #include "vesShader.h"
 #include "vesUniform.h"
 #include "vesVertexAttribute.h"
@@ -32,6 +33,25 @@
 class vesShaderProgram::vesInternal
 {
 public:
+
+    vesInternal()
+    {
+      this->m_programHandle = 0;
+      this->m_hasVertexColorsUniform = new vesHasVertexColorsUniform();
+    }
+
+
+    ~vesInternal()
+    {
+      this->m_shaders.clear();
+      this->m_uniforms.clear();
+      this->m_vertexAttributes.clear();
+      this->m_uniformNameToLocation.clear();
+      this->m_vertexAttributeNameToLocation.clear();
+
+      delete this->m_hasVertexColorsUniform; this->m_hasVertexColorsUniform = 0x0;
+    }
+
   typedef std::map<std::string, int>          UniformNameToLocation;
   typedef std::map<std::string, int>          VertexAttributeNameToLocation;
   typedef std::map<std::string, unsigned int> AttributeBindingMap;
@@ -44,6 +64,8 @@ public:
 
   UniformNameToLocation         m_uniformNameToLocation;
   VertexAttributeNameToLocation m_vertexAttributeNameToLocation;
+
+  vesHasVertexColorsUniform     *m_hasVertexColorsUniform;
 };
 
 
@@ -52,6 +74,8 @@ vesShaderProgram::vesShaderProgram() : vesMaterialAttribute()
   this->m_internal = new vesInternal();
 
   this->m_type = Shader;
+
+  this->addUniform(this->m_internal->m_hasVertexColorsUniform);
 }
 
 

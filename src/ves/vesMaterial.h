@@ -22,6 +22,7 @@
 #define VESMATERIAL_H
 
 // Forward declarations
+class vesRenderData;
 class vesRenderState;
 class vesShaderProgram;
 
@@ -41,7 +42,7 @@ public:
   AttributeType type()       { return this->m_type; }
   AttributeType type() const { return this->m_type; }
 
-  //  \todo: Fix not used warning
+  //  \note: Fix (unused parameter warning)
   virtual void bind         (const vesRenderState &renderState){}
   virtual void unbind       (const vesRenderState &renderState){}
   virtual void setup        (const vesRenderState &renderState){}
