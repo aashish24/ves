@@ -21,13 +21,7 @@
 #ifndef VESRENDERER_H
 #define VESRENDERER_H
 
-#ifdef ANDROID
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
-#else
-#import <OpenGLES/ES2/gl.h>
-#import <OpenGLES/ES2/glext.h>
-#endif
+#include "vesGL.h"
 
 // VES includes
 #include "vesGMTL.h"

@@ -29,13 +29,7 @@
 #include "vesTriangleData.h"
 #include "vesVertexAttributeKeys.h"
 
-#ifdef ANDROID
-# include <GLES2/gl2.h>
-# include <GLES2/gl2ext.h>
-#else
-# include <OpenGLES/ES2/gl.h>
-# include <OpenGLES/ES2/glext.h>
-#endif
+#include "vesGL.h"
 
 // C++ includes
 #include <map>
