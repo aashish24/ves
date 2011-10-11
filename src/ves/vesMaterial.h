@@ -81,9 +81,9 @@ public:
            vesMaterial();
   virtual ~vesMaterial();
 
-  void setBinNumber(int number) { this->m_binNumber = number; }
-  int  binNumber() { return this->m_binNumber; }
-  const int  binNumber() const { return this->m_binNumber; }
+  void        setBinNumber(int number) { this->m_binNumber = number; }
+  int         binNumber()              { return this->m_binNumber; }
+  const int&  binNumber() const        { return this->m_binNumber; }
 
   bool addAttribute(vesMaterialAttribute *attribute);
   vesMaterialAttribute* attribute(vesMaterialAttribute::AttributeType type);

@@ -75,7 +75,7 @@ public:
     BinRenderLeavesMap::iterator itr = this->m_binRenderLeavesMap.begin();
     RenderLeaves::iterator rlsItr;
 
-    for (itr; itr != this->m_binRenderLeavesMap.end(); ++itr) {
+    for (; itr != this->m_binRenderLeavesMap.end(); ++itr) {
       for (rlsItr = itr->second.begin(); rlsItr != itr->second.end(); ++rlsItr) {
         (*rlsItr).render(renderState, previous);
 

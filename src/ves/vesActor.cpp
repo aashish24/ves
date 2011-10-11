@@ -148,7 +148,7 @@ void vesActor::traverse(vesVisitor &visitor)
       this->computeBounds();
 
       if (visitor.mode() == vesVisitor::TraverseAllChildren) {
-        for (itr; itr != this->m_children.end(); ++itr) {
+        for (; itr != this->m_children.end(); ++itr) {
 
           visitor.visit(*(static_cast<vesActor*>(*itr)));
 
@@ -169,7 +169,7 @@ void vesActor::traverse(vesVisitor &visitor)
       // Cull
       int i=0;
       if (visitor.mode() == vesVisitor::TraverseAllChildren) {
-        for (itr; itr != this->m_children.end(); ++itr) {
+        for (; itr != this->m_children.end(); ++itr) {
           visitor.visit(*(static_cast<vesActor*>(*itr)));
         }
       }

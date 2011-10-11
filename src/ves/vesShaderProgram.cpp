@@ -121,20 +121,21 @@ bool vesShaderProgram::addShader(vesShader *shader)
 
 bool vesShaderProgram::addUniform(vesUniform *uniform)
 {
-  if (!uniform)
-  {
+  if (!uniform) {
     return false;
   }
 
   std::vector<vesUniform*>::const_iterator constItr =
     this->m_internal->m_uniforms.begin();
 
-  for (constItr; constItr != this->m_internal->m_uniforms.end(); ++constItr) {
+  for (; constItr != this->m_internal->m_uniforms.end(); ++constItr) {
     if (uniform == *constItr)
       return false;
   }
 
   this->m_internal->m_uniforms.push_back(uniform);
+
+  return true;
 
   // \todo: Make it modified or dirty.
 }
@@ -149,6 +150,8 @@ bool vesShaderProgram::addVertexAttribute(vesVertexAttribute *attribute, int key
 
   this->m_internal->m_vertexAttributes[key] = attribute;
 
+  return true;
+
   // \todo: Make it modified or dirty.
 }
 
@@ -157,6 +160,8 @@ bool vesShaderProgram::addBindAttributeLocation(const std::string &name,
                                                 int location)
 {
   this->m_internal->m_vertexAttributeNameToLocation[name] = location;
+
+  return true;
 
   // \todo: Make it modified or dirty.
 }
@@ -358,7 +363,7 @@ void vesShaderProgram::updateUniforms()
   std::vector<vesUniform*>::const_iterator constItr =
     this->m_internal->m_uniforms.begin();
 
-  for (constItr; constItr != this->m_internal->m_uniforms.end(); ++constItr) {
+  for (; constItr != this->m_internal->m_uniforms.end(); ++constItr) {
     (*constItr)->callGL(this->m_internal->m_uniformNameToLocation[(*constItr)->name()]);
   }
 }
@@ -411,7 +416,7 @@ void vesShaderProgram::bind(const vesRenderState &renderState)
   std::vector<vesUniform*>::const_iterator constItr =
     this->m_internal->m_uniforms.begin();
 
-  for (constItr; constItr != this->m_internal->m_uniforms.end(); ++constItr) {
+  for (; constItr != this->m_internal->m_uniforms.end(); ++constItr) {
     (*constItr)->update(renderState, *this);
   }
 
