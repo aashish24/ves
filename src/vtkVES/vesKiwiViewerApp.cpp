@@ -364,18 +364,53 @@ bool vesKiwiViewerApp::scrollSliceModeActive() const
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiViewerApp::scrollImageSlice(double delta)
+void vesKiwiViewerApp::scrollImageSlice(double deltaX, double deltaY)
 {
   if (!this->Internal->SliceFilter) {
     return;
   }
 
+  deltaY *= -1;
+
+  vesRenderer* ren = this->Internal->Renderer;
+  vesCamera* camera = ren->camera();
+  vesVector3f viewFocus = camera->GetFocalPoint();
+  vesVector3f viewPoint = camera->GetPosition();
+  vesVector3f viewFocusDisplay = ren->computeWorldToDisplay(viewFocus);
+  float focalDepth = viewFocusDisplay[2];
+
+  double x0 = viewFocusDisplay[0];
+  double y0 = viewFocusDisplay[1];
+  double x1 = x0 + deltaX;
+  double y1 = y0 + deltaY;
+
+  // map change into world coordinates
+  vesVector3f point0 = ren->computeDisplayToWorld(vesVector3f(x0, y0, focalDepth));
+  vesVector3f point1 = ren->computeDisplayToWorld(vesVector3f(x1, y1, focalDepth));
+  vesVector3f motionVector = point1 - point0;
+
+
+
   int flatDimension = this->Internal->SelectedImageDimension;
+
+  vesVector3f planeNormal(0, 0, 0);
+  planeNormal[flatDimension] = 1.0;
+
+  double vectorDot = gmtl::dot(motionVector, planeNormal);
+
+  //printf("motion vector: %f %f %f\n", motionVector[0],motionVector[1],motionVector[2]);
+  //printf("plane normal: %f %f %f\n", planeNormal[0],planeNormal[1],planeNormal[2]);
+  //printf("dot: %f\n", vectorDot);
+
+  double delta = vectorDot;
+  if (fabs(delta) < 1e-6) {
+    delta = deltaY;
+  }
 
   int dimensions[3];
   vtkImageData::SafeDownCast(this->Internal->SliceFilter->GetInput())->GetDimensions(dimensions);
 
-  int dimensionDelta = static_cast<int>(delta/5.0);
+  int dimensionDelta = static_cast<int>(delta);
   if (dimensionDelta == 0) {
     dimensionDelta = delta > 0 ? 1 : -1;
   }
@@ -420,7 +455,7 @@ void vesKiwiViewerApp::scrollImageSlice(double delta)
 void vesKiwiViewerApp::handleSingleTouchPanGesture(double deltaX, double deltaY)
 {
   if (this->scrollSliceModeActive()) {
-    this->scrollImageSlice(deltaY);
+    this->scrollImageSlice(deltaX, deltaY);
     return;
   }
 

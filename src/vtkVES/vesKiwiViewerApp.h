@@ -79,7 +79,7 @@ public:
   void handleSingleTouchUp();
   void handleDoubleTap();
 
-  void scrollImageSlice(double delta);
+  void scrollImageSlice(double deltaX, double deltaY);
   bool scrollSliceModeActive() const;
 
   int numberOfModelFacets() const;
