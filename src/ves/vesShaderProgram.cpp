@@ -272,12 +272,11 @@ void vesShaderProgram::bindAttributes()
   std::map<int, vesVertexAttribute*>::const_iterator constItr =
     this->m_internal->m_vertexAttributes.begin();
 
-  int i=0;
   for (;constItr != this->m_internal->m_vertexAttributes.end(); ++constItr) {
-    glBindAttribLocation(this->m_internal->m_programHandle, i,
+    glBindAttribLocation(this->m_internal->m_programHandle, constItr->first,
                          constItr->second->name().c_str());
-    this->m_internal->m_vertexAttributeNameToLocation[constItr->second->name()] = i;
-    ++i;
+    this->m_internal->m_vertexAttributeNameToLocation[constItr->second->name()] =
+      constItr->first;
   }
 }
 

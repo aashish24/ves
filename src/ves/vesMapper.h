@@ -42,6 +42,10 @@ public:
   vesTriangleData*       data()       { return this->m_data; }
   const vesTriangleData* data() const { return this->m_data; }
 
+  void          setColor(float r, float g, float b, float a);
+  float*        color();
+  const float*  color() const;
+
   virtual void render(const vesRenderState &renderState);
 
 

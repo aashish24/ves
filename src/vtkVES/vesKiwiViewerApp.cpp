@@ -455,14 +455,10 @@ void vesKiwiViewerApp::handleDoubleTap()
     }
     else if (this->Internal->ContourVis == 1) {
       this->Internal->ContourRep->addSelfToRenderer(this->Internal->Renderer);
-#if 0
       this->Internal->ContourRep->mapper()->setColor(0.8, 0.8, 0.8, 0.3);
-#endif
     }
     else {
-#if 0
       this->Internal->ContourRep->mapper()->setColor(0.8, 0.8, 0.8, 1.0);
-#endif
     }
   }
 }
@@ -623,9 +619,12 @@ bool vesKiwiViewerApp::initializeShaderProgram()
   this->Internal->ShaderProgram->addUniform(this->Internal->ProjectionUnifom);
   this->Internal->ShaderProgram->addUniform(this->Internal->NormalMatrixUniform);
 
-  this->Internal->ShaderProgram->addVertexAttribute(this->Internal->PositionVertexAttribute, 0);
-  this->Internal->ShaderProgram->addVertexAttribute(this->Internal->NormalVertexAttribute, 1);
-  this->Internal->ShaderProgram->addVertexAttribute(this->Internal->ColorVertexAttribute, 3);
+  this->Internal->ShaderProgram->addVertexAttribute(
+    this->Internal->PositionVertexAttribute, vesVertexAttributeKeys::Position);
+  this->Internal->ShaderProgram->addVertexAttribute(
+    this->Internal->NormalVertexAttribute, vesVertexAttributeKeys::Normal);
+  this->Internal->ShaderProgram->addVertexAttribute(
+    this->Internal->ColorVertexAttribute, vesVertexAttributeKeys::Color);
 
   return true;
 }

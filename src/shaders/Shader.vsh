@@ -10,7 +10,7 @@ uniform mat4   projectionMatrix;
 // Vertex attributes.
 attribute vec3 vertexPosition;
 attribute vec3 vertexNormal;
-attribute vec3 vertexColor;
+attribute vec4 vertexColor;
 
 // Varying attributes.
 varying lowp vec4  varColor;
@@ -22,10 +22,10 @@ void main()
 
   // Default diffuse color for now.
   if (hasVertexColors) {
-    varColor = vec4(0.1, 0.1, 0.1, 1.0) + vec4(vertexColor, 1.0);
+    varColor = vertexColor;
   }
   else {
-    varColor = vec4(0.9, 0.9, 0.9, 1.0) + ambientColor;
+    varColor = vertexColor;
   }
 
   // Save position for shading later.

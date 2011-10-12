@@ -39,10 +39,29 @@
 class vesMapper::vesInternal
 {
 public:
+  vesInternal()
+  {
+    this->m_color.resize(4);
+  }
+
+
   ~vesInternal()
   {
     this->cleanUpDrawObjects();
   }
+
+
+  void setColor(const float &r, const float &g, const float &b, const float &a)
+  {
+    m_color[0] = r; m_color[1] = g; m_color[2] = b; m_color[3] = a;
+  }
+
+
+  const float* color() const
+  {
+    return &(this->m_color.front());
+  }
+
 
   void cleanUpDrawObjects()
   {
@@ -50,6 +69,7 @@ public:
     this->m_buffers.clear();
   }
 
+  std::vector< float >                       m_color;
   std::vector< unsigned int >                m_buffers;
   std::map< unsigned int, std::vector<int> > m_bufferVertexAttributeMap;
 };
@@ -64,6 +84,9 @@ vesMapper::vesMapper() : vsgBoundedObject(),
   m_internal   (0x0)
 {
   this->m_internal = new vesInternal();
+
+  // Default is almost white.
+  this->setColor(0.9, 0.9, 0.9, 1.0);
 }
 
 
@@ -111,11 +134,32 @@ void vesMapper::normalize()
 }
 
 
+void vesMapper::setColor(float r, float g, float b, float a)
+{
+  this->m_internal->setColor(r, g, b, a);
+}
+
+
+float* vesMapper::color()
+{
+  return const_cast<float*>(this->m_internal->color());
+}
+
+
+const float* vesMapper::color() const
+{
+  return this->m_internal->color();
+}
+
+
 void vesMapper::render(const vesRenderState &renderState)
 {
   if (!this->m_initialized) {
     this->setupDrawObjects(renderState);
   }
+
+  // Fixed vertex color.
+  glVertexAttrib4fv(vesVertexAttributeKeys::Color, this->color());
 
   std::map<unsigned int, std::vector<int> >::const_iterator constItr
     = this->m_internal->m_bufferVertexAttributeMap.begin();
@@ -136,11 +180,9 @@ void vesMapper::render(const vesRenderState &renderState)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_internal->m_buffers[bufferIndex++]);
     renderState.m_material->bindRenderData(
       renderState, vesRenderData(vesGLTypes::Triangles));
-    while (drawnTriangles < numberOfTriangles)
-    {
+    while (drawnTriangles < numberOfTriangles) {
       int numberOfTrianglesToDraw = numberOfTriangles - drawnTriangles;
-      if (numberOfTrianglesToDraw > this->m_maximumTrianglesPerDraw)
-      {
+      if (numberOfTrianglesToDraw > this->m_maximumTrianglesPerDraw) {
         numberOfTrianglesToDraw = this->m_maximumTrianglesPerDraw;
       }
       glDrawElements(GL_TRIANGLES, numberOfTrianglesToDraw * 3,

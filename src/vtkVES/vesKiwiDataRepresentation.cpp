@@ -139,9 +139,7 @@ void vesKiwiDataRepresentation::initializeWithShader(vesShaderProgram* shaderPro
 
   this->Internal->Actor->material()->addAttribute(shaderProgram);
 
-#if 0
-    this->Internal->Actor->setColor(0.8, 0.8, 0.8, 1.0);
-#endif
+  this->Internal->Actor->mapper()->setColor(0.9, 0.9, 0.9, 1.0);
 }
 
 //----------------------------------------------------------------------------
@@ -160,10 +158,8 @@ vesTexture* vesKiwiDataRepresentation::texture() const
 //----------------------------------------------------------------------------
 void vesKiwiDataRepresentation::setColor(double r, double g, double b, double a)
 {
-  assert(this->Internal->Actor);
-#if 0
-  this->Internal->Actor->setColor(r, g, b, a);
-#endif
+  assert(this->Internal->Actor && this->Internal->Actor->mapper());
+  this->Internal->Actor->mapper()->setColor(r, g, b, a);
 }
 
 //----------------------------------------------------------------------------
