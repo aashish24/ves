@@ -13,56 +13,12 @@
 
  =========================================================================*/
 
-uniform int        primitiveType;
-
-varying lowp vec4  varDiffuseColor;
-varying lowp vec4  varAmbientColor;
-
-varying highp vec4 varPosition;
-varying highp vec3 varNormal;
-varying highp vec3 varLightDirection;
+varying lowp vec4  varColor;
 
 void main()
 {
-  // Final color of the fragment. Default to gray.
-  lowp vec4 color  = vec4(1.0, 0.3, 0.3, 1.0);
+  // Final color of the fragment.
+  lowp vec4 color = vec4(varColor.xyz, 1.0);
 
-  lowp float nDotL;
-  lowp float nDotH;
-
-  // Default to metallic look and feel.
-  lowp float specularShininess = 128.0;
-  lowp vec4  specularColor     = vec4(0.8, 0.8, 0.8, 0.0);
-
-  if (primitiveType != 3) {
-    color = varAmbientColor;
-
-    highp vec3 n = normalize(varNormal);
-
-    highp vec3  viewDirection = normalize(-varPosition.xyz);
-
-    // Using half vector for specular lighting as it is much cheaper than
-    // calculating reflection vector.
-    highp vec3 halfVector = normalize(varLightDirection + viewDirection);
-
-    nDotL = max(dot(n, normalize(varLightDirection)), 0.0);
-
-    // Apply diffuse only for upper half dome.
-    if (nDotL > 0.0)  {
-      nDotH = max(dot(n, halfVector), 0.0);
-
-      color += (varDiffuseColor) * nDotL +
-          specularColor * pow(nDotH, specularShininess);
-    }
-    else {
-    }
-  }
-  else
-  {
-    color = varDiffuseColor;
-  }
-
-  color.w = 1.0;
-
-  gl_FragColor = color;
+  gl_FragColor = varColor;
 }
