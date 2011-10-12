@@ -41,7 +41,7 @@ class vesMapper::vesInternal
 public:
   ~vesInternal()
   {
-    this->m_bufferVertexAttributeMap.clear();
+    this->cleanUpDrawObjects();
   }
 
   void cleanUpDrawObjects()
@@ -50,7 +50,7 @@ public:
     this->m_buffers.clear();
   }
 
-  std::vector< unsigned int > m_buffers;
+  std::vector< unsigned int >                m_buffers;
   std::map< unsigned int, std::vector<int> > m_bufferVertexAttributeMap;
 };
 
@@ -59,6 +59,8 @@ public:
 vesMapper::vesMapper() : vsgBoundedObject(),
   m_initialized(false),
   m_data       (0x0),
+  m_maximumTrianglesPerDraw
+               (65536 / 3),
   m_internal   (0x0)
 {
   this->m_internal = new vesInternal();
@@ -128,15 +130,29 @@ void vesMapper::render(const vesRenderState &renderState)
     ++bufferIndex;
   }
 
-  if (this->m_data->GetTriangles().size()) {
+  const int numberOfTriangles = this->m_data->GetTriangles().size();
+  if (numberOfTriangles > 0) {
+    int drawnTriangles = 0;
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_internal->m_buffers[bufferIndex++]);
-    renderState.m_material->bindRenderData(renderState, vesRenderData(vesGLTypes::Triangles));
-    glDrawElements(GL_TRIANGLES, this->m_data->GetTriangles().size() * 3,
-                   GL_UNSIGNED_SHORT, (void*)0);
+    renderState.m_material->bindRenderData(
+      renderState, vesRenderData(vesGLTypes::Triangles));
+    while (drawnTriangles < numberOfTriangles)
+    {
+      int numberOfTrianglesToDraw = numberOfTriangles - drawnTriangles;
+      if (numberOfTrianglesToDraw > this->m_maximumTrianglesPerDraw)
+      {
+        numberOfTrianglesToDraw = this->m_maximumTrianglesPerDraw;
+      }
+      glDrawElements(GL_TRIANGLES, numberOfTrianglesToDraw * 3,
+                     GL_UNSIGNED_SHORT,
+                     (void*)(drawnTriangles*sizeof(vesVector3us)));
+      drawnTriangles += numberOfTrianglesToDraw;
     }
+  }
 
   if (this->m_data->GetLines().size()) {
-    renderState.m_material->bindRenderData(renderState, vesRenderData(vesGLTypes::Lines));
+    renderState.m_material->bindRenderData(
+      renderState, vesRenderData(vesGLTypes::Lines));
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_internal->m_buffers[bufferIndex++]);
     glDrawElements(GL_LINES, this->m_data->GetLines().size() * 2,
                    GL_UNSIGNED_SHORT, (void*)0);

@@ -58,13 +58,15 @@ private:
 
 
 protected:
-  bool m_isNew;
-  bool m_initialized;
 
-  vesTriangleData *m_data;
+  bool              m_initialized;
+
+  const int         m_maximumTrianglesPerDraw;
+
+  vesTriangleData   *m_data;
 
   class vesInternal;
-  vesInternal *m_internal;
+  vesInternal       *m_internal;
 };
 
 #endif
