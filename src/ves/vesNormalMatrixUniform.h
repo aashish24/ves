@@ -21,7 +21,6 @@
 #ifndef VESNORMALMATRIXUNIFORM_H
 #define VESNORMALMATRIXUNIFORM_H
 
-// Base class
 #include "vesUniform.h"
 
 // VES includes

@@ -4,9 +4,7 @@
 #include "vesUniform.h"
 
 // VES includes
-#include "vesMapper.h"
 #include "vesRenderState.h"
-#include "vesTriangleData.h"
 
 // C++ includes
 #include <string>
@@ -21,7 +19,7 @@ public:
   }
 
 
-  virtual void update(const vesRenderState &renderState,
+  virtual void update(const vesRenderState   &renderState,
                       const vesShaderProgram &program)
   {
     // \note: Do nothing.

@@ -21,7 +21,6 @@
 #ifndef VESPROJECTIONUNIFORM_H
 #define VESPROJECTIONUNIFORM_H
 
-// Base class
 #include "vesUniform.h"
 
 // VES includes
