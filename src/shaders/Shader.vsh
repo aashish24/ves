@@ -1,13 +1,11 @@
 
 // Uniforms.
-uniform mat4   modelViewMatrix;
-uniform mat4   projectionMatrix;
-uniform mat3   normalMatrix;
-uniform vec3   lightDirection;
-
 uniform bool   hasVertexColors;
-
+uniform vec3   lightDirection;
+uniform mat4   modelViewMatrix;
+uniform mat3   normalMatrix;
 uniform int    primitiveType;
+uniform mat4   projectionMatrix;
 
 // Vertex attributes.
 attribute vec3 vertexPosition;

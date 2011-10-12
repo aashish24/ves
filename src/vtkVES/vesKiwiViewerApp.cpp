@@ -192,6 +192,7 @@ public:
   vesModelViewUniform         *ModelViewUniform;
   vesProjectionUniform        *ProjectionUnifom;
   vesNormalMatrixUniform      *NormalMatrixUniform;
+  vesColorUniform             *SolidColorUniform;
 
   vesPositionVertexAttribute  *PositionVertexAttribute;
   vesNormalVertexAttribute    *NormalVertexAttribute;
@@ -610,8 +611,8 @@ bool vesKiwiViewerApp::initializeShaderProgram()
 
 
   // \todo: Delete this during destructions.
-  this->Internal->ModelViewUniform = new vesModelViewUniform();
-  this->Internal->ProjectionUnifom = new vesProjectionUniform();
+  this->Internal->ModelViewUniform    = new vesModelViewUniform();
+  this->Internal->ProjectionUnifom    = new vesProjectionUniform();
   this->Internal->NormalMatrixUniform = new vesNormalMatrixUniform();
 
   this->Internal->PositionVertexAttribute = new vesPositionVertexAttribute();
@@ -774,23 +775,28 @@ void vesKiwiViewerApp::initializeTextureShader()
     new vesShader(vesShader::Fragment, this->Internal->FragmentShaderSource));
 
   // \todo: Delete this during destructions.
-  this->Internal->ModelViewUniform = new vesModelViewUniform();
-  this->Internal->ProjectionUnifom = new vesProjectionUniform();
+  this->Internal->ModelViewUniform    = new vesModelViewUniform();
+  this->Internal->ProjectionUnifom    = new vesProjectionUniform();
   this->Internal->NormalMatrixUniform = new vesNormalMatrixUniform();
 
   this->Internal->PositionVertexAttribute = new vesPositionVertexAttribute();
   this->Internal->NormalVertexAttribute   = new vesNormalVertexAttribute();
   this->Internal->ColorVertexAttribute    = new vesColorVertexAttribute();
-  this->Internal->TextureCoordinateVertexAttribute    = new vesTextureCoordinateVertexAttribute();
+  this->Internal->TextureCoordinateVertexAttribute =
+    new vesTextureCoordinateVertexAttribute();
 
   this->Internal->TextureShader->addUniform(this->Internal->ModelViewUniform);
   this->Internal->TextureShader->addUniform(this->Internal->ProjectionUnifom);
   this->Internal->TextureShader->addUniform(this->Internal->NormalMatrixUniform);
 
-  this->Internal->TextureShader->addVertexAttribute(this->Internal->PositionVertexAttribute, vesVertexAttributeKeys::Position);
-  this->Internal->TextureShader->addVertexAttribute(this->Internal->NormalVertexAttribute, vesVertexAttributeKeys::Normal);
-  this->Internal->TextureShader->addVertexAttribute(this->Internal->ColorVertexAttribute, vesVertexAttributeKeys::Color);
-  this->Internal->TextureShader->addVertexAttribute(this->Internal->TextureCoordinateVertexAttribute, vesVertexAttributeKeys::TextureCoordinate);
+  this->Internal->TextureShader->addVertexAttribute(this->Internal->PositionVertexAttribute,
+                                                    vesVertexAttributeKeys::Position);
+  this->Internal->TextureShader->addVertexAttribute(this->Internal->NormalVertexAttribute,
+                                                    vesVertexAttributeKeys::Normal);
+  this->Internal->TextureShader->addVertexAttribute(this->Internal->ColorVertexAttribute,
+                                                    vesVertexAttributeKeys::Color);
+  this->Internal->TextureShader->addVertexAttribute(this->Internal->TextureCoordinateVertexAttribute,
+                                                    vesVertexAttributeKeys::TextureCoordinate);
 }
 
 //----------------------------------------------------------------------------

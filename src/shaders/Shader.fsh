@@ -17,8 +17,5 @@ varying lowp vec4  varColor;
 
 void main()
 {
-  // Final color of the fragment.
-  lowp vec4 color = vec4(varColor.xyz, 1.0);
-
   gl_FragColor = varColor;
 }

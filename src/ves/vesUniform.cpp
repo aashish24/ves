@@ -541,6 +541,12 @@ void vesUniform::callGL(int location) const
                        &this->m_floatArray->front());
         break;
 
+    case FloatVec4:
+      if (this->m_floatArray)
+        glUniform4fv(location, this->m_numberElements,
+                     &this->m_floatArray->front());
+      break;
+
     case FloatMat3:
         if (m_floatArray)
           glUniformMatrix3fv(location, this->m_numberElements, GL_FALSE,
@@ -606,6 +612,11 @@ int vesUniform::getTypeNumberOfComponents(Type type) const
     case BoolVec3:
       return 3;
 
+    case FloatVec4:
+    case IntVec4:
+    case BoolVec4:
+      return 4;
+
     case FloatMat3:
       return 9;
 
@@ -625,6 +636,7 @@ GLenum vesUniform::getInternalArrayType(Type type) const
   case Float:
   case FloatVec2:
   case FloatVec3:
+  case FloatVec4:
   case FloatMat3:
   case FloatMat4:
     return GL_FLOAT;
@@ -632,9 +644,11 @@ GLenum vesUniform::getInternalArrayType(Type type) const
   case Int:
   case IntVec2:
   case IntVec3:
+  case IntVec4:
   case Bool:
   case BoolVec2:
   case BoolVec3:
+  case BoolVec4:
     return GL_INT;
 
   default:
