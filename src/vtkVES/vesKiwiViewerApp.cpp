@@ -23,13 +23,20 @@
 #include "vesKiwiDataRepresentation.h"
 
 #include "vesCamera.h"
+#include "vesColorUniform.h"
 #include "vesGMTL.h"
+#include "vesModelViewUniform.h"
+#include "vesNormalMatrixUniform.h"
+#include "vesProjectionUniform.h"
 #include "vesRenderer.h"
 #include "vesShader.h"
 #include "vesShaderProgram.h"
 #include "vesTexture.h"
 #include "vesTriangleData.h"
 #include "vesUniform.h"
+#include "vesVertexAttribute.h"
+#include "vesVertexAttributeKeys.h"
+
 
 #include <vtkDataSet.h>
 
@@ -130,14 +137,6 @@ vtkSmartPointer<vtkPolyData> GetPolyDataForImagePlane(vtkImageData* image)
 }
 
 };
-
-// \todo: Move it to proper locations.
-#include "vesVertexAttribute.h"
-#include "vesModelViewUniform.h"
-#include "vesProjectionUniform.h"
-#include "vesNormalMatrixUniform.h"
-#include "vesVertexAttributeKeys.h"
-
 
 //----------------------------------------------------------------------------
 class vesKiwiViewerApp::vesInternal

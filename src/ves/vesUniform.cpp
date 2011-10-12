@@ -130,6 +130,17 @@ vesUniform::vesUniform(const std::string &name, const vesVector3f& vector) :
 }
 
 
+vesUniform::vesUniform(const std::string &name, const vesVector4f& vector) :
+  m_type            (FloatVec4),
+  m_numberElements  (1)
+{
+  this->setMinimalDefaults();
+  this->setName(name);
+  this->allocateDataArray();
+  this->set(vector);
+}
+
+
 vesUniform::vesUniform(const std::string &name, const vesMatrix3x3f& matrix) :
   m_type            (FloatMat3),
   m_numberElements  (1)
@@ -189,6 +200,15 @@ bool vesUniform::set(const vesVector2f &vector)
 
 
 bool vesUniform::set(const vesVector3f &vector)
+{
+  if (this->m_numberElements == 0)
+    this->m_numberElements = 1;
+
+  return isScalar() ? setElement(0, vector) : false;
+}
+
+
+bool vesUniform::set(const vesVector4f &vector)
 {
   if (this->m_numberElements == 0)
     this->m_numberElements = 1;
@@ -335,6 +355,24 @@ bool vesUniform::setElement(unsigned int index, const vesVector3f &vector)
 }
 
 
+bool vesUniform::setElement(unsigned int index, const vesVector4f &vector)
+{
+  if (index >= this->m_numberElements || !isCompatibleType(FloatVec4))
+    return false;
+
+  unsigned int j = index * getTypeNumberOfComponents(this->m_type);
+
+  (*this->m_floatArray)[j]   = vector[0];
+  (*this->m_floatArray)[j+1] = vector[1];
+  (*this->m_floatArray)[j+2] = vector[2];
+  (*this->m_floatArray)[j+3] = vector[3];
+
+  // \todo: Make state dirty.
+
+  return true;
+}
+
+
 bool vesUniform::setElement(unsigned int index, const vesMatrix3x3f &matrix)
 {
   if (index >= this->m_numberElements || !isCompatibleType(FloatMat3))
@@ -426,6 +464,21 @@ bool vesUniform::getElement(unsigned int index, vesVector3f &value) const
   value[0] = (*this->m_floatArray)[j];
   value[1] = (*this->m_floatArray)[j+1];
   value[2] = (*this->m_floatArray)[j+2];
+  return true;
+}
+
+
+bool vesUniform::getElement(unsigned int index, vesVector4f &value) const
+{
+  if (index >= this->m_numberElements || !isCompatibleType(Float))
+    return false;
+
+  unsigned int j = index * getTypeNumberOfComponents(this->m_type);
+
+  value[0] = (*this->m_floatArray)[j];
+  value[1] = (*this->m_floatArray)[j+1];
+  value[2] = (*this->m_floatArray)[j+2];
+  value[3] = (*this->m_floatArray)[j+3];
   return true;
 }
 

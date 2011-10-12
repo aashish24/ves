@@ -134,6 +134,7 @@ public:
 
   vesUniform(const std::string &name, const vesVector2f &vector);
   vesUniform(const std::string &name, const vesVector3f &vector);
+  vesUniform(const std::string &name, const vesVector4f &vector);
   vesUniform(const std::string &name, const vesMatrix3x3f &matrix);
   vesUniform(const std::string &name, const vesMatrix4x4f &matrix);
 
@@ -143,6 +144,7 @@ public:
   bool set(bool value);
   bool set(const vesVector2f &vector);
   bool set(const vesVector3f &vector);
+  bool set(const vesVector4f &vector);
   bool set(const vesMatrix3x3f &matrix);
   bool set(const vesMatrix4x4f &matrix);
 
@@ -160,6 +162,7 @@ public:
   bool setElement(unsigned int index, bool  value);
   bool setElement(unsigned int index, const vesVector2f &value);
   bool setElement(unsigned int index, const vesVector3f &value);
+  bool setElement(unsigned int index, const vesVector4f &value);
   bool setElement(unsigned int index, const vesMatrix3x3f &matrix);
   bool setElement(unsigned int index, const vesMatrix4x4f &matrix);
 
@@ -168,6 +171,7 @@ public:
   bool getElement(unsigned int index, float &value) const;
   bool getElement(unsigned int index, vesVector2f &value) const;
   bool getElement(unsigned int index, vesVector3f &value) const;
+  bool getElement(unsigned int index, vesVector4f &value) const;
   bool getElement(unsigned int index, vesMatrix3x3f &value) const;
   bool getElement(unsigned int index, vesMatrix4x4f &value) const;
 
