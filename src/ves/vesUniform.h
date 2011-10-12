@@ -18,29 +18,23 @@
   limitations under the License.
  ========================================================================*/
 
+// \note: Eventually we can make this class use templates. But for simplicity
+// and clearity we are sticking with non templated version.
+
 #ifndef VESUNIFORM_H
 #define VESUNIFORM_H
 
+// VES includes
 #include "vesGL.h"
+#include "vesGMTL.h"
 
 // C++ includes
 #include <string>
 #include <vector>
 
-// VES includes
-#include "vesGMTL.h"
-
 // Forward declarations
 class vesRenderState;
 class vesShaderProgram;
-
-#ifndef GL_SAMPLER_1D
-    #define GL_SAMPLER_1D               0x8B5D
-    #define GL_SAMPLER_2D               0x8B5E
-    #define GL_SAMPLER_3D               0x8B5F
-    #define GL_SAMPLER_1D_SHADOW        0x8B61
-    #define GL_SAMPLER_2D_SHADOW        0x8B62
-#endif
 
 template <typename DataType>
 class vesUniformDataArray
