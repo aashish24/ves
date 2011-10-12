@@ -23,6 +23,7 @@
 // VES includes
 #include "vesRenderData.h"
 #include "vesShaderProgram.h"
+#include "vesTexture.h"
 
 // C++ includes
 #include <map>
@@ -31,11 +32,45 @@
 class vesMaterial::vesInternal
 {
 public:
+
+  const vesMaterialAttribute*
+    findAttribute(vesMaterialAttribute::AttributeType type) const;
+
+
   typedef std::map<vesMaterialAttribute::AttributeType,
     vesMaterialAttribute*> Attributes;
 
-  Attributes m_attributes;
+  typedef std::map<unsigned int, vesTexture*> TextureAttributes;
+
+  Attributes        m_attributes;
+  TextureAttributes m_textureAttributes;
 };
+
+
+const vesMaterialAttribute* vesMaterial::vesInternal::findAttribute(
+  vesMaterialAttribute::AttributeType type) const
+{
+  if (type == vesMaterialAttribute::Texture) {
+    // Return first texture.
+    TextureAttributes::const_iterator constItr = this->m_textureAttributes.begin();
+
+    if (constItr != this->m_textureAttributes.end()) {
+      return (constItr->second);
+    }
+    else {
+      return 0x0;
+    }
+  }
+  else {
+    Attributes::const_iterator constItr = this->m_attributes.find(type);
+
+    if (constItr != this->m_attributes.end()) {
+      return (constItr->second);
+    }
+
+    return 0x0;
+  }
+}
 
 
 vesMaterial::vesMaterial() :
@@ -60,7 +95,7 @@ bool vesMaterial::addAttribute(vesMaterialAttribute *attribute)
 
   if (attribute->type() != vesMaterialAttribute::Texture) {
     vesInternal::Attributes::iterator itr =
-      this->m_internal->m_attributes.find( attribute->type() );
+      this->m_internal->m_attributes.find(attribute->type());
 
     if (itr == this->m_internal->m_attributes.end() ||
         ( (itr->second) != attribute )) {
@@ -72,23 +107,44 @@ bool vesMaterial::addAttribute(vesMaterialAttribute *attribute)
       return true;
     }
   }
+  else {
+    vesTexture *texture = static_cast<vesTexture*>(attribute);
+
+    // Cache last texture so that we can release graphics resources on it.
+    this->m_internal->m_textureAttributes[texture->textureUnit()] = texture;
+  }
 
   return false;
+}
+
+
+bool vesMaterial::setShaderProgram(vesShaderProgram *shaderProgram)
+{
+  if (!shaderProgram || shaderProgram == this->m_shaderProgram) {
+    return false;
+  }
+
+  this->m_shaderProgram = shaderProgram;
+  this->m_internal->m_attributes[shaderProgram->type()] =
+    this->m_shaderProgram;
+
+  return true;
 }
 
 
 vesMaterialAttribute* vesMaterial::attribute(
   vesMaterialAttribute::AttributeType type)
 {
-  vesInternal::Attributes::iterator itr =
-    this->m_internal->m_attributes.find( type );
-
-  if (itr != this->m_internal->m_attributes.end()) {
-    return (itr->second);
-  }
-
-  return 0x0;
+  return const_cast<vesMaterialAttribute*>(this->m_internal->findAttribute(type));
 }
+
+
+const vesMaterialAttribute*
+  vesMaterial::attribute(vesMaterialAttribute::AttributeType type) const
+{
+  return (this->m_internal->findAttribute(type));
+}
+
 
 
 void vesMaterial::render(const vesRenderState &renderState)
@@ -111,6 +167,14 @@ void vesMaterial::setup(const vesRenderState &renderState)
   for (; itr != this->m_internal->m_attributes.end(); ++itr) {
     itr->second->setup(renderState);
   }
+
+  vesInternal::TextureAttributes::iterator textureItr =
+    this->m_internal->m_textureAttributes.begin();
+
+  for (; textureItr != this->m_internal->m_textureAttributes.end();
+       ++textureItr) {
+    textureItr->second->setup(renderState);
+  }
 }
 
 
@@ -124,6 +188,14 @@ void vesMaterial::bind(const vesRenderState &renderState)
   for (; itr != this->m_internal->m_attributes.end(); ++itr) {
     itr->second->bind(renderState);
   }
+
+  vesInternal::TextureAttributes::iterator textureItr =
+    this->m_internal->m_textureAttributes.begin();
+
+  for (; textureItr != this->m_internal->m_textureAttributes.end();
+       ++textureItr) {
+    textureItr->second->bind(renderState);
+  }
 }
 
 
@@ -134,6 +206,14 @@ void vesMaterial::unbind(const vesRenderState &renderState)
 
   for (; itr != this->m_internal->m_attributes.end(); ++itr) {
     itr->second->unbind(renderState);
+  }
+
+  vesInternal::TextureAttributes::iterator textureItr =
+    this->m_internal->m_textureAttributes.begin();
+
+  for (; textureItr != this->m_internal->m_textureAttributes.end();
+       ++textureItr) {
+    textureItr->second->unbind(renderState);
   }
 }
 

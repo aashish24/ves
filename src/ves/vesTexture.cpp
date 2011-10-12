@@ -47,6 +47,7 @@ vesTexture::vesTexture() : vesMaterialAttribute(),
   m_textureHandle(0),
   m_textureUnit  (0)
 {
+  this->m_type = vesMaterialAttribute::Texture;
 }
 
 

@@ -55,7 +55,8 @@ public:
   bool        dirtyState()          { return this->m_dirtyState; }
   const bool& dirtyState() const    { return this->m_dirtyState; }
 
-
+  bool          setType(AttributeType type)
+                             { this->m_type = type; return true; }
   AttributeType type()       { return this->m_type; }
   AttributeType type() const { return this->m_type; }
 
@@ -105,10 +106,14 @@ public:
   const int&  binNumber() const        { return this->m_binNumber; }
 
   bool addAttribute(vesMaterialAttribute *attribute);
-  vesMaterialAttribute* attribute(vesMaterialAttribute::AttributeType type);
+  vesMaterialAttribute*
+    attribute(vesMaterialAttribute::AttributeType type);
+  const vesMaterialAttribute*
+    attribute(vesMaterialAttribute::AttributeType type) const;
 
   /*! Provide quick acces to shader program */
-  vesShaderProgram* shaderProgram()             { return this->m_shaderProgram; }
+  bool                    setShaderProgram(vesShaderProgram *shaderProgram);
+  vesShaderProgram*       shaderProgram()       { return this->m_shaderProgram; }
   const vesShaderProgram* shaderProgram() const { return this->m_shaderProgram; }
 
   virtual void render(const vesRenderState &renderState);

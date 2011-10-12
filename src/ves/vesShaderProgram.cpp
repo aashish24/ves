@@ -64,10 +64,10 @@ public:
   std::vector<vesUniform*>            m_uniforms;
   std::map<int, vesVertexAttribute*>  m_vertexAttributes;
 
-  UniformNameToLocation         m_uniformNameToLocation;
-  VertexAttributeNameToLocation m_vertexAttributeNameToLocation;
+  UniformNameToLocation               m_uniformNameToLocation;
+  VertexAttributeNameToLocation       m_vertexAttributeNameToLocation;
 
-  std::vector<vesEngineUniform*>  m_engineUniforms;
+  std::vector<vesEngineUniform*>      m_engineUniforms;
 };
 
 
