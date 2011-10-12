@@ -150,7 +150,7 @@ void vesMapper::render(const vesRenderState &renderState)
     }
   }
 
-  if (this->m_data->GetLines().size()) {
+  if (!this->m_data->GetLines().empty()) {
     renderState.m_material->bindRenderData(
       renderState, vesRenderData(vesGLTypes::Lines));
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_internal->m_buffers[bufferIndex++]);
