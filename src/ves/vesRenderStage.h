@@ -81,6 +81,11 @@ public:
 
         previous = &(*rlsItr);
       }
+
+      // Make sure to restore the state.
+      if (!itr->second.empty()) {
+        (*(--rlsItr)).finalize(renderState);
+      }
     }
   }
 

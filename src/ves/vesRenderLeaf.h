@@ -75,7 +75,15 @@ public:
       renderState.applyMapper(this->m_mapper);
 
       this->m_material->render(renderState);
-      this->m_mapper->render(renderState);
+      this->m_mapper->render  (renderState);
+    }
+  }
+
+
+  void finalize(vesRenderState &renderState)
+  {
+    if (this->m_material) {
+      renderState.invokeMaterial(this->m_material);
     }
   }
 

@@ -155,7 +155,7 @@ void vesMaterial::render(const vesRenderState &renderState)
 
 void vesMaterial::remove(const vesRenderState &renderState)
 {
-  // \todo: Implement this.
+  this->unbind(renderState);
 }
 
 

@@ -464,7 +464,7 @@ void vesShaderProgram::unbindVertexData(const vesRenderState &renderState, int k
     this->m_internal->m_vertexAttributes.find(key);
 
   if (constItr != this->m_internal->m_vertexAttributes.end()) {
-    this->m_internal->m_vertexAttributes[key]->bindVertexData(renderState, key);
+    this->m_internal->m_vertexAttributes[key]->unbindVertexData(renderState, key);
   }
 }
 

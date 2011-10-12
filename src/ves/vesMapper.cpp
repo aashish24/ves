@@ -136,7 +136,19 @@ void vesMapper::render(const vesRenderState &renderState)
     }
 
 
+  // Unbind.
+  bufferIndex = 0;
+  constItr = this->m_internal->m_bufferVertexAttributeMap.begin();
+  for (; constItr != this->m_internal->m_bufferVertexAttributeMap.end();
+       ++constItr) {
+    for (size_t i = 0; i < constItr->second.size(); ++i) {
+      renderState.m_material->unbindVertexData(renderState, constItr->second[i]);
+    }
+    ++bufferIndex;
+  }
+
   glBindBuffer(GL_ARRAY_BUFFER, 0);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 
