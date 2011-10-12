@@ -194,7 +194,7 @@
     NSLog(@"failed to make complete framebuffer object %x", glCheckFramebufferStatus(GL_FRAMEBUFFER));
     return NO;
     }
-  
+
   return YES;
 }
 
@@ -286,9 +286,9 @@
     [context presentRenderbuffer:GL_RENDERBUFFER];
     self->shouldRender = NO;
     float currentFPS = 1.0 / [[NSDate date] timeIntervalSinceDate:startRenderOnlyDate];
-    NSLog(@"Render Only @ %4.1f fps", currentFPS);
+    //NSLog(@"Render Only @ %4.1f fps", currentFPS);
     currentFPS = 1.0 / [[NSDate date] timeIntervalSinceDate:startRenderTotalDate];
-    NSLog(@"Total Render @ %4.1f fps", currentFPS);
+    //NSLog(@"Total Render @ %4.1f fps", currentFPS);
     [self updateRefreshRate:currentFPS];
     }
 }
@@ -480,7 +480,7 @@
     {
     return;
     }
-  
+
     [self stopInertialMotion];
 
   self->renderer.app->handleTwoTouchRotationGesture(sender.rotation);
