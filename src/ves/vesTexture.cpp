@@ -43,42 +43,48 @@ static const GLfloat textureVertices[] = {
   0.0f,  0.0f,
 };
 
-vesTexture::vesTexture()
+vesTexture::vesTexture() : vesMaterialAttribute(),
+  m_textureHandle(0),
+  m_textureUnit  (0)
 {
 }
+
 
 vesTexture::~vesTexture()
 {
 }
 
+
 void vesTexture::bind(const vesRenderState &renderState)
 {
   glEnable(GL_TEXTURE_2D);
-  glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, this->texID);
+  glActiveTexture(GL_TEXTURE0 + this->m_textureUnit);
+  glBindTexture(GL_TEXTURE_2D, this->m_textureHandle);
 
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
+
 void vesTexture::unbind(const vesRenderState &renderState)
 {
-  glBindTexture(GL_TEXTURE_2D, 0);
   glDisable(GL_TEXTURE_2D);
   glDisable(GL_BLEND);
 }
 
+
 void vesTexture::setImageData(SFImage image)
 {
-  this->Image = image;
+  this->m_image = image;
   this->setDirtyStateOn();
 }
+
 
 void vesTexture::setup(const vesRenderState &renderState)
 {
   if (this->dirtyState()) {
-    glGenTextures(1, &this->texID);
-    glBindTexture(GL_TEXTURE_2D, this->texID);
+    glGenTextures(1, &this->m_textureHandle);
+    glBindTexture(GL_TEXTURE_2D, this->m_textureHandle);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -87,27 +93,27 @@ void vesTexture::setup(const vesRenderState &renderState)
     glTexImage2D(GL_TEXTURE_2D,
                  0,
                  GL_RGBA,
-                 this->Image.width,
-                 this->Image.height,
+                 this->m_image.width,
+                 this->m_image.height,
                  0,
                  GL_RGBA,
                  GL_UNSIGNED_BYTE,
-                 this->Image.data);
+                 this->m_image.data);
 
     this->setDirtyStateOff();
   }
 }
 
+#if 0
 void vesTexture::Render()
 {
-#if 0
   if(!loaded)
   {
     this->load();
   }
 
   glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, texID);
+  glBindTexture(GL_TEXTURE_2D, m_textureHandle);
 
   // Set uniforms
   vesMatrix4x4f orthoProjection = vesOrtho(-1,1,-1,1,-1,1000);
@@ -146,5 +152,5 @@ void vesTexture::Render()
   glDisableVertexAttribArray(vesShaderProgram::TextureCoordinate);
 
   glDisable(GL_BLEND);
-#endif 
 }
+#endif

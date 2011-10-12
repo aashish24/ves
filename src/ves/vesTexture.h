@@ -38,14 +38,18 @@ public:
   virtual void unbind       (const vesRenderState &renderState);
   virtual void setup        (const vesRenderState &renderState);
 
-  void Render();
-
   void setImageData(SFImage image);
+
+  void setTextureUnit(const unsigned int &unit);
+  unsigned int textureUnit()       { return this->m_textureUnit; }
+  unsigned int textureUnit() const { return this->m_textureUnit; }
 
 protected:
 
-  SFImage Image;
-  unsigned int texID;
+  SFImage      m_image;
+
+  unsigned int m_textureHandle;
+  unsigned int m_textureUnit;
 
 private:
 
