@@ -49,6 +49,9 @@ private:
 
   virtual void setupDrawObjects(const vesRenderState &renderState);
 
+  virtual void createVertexBufferObjects();
+  virtual void deleteVertexBufferObjects();
+
   //\todo: Why do we need this?
   void normalize();
   vesMatrix4x4f m_normalizedMatrix;

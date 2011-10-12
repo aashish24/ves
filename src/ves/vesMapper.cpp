@@ -44,6 +44,12 @@ public:
     this->m_bufferVertexAttributeMap.clear();
   }
 
+  void cleanUpDrawObjects()
+  {
+    this->m_bufferVertexAttributeMap.clear();
+    this->m_buffers.clear();
+  }
+
   std::vector< unsigned int > m_buffers;
   std::map< unsigned int, std::vector<int> > m_bufferVertexAttributeMap;
 };
@@ -62,7 +68,8 @@ vesMapper::vesMapper() : vsgBoundedObject(),
 vesMapper::~vesMapper()
 {
   if (this->m_initialized) {
-    // \todo: Need to implement release graphics resources.
+    // For now we are not checking if the context is valid.
+    this->deleteVertexBufferObjects();
   }
 
   delete this->m_internal; this->m_internal = 0x0;
@@ -154,9 +161,21 @@ void vesMapper::render(const vesRenderState &renderState)
 
 void vesMapper::setupDrawObjects(const vesRenderState &renderState)
 {
-  this->m_internal->m_bufferVertexAttributeMap.clear();
-  this->m_internal->m_buffers.clear();
+  // Delete buffer objects from past if any.
+  this->deleteVertexBufferObjects();
 
+  // Now clean up any cache related to draw objects.
+  this->m_internal->cleanUpDrawObjects();
+
+  // Now construct the new ones.
+  this->createVertexBufferObjects();
+
+  this->m_initialized = true;
+}
+
+
+void vesMapper::createVertexBufferObjects()
+{
   const int numberOfFloats = 6;
   size_t sizeOfData =
     this->m_data->GetPoints().size() * numberOfFloats * sizeof(float);
@@ -218,7 +237,13 @@ void vesMapper::setupDrawObjects(const vesRenderState &renderState)
                  this->m_data->GetLines().size() *sizeof(unsigned short) * 2,
                  &this->m_data->GetLines()[0], GL_STATIC_DRAW);
     }
+}
 
 
-  this->m_initialized = true;
+void vesMapper::deleteVertexBufferObjects()
+{
+  if (!this->m_internal->m_buffers.empty()) {
+    glDeleteBuffers(this->m_internal->m_buffers.size(),
+                    &this->m_internal->m_buffers.front());
+  }
 }
