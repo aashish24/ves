@@ -19,13 +19,13 @@ void main()
 {
   // Default ambient color for now.
   vec4 ambientColor = vec4(0.01, 0.01, 0.01, 0.0);
+  vec4 diffuseColor = vec4(0.1, 0.1, 0.1, 0.0);
 
-  // Default diffuse color for now.
   if (hasVertexColors) {
-    varColor = vertexColor;
+    varColor = vertexColor + diffuseColor;
   }
   else {
-    varColor = vertexColor;
+    varColor = vertexColor + ambientColor;
   }
 
   // Save position for shading later.

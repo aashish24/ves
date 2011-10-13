@@ -47,7 +47,8 @@ vesTexture::vesTexture() : vesMaterialAttribute(),
   m_textureHandle(0),
   m_textureUnit  (0)
 {
-  this->m_type = vesMaterialAttribute::Texture;
+  this->m_type    = vesMaterialAttribute::Texture;
+  this->m_binding = vesMaterialAttribute::BindMinimal;
 }
 
 

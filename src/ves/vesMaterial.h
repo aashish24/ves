@@ -33,12 +33,24 @@ public:
   {
     Undefined = 0x0,
     Shader    = 0x1,
-    Texture   = 0x2
+    Texture   = 0x2,
+    Blend     = 0x3
   };
+
+
+  enum AttributeBinding
+  {
+    BindAll         = 0,
+    BindMinimal     = 1,
+    BindVertexData  = 2,
+    BindRenderData  = 3
+  };
+
 
   vesMaterialAttribute() :
     m_dirtyState(true),
-    m_type      (Undefined)
+    m_type      (Undefined),
+    m_binding   (BindMinimal)
   {
   }
 
@@ -60,6 +72,15 @@ public:
   AttributeType type()       { return this->m_type; }
   AttributeType type() const { return this->m_type; }
 
+
+  /*! Define what sort of bind calls required by the attribute
+   * Should be set at the time of creation of the attribute.
+   */
+  bool             setBinding(AttributeBinding binding)
+                                   { this->m_binding = binding; return true; }
+  AttributeBinding binding()       { return this->m_binding; }
+  AttributeBinding binding() const { return this->m_binding; }
+
   //  \note: Fix (unused parameter warning)
   virtual void bind         (const vesRenderState &renderState){}
   virtual void unbind       (const vesRenderState &renderState){}
@@ -74,9 +95,9 @@ public:
 
 protected:
 
-  bool          m_dirtyState;
-
-  AttributeType m_type;
+  bool              m_dirtyState;
+  AttributeType     m_type;
+  AttributeBinding  m_binding;
 };
 
 

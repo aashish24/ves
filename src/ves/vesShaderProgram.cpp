@@ -75,7 +75,8 @@ vesShaderProgram::vesShaderProgram() : vesMaterialAttribute()
 {
   this->m_internal = new vesInternal();
 
-  this->m_type = Shader;
+  this->m_type    = vesMaterialAttribute::Shader;
+  this->m_binding = vesMaterialAttribute::BindAll;
 
   this->m_internal->m_engineUniforms.push_back(new vesHasVertexColors());
   this->m_internal->m_engineUniforms.push_back(new vesPrimitiveType());

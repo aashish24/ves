@@ -33,16 +33,18 @@ class vesMaterial::vesInternal
 {
 public:
 
-  const vesMaterialAttribute*
-    findAttribute(vesMaterialAttribute::AttributeType type) const;
-
-
   typedef std::map<vesMaterialAttribute::AttributeType,
     vesMaterialAttribute*> Attributes;
 
   typedef std::map<unsigned int, vesTexture*> TextureAttributes;
 
+  const vesMaterialAttribute*
+    findAttribute(vesMaterialAttribute::AttributeType type) const;
+
+  bool addAttribute(Attributes& attributes, vesMaterialAttribute *attribute);
+
   Attributes        m_attributes;
+  Attributes        m_minimalAttributes;
   TextureAttributes m_textureAttributes;
 };
 
@@ -73,6 +75,27 @@ const vesMaterialAttribute* vesMaterial::vesInternal::findAttribute(
 }
 
 
+bool vesMaterial::vesInternal::addAttribute(Attributes &attributes,
+                                            vesMaterialAttribute *attribute)
+{
+  if (!attribute) {
+    return false;
+  }
+
+  vesInternal::Attributes::iterator itr =
+    attributes.find(attribute->type());
+
+  if (itr == attributes.end() || ( (itr->second) != attribute )) {
+
+    attributes[attribute->type()] = attribute;
+
+    return true;
+  }
+
+  return false;
+}
+
+
 vesMaterial::vesMaterial() :
   m_binNumber     (Default),
   m_shaderProgram (0x0)
@@ -93,25 +116,30 @@ bool vesMaterial::addAttribute(vesMaterialAttribute *attribute)
     return false;
   }
 
-  if (attribute->type() != vesMaterialAttribute::Texture) {
-    vesInternal::Attributes::iterator itr =
-      this->m_internal->m_attributes.find(attribute->type());
+  if (attribute->type()    != vesMaterialAttribute::Texture &&
+      attribute->binding() == vesMaterialAttribute::BindAll) {
 
-    if (itr == this->m_internal->m_attributes.end() ||
-        ( (itr->second) != attribute )) {
-      this->m_internal->m_attributes[attribute->type()] = attribute;
-
-      if (attribute->type() == vesMaterialAttribute::Shader) {
-        this->m_shaderProgram = static_cast<vesShaderProgram*>(attribute);
-      }
-      return true;
+    // Shader is a special attribute.
+    if (attribute->type() == vesMaterialAttribute::Shader) {
+      return this->setShaderProgram(static_cast<vesShaderProgram*>(attribute));
     }
+
+    // Everything else.
+    return this->m_internal->addAttribute(
+      this->m_internal->m_attributes, attribute);
   }
-  else {
+  else  if(attribute->type() == vesMaterialAttribute::Texture) {
     vesTexture *texture = static_cast<vesTexture*>(attribute);
 
     // Cache last texture so that we can release graphics resources on it.
     this->m_internal->m_textureAttributes[texture->textureUnit()] = texture;
+
+    return true;
+  }
+  else if(attribute->binding() == vesMaterialAttribute::BindMinimal)
+  {
+    return this->m_internal->addAttribute(
+      this->m_internal->m_minimalAttributes, attribute);
   }
 
   return false;
