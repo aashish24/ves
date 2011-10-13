@@ -45,7 +45,7 @@ void vesBlend::setBlendFunction(const vesBlendFunction &blendFunction)
 void vesBlend::bind(const vesRenderState &renderState)
 {
   glEnable(GL_BLEND);
-  this->m_blendFunction.apply();
+  this->m_blendFunction.apply(renderState);
 }
 
 

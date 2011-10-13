@@ -20,6 +20,9 @@
 
 #include "vesBlendFunction.h"
 
+// VES includes
+#include "vesRenderState.h"
+
 vesBlendFunction::vesBlendFunction(Parameter source, Parameter destination) :
   m_source     (source),
   m_destination(destination)
@@ -32,7 +35,7 @@ vesBlendFunction::~vesBlendFunction()
 }
 
 
-void vesBlendFunction::apply()
+void vesBlendFunction::apply(const vesRenderState &renderState)
 {
   glBlendFunc(m_source, m_destination);
 }

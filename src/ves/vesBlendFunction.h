@@ -24,6 +24,9 @@
 // VES includes
 #include "vesGL.h"
 
+// Forward declarations
+class vesRenderState;
+
 class vesBlendFunction
 {
 public:
@@ -48,7 +51,7 @@ public:
    vesBlendFunction(Parameter source, Parameter destination);
   ~vesBlendFunction();
 
-   void apply();
+   void apply(const vesRenderState &renderState);
 
 protected:
 
