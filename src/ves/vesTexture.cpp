@@ -62,16 +62,12 @@ void vesTexture::bind(const vesRenderState &renderState)
   glEnable(GL_TEXTURE_2D);
   glActiveTexture(GL_TEXTURE0 + this->m_textureUnit);
   glBindTexture(GL_TEXTURE_2D, this->m_textureHandle);
-
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 
 void vesTexture::unbind(const vesRenderState &renderState)
 {
   glDisable(GL_TEXTURE_2D);
-  glDisable(GL_BLEND);
 }
 
 
