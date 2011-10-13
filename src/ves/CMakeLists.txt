@@ -1,5 +1,7 @@
 set(sources
   vesActor.cpp
+  vesBlend.cpp
+  vesBlendFunction.cpp
   vesByteSwap.cpp
   vesCamera.cpp
   vesCameraSensor.cpp

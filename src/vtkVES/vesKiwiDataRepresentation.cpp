@@ -21,6 +21,7 @@
 #include "vesKiwiDataRepresentation.h"
 
 #include "vesActor.h"
+#include "vesBlend.h"
 #include "vesMapper.h"
 #include "vesMaterial.h"
 #include "vesRenderer.h"
@@ -72,6 +73,7 @@ public:
     this->Mapper = 0;
     this->Material = 0;
     this->Texture = 0;
+    this->Blend = 0;
   }
 
   ~vesInternal()
@@ -81,12 +83,14 @@ public:
     delete this->Mapper;
     delete this->Material;
     delete this->Texture;
+    delete this->Blend;
   }
 
   vesActor*     Actor;
   vesMapper*    Mapper;
   vesMaterial*  Material;
   vesTexture*   Texture;
+  vesBlend*     Blend;
 };
 
 //----------------------------------------------------------------------------
@@ -137,7 +141,10 @@ void vesKiwiDataRepresentation::initializeWithShader(vesShaderProgram* shaderPro
   this->Internal->Material = new vesMaterial();
   this->Internal->Actor->setMaterial(this->Internal->Material);
 
+  this->Internal->Blend = new vesBlend();
+
   this->Internal->Actor->material()->addAttribute(shaderProgram);
+  this->Internal->Actor->material()->addAttribute(this->Internal->Blend);
 
   this->Internal->Actor->mapper()->setColor(0.9, 0.9, 0.9, 1.0);
 }

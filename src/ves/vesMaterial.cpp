@@ -190,7 +190,13 @@ void vesMaterial::remove(const vesRenderState &renderState)
 void vesMaterial::setup(const vesRenderState &renderState)
 {
   vesInternal::Attributes::iterator itr =
-    this->m_internal->m_attributes.begin();
+    this->m_internal->m_minimalAttributes.begin();
+
+  for (; itr != this->m_internal->m_minimalAttributes.end(); ++itr) {
+    itr->second->setup(renderState);
+  }
+
+  itr = this->m_internal->m_attributes.begin();
 
   for (; itr != this->m_internal->m_attributes.end(); ++itr) {
     itr->second->setup(renderState);
@@ -211,7 +217,13 @@ void vesMaterial::bind(const vesRenderState &renderState)
   this->setup(renderState);
 
   vesInternal::Attributes::iterator itr =
-    this->m_internal->m_attributes.begin();
+    this->m_internal->m_minimalAttributes.begin();
+
+  for (; itr != this->m_internal->m_minimalAttributes.end(); ++itr) {
+    itr->second->bind(renderState);
+  }
+
+  itr = this->m_internal->m_attributes.begin();
 
   for (; itr != this->m_internal->m_attributes.end(); ++itr) {
     itr->second->bind(renderState);
@@ -230,7 +242,13 @@ void vesMaterial::bind(const vesRenderState &renderState)
 void vesMaterial::unbind(const vesRenderState &renderState)
 {
   vesInternal::Attributes::iterator itr =
-    this->m_internal->m_attributes.begin();
+    this->m_internal->m_minimalAttributes.begin();
+
+  for (; itr != this->m_internal->m_minimalAttributes.end(); ++itr) {
+    itr->second->unbind(renderState);
+  }
+
+  itr = this->m_internal->m_attributes.begin();
 
   for (; itr != this->m_internal->m_attributes.end(); ++itr) {
     itr->second->unbind(renderState);

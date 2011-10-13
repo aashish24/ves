@@ -41,7 +41,7 @@ void main()
 
     lowp float nDotL = max(dot(normal, lightDirection), 0.0);
 
-    varColor = (varColor) * nDotL;
+    varColor = vec4(varColor.xyz * nDotL, varColor.w);
   }
 
   // GLSL still requires this.
