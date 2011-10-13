@@ -18,57 +18,70 @@
   limitations under the License.
  ========================================================================*/
 
-#ifndef __vesRenderer_h
-#define __vesRenderer_h
+#ifndef VESRENDERER_H
+#define VESRENDERER_H
 
-#ifdef ANDROID
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
-#else
-#import <OpenGLES/ES2/gl.h>
-#import <OpenGLES/ES2/glext.h>
-#endif
+#include "vesGL.h"
 
+// VES includes
+#include "vesGMTL.h"
+
+// C++ includes
 #include <string>
 
-#include "vesGMTL.h"
-#include "vesMultitouchCamera.h"
-#include "vesShaderProgram.h"
-#include "vesActor.h"
-#include "vesSceneRender.h"
-#include "Painter.h"
-#include "vesCamera.h"
-
-class vesActorCollection;
+// Forward declarations
+class vesActor;
+class vesCamera;
+class vesRenderStage;
+class vesTexture;
 
 class vesRenderer
 {
 public:
-  vesRenderer();
-  ~vesRenderer();
-  void Render();
-  void AddActor(vesActor* actor);
-  void RemoveActor(vesActor* actor);
-  vesCamera* GetCamera() { return Camera; }
-  void Resize(int width,int height, float scale);
-  int GetWidth() { return Width; }
-  int GetHeight() { return Height; }
-  void ResetCamera();
-  void ResetCameraClippingRange();
-  void SetBackground(vesTexture* background);
-  vesVector3f ComputeWorldToDisplay(vesVector3f world);
-  vesVector3f ComputeDisplayToWorld(vesVector3f display);
+           vesRenderer();
+  virtual ~vesRenderer();
+
+  virtual void render();
+
+  virtual void resetCamera();
+  virtual void resetCameraClippingRange();
+  virtual void resize(int width,int height, float scale);
+
+  virtual void setBackgroundColor(float r, float g, float b, float a=1.0f);
+  virtual void setBackground(vesTexture *background);
+
+  virtual void addActor   (vesActor *actor);
+  virtual void removeActor(vesActor *actor);
+
+  void setSceneRoot(vesActor *root);
+
+  inline vesCamera* camera(){ return this->m_camera; }
+
+  inline int width()   { return this->m_width;  }
+  inline int height()  { return this->m_height; }
+
+  vesVector3f computeWorldToDisplay(vesVector3f world);
+  vesVector3f computeDisplayToWorld(vesVector3f display);
+
 
 protected:
-  void ResetCameraClippingRange(float bounds[6]);
+
+  virtual void updateTraverseScene();
+  virtual void cullTraverseScene();
+
+  void resetCameraClippingRange(float bounds[6]);
+
 
 private:
-  vesActorCollection *Actor;
-  Painter* Paint;
-  vesCamera* Camera;
-  double Aspect[2];
-  int Width;
-  int Height;
+  double     m_aspect[2];
+  int        m_width;
+  int        m_height;
+  float      m_backgroundColor[4];
+
+  vesCamera *m_camera;
+  vesActor  *m_sceneRoot;
+
+  vesRenderStage *m_renderStage;
 };
 
 #endif

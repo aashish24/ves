@@ -21,7 +21,10 @@
 #ifndef vesTriangleData_H
 #define vesTriangleData_H
 
+// VES includes
 #include "vesGMTL.h"
+
+// C++ includes
 #include <vector>
 
 // Small struct packing a point and normal together in a vertex
@@ -44,6 +47,7 @@ public:
   vesVector3f GetMin();
   vesVector3f GetMax();
   void SetHasNormals(bool b) { this->HasNormals = b; }
+  bool GetHasNormals() { return this->HasNormals; }
   void ComputeNormals();
   void SetHasBounds(bool b) { this->HasBounds = b; }
   void ComputeBounds();

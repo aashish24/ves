@@ -18,53 +18,75 @@
   limitations under the License.
  ========================================================================*/
 
-# include "vsgBoundedObject.h"
+#include "vsgBoundedObject.h"
 
 vsgBoundedObject::vsgBoundedObject()
 {
-  this->_BBoxCenter[0] = 0;
-  this->_BBoxCenter[1] = 0;
-  this->_BBoxCenter[2] = 0;
-  this->_BBoxSize[0] = -1;
-  this->_BBoxSize[1] = -1;
-  this->_BBoxSize[2] = -1;
-  this->_min[0] = 0;
-  this->_min[1] = 0;
-  this->_min[2] = 0;
-  this->_max[0] = 0;
-  this->_max[1] = 0;
-  this->_max[2] = 0;
+  this->m_boundsDirty = true;
+
+  this->m_boundsCenter[0] = 0;
+  this->m_boundsCenter[1] = 0;
+  this->m_boundsCenter[2] = 0;
+
+  this->m_boundsSize[0] = -1;
+  this->m_boundsSize[1] = -1;
+  this->m_boundsSize[2] = -1;
+
+  this->m_boundsMinimum[0] = 0;
+  this->m_boundsMinimum[1] = 0;
+  this->m_boundsMinimum[2] = 0;
+
+  this->m_boundsMaximum[0] = 0;
+  this->m_boundsMaximum[1] = 0;
+  this->m_boundsMaximum[2] = 0;
 }
 
 vsgBoundedObject::~vsgBoundedObject()
 {
 }
 
-void vsgBoundedObject::set_BBoxCenter(vesVector3f min, vesVector3f max)
+
+void vsgBoundedObject::setBoundsCenter(const vesVector3f &center)
 {
-  this->_min = (min);
-  this->_max = (max);
-  this->_BBoxCenter = max + min;
-  this->_BBoxCenter /= 2.0f;
+    this->m_boundsCenter = center;
 }
 
-void vsgBoundedObject::set_BBoxSize(vesVector3f min, vesVector3f max)
+
+void vsgBoundedObject::setBoundsSize(const vesVector3f &size)
 {
-  this->_min = (min);
-  this->_max = (max);
-  this->_BBoxSize = max-min;
+    this->m_boundsSize = size;
+}
+
+
+void vsgBoundedObject::setBounds(vesVector3f min, vesVector3f max)
+{
+  this->m_boundsMinimum = min;
+  this->m_boundsMaximum = max;
+
+  this->m_boundsCenter = 0.5f * (max + min);
+
+  this->m_boundsSize = max - min;
+
   for (int i=0; i<3; ++i) {
-    if(this->_BBoxSize[i]<0)
-    {
-      this->_BBoxSize *= -1;
+    if (this->m_boundsSize[i] < 0) {
+      this->m_boundsSize *= -1;
     }
   }
+
 }
 
-float vsgBoundedObject::GetBBoxRadius()
+
+float vsgBoundedObject::boundsRadius()
 {
-  vesVector3f temp = this->_BBoxSize;
+  vesVector3f temp = this->m_boundsSize;
+
   return sqrt(temp[0]*temp[0]+
               temp[1]*temp[1]+
               temp[2]*temp[2]);
+}
+
+
+void vsgBoundedObject::setBoundsDirty(bool value)
+{
+  this->m_boundsDirty = value;
 }

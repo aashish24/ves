@@ -40,7 +40,6 @@ public:
   InOutSF(scaleOrientation,SFVec4f)
   InOutSF(translation,SFVec3f)
   SFMatrix4f eval();
-  bool accept(vsgVisitor* vsgVisitor);
 
 private:
   TransformInternal *_internal;

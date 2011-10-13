@@ -21,16 +21,13 @@
 #include "vesTexture.h"
 #include "vesShaderProgram.h"
 #include "vesUniform.h"
+#include "vesRenderState.h"
+
+#include "vesGL.h"
 
 #include <cassert>
+#include <cstdio>
 
-// IMPORTANT: Make sure that this struct has no pointers.  All pointers should
-// be put in the class declaration. For all newly defined pointers make sure
-// to update constructor and destructor methods.
-struct vesTextureInternal
-{
-  double value; // sample
-};
 
 static const GLfloat squareVertices[] = {
   1.0f,  1.0f,
@@ -46,54 +43,75 @@ static const GLfloat textureVertices[] = {
   0.0f,  0.0f,
 };
 
-vesTexture::vesTexture(vesShaderProgram *shader,
-                       SFImage image)
+vesTexture::vesTexture() : vesMaterialAttribute(),
+  m_textureHandle(0),
+  m_textureUnit  (0)
 {
-  _internal = new vesTextureInternal();
-  this->ShaderProgram = shader;
-  this->Image = image;
-  this->loaded = false;
+  this->m_type    = vesMaterialAttribute::Texture;
+  this->m_binding = vesMaterialAttribute::BindMinimal;
 }
+
 
 vesTexture::~vesTexture()
 {
-  delete _internal;
 }
 
-void vesTexture::load()
+
+void vesTexture::bind(const vesRenderState &renderState)
 {
-  if (this->loaded)
-    return;
-
-  glGenTextures(1,&texID);
-  glBindTexture(GL_TEXTURE_2D,texID);
-  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-  glTexImage2D(GL_TEXTURE_2D,
-               0,
-               GL_RGBA,
-               this->Image.width,
-               this->Image.height,
-               0,
-               GL_RGBA,
-               GL_UNSIGNED_BYTE,
-               this->Image.data);
-  this->loaded = true;
+  glEnable(GL_TEXTURE_2D);
+  glActiveTexture(GL_TEXTURE0 + this->m_textureUnit);
+  glBindTexture(GL_TEXTURE_2D, this->m_textureHandle);
 }
 
+
+void vesTexture::unbind(const vesRenderState &renderState)
+{
+  glDisable(GL_TEXTURE_2D);
+}
+
+
+void vesTexture::setImageData(SFImage image)
+{
+  this->m_image = image;
+  this->setDirtyStateOn();
+}
+
+
+void vesTexture::setup(const vesRenderState &renderState)
+{
+  if (this->dirtyState()) {
+    glGenTextures(1, &this->m_textureHandle);
+    glBindTexture(GL_TEXTURE_2D, this->m_textureHandle);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    glTexImage2D(GL_TEXTURE_2D,
+                 0,
+                 GL_RGBA,
+                 this->m_image.width,
+                 this->m_image.height,
+                 0,
+                 GL_RGBA,
+                 GL_UNSIGNED_BYTE,
+                 this->m_image.data);
+
+    this->setDirtyStateOff();
+  }
+}
+
+#if 0
 void vesTexture::Render()
 {
-
   if(!loaded)
   {
     this->load();
   }
 
   glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, texID);
+  glBindTexture(GL_TEXTURE_2D, m_textureHandle);
 
   // Set uniforms
   vesMatrix4x4f orthoProjection = vesOrtho(-1,1,-1,1,-1,1000);
@@ -133,3 +151,4 @@ void vesTexture::Render()
 
   glDisable(GL_BLEND);
 }
+#endif

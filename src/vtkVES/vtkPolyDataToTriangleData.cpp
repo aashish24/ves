@@ -223,6 +223,7 @@ vesTriangleData* vtkPolyDataToTriangleData::Convert(vtkPolyData* input)
       v->normal[1] = normals->GetTuple(i)[1];
       v->normal[2] = normals->GetTuple(i)[2];
     }
+    output->SetHasNormals(true);
   } else {
     output->ComputeNormals();
   }

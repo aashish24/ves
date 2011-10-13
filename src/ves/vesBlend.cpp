@@ -18,34 +18,42 @@
   limitations under the License.
  ========================================================================*/
 
-#ifndef __vsgGroupingNode_h
-#define __vsgGroupingNode_h
+#include "vesBlend.h"
 
-#include "vsg/Utility/vsgMacro.h"
-#include "vsg/Utility/vsgTypes.h"
+#include <iostream>
 
-#include "vsg/Core/vsgNode.h"
-#include "vsg/Grouping/vsgBoundedObject.h"
-
-#include <list>
-
-class vsgGroupingNode: public vsgNode, public vsgBoundedObject
+vesBlend::vesBlend() : vesMaterialAttribute(),
+  m_blendFunction(vesBlendFunction::SrcAlpha, vesBlendFunction::OneMinusSrcAlpha)
 {
-public:
-           vsgGroupingNode();
-  virtual ~vsgGroupingNode();
-
-  typedef std::list<vsgNode*> Children;
-
-  bool addChild   (vsgNode *child);
-  bool removeChild(vsgNode *child);
-
-  Children&       children()       { return this->m_children; }
-  const Children& children() const { return this->m_children; }
+  this->m_type    = Blend;
+  this->m_binding = BindMinimal;
+}
 
 
-protected:
-  Children m_children;
-};
+vesBlend::~vesBlend()
+{
+}
 
-#endif // __vsgGroupingNode_h
+
+void vesBlend::setBlendFunction(const vesBlendFunction &blendFunction)
+{
+  this->m_blendFunction = blendFunction;
+  this->setDirtyStateOn();
+}
+
+
+void vesBlend::bind(const vesRenderState &renderState)
+{
+  glEnable(GL_BLEND);
+  this->m_blendFunction.apply(renderState);
+}
+
+
+void vesBlend::unbind(const vesRenderState &renderState)
+{
+  glDisable(GL_BLEND);
+
+  this->setDirtyStateOff();
+}
+
+

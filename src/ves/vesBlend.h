@@ -18,34 +18,29 @@
   limitations under the License.
  ========================================================================*/
 
-#ifndef __vsgGroupingNode_h
-#define __vsgGroupingNode_h
+#ifndef VESBLEND_H
+#define VESBLEND_H
 
-#include "vsg/Utility/vsgMacro.h"
-#include "vsg/Utility/vsgTypes.h"
+#include "vesMaterial.h"
 
-#include "vsg/Core/vsgNode.h"
-#include "vsg/Grouping/vsgBoundedObject.h"
+#include "vesBlendFunction.h"
 
-#include <list>
-
-class vsgGroupingNode: public vsgNode, public vsgBoundedObject
+class vesBlend : public vesMaterialAttribute
 {
 public:
-           vsgGroupingNode();
-  virtual ~vsgGroupingNode();
+             vesBlend();
+    virtual ~vesBlend();
 
-  typedef std::list<vsgNode*> Children;
+                void       setBlendFunction(const vesBlendFunction& blendFunction);
+   vesBlendFunction        blendFunction();
+   const vesBlendFunction& blendFunction() const;
 
-  bool addChild   (vsgNode *child);
-  bool removeChild(vsgNode *child);
-
-  Children&       children()       { return this->m_children; }
-  const Children& children() const { return this->m_children; }
-
+   virtual void bind         (const vesRenderState &renderState);
+   virtual void unbind       (const vesRenderState &renderState);
 
 protected:
-  Children m_children;
+   vesBlendFunction m_blendFunction;
 };
 
-#endif // __vsgGroupingNode_h
+
+#endif // VESBLEND_H

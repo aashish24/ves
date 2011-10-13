@@ -5,7 +5,6 @@ set(headers
   vsg/Shader/vsgProgrammableShaderObject.h
   vsg/Shader/vsgShaderNode.h
   vsg/Shader/vsgVertexAttributeNode.h
-  vsg/Shape/Appearance.h
   vsg/Shape/Shape.h
   vsg/Shape/vsgAppearanceChildNode.h
   vsg/Shape/vsgAppearanceNode.h
@@ -18,8 +17,6 @@ set(headers
   vsg/Utility/vsgMacro.h
   vsg/Utility/vsgTypes.h
   vsg/vsgVisitor.h
-  Painter.h
-  vesActorCollection.h
   vesActor.h
   vesByteSwap.h
   vesCamera.h
@@ -32,8 +29,6 @@ set(headers
   vesMultitouchSensorNode.h
   vesMultitouchWidget.h
   vesRenderer.h
-  vesSceneElement.h
-  vesSceneRender.h
   vesSetGet.h
   vesShader.h
   vesShaderProgram.h

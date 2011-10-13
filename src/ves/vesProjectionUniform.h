@@ -18,34 +18,29 @@
   limitations under the License.
  ========================================================================*/
 
-#ifndef __vsgGroupingNode_h
-#define __vsgGroupingNode_h
+#ifndef VESPROJECTIONUNIFORM_H
+#define VESPROJECTIONUNIFORM_H
 
-#include "vsg/Utility/vsgMacro.h"
-#include "vsg/Utility/vsgTypes.h"
+#include "vesUniform.h"
 
-#include "vsg/Core/vsgNode.h"
-#include "vsg/Grouping/vsgBoundedObject.h"
+// VES includes
+#include "vesRenderStage.h"
 
-#include <list>
-
-class vsgGroupingNode: public vsgNode, public vsgBoundedObject
+class vesProjectionUniform : public vesUniform
 {
 public:
-           vsgGroupingNode();
-  virtual ~vsgGroupingNode();
 
-  typedef std::list<vsgNode*> Children;
-
-  bool addChild   (vsgNode *child);
-  bool removeChild(vsgNode *child);
-
-  Children&       children()       { return this->m_children; }
-  const Children& children() const { return this->m_children; }
+  vesProjectionUniform(const std::string &name="projectionMatrix") :
+    vesUniform(name, vesMatrix4x4f())
+  {
+  }
 
 
-protected:
-  Children m_children;
+  virtual void update(const vesRenderState &renderState,
+                      const vesShaderProgram &program)
+  {
+    this->set(*renderState.m_projectionMatrix);
+  }
 };
 
-#endif // __vsgGroupingNode_h
+#endif // VESPROJECTIONUNIFORM_H

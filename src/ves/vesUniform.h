@@ -1,31 +1,40 @@
+/*========================================================================
+  VES --- VTK OpenGL ES Rendering Toolkit
+
+      http://www.kitware.com/ves
+
+  Copyright 2011 Kitware, Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ ========================================================================*/
+
+// \note: Eventually we can make this class use templates. But for simplicity
+// and clearity we are sticking with non templated version.
+
 #ifndef VESUNIFORM_H
 #define VESUNIFORM_H
 
-#ifdef ANDROID
-# include <GLES2/gl2.h>
-# include <GLES2/gl2ext.h>
-#else
-# include <OpenGLES/ES2/gl.h>
-# include <OpenGLES/ES2/glext.h>
-#endif
+// VES includes
+#include "vesGL.h"
+#include "vesGMTL.h"
 
 // C++ includes
 #include <string>
 #include <vector>
 
-// VES includes
-#include "vesGMTL.h"
-
 // Forward declarations
+class vesRenderState;
 class vesShaderProgram;
-
-#ifndef GL_SAMPLER_1D
-    #define GL_SAMPLER_1D               0x8B5D
-    #define GL_SAMPLER_2D               0x8B5E
-    #define GL_SAMPLER_3D               0x8B5F
-    #define GL_SAMPLER_1D_SHADOW        0x8B61
-    #define GL_SAMPLER_2D_SHADOW        0x8B62
-#endif
 
 template <typename DataType>
 class vesUniformDataArray
@@ -108,6 +117,10 @@ public:
     return this->m_name;
   }
 
+  /*! Update */
+  virtual void update(const vesRenderState   &renderState,
+                      const vesShaderProgram &program);
+
   /*! convenient scalar (non-array) constructors w/ assignment */
   explicit vesUniform(const std::string &name, float value);
   explicit vesUniform(const std::string &name, int value);
@@ -115,6 +128,7 @@ public:
 
   vesUniform(const std::string &name, const vesVector2f &vector);
   vesUniform(const std::string &name, const vesVector3f &vector);
+  vesUniform(const std::string &name, const vesVector4f &vector);
   vesUniform(const std::string &name, const vesMatrix3x3f &matrix);
   vesUniform(const std::string &name, const vesMatrix4x4f &matrix);
 
@@ -124,6 +138,7 @@ public:
   bool set(bool value);
   bool set(const vesVector2f &vector);
   bool set(const vesVector3f &vector);
+  bool set(const vesVector4f &vector);
   bool set(const vesMatrix3x3f &matrix);
   bool set(const vesMatrix4x4f &matrix);
 
@@ -141,6 +156,7 @@ public:
   bool setElement(unsigned int index, bool  value);
   bool setElement(unsigned int index, const vesVector2f &value);
   bool setElement(unsigned int index, const vesVector3f &value);
+  bool setElement(unsigned int index, const vesVector4f &value);
   bool setElement(unsigned int index, const vesMatrix3x3f &matrix);
   bool setElement(unsigned int index, const vesMatrix4x4f &matrix);
 
@@ -149,14 +165,11 @@ public:
   bool getElement(unsigned int index, float &value) const;
   bool getElement(unsigned int index, vesVector2f &value) const;
   bool getElement(unsigned int index, vesVector3f &value) const;
+  bool getElement(unsigned int index, vesVector4f &value) const;
   bool getElement(unsigned int index, vesMatrix3x3f &value) const;
   bool getElement(unsigned int index, vesMatrix4x4f &value) const;
 
-  int getUniformLocation() const;
-
-  void bind(vesShaderProgram *shaderProgram);
-
-  void callGL() const;
+  void callGL(int location) const;
 
 
 protected:
@@ -179,7 +192,6 @@ protected:
   std::string         m_name;
 
   unsigned int        m_numberElements;
-  int                 m_location;
 
   IntArray           *m_intArray;
   FloatArray         *m_floatArray;

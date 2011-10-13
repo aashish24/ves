@@ -23,17 +23,16 @@
 #include "vesGMTL.h"
 #include "vsg/Grouping/Transform.h"
 #include "vesSetGet.h"
-#include "vesActorCollection.h"
 
 class vesCamera: public vsg::Transform
 {
 public:
-  vesCamera();
-  ~vesCamera();
-  bool read();
-  void render(Painter *render);
-  void computeBounds();
-  void AddActorCollection(vesActorCollection* actor);
+           vesCamera();
+  virtual  ~vesCamera();
+
+  bool read(){}
+
+  virtual void computeBounds(){}
 
   vesSetGetMacro(UseHorizontalViewAngle,bool)
   vesSetGetMacro(ViewPlaneNormal,vesVector3f)

@@ -91,15 +91,6 @@ public:
 
 protected:
 
-  vesUniform *m_modelViewProjectionUniform;
-  vesUniform *m_normalMatrixUniform;
-  vesUniform *m_lightDirectionUniform;
-  vesUniform *m_opacityUniform;
-  vesUniform *m_enableDiffuseUniform;
-  vesUniform *m_useGouraudShaderUniform;
-  vesUniform *m_useBlinnPhongShaderUniform;
-  vesUniform *m_useToonShaderUniform;
-
   // These accessors are protected so that apps cannot use the APIs of
   // these objects.  Instead, this class should provide public methods to
   // wrap the APIs.  The goal is to allow the ves APIs to be refactored
@@ -113,9 +104,10 @@ protected:
 
   void removeAllDataRepresentations();
   void addRepresentationsForDataSet(vtkDataSet* dataSet);
-  vesKiwiDataRepresentation* addPolyDataRepresentation(vtkPolyData* dataSet);
+  vesKiwiDataRepresentation* addPolyDataRepresentation(vtkPolyData* dataSet, vesShaderProgram* program);
 
   vesTexture* newTextureFromImage(vtkImageData* image);
+  void setTextureFromImage(vesTexture* texture, vtkImageData* image);
 
 
 private:

@@ -17,31 +17,34 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
-#include "ProgramShader.h"
 
-// IMPORTANT: Make sure that this struct has no pointers.  All pointers should
-// be put in the class declaration. For all newly defined pointers make sure to
-// update constructor and destructor methods.
-struct ProgramShaderInternal
+#ifndef VESMODELVIEWUNIFORM_H
+#define VESMODELVIEWUNIFORM_H
+
+#include "vesUniform.h"
+
+// VES includes
+#include "vesGMTL.h"
+#include "vesRenderStage.h"
+
+// C++ includes
+#include <string>
+
+class vesModelViewUniform : public vesUniform
 {
-  double value; // sample
+public:
+
+  vesModelViewUniform(const std::string &name="modelViewMatrix") :
+    vesUniform(name, vesMatrix4x4f())
+  {
+  }
+
+
+  virtual void update(const vesRenderState &renderState, const vesShaderProgram &program)
+  {
+    this->set(*renderState.m_modelViewMatrix);
+  }
 };
 
-ProgramShader::ProgramShader()
-{
-  m_internal = new ProgramShaderInternal();
-}
 
-ProgramShader::~ProgramShader()
-{
-  delete m_internal;
-}
-
-bool ProgramShader::read()
-{
-  return true;
-}
-
-void ProgramShader::render(Painter *render)
-{
-}
+#endif // VESMODELVIEWUNIFORM_H

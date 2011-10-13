@@ -17,19 +17,14 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
+
 #include "vesMultitouchWidget.h"
 
-// --------------------------------------------------------------------includes
-#include "Painter.h"
-
-// -----------------------------------------------------------------------macro
-
-// -----------------------------------------------------------------------cnstr
 vesMultitouchWidget::vesMultitouchWidget()
 {
 }
 
-// -----------------------------------------------------------------------destr
+
 vesMultitouchWidget::~vesMultitouchWidget()
 {
 }

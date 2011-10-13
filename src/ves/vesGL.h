@@ -17,15 +17,24 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
+#ifndef VESGL_H
+#define VESGL_H
 
-#ifndef __vesSceneElement_h
-#define __vesSceneElement_h
+#ifdef ANDROID
+# include <GLES2/gl2.h>
+# include <GLES2/gl2ext.h>
+#else
+# include <OpenGLES/ES2/gl.h>
+# include <OpenGLES/ES2/glext.h>
+#endif
 
-#include "vesSceneRender.h"
+#ifndef GL_SAMPLER_1D
+    #define GL_SAMPLER_1D               0x8B5D
+    #define GL_SAMPLER_2D               0x8B5E
+    #define GL_SAMPLER_3D               0x8B5F
+    #define GL_SAMPLER_1D_SHADOW        0x8B61
+    #define GL_SAMPLER_2D_SHADOW        0x8B62
+#endif
 
-class vesSceneElement {
-public:
-  //void Render(vesSceneRender* renderer);
-};
 
 #endif

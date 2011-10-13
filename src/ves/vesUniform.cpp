@@ -1,3 +1,22 @@
+/*========================================================================
+  VES --- VTK OpenGL ES Rendering Toolkit
+
+      http://www.kitware.com/ves
+
+  Copyright 2011 Kitware, Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+ ========================================================================*/
 
 #include "vesUniform.h"
 
@@ -22,13 +41,22 @@ vesUniform::~vesUniform()
 }
 
 
+void vesUniform::update(const vesRenderState   &renderState,
+                        const vesShaderProgram &program)
+{
+  // \note: Do nothing by default.
+}
+
+
 bool vesUniform::setType(Type type)
 {
-  if (this->m_type == type)
+  if (this->m_type == type) {
     return true;
+  }
 
-  if (m_type != Undefined)
+  if (m_type != Undefined) {
     return false;
+  }
 
   this->m_type = type;
 
@@ -102,6 +130,17 @@ vesUniform::vesUniform(const std::string &name, const vesVector3f& vector) :
 }
 
 
+vesUniform::vesUniform(const std::string &name, const vesVector4f& vector) :
+  m_type            (FloatVec4),
+  m_numberElements  (1)
+{
+  this->setMinimalDefaults();
+  this->setName(name);
+  this->allocateDataArray();
+  this->set(vector);
+}
+
+
 vesUniform::vesUniform(const std::string &name, const vesMatrix3x3f& matrix) :
   m_type            (FloatMat3),
   m_numberElements  (1)
@@ -161,6 +200,15 @@ bool vesUniform::set(const vesVector2f &vector)
 
 
 bool vesUniform::set(const vesVector3f &vector)
+{
+  if (this->m_numberElements == 0)
+    this->m_numberElements = 1;
+
+  return isScalar() ? setElement(0, vector) : false;
+}
+
+
+bool vesUniform::set(const vesVector4f &vector)
 {
   if (this->m_numberElements == 0)
     this->m_numberElements = 1;
@@ -307,6 +355,24 @@ bool vesUniform::setElement(unsigned int index, const vesVector3f &vector)
 }
 
 
+bool vesUniform::setElement(unsigned int index, const vesVector4f &vector)
+{
+  if (index >= this->m_numberElements || !isCompatibleType(FloatVec4))
+    return false;
+
+  unsigned int j = index * getTypeNumberOfComponents(this->m_type);
+
+  (*this->m_floatArray)[j]   = vector[0];
+  (*this->m_floatArray)[j+1] = vector[1];
+  (*this->m_floatArray)[j+2] = vector[2];
+  (*this->m_floatArray)[j+3] = vector[3];
+
+  // \todo: Make state dirty.
+
+  return true;
+}
+
+
 bool vesUniform::setElement(unsigned int index, const vesMatrix3x3f &matrix)
 {
   if (index >= this->m_numberElements || !isCompatibleType(FloatMat3))
@@ -402,6 +468,21 @@ bool vesUniform::getElement(unsigned int index, vesVector3f &value) const
 }
 
 
+bool vesUniform::getElement(unsigned int index, vesVector4f &value) const
+{
+  if (index >= this->m_numberElements || !isCompatibleType(Float))
+    return false;
+
+  unsigned int j = index * getTypeNumberOfComponents(this->m_type);
+
+  value[0] = (*this->m_floatArray)[j];
+  value[1] = (*this->m_floatArray)[j+1];
+  value[2] = (*this->m_floatArray)[j+2];
+  value[3] = (*this->m_floatArray)[j+3];
+  return true;
+}
+
+
 bool vesUniform::getElement(unsigned int index, vesMatrix3x3f &value) const
 {
   if (index >= this->m_numberElements || !isCompatibleType(Float))
@@ -428,25 +509,7 @@ bool vesUniform::getElement(unsigned int index, vesMatrix4x4f &value) const
 }
 
 
-int vesUniform::getUniformLocation() const
-{
-  return this->m_location;
-}
-
-
-void vesUniform::bind(vesShaderProgram *shaderProgram)
-{
-  if (!shaderProgram)
-  {
-    return;
-  }
-
-  this->m_location = glGetUniformLocation
-    (shaderProgram->programHandle(), this->m_name.c_str());
-}
-
-
-void vesUniform::callGL() const
+void vesUniform::callGL(int location) const
 {
   if (this->m_numberElements < 1)
     return;
@@ -456,38 +519,44 @@ void vesUniform::callGL() const
     case Bool:
     case Int:
         if (this->m_intArray)
-          glUniform1iv (this->m_location, this->m_numberElements,
-                        &this->m_intArray->front());
+          glUniform1iv(location, this->m_numberElements,
+                       &this->m_intArray->front());
         break;
 
     case Float:
         if (this->m_floatArray)
-          glUniform1fv (this->m_location, this->m_numberElements,
-                        &this->m_floatArray->front());
+          glUniform1fv(location, this->m_numberElements,
+                       &this->m_floatArray->front());
         break;
 
     case FloatVec2:
         if (this->m_floatArray)
-          glUniform2fv (this->m_location, this->m_numberElements,
-                        &this->m_floatArray->front());
+          glUniform2fv(location, this->m_numberElements,
+                       &this->m_floatArray->front());
         break;
 
     case FloatVec3:
         if (this->m_floatArray)
-          glUniform3fv (this->m_location, this->m_numberElements,
-                        &this->m_floatArray->front());
+          glUniform3fv(location, this->m_numberElements,
+                       &this->m_floatArray->front());
         break;
+
+    case FloatVec4:
+      if (this->m_floatArray)
+        glUniform4fv(location, this->m_numberElements,
+                     &this->m_floatArray->front());
+      break;
 
     case FloatMat3:
         if (m_floatArray)
-          glUniformMatrix3fv (this->m_location, this->m_numberElements, GL_FALSE,
-                              &this->m_floatArray->front());
+          glUniformMatrix3fv(location, this->m_numberElements, GL_FALSE,
+                             &this->m_floatArray->front());
         break;
 
     case FloatMat4:
         if (this->m_floatArray)
-          glUniformMatrix4fv (m_location, this->m_numberElements, GL_FALSE,
-                              &this->m_floatArray->front());
+          glUniformMatrix4fv(location, this->m_numberElements, GL_FALSE,
+                             &this->m_floatArray->front());
         break;
 
     default:
@@ -499,7 +568,6 @@ void vesUniform::callGL() const
 
 void vesUniform::setMinimalDefaults()
 {
-  m_location    = -1;
   m_intArray    = 0;
   m_floatArray  = 0;
 }
@@ -544,6 +612,11 @@ int vesUniform::getTypeNumberOfComponents(Type type) const
     case BoolVec3:
       return 3;
 
+    case FloatVec4:
+    case IntVec4:
+    case BoolVec4:
+      return 4;
+
     case FloatMat3:
       return 9;
 
@@ -563,6 +636,7 @@ GLenum vesUniform::getInternalArrayType(Type type) const
   case Float:
   case FloatVec2:
   case FloatVec3:
+  case FloatVec4:
   case FloatMat3:
   case FloatMat4:
     return GL_FLOAT;
@@ -570,9 +644,11 @@ GLenum vesUniform::getInternalArrayType(Type type) const
   case Int:
   case IntVec2:
   case IntVec3:
+  case IntVec4:
   case Bool:
   case BoolVec2:
   case BoolVec3:
+  case BoolVec4:
     return GL_INT;
 
   default:

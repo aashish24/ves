@@ -26,6 +26,7 @@ class vesActor;
 class vesMapper;
 class vesRenderer;
 class vesShaderProgram;
+class vesTexture;
 
 class vtkDataSet;
 
@@ -46,6 +47,8 @@ public:
 
   void setColor(double r, double g, double b, double a);
 
+  void setTexture(vesTexture* texture);
+  vesTexture* texture() const;
 
   // todo:
   // move this back to protected
