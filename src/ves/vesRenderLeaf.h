@@ -61,7 +61,7 @@ public:
   void render(vesRenderState &renderState, vesRenderLeaf *previous)
   {
     if (previous && this->m_material != previous->m_material) {
-      renderState.invokeMaterial(previous->m_material);
+      renderState.removeMaterial(previous->m_material);
     }
 
     renderState.applyProjectionMatrix (&this->m_projectionMatrix);
@@ -83,7 +83,7 @@ public:
   void finalize(vesRenderState &renderState)
   {
     if (this->m_material) {
-      renderState.invokeMaterial(this->m_material);
+      renderState.removeMaterial(this->m_material);
     }
   }
 

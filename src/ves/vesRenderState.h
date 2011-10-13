@@ -56,7 +56,7 @@ public:
   }
 
 
-  void invokeMaterial(vesMaterial *&material)
+  void removeMaterial(vesMaterial *&material)
   {
     if (material && material == this->m_material) {
       this->m_material->remove(*this);
