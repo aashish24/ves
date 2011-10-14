@@ -160,6 +160,10 @@ std::string getContentsOfAssetFile(const std::string filename)
 //----------------------------------------------------------------------------
 bool setupGraphics(int w, int h)
 {
+  if (app) {
+    return true;
+  }
+
   // Pipe VTK messages into the android log
   vtkAndroidOutputWindow::Install();
 
