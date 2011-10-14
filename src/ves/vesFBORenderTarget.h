@@ -13,9 +13,7 @@ public:
            vesFBORenderTarget();
   virtual ~vesFBORenderTarget();
 
-  virtual void attach(AttachmentType type, vesTexture *texture);
-  virtual void render(vesRenderState &renderState);
-
+  virtual bool attach(AttachmentType type, vesTexture *texture);
 
 protected:
 

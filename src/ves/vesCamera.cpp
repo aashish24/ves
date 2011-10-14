@@ -17,10 +17,10 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
-#include "vesCamera.h"
-#include "vesGMTL.h"
 
-#include "gmtl/Generate.h"
+// VES includes
+#include "vesGMTL.h"
+#include "vesCamera.h"
 
 // C++ includes
 #include <iostream>
@@ -54,6 +54,9 @@ vesCamera::vesCamera()
 
   this->WindowCenter[0] = 0.0;
   this->WindowCenter[1] = 0.0;
+
+  this->m_defaultRenderTarget = new vesRenderTarget();
+  this->m_renderTarget = this->m_defaultRenderTarget;
 
   this->ComputeDistance();
 }
@@ -267,37 +270,23 @@ void vesCamera::ComputeViewPlaneNormal()
 }
 
 
-//void vesCamera::computeBounds()
-//{
-//  vesVector3f allMin(0,0,0);
-//  vesVector3f allMax(0,0,0);
+bool vesCamera::SetRenderTarget(vesRenderTarget *renderTarget)
+{
+  if (!renderTarget || renderTarget == this->m_renderTarget) {
+    return false;
+  }
 
-//  for (int i =0; i<this->get_children().size(); ++i)
-//  {
-//    vesActorCollection* child = (vesActorCollection*) this->get_children()[i];
-//    child->computeBounds();
-//    vesVector3f min = child->get_min();
-//    vesVector3f max = child->get_max();
+  this->m_renderTarget = renderTarget;
+}
 
-//    if (i == 0)
-//    {
-//      allMin = min;
-//      allMax = max;
-//    }
 
-//    for (int i = 0; i < 3; ++i)
-//    {
-//      if (max[i] > allMax[i])
-//      {
-//        allMax[i] = max[i];
-//      }
-//      if (min[i] < allMin[i])
-//      {
-//        allMin[i] = min[i];
-//      }
-//    }
-//  }
+vesRenderTarget* vesCamera::RenderTarget()
+{
+  return this->m_renderTarget;
+}
 
-//  set_BBoxCenter(allMin, allMax);
-//  set_BBoxSize(allMin, allMax);
-//}
+
+const vesRenderTarget* vesCamera::RenderTarget() const
+{
+  return this->m_renderTarget;
+}

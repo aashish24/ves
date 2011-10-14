@@ -20,8 +20,11 @@
 #ifndef __vesCamera_h
 #define __vesCamera_h
 
-#include "vesGMTL.h"
 #include "vsg/Grouping/Transform.h"
+
+// VES includes
+#include "vesGMTL.h"
+#include "vesRenderTarget.h"
 #include "vesSetGet.h"
 
 class vesCamera: public vsg::Transform
@@ -56,18 +59,28 @@ public:
   void SetClippingRange(float near, float far);
   void Reset();
 
+  bool                   SetRenderTarget(vesRenderTarget *renderTarget);
+  vesRenderTarget*       RenderTarget();
+  const vesRenderTarget* RenderTarget() const;
+
+
 private:
-  float ViewAngle;
-  bool UseHorizontalViewAngle;
-  vesVector3f ViewPlaneNormal;
-  vesVector3f Position, FocalPoint,ViewUp;
-  float ParallelScale;
-  float ClippingRange[2];
   void ComputeDistance();
   void ComputeViewPlaneNormal();
-  float Distance;
-  vesVector3f DirectionOfProjection;
-  double WindowCenter[2];
-  bool ParallelProjection;
+
+
+  float         ViewAngle;
+  bool          UseHorizontalViewAngle;
+  vesVector3f   ViewPlaneNormal;
+  vesVector3f   Position, FocalPoint,ViewUp;
+  float         ParallelScale;
+  float         ClippingRange[2];
+  float         Distance;
+  vesVector3f   DirectionOfProjection;
+  double        WindowCenter[2];
+  bool          ParallelProjection;
+
+  vesRenderTarget *m_defaultRenderTarget;
+  vesRenderTarget *m_renderTarget;
 };
 #endif //__vesCamera_h

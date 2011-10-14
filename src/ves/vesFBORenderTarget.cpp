@@ -22,9 +22,15 @@ vesFBORenderTarget::~vesFBORenderTarget()
 }
 
 
-void vesFBORenderTarget::attach(AttachmentType type, vesTexture *texture)
+bool vesFBORenderTarget::attach(AttachmentType type, vesTexture *texture)
 {
-  this->m_internal->m_bufferAttachmentMap[type].m_texture = texture;
+  if (texture) {
+    this->m_internal->m_bufferAttachmentMap[type].m_texture = texture;
+
+    return true;
+  }
+
+  return false;
 }
 
 

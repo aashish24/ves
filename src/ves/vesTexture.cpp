@@ -44,6 +44,9 @@ static const GLfloat textureVertices[] = {
 };
 
 vesTexture::vesTexture() : vesMaterialAttribute(),
+  m_width        (0),
+  m_height       (0),
+  m_depth        (0),
   m_textureHandle(0),
   m_textureUnit  (0)
 {

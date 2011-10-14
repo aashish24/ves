@@ -5,7 +5,8 @@
 #include "vesFBORenderTargetPrivate.h"
 #include "vesTexture.h"
 
-// C++ includes
+// C/C++ includes
+#include <cassert>
 #include <map>
 
 vesRenderToTexture::vesRenderToTexture() : vesFBORenderTarget()
@@ -95,8 +96,12 @@ void vesRenderToTexture::setup(vesRenderState &renderState)
 }
 
 
-void vesFBORenderTarget::render(vesRenderState &renderState)
+void vesRenderToTexture::render(vesRenderState &renderState)
 {
+  assert(this->m_internal->m_renderBuffersHandle.empty());
+
+  this->setup(renderState);
+
   glBindRenderbuffer(GL_RENDERBUFFER, this->m_internal->m_frameBufferHandle);
 
   vesFBORenderTarget::vesInternal::BufferAttachmentMap::iterator itr =
