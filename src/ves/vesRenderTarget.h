@@ -35,7 +35,7 @@ public:
 
   virtual ~vesRenderTarget(){}
 
-  virtual void setup(vesRenderState &renderState){}
+  virtual void setup (vesRenderState &renderState){}
   virtual void render(vesRenderState &renderState){}
 
 

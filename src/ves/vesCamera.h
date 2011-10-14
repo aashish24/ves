@@ -33,8 +33,6 @@ public:
            vesCamera();
   virtual  ~vesCamera();
 
-  bool read(){}
-
   virtual void computeBounds(){}
 
   vesSetGetMacro(UseHorizontalViewAngle,bool)

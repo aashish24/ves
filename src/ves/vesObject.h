@@ -1,6 +1,7 @@
 #ifndef VESOBJECT_H
 #define VESOBJECT_H
 
+
 class vesObject
 {
 public:

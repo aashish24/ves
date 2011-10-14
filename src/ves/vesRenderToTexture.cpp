@@ -9,6 +9,7 @@
 #include <cassert>
 #include <map>
 
+
 vesRenderToTexture::vesRenderToTexture() : vesFBORenderTarget()
 {
 }
@@ -32,7 +33,9 @@ bool vesRenderToTexture::setTexture(vesTexture *texture)
     return false;
   }
 
-  this->attach(ColorAttachment0, texture);
+  this->setDirtyStateOn();
+
+  return this->attach(ColorAttachment0, texture);
 }
 
 
@@ -111,8 +114,3 @@ void vesRenderToTexture::render(vesRenderState &renderState)
 
   glBindTexture(GL_TEXTURE_2D, itr->second.m_texture->textureHandle());
 }
-
-
-
-
-

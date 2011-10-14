@@ -277,6 +277,8 @@ bool vesCamera::SetRenderTarget(vesRenderTarget *renderTarget)
   }
 
   this->m_renderTarget = renderTarget;
+
+  return true;
 }
 
 
