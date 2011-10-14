@@ -26,6 +26,7 @@
 
 #include <vesKiwiViewerApp.h>
 
+#include <vtksys/SystemTools.hxx>
 #include <cassert>
 #include <fstream>
 
@@ -42,24 +43,32 @@ namespace {
 
 //----------------------------------------------------------------------------
 vesKiwiViewerApp* app;
+std::string storageDir;
 AAssetManager* assetManager;
 
 //----------------------------------------------------------------------------
 std::string copyAssetToExternalStorage(std::string filename)
 {
-  // Copy file from assets to /sdcard/KiwiViewer
+  std::string destDirectory = storageDir + "/KiwiViewer";
+  std::string destFilename = destDirectory + "/" + filename;
+
+  if (vtksys::SystemTools::FileExists(destFilename.c_str())) {
+    return destFilename;
+  }
+
+  vtksys::SystemTools::MakeDirectory(destDirectory.c_str());
 
   LOGI("Reading asset file: %s", filename.c_str());
   AAsset* asset = AAssetManager_open(assetManager, filename.c_str(), AASSET_MODE_UNKNOWN);
   if (asset == NULL) {
       LOGE("Could not open asset: %s", filename.c_str());
-      return 0;
+      return std::string();
   }
+
   off_t len = AAsset_getLength(asset);
   const char* input_string = static_cast<const char*>(AAsset_getBuffer(asset));
-  LOGI("Asset file is %u bytes", len);
+  //LOGI("Asset file is %u bytes", len);
 
-  std::string destFilename = "/sdcard/KiwiViewer/" + filename;
   LOGI("Writing to destination file: %s", destFilename.c_str());
   std::ofstream outfile(destFilename.c_str(), std::ofstream::binary);
   outfile.write(input_string, len);
@@ -180,16 +189,11 @@ JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_loadNextDataset(JN
 JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_loadAssets(JNIEnv* env, jclass obj,
         jobject assetManagerJava, jstring filename)
 {
-  LOGI("loadAssets");
-
-  // TODO
-  // pass sdcard mount location to this method.  For now, we assume /sdcard.
-  // convert Java string to UTF-8
-  //const char *utf8 = env->GetStringUTFChars(filename, NULL);
-  //assert(NULL != utf8);
-  //env->ReleaseStringUTFChars(filename, utf8);
-
-  // store pointer to assetManager for later use
   assetManager = AAssetManager_fromJava(env, assetManagerJava);
   assert(assetManager != NULL);
+
+  const char *javaStr = env->GetStringUTFChars(filename, NULL);
+  storageDir = javaStr;
+  env->ReleaseStringUTFChars(filename, javaStr);
+  LOGI("Using external storage directory %s", storageDir.c_str());
 }

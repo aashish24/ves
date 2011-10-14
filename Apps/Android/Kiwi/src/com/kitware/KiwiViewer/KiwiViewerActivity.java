@@ -22,6 +22,7 @@ package com.kitware.KiwiViewer;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.WindowManager;
 
@@ -53,7 +54,8 @@ public class KiwiViewerActivity extends Activity {
       mView = new KiwiGLSurfaceView(getApplication());
 
       assetManager = getAssets();
-      KiwiNative.loadAssets(assetManager, "not-used");
+      String storageDir = Environment.getExternalStorageDirectory().getAbsolutePath();
+      KiwiNative.loadAssets(assetManager, storageDir);
 
       mRootLayout = new LinearLayout(this);
       mRootLayout.setOrientation(LinearLayout.VERTICAL);
@@ -76,6 +78,8 @@ public class KiwiViewerActivity extends Activity {
 
       mLoadButton.setOnClickListener(new Button.OnClickListener() {
           public void onClick(View v) {
+              // todo- maybe check storage state first?
+              // Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)
               mView.loadNextDataset();
           }
       });
