@@ -29,6 +29,7 @@
 #include "vesNormalMatrixUniform.h"
 #include "vesProjectionUniform.h"
 #include "vesRenderer.h"
+#include "vesActor.h"
 #include "vesShader.h"
 #include "vesShaderProgram.h"
 #include "vesTexture.h"
@@ -58,6 +59,11 @@
 #include <vtkLineSource.h>
 #include <vtkCellLocator.h>
 #include <vtkAppendPolyData.h>
+
+// text tests
+#include <vtkTextProperty.h>
+#include <vtkFreeTypeStringToImage.h>
+#include <vtkPNGWriter.h>
 
 #include <cassert>
 #include <cmath>
@@ -150,6 +156,9 @@ public:
     this->TextureShader = 0;
     this->SelectedImageDimension = -1;
     this->ContourRep = 0;
+
+    this->TextToImage = vtkSmartPointer<vtkFreeTypeStringToImage>::New();
+    this->TextRepresentation = 0;
   }
 
   ~vesInternal()
@@ -198,6 +207,10 @@ public:
   vesNormalVertexAttribute    *NormalVertexAttribute;
   vesColorVertexAttribute     *ColorVertexAttribute;
   vesTextureCoordinateVertexAttribute *TextureCoordinateVertexAttribute;
+
+
+  vtkSmartPointer<vtkFreeTypeStringToImage> TextToImage;
+  vesKiwiDataRepresentation* TextRepresentation;
 };
 
 //----------------------------------------------------------------------------
@@ -258,7 +271,7 @@ int vesKiwiViewerApp::numberOfBuiltinDatasets() const
 //----------------------------------------------------------------------------
 int vesKiwiViewerApp::defaultBuiltinDatasetIndex() const
 {
-  return 10;
+  return 1;
 }
 
 //----------------------------------------------------------------------------
@@ -296,6 +309,7 @@ void vesKiwiViewerApp::render()
   this->setShadingModel(this->getCurrentShadingModel());
 
   this->Internal->Renderer->resetCameraClippingRange();
+  this->updateTextAnnotations();
   this->Internal->Renderer->render();
 }
 
@@ -697,6 +711,8 @@ void vesKiwiViewerApp::removeAllDataRepresentations()
   this->Internal->AppendFilter = 0;
   this->Internal->ContourRep = 0;
 
+  this->Internal->TextRepresentation = 0;
+
   this->Internal->DataRepresentations.clear();
 }
 
@@ -712,6 +728,7 @@ void vesKiwiViewerApp::addRepresentationsForDataSet(vtkDataSet* dataSet)
     // todo - move to image representation class
     vtkImageData* image = vtkImageData::SafeDownCast(dataSet);
     if (image->GetDataDimension() == 3) {
+
       double bounds[6];
       double boundsCenter[3];
       image->GetBounds(bounds);
@@ -765,6 +782,7 @@ void vesKiwiViewerApp::addRepresentationsForDataSet(vtkDataSet* dataSet)
         this->Internal->ContourVis = 1;
         this->Internal->ContourRep = contourRep;
       }
+
     }
     else {
 
@@ -798,6 +816,49 @@ vesKiwiDataRepresentation* vesKiwiViewerApp::addPolyDataRepresentation(vtkPolyDa
   this->Internal->DataRepresentations.push_back(rep);
   return rep;
 }
+
+
+//----------------------------------------------------------------------------
+vesKiwiDataRepresentation* vesKiwiViewerApp::addTextRepresentation(const std::string& text)
+{
+  vtkNew<vtkTextProperty> textProperty;
+  textProperty->SetFontFamilyToArial();
+  textProperty->SetFontSize(32);
+  textProperty->SetColor(1.0, 0.8, 0.0);
+
+  vtkNew<vtkImageData> imageTexture;
+  this->Internal->TextToImage->RenderString(textProperty.GetPointer(), text, imageTexture.GetPointer());
+
+  // The above call to RenderString() sets the imageTexture origin so some nonzero value, not sure why
+  imageTexture->SetOrigin(0, 0, 0);
+
+  vtkSmartPointer<vtkPolyData> textQuad = GetPolyDataForImagePlane(imageTexture.GetPointer());
+
+  vesKiwiDataRepresentation* rep = this->addPolyDataRepresentation(textQuad.GetPointer(), this->Internal->TextureShader);
+  vesTexture* texture = this->newTextureFromImage(imageTexture.GetPointer());
+  rep->setTexture(texture);
+
+
+  double bounds[6];
+  imageTexture->GetBounds(bounds);
+  //printf("bounds: %f %f %f %f %f %f\n", bounds[0],bounds[1],bounds[2],bounds[3],bounds[4],bounds[5]);
+
+  double screenWidth = this->viewWidth();
+  double screenHeight = this->viewHeight();
+  double xmargin = 5;
+  double ymargin = 5;
+
+  double width = bounds[1] - bounds[0];
+  double height = bounds[3] - bounds[2];
+  double x = 0 + xmargin;
+  double y = screenHeight - (height + ymargin);
+
+  rep->actor()->setTranslation(vesVector3f(x, y, 0));
+  rep->actor()->setIsOverlayActor(true);
+  rep->actor()->material()->setBinNumber(20);
+  return rep;
+}
+
 
 //----------------------------------------------------------------------------
 void vesKiwiViewerApp::initializeTextureShader()
@@ -910,6 +971,19 @@ void vesKiwiViewerApp::setTextureFromImage(vesTexture* texture, vtkImageData* im
 };
 
 //----------------------------------------------------------------------------
+void vesKiwiViewerApp::updateTextAnnotations()
+{
+  if (!this->Internal->TextRepresentation) {
+    return;
+  }
+
+  vesVector3f worldPoint(34.3, 23.7, 0);
+  vesVector3f displayPoint = this->Internal->Renderer->computeWorldToDisplay(worldPoint);
+  displayPoint[2] = 0;
+  this->Internal->TextRepresentation->actor()->setTranslation(displayPoint);
+}
+
+//----------------------------------------------------------------------------
 bool vesKiwiViewerApp::loadDataset(const std::string& filename)
 {
   vtkSmartPointer<vtkDataSet> dataSet = this->Internal->DataLoader.loadDataset(filename);
@@ -919,6 +993,11 @@ bool vesKiwiViewerApp::loadDataset(const std::string& filename)
 
   this->removeAllDataRepresentations();
   this->addRepresentationsForDataSet(dataSet);
+
+  if (filename.find("teapot.vtp") != std::string::npos) { 
+    this->Internal->TextRepresentation = this->addTextRepresentation("this is a teapot");
+  }
+
   return true;
 }
 

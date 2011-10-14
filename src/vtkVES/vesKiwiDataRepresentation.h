@@ -51,12 +51,13 @@ public:
   vesTexture* texture() const;
 
   // todo:
-  // move this back to protected
+  // move these back to protected.  This class should provide public api so that
+  // the vesActor and vesMapper can remain implementation details that callers do
+  // not have to access.
   vesMapper* mapper() const;
+  vesActor* actor() const;
 
 protected:
-
-  vesActor* actor() const;
 
 
 private:

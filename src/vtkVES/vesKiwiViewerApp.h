@@ -105,9 +105,12 @@ protected:
   void removeAllDataRepresentations();
   void addRepresentationsForDataSet(vtkDataSet* dataSet);
   vesKiwiDataRepresentation* addPolyDataRepresentation(vtkPolyData* dataSet, vesShaderProgram* program);
+  vesKiwiDataRepresentation* addTextRepresentation(const std::string& text);
+  void updateTextAnnotations();
 
   vesTexture* newTextureFromImage(vtkImageData* image);
   void setTextureFromImage(vesTexture* texture, vtkImageData* image);
+
 
 
 private:
