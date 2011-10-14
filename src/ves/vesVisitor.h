@@ -68,12 +68,14 @@ public:
 
   inline void traverse(vesActor& actor)
   {
-      if (m_traversalMode == TraverseParents) {
-        actor.ascend(*this);
-      }
-      else if (m_traversalMode != TraverseNone) {
-        actor.traverse(*this);
-      }
+    std::cout << "traversing " << std::endl;
+
+    if (m_traversalMode == TraverseParents) {
+      actor.ascend(*this);
+    }
+    else if (m_traversalMode != TraverseNone) {
+      actor.traverse(*this);
+    }
   }
 
   virtual void visit(vesActor  &actor);

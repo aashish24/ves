@@ -78,6 +78,12 @@ void vesTexture::setImageData(SFImage image)
 }
 
 
+void vesTexture::setTextureUnit(unsigned int unit)
+{
+  this->m_textureUnit = unit;
+}
+
+
 void vesTexture::setup(const vesRenderState &renderState)
 {
   if (this->dirtyState()) {

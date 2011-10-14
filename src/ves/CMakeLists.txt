@@ -14,7 +14,9 @@ set(sources
   vesMultitouchCamera.cpp
   vesMultitouchWidget.cpp
   vesMultitouchSensorNode.cpp
+  vesFBORenderTarget.cpp
   vesRenderer.cpp
+  vesRenderToTexture.cpp
   vesShader.cpp
   vesTexture.cpp
   vesShaderProgram.cpp

@@ -40,13 +40,32 @@ public:
 
   void setImageData(SFImage image);
 
-  void setTextureUnit(const unsigned int &unit);
+  void setTextureUnit(unsigned int unit);
   unsigned int textureUnit()       { return this->m_textureUnit; }
   unsigned int textureUnit() const { return this->m_textureUnit; }
+
+  void setWidth(int width);
+  int  width()       { return this->m_width; }
+  int  width() const { return this->m_width; }
+
+  void setHeight(int height);
+  int  height()       { return this->m_height; }
+  int  height() const { return this->m_height; }
+
+  void setDepth(int depth);
+  int  depth()       { return this->m_depth; }
+  int  depth() const { return this->m_depth; }
+
+  unsigned int textureHandle()        { return this->m_textureHandle; }
+  unsigned int textureHandle() const  { return this->m_textureHandle; }
 
 protected:
 
   SFImage      m_image;
+
+  int          m_width;
+  int          m_height;
+  int          m_depth;
 
   unsigned int m_textureHandle;
   unsigned int m_textureUnit;

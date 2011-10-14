@@ -61,7 +61,7 @@ void vesActor::updateBounds(vesActor *child)
   min = transformPoint3f(this->eval(), min);
   max = transformPoint3f(this->eval(), max);
 
-  (const_cast<vesActor*>(child))->setBounds(min, max);
+  child->setBounds(min, max);
 
   if (!this->m_mapper) {
     this->setBounds(min, max);

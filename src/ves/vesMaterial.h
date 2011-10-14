@@ -21,12 +21,14 @@
 #ifndef VESMATERIAL_H
 #define VESMATERIAL_H
 
+#include "vesObject.h"
+
 // Forward declarations
 class vesRenderData;
 class vesRenderState;
 class vesShaderProgram;
 
-class vesMaterialAttribute
+class vesMaterialAttribute : public vesObject
 {
 public:
   enum AttributeType
@@ -47,8 +49,7 @@ public:
   };
 
 
-  vesMaterialAttribute() :
-    m_dirtyState(true),
+  vesMaterialAttribute() : vesObject(),
     m_type      (Undefined),
     m_binding   (BindMinimal)
   {
@@ -58,14 +59,6 @@ public:
   virtual ~vesMaterialAttribute()
   {
   }
-
-
-  void        setDirty(const bool &value)
-                                    { this->m_dirtyState = value; }
-  void        setDirtyStateOn()     { this->setDirty(true); }
-  void        setDirtyStateOff()    { this->setDirty(false); }
-  bool        dirtyState()          { return this->m_dirtyState; }
-  const bool& dirtyState() const    { return this->m_dirtyState; }
 
   bool          setType(AttributeType type)
                              { this->m_type = type; return true; }
@@ -95,7 +88,6 @@ public:
 
 protected:
 
-  bool              m_dirtyState;
   AttributeType     m_type;
   AttributeBinding  m_binding;
 };
