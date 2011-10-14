@@ -78,6 +78,49 @@ std::string copyAssetToExternalStorage(std::string filename)
   return destFilename;
 }
 
+
+bool  interialMotionEnabled;
+double lastMovementXYUnitDeltaX;
+double lastMovementXYUnitDeltaY;
+double lastRotationMotionNorm;
+
+//----------------------------------------------------------------------------
+void stopInertialMotion()
+{
+  interialMotionEnabled = false;
+}
+
+
+//----------------------------------------------------------------------------
+void startInertialMotion()
+{
+  interialMotionEnabled = true;
+}
+
+//----------------------------------------------------------------------------
+void updateInertialMotion()
+{
+  if (!interialMotionEnabled) {
+    return;
+  }
+
+  double deltaX;
+  double deltaY;
+
+  if (lastRotationMotionNorm > 0.5) {
+
+    deltaX = lastRotationMotionNorm*lastMovementXYUnitDeltaX;
+    deltaY = lastRotationMotionNorm*lastMovementXYUnitDeltaY;
+
+    app->handleSingleTouchPanGesture(deltaX, deltaY);
+    lastRotationMotionNorm *= 0.9;
+    }
+  else {
+    lastRotationMotionNorm = 0;
+    stopInertialMotion();
+  }
+}
+
 //----------------------------------------------------------------------------
 void loadDataset(int index)
 {
@@ -136,6 +179,11 @@ bool setupGraphics(int w, int h)
   app->resizeView(w, h);
   app->resetView();
 
+  interialMotionEnabled = false;
+  lastMovementXYUnitDeltaX = 0;
+  lastMovementXYUnitDeltaY = 0;
+  lastRotationMotionNorm = 0;
+
   return true;
 }
 
@@ -173,21 +221,42 @@ JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_reshape(JNIEnv * e
 
 JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_handleSingleTouchPanGesture(JNIEnv * env, jobject obj,  jfloat dx, jfloat dy)
 {
+  stopInertialMotion();
+
+  // update data for inertial rotation
+  lastRotationMotionNorm = sqrtf(dx*dx + dy*dy);
+  if (lastRotationMotionNorm > 0)
+    {
+    lastMovementXYUnitDeltaX = dx / lastRotationMotionNorm;
+    lastMovementXYUnitDeltaY = dy / lastRotationMotionNorm;
+    }
+  else
+    {
+    lastMovementXYUnitDeltaX = 0.0f;
+    lastMovementXYUnitDeltaY = 0.0f;
+    }
+
   app->handleSingleTouchPanGesture(dx, dy);
 }
 
 JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_handleTwoTouchPanGesture(JNIEnv * env, jobject obj,  jfloat x0, jfloat y0, jfloat x1, jfloat y1)
 {
+  stopInertialMotion();
+
   app->handleTwoTouchPanGesture(x0, y0, x1, y1);
 }
 
 JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_handleTwoTouchPinchGesture(JNIEnv * env, jobject obj,  jfloat scale)
 {
+  stopInertialMotion();
+
   app->handleTwoTouchPinchGesture(scale);
 }
 
 JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_handleTwoTouchRotationGesture(JNIEnv * env, jobject obj,  jfloat rotation)
 {
+  stopInertialMotion();
+
   app->handleTwoTouchRotationGesture(rotation);
 }
 
@@ -198,21 +267,31 @@ JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_handleSingleTouchD
 
 JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_handleSingleTouchUp(JNIEnv * env, jobject obj)
 {
+  if (!app->scrollSliceModeActive()) {
+    startInertialMotion();
+  }
+  else {
+    stopInertialMotion();
+  }
   app->handleSingleTouchUp();
 }
 
 JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_render(JNIEnv * env, jobject obj)
 {
+  updateInertialMotion();
+
   app->render();
 }
 
 JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_resetCamera(JNIEnv * env, jobject obj)
 {
+  stopInertialMotion();
   app->resetView();
 }
 
 JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_loadNextDataset(JNIEnv * env, jobject obj)
 {
+  stopInertialMotion();
   loadNextDataset();
 }
 
