@@ -60,13 +60,14 @@ public:
   bool                   SetRenderTarget(vesRenderTarget *renderTarget);
   vesRenderTarget*       RenderTarget();
   const vesRenderTarget* RenderTarget() const;
+  vesRenderTarget*       LastRenderTarget();
 
 
 private:
   void ComputeDistance();
   void ComputeViewPlaneNormal();
 
-
+  // \todo: Move all this to internal.
   float         ViewAngle;
   bool          UseHorizontalViewAngle;
   vesVector3f   ViewPlaneNormal;
@@ -78,6 +79,7 @@ private:
   double        WindowCenter[2];
   bool          ParallelProjection;
 
+  vesRenderTarget *m_lastRenderTarget;
   vesRenderTarget *m_defaultRenderTarget;
   vesRenderTarget *m_renderTarget;
 };

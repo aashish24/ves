@@ -40,6 +40,7 @@ protected:
 
   void setup (vesRenderState &renderState);
   void render(vesRenderState &renderState);
+  void remove(vesRenderState &renderState);
 };
 
 

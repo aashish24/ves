@@ -57,6 +57,7 @@ public:
 
   virtual void setup (vesRenderState &renderState){}
   virtual void render(vesRenderState &renderState){}
+  virtual void remove(vesRenderState &renderState){}
 
 
  protected:

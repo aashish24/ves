@@ -272,7 +272,13 @@ void vesCamera::ComputeViewPlaneNormal()
 
 bool vesCamera::SetRenderTarget(vesRenderTarget *renderTarget)
 {
-  if (!renderTarget || renderTarget == this->m_renderTarget) {
+  // If none is given, use the default.
+  if (!renderTarget) {
+    this->m_lastRenderTarget = this->m_renderTarget;
+    this->m_renderTarget = this->m_defaultRenderTarget;
+  }
+
+  if (renderTarget == this->m_renderTarget) {
     return false;
   }
 
@@ -291,4 +297,10 @@ vesRenderTarget* vesCamera::RenderTarget()
 const vesRenderTarget* vesCamera::RenderTarget() const
 {
   return this->m_renderTarget;
+}
+
+
+vesRenderTarget* vesCamera::LastRenderTarget()
+{
+  return this->m_lastRenderTarget;
 }

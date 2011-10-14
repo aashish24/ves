@@ -122,14 +122,15 @@ void vesRenderToTexture::render(vesRenderState &renderState)
 {
   assert(this->m_internal->m_renderBuffersHandle.empty());
 
+  // Call setup in case we have not done so already.
   this->setup(renderState);
 
-  glBindRenderbuffer(GL_RENDERBUFFER, this->m_internal->m_frameBufferHandle);
-
-  vesFBORenderTarget::vesInternal::BufferAttachmentMap::iterator itr =
-    this->m_internal->m_bufferAttachmentMap.begin();
-
-  glBindRenderbuffer(GL_RENDERBUFFER, this->m_internal->m_renderBuffersHandle.back());
-
-  glBindTexture(GL_TEXTURE_2D, itr->second.m_texture->textureHandle());
+  glBindFramebuffer(GL_FRAMEBUFFER, this->m_internal->m_frameBufferHandle);
 }
+
+
+void vesRenderToTexture::remove(vesRenderState &renderState)
+{
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
