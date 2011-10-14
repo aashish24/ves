@@ -27,6 +27,8 @@
 #include <vesKiwiViewerApp.h>
 
 #include <vtksys/SystemTools.hxx>
+#include <vtkTimerLog.h>
+
 #include <cassert>
 #include <fstream>
 
@@ -45,6 +47,9 @@ namespace {
 vesKiwiViewerApp* app;
 std::string storageDir;
 AAssetManager* assetManager;
+
+int fpsFrames;
+double fpsT0;
 
 //----------------------------------------------------------------------------
 std::string copyAssetToExternalStorage(std::string filename)
@@ -179,6 +184,10 @@ bool setupGraphics(int w, int h)
   app->resizeView(w, h);
   app->resetView();
 
+
+  fpsFrames = 0;
+  fpsT0 = vtkTimerLog::GetUniversalTime();
+
   interialMotionEnabled = false;
   lastMovementXYUnitDeltaX = 0;
   lastMovementXYUnitDeltaY = 0;
@@ -278,9 +287,19 @@ JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_handleSingleTouchU
 
 JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_render(JNIEnv * env, jobject obj)
 {
+  double currentTime = vtkTimerLog::GetUniversalTime();
+  double dt = currentTime - fpsT0;
+  if (dt > 1.0) {
+    LOGI("fps: %f", fpsFrames/dt);
+    fpsFrames = 0;
+    fpsT0 = currentTime;
+  }
+
   updateInertialMotion();
 
   app->render();
+
+  fpsFrames++;
 }
 
 JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_resetCamera(JNIEnv * env, jobject obj)
