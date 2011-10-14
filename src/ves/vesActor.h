@@ -110,7 +110,7 @@ public:
 
 protected:
 
-  virtual void updateBounds(const vesActor *child);
+  virtual void updateBounds(vesActor *child);
   virtual void computeBounds();
 
   bool                  m_sensor;
