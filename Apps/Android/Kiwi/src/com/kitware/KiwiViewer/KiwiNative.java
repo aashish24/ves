@@ -30,7 +30,12 @@ public class KiwiNative {
 
      public static native void init(int width, int height);
      public static native void reshape(int width, int height);
-     public static native void rotateCamera(float dx, float dy);
+     public static native void handleSingleTouchPanGesture(float dx, float dy);
+     public static native void handleTwoTouchPanGesture(float x0, float y0, float x1, float y1);
+     public static native void handleTwoTouchPinchGesture(float scale);
+     public static native void handleTwoTouchRotationGesture(float rotation);
+     public static native void handleSingleTouchUp();
+     public static native void handleSingleTouchDown(float x, float y);
      public static native void render();
      public static native void resetCamera();
      public static native void loadNextDataset();

@@ -22,19 +22,17 @@ package com.kitware.KiwiViewer;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.WindowManager;
 
 import android.content.res.AssetManager;
 
 import android.view.View;
+import android.view.Gravity;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Button;
-
-import java.io.File;
-
 
 public class KiwiViewerActivity extends Activity {
 
@@ -43,7 +41,7 @@ public class KiwiViewerActivity extends Activity {
 
     LinearLayout mRootLayout;
     LinearLayout mButtonLayout;
-    TextView  mTextView;
+
     Button  mLoadButton;
     Button  mResetViewButton;
 
@@ -56,16 +54,14 @@ public class KiwiViewerActivity extends Activity {
       mView = new KiwiGLSurfaceView(getApplication());
 
       assetManager = getAssets();
-      KiwiNative.loadAssets(assetManager, "not-used");
+      String storageDir = Environment.getExternalStorageDirectory().getAbsolutePath();
+      KiwiNative.loadAssets(assetManager, storageDir);
 
       mRootLayout = new LinearLayout(this);
       mRootLayout.setOrientation(LinearLayout.VERTICAL);
       mRootLayout.setLayoutParams(new LayoutParams(
                               LayoutParams.MATCH_PARENT,
                               LayoutParams.MATCH_PARENT));
-
-      mTextView = new TextView(this);
-      mTextView.setText("KiwiViewer");
 
 
       mButtonLayout = new LinearLayout(this);
@@ -82,6 +78,8 @@ public class KiwiViewerActivity extends Activity {
 
       mLoadButton.setOnClickListener(new Button.OnClickListener() {
           public void onClick(View v) {
+              // todo- maybe check storage state first?
+              // Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)
               mView.loadNextDataset();
           }
       });
@@ -94,11 +92,14 @@ public class KiwiViewerActivity extends Activity {
 
       mButtonLayout.addView(mResetViewButton);
       mButtonLayout.addView(mLoadButton);
+      mButtonLayout.setGravity(Gravity.RIGHT);
 
-      mRootLayout.addView(mTextView);
-      mRootLayout.addView(mButtonLayout);
-      mRootLayout.addView(mView);
-      setContentView(mRootLayout);
+      this.addContentView(mView, new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
+
+      LinearLayout ll = new LinearLayout(this);
+      ll.addView(mButtonLayout);
+      ll.setGravity(Gravity.RIGHT | Gravity.BOTTOM);
+      this.addContentView(ll, new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
 
     }
 

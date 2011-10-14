@@ -26,6 +26,9 @@
 
 #include <vesKiwiViewerApp.h>
 
+#include <vtksys/SystemTools.hxx>
+#include <vtkTimerLog.h>
+
 #include <cassert>
 #include <fstream>
 
@@ -42,24 +45,35 @@ namespace {
 
 //----------------------------------------------------------------------------
 vesKiwiViewerApp* app;
+std::string storageDir;
 AAssetManager* assetManager;
+
+int fpsFrames;
+double fpsT0;
 
 //----------------------------------------------------------------------------
 std::string copyAssetToExternalStorage(std::string filename)
 {
-  // Copy file from assets to /sdcard/KiwiViewer
+  std::string destDirectory = storageDir + "/KiwiViewer";
+  std::string destFilename = destDirectory + "/" + filename;
+
+  if (vtksys::SystemTools::FileExists(destFilename.c_str())) {
+    return destFilename;
+  }
+
+  vtksys::SystemTools::MakeDirectory(destDirectory.c_str());
 
   LOGI("Reading asset file: %s", filename.c_str());
   AAsset* asset = AAssetManager_open(assetManager, filename.c_str(), AASSET_MODE_UNKNOWN);
   if (asset == NULL) {
       LOGE("Could not open asset: %s", filename.c_str());
-      return 0;
+      return std::string();
   }
+
   off_t len = AAsset_getLength(asset);
   const char* input_string = static_cast<const char*>(AAsset_getBuffer(asset));
-  LOGI("Asset file is %u bytes", len);
+  //LOGI("Asset file is %u bytes", len);
 
-  std::string destFilename = "/sdcard/KiwiViewer/" + filename;
   LOGI("Writing to destination file: %s", destFilename.c_str());
   std::ofstream outfile(destFilename.c_str(), std::ofstream::binary);
   outfile.write(input_string, len);
@@ -67,6 +81,49 @@ std::string copyAssetToExternalStorage(std::string filename)
   AAsset_close(asset);
 
   return destFilename;
+}
+
+
+bool  interialMotionEnabled;
+double lastMovementXYUnitDeltaX;
+double lastMovementXYUnitDeltaY;
+double lastRotationMotionNorm;
+
+//----------------------------------------------------------------------------
+void stopInertialMotion()
+{
+  interialMotionEnabled = false;
+}
+
+
+//----------------------------------------------------------------------------
+void startInertialMotion()
+{
+  interialMotionEnabled = true;
+}
+
+//----------------------------------------------------------------------------
+void updateInertialMotion()
+{
+  if (!interialMotionEnabled) {
+    return;
+  }
+
+  double deltaX;
+  double deltaY;
+
+  if (lastRotationMotionNorm > 0.5) {
+
+    deltaX = lastRotationMotionNorm*lastMovementXYUnitDeltaX;
+    deltaY = lastRotationMotionNorm*lastMovementXYUnitDeltaY;
+
+    app->handleSingleTouchPanGesture(deltaX, deltaY);
+    lastRotationMotionNorm *= 0.9;
+    }
+  else {
+    lastRotationMotionNorm = 0;
+    stopInertialMotion();
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -103,6 +160,10 @@ std::string getContentsOfAssetFile(const std::string filename)
 //----------------------------------------------------------------------------
 bool setupGraphics(int w, int h)
 {
+  if (app) {
+    return true;
+  }
+
   // Pipe VTK messages into the android log
   vtkAndroidOutputWindow::Install();
 
@@ -127,6 +188,15 @@ bool setupGraphics(int w, int h)
   app->resizeView(w, h);
   app->resetView();
 
+
+  fpsFrames = 0;
+  fpsT0 = vtkTimerLog::GetUniversalTime();
+
+  interialMotionEnabled = false;
+  lastMovementXYUnitDeltaX = 0;
+  lastMovementXYUnitDeltaY = 0;
+  lastRotationMotionNorm = 0;
+
   return true;
 }
 
@@ -138,7 +208,12 @@ bool setupGraphics(int w, int h)
 extern "C" {
   JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_init(JNIEnv * env, jobject obj,  jint width, jint height);
   JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_reshape(JNIEnv * env, jobject obj,  jint width, jint height);
-  JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_rotateCamera(JNIEnv * env, jobject obj,  jfloat dx, jfloat dy);
+  JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_handleSingleTouchPanGesture(JNIEnv * env, jobject obj,  jfloat dx, jfloat dy);
+  JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_handleTwoTouchPanGesture(JNIEnv * env, jobject obj,  jfloat x0, jfloat y0, jfloat x1, jfloat y1);
+  JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_handleTwoTouchPinchGesture(JNIEnv * env, jobject obj,  jfloat scale);
+  JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_handleTwoTouchRotationGesture(JNIEnv * env, jobject obj,  jfloat rotation);
+  JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_handleSingleTouchDown(JNIEnv * env, jobject obj,  jfloat x, jfloat y);
+  JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_handleSingleTouchUp(JNIEnv * env, jobject obj);
   JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_render(JNIEnv * env, jobject obj);
   JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_resetCamera(JNIEnv * env, jobject obj);
   JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_loadNextDataset(JNIEnv * env, jobject obj);
@@ -157,39 +232,100 @@ JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_reshape(JNIEnv * e
   app->resizeView(width, height);
 }
 
-JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_rotateCamera(JNIEnv * env, jobject obj,  jfloat dx, jfloat dy)
+JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_handleSingleTouchPanGesture(JNIEnv * env, jobject obj,  jfloat dx, jfloat dy)
 {
+  stopInertialMotion();
+
+  // update data for inertial rotation
+  lastRotationMotionNorm = sqrtf(dx*dx + dy*dy);
+  if (lastRotationMotionNorm > 0)
+    {
+    lastMovementXYUnitDeltaX = dx / lastRotationMotionNorm;
+    lastMovementXYUnitDeltaY = dy / lastRotationMotionNorm;
+    }
+  else
+    {
+    lastMovementXYUnitDeltaX = 0.0f;
+    lastMovementXYUnitDeltaY = 0.0f;
+    }
+
   app->handleSingleTouchPanGesture(dx, dy);
+}
+
+JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_handleTwoTouchPanGesture(JNIEnv * env, jobject obj,  jfloat x0, jfloat y0, jfloat x1, jfloat y1)
+{
+  stopInertialMotion();
+
+  app->handleTwoTouchPanGesture(x0, y0, x1, y1);
+}
+
+JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_handleTwoTouchPinchGesture(JNIEnv * env, jobject obj,  jfloat scale)
+{
+  stopInertialMotion();
+
+  app->handleTwoTouchPinchGesture(scale);
+}
+
+JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_handleTwoTouchRotationGesture(JNIEnv * env, jobject obj,  jfloat rotation)
+{
+  stopInertialMotion();
+
+  app->handleTwoTouchRotationGesture(rotation);
+}
+
+JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_handleSingleTouchDown(JNIEnv * env, jobject obj,  jfloat x, jfloat y)
+{
+  app->handleSingleTouchDown(x, y);
+}
+
+JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_handleSingleTouchUp(JNIEnv * env, jobject obj)
+{
+  if (!app->scrollSliceModeActive()) {
+    startInertialMotion();
+  }
+  else {
+    stopInertialMotion();
+  }
+  app->handleSingleTouchUp();
 }
 
 JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_render(JNIEnv * env, jobject obj)
 {
+  double currentTime = vtkTimerLog::GetUniversalTime();
+  double dt = currentTime - fpsT0;
+  if (dt > 1.0) {
+    LOGI("fps: %f", fpsFrames/dt);
+    fpsFrames = 0;
+    fpsT0 = currentTime;
+  }
+
+  updateInertialMotion();
+
   app->render();
+
+  fpsFrames++;
 }
 
 JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_resetCamera(JNIEnv * env, jobject obj)
 {
+  stopInertialMotion();
   app->resetView();
 }
 
 JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_loadNextDataset(JNIEnv * env, jobject obj)
 {
+  stopInertialMotion();
   loadNextDataset();
 }
 
 JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_loadAssets(JNIEnv* env, jclass obj,
         jobject assetManagerJava, jstring filename)
 {
-  LOGI("loadAssets");
-
-  // TODO
-  // pass sdcard mount location to this method.  For now, we assume /sdcard.
-  // convert Java string to UTF-8
-  //const char *utf8 = env->GetStringUTFChars(filename, NULL);
-  //assert(NULL != utf8);
-  //env->ReleaseStringUTFChars(filename, utf8);
-
-  // store pointer to assetManager for later use
   assetManager = AAssetManager_fromJava(env, assetManagerJava);
   assert(assetManager != NULL);
+
+  const char *javaStr = env->GetStringUTFChars(filename, NULL);
+  storageDir = javaStr;
+  env->ReleaseStringUTFChars(filename, javaStr);
+  LOGI("Using external storage directory %s", storageDir.c_str());
 }
