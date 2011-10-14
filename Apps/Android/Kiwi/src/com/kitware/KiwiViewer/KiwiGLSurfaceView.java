@@ -35,6 +35,10 @@
 
 package com.kitware.KiwiViewer;
 
+import org.metalev.multitouch.controller.MultiTouchController;
+import org.metalev.multitouch.controller.MultiTouchController.MultiTouchObjectCanvas;
+import org.metalev.multitouch.controller.MultiTouchController.PointInfo;
+import org.metalev.multitouch.controller.MultiTouchController.PositionAndScale;
 
 import android.content.Context;
 import android.graphics.PixelFormat;
@@ -51,14 +55,44 @@ import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.opengles.GL10;
 
 
-class KiwiGLSurfaceView extends GLSurfaceView {
+class KiwiGLSurfaceView extends GLSurfaceView implements MultiTouchObjectCanvas<KiwiGLSurfaceView> {
     private static String TAG = "KiwiViewer";
     private static final boolean DEBUG = false;
 
-    private VersionedGestureDetector mDetector;
-    private float mScaleFactor = 1.f;
-
     private MyRenderer mRenderer;
+
+    private MultiTouchController<KiwiGLSurfaceView> multiTouchController = new MultiTouchController<KiwiGLSurfaceView>(this);
+
+    private PointInfo mLastTouchInfo = null;
+    private PointInfo mCurrentTouchInfo = new PointInfo();
+
+
+    public class MyRunnable implements Runnable {
+
+      public float dx, dy, x0, y0, x1, y1, scale, angle;
+      public boolean isMulti;
+
+      public void run() {
+
+        if (isMulti) {
+          KiwiNative.handleTwoTouchPanGesture(x0, y0, x1, y1);
+        }
+        else {
+          KiwiNative.handleSingleTouchPanGesture(dx, dy);
+        }
+
+        if (isMulti && scale != 1.0f) {
+          KiwiNative.handleTwoTouchPinchGesture(scale);
+        }
+
+        if (isMulti && angle != 0.0f) {
+          KiwiNative.handleTwoTouchRotationGesture(angle);
+        }
+
+        requestRender();
+      }
+
+    }
 
 
     public KiwiGLSurfaceView(Context context) {
@@ -67,20 +101,108 @@ class KiwiGLSurfaceView extends GLSurfaceView {
       // requires api level 11
       //setPreserveEGLContextOnPause(true);
 
-      mDetector = VersionedGestureDetector.newInstance(context, new GestureCallback());
       init(true, 8, 0);
     }
 
 
     @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        mDetector.onTouchEvent(ev);
-        return true;
+    public boolean onTouchEvent(MotionEvent event) {
+      return multiTouchController.onTouchEvent(event);
     }
 
+
+    public void selectObject(KiwiGLSurfaceView obj, PointInfo touchPoint) {
+
+      if (obj == null) {
+        this.queueEvent(new Runnable() {
+                 public void run() {
+                    mRenderer.handleSingleTouchUp();
+                    requestRender();
+                 }});
+      }
+    }
+
+
+    public KiwiGLSurfaceView getDraggableObjectAtPoint(PointInfo touchPoint) {
+
+      final float x = touchPoint.getX();
+      final float y = touchPoint.getY();
+
+      this.queueEvent(new Runnable() {
+                 public void run() {
+                    mRenderer.handleSingleTouchDown(x, y);
+                    requestRender();
+                 }});
+
+      return this;
+    }
+
+
+    public void getPositionAndScale(KiwiGLSurfaceView obj, PositionAndScale pos) {
+
+      float xOff = 0.0f;
+      float yOff = 0.0f;
+      float scale = 1.0f;
+      float scaleX = 1.0f;
+      float scaleY = 1.0f;
+      float angle = 0.0f;
+      boolean updateScale = true;
+      boolean updateAngle = true;
+      boolean updateScaleXY = false;
+
+      pos.set(xOff, yOff, updateScale, scale, updateScaleXY, scaleX, scaleY, updateAngle, angle);
+
+      this.mLastTouchInfo = null;
+    }
+
+
+    public boolean setPositionAndScale(KiwiGLSurfaceView obj, PositionAndScale pos, PointInfo info) {
+
+      if (this.mLastTouchInfo == null) {
+        this.mLastTouchInfo = new PointInfo();
+        this.mLastTouchInfo.set(info);
+        return true;
+      }
+
+      this.mCurrentTouchInfo.set(info);
+
+      boolean isMulti = mLastTouchInfo.isMultiTouch();
+
+      float dx = mCurrentTouchInfo.getX() - mLastTouchInfo.getX();
+      float dy = mCurrentTouchInfo.getY() - mLastTouchInfo.getY();
+      float x1 = mCurrentTouchInfo.getX();
+      float y1 = mCurrentTouchInfo.getY();
+      float x0 = x1 - dx;
+      float y0 = y1 + dy;
+      float scale = 1.0f;
+      float angle = 0.0f;
+
+      if (isMulti && mLastTouchInfo.getMultiTouchDiameter() != 0.0f) {
+        scale = mCurrentTouchInfo.getMultiTouchDiameter() / mLastTouchInfo.getMultiTouchDiameter();
+      }
+
+      if (isMulti) {
+        angle = mCurrentTouchInfo.getMultiTouchAngle() - mLastTouchInfo.getMultiTouchAngle();
+      }
+
+      MyRunnable myrun = new MyRunnable();
+      myrun.dx = dx;
+      myrun.dy = dy;
+      myrun.x0 = x0;
+      myrun.y0 = y0;
+      myrun.x1 = x1;
+      myrun.y1 = y1;
+      myrun.scale = scale;
+      myrun.angle = angle;
+      myrun.isMulti = isMulti;
+      this.queueEvent(myrun);
+
+      mLastTouchInfo.set(mCurrentTouchInfo);
+      return true;
+    }
+
+
     public void loadNextDataset() {
-
-
       queueEvent(new Runnable() {
                  public void run() {
                     mRenderer.loadNextDataset();
@@ -91,34 +213,11 @@ class KiwiGLSurfaceView extends GLSurfaceView {
 
 
     public void resetCamera() {
-
-
       queueEvent(new Runnable() {
-                 public void run() {
-                    mRenderer.resetCamera();
-                    requestRender();
-                 }});
-    }
-
-
-    private class GestureCallback implements VersionedGestureDetector.OnGestureListener {
-        public void onDrag(float dx, float dy) {
-
-            //Log.i("KiwiViewer", String.format("Drag: [%f, %f])", dx, dy));
-            mRenderer.mPosX += dx;
-            mRenderer.mPosY += dy;
-
-            requestRender();
-
-        }
-
-        public void onScale(float scaleFactor) {
-            mScaleFactor *= scaleFactor;
-
-            // Don't let the object get too small or too large.
-            mScaleFactor = Math.max(0.1f, Math.min(mScaleFactor, 5.0f));
-
-        }
+                   public void run() {
+                      mRenderer.resetCamera();
+                      requestRender();
+                   }});
     }
 
 
@@ -151,7 +250,7 @@ class KiwiGLSurfaceView extends GLSurfaceView {
         /* Set the renderer responsible for frame rendering */
         mRenderer = new MyRenderer();
         setRenderer(mRenderer);
-        setRenderMode(RENDERMODE_WHEN_DIRTY);
+        //setRenderMode(RENDERMODE_WHEN_DIRTY);
     }
 
     private static class ContextFactory implements GLSurfaceView.EGLContextFactory {
@@ -378,11 +477,16 @@ class KiwiGLSurfaceView extends GLSurfaceView {
 
 class MyRenderer implements GLSurfaceView.Renderer {
 
-  public float mPosX;
-  public float mPosY;
-
   public void loadNextDataset() {
     KiwiNative.loadNextDataset();
+  }
+
+  public void handleSingleTouchUp() {
+    KiwiNative.handleSingleTouchUp();
+  }
+
+  public void handleSingleTouchDown(float x, float y) {
+    KiwiNative.handleSingleTouchDown(x, y);
   }
 
   public void resetCamera() {
@@ -390,23 +494,15 @@ class MyRenderer implements GLSurfaceView.Renderer {
   }
 
   public void onDrawFrame(GL10 gl) {
-
-      //Log.i(TAG, String.format("render"));
-      KiwiNative.rotateCamera(mPosX, mPosY);
-      mPosX = 0;
-      mPosY = 0;
       KiwiNative.render();
   }
 
   public void onSurfaceChanged(GL10 gl, int width, int height) {
-
-      Log.i("KiwiViewer", String.format("onSurfaceChanged %d %d", width, height));
-
       KiwiNative.reshape(width, height);
   }
 
   public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-      KiwiNative.init(100,100);
+      KiwiNative.init(100, 100);
   }
 }
 
