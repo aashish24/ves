@@ -56,10 +56,18 @@ void vesCullVisitor::visit(vesActor &actor)
 {
   this->pushModelViewMatrix(actor.modelViewMatrix());
 
-  // \todo: We could do some optimization here.
-  this->addGeometryAndStates(actor.mapper(), actor.material(),
-                             this->modelViewMatrix(), this->projectionMatrix(),
-                             1);
+   if (actor.isOverlayActor()) {
+    this->addGeometryAndStates(actor.mapper(), actor.material(),
+                               actor.modelViewMatrix(),  this->projection2DMatrix(),
+                               1);
+  }
+  else {
+
+    // \todo: We could do some optimization here.
+    this->addGeometryAndStates(actor.mapper(), actor.material(),
+                               this->modelViewMatrix(), this->projectionMatrix(),
+                               1);
+  }
 
   this->vesVisitor::visit(actor);
 

@@ -361,6 +361,9 @@ void vesRenderer::cullTraverseScene()
   vesMatrix4x4f viewMatrix =
     this->m_camera->ComputeViewTransform();
 
+  vesMatrix4x4f projection2DMatrix = vesOrtho(0, this->width(), 0, this->height(), -1, 1);
+  cullVisitor.setProjection2DMatrix(projection2DMatrix);
+
   cullVisitor.pushProjectionMatrix(projectionMatrix);
   cullVisitor.pushModelViewMatrix(viewMatrix);
   cullVisitor.setRenderStage(this->m_renderStage);
