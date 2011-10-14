@@ -9,6 +9,7 @@ include_directories("${VTK_SOURCE_DIR}/Filters/Core"
 set(sources
   vesKiwiDataLoader.cpp
   vesKiwiDataRepresentation.cpp
+  vesKiwiBaseApp.cpp
   vesKiwiViewerApp.cpp
   vtkPolyDataToTriangleData.cpp)
 

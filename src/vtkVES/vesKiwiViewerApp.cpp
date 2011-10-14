@@ -151,7 +151,6 @@ public:
 
   vesInternal()
   {
-    this->Renderer      = 0;
     this->ShaderProgram = 0;
     this->TextureShader = 0;
     this->SelectedImageDimension = -1;
@@ -163,13 +162,10 @@ public:
 
   ~vesInternal()
   {
-    delete this->Renderer;
-    delete this->ShaderProgram;
-    delete this->TextureShader;
+
   }
 
 
-  vesRenderer*      Renderer;
   vesShaderProgram* ShaderProgram;
   vesShaderProgram* TextureShader;
 
@@ -198,17 +194,6 @@ public:
   std::string CurrentShadingModel;
   std::vector<std::string> BuiltinShadingModels;
 
-  vesModelViewUniform         *ModelViewUniform;
-  vesProjectionUniform        *ProjectionUnifom;
-  vesNormalMatrixUniform      *NormalMatrixUniform;
-  vesColorUniform             *SolidColorUniform;
-
-  vesPositionVertexAttribute  *PositionVertexAttribute;
-  vesNormalVertexAttribute    *NormalVertexAttribute;
-  vesColorVertexAttribute     *ColorVertexAttribute;
-  vesTextureCoordinateVertexAttribute *TextureCoordinateVertexAttribute;
-
-
   vtkSmartPointer<vtkFreeTypeStringToImage> TextToImage;
   vesKiwiDataRepresentation* TextRepresentation;
 };
@@ -217,6 +202,7 @@ public:
 vesKiwiViewerApp::vesKiwiViewerApp()
 {
   this->Internal = new vesInternal();
+  this->setBackgroundColor(63/255.0, 96/255.0, 144/255.0);
 
   this->addBuiltinDataset("Sphere", "current.stl");
   this->addBuiltinDataset("Utah Teapot", "teapot.vtp");
@@ -241,19 +227,6 @@ vesKiwiViewerApp::~vesKiwiViewerApp()
 {
   this->removeAllDataRepresentations();
   delete this->Internal;
-}
-
-//----------------------------------------------------------------------------
-vesCamera* vesKiwiViewerApp::camera() const
-{
-  assert(this->Internal->Renderer);
-  return this->Internal->Renderer->camera();
-}
-
-//----------------------------------------------------------------------------
-vesRenderer* vesKiwiViewerApp::renderer() const
-{
-  return this->Internal->Renderer;
 }
 
 //----------------------------------------------------------------------------
@@ -302,73 +275,9 @@ void vesKiwiViewerApp::addBuiltinShadingModel(const std::string &name)
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiViewerApp::render()
+void vesKiwiViewerApp::willRender()
 {
-  // \Note: We have to call it every render call since the current
-  // implementation is not quite right in VES library.
-  this->setShadingModel(this->getCurrentShadingModel());
-
-  this->Internal->Renderer->resetCameraClippingRange();
   this->updateTextAnnotations();
-  this->Internal->Renderer->render();
-}
-
-//----------------------------------------------------------------------------
-void vesKiwiViewerApp::resizeView(int width, int height)
-{
-  this->Internal->Renderer->resize(width, height, 1.0f);
-  glViewport(0, 0, width, height);
-}
-
-//----------------------------------------------------------------------------
-void vesKiwiViewerApp::resetView()
-{
-  // this is just confusing...
-  // We want to set the direction to look from and view up
-  // then we want to dolly the camera so that the surface takes up
-  // a reasonable portion of the screen.
-  // the ResetCamera function will overwrite view up
-  // so we have to call things in this strange order.
-
-  //
-  // set direction to look from
-  vesRenderer* renderer = this->Internal->Renderer;
-
-  renderer->camera()->SetViewPlaneNormal(vesVector3f(0.0, 0.0, 1.0));
-
-  // dolly so that scene fits window
-  renderer->resetCamera();
-
-  // The current ResetCamera() method pulls the camera back further than
-  // required.  ResetCamera should be fixed.  Until then, perform a dolly
-  // with a scale factor of 1.5 (a magic number).
-  renderer->camera()->Dolly(1.5);
-
-  // now set the view plane normal
-  renderer->camera()->SetViewUp(vesVector3f(0.0, 1.0, 0.0));
-  renderer->camera()->OrthogonalizeViewUp();
-}
-
-//----------------------------------------------------------------------------
-void vesKiwiViewerApp::handleTwoTouchPanGesture(double x0, double y0, double x1, double y1)
-{
-  // calculate the focal depth so we'll know how far to move
-  vesRenderer* ren = this->Internal->Renderer;
-  vesCamera* camera = ren->camera();
-  vesVector3f viewFocus = camera->GetFocalPoint();
-  vesVector3f viewPoint = camera->GetPosition();
-  vesVector3f viewFocusDisplay = ren->computeWorldToDisplay(viewFocus);
-  float focalDepth = viewFocusDisplay[2];
-
-  // map change into world coordinates
-  vesVector3f oldPickPoint = ren->computeDisplayToWorld(vesVector3f(x0, y0, focalDepth));
-  vesVector3f newPickPoint = ren->computeDisplayToWorld(vesVector3f(x1, y1, focalDepth));
-  vesVector3f motionVector = oldPickPoint - newPickPoint;
-
-  vesVector3f newViewFocus = viewFocus + motionVector;
-  vesVector3f newViewPoint = viewPoint + motionVector;
-  camera->SetFocalPoint(newViewFocus);
-  camera->SetPosition(newViewPoint);
 }
 
 //----------------------------------------------------------------------------
@@ -386,7 +295,7 @@ void vesKiwiViewerApp::scrollImageSlice(double deltaX, double deltaY)
 
   deltaY *= -1;
 
-  vesRenderer* ren = this->Internal->Renderer;
+  vesRenderer* ren = this->renderer();
   vesCamera* camera = ren->camera();
   vesVector3f viewFocus = camera->GetFocalPoint();
   vesVector3f viewPoint = camera->GetPosition();
@@ -473,24 +382,7 @@ void vesKiwiViewerApp::handleSingleTouchPanGesture(double deltaX, double deltaY)
     return;
   }
 
-  //
-  // Rotate camera
-  // Based on vtkInteractionStyleTrackballCamera::Rotate().
-  //
-  vesRenderer* ren = this->Internal->Renderer;
-  vesCamera *camera = ren->camera();
-
-  double delta_elevation = -20.0 / ren->height();
-  double delta_azimuth   = -20.0 / ren->width();
-
-  double motionFactor = 10.0;
-
-  double rxf = deltaX * delta_azimuth * motionFactor;
-  double ryf = deltaY * delta_elevation * motionFactor;
-
-  camera->Azimuth(rxf);
-  camera->Elevation(ryf);
-  camera->OrthogonalizeViewUp();
+  this->Superclass::handleSingleTouchPanGesture(deltaX, deltaY);
 }
 
 
@@ -500,10 +392,10 @@ void vesKiwiViewerApp::handleDoubleTap()
   if (this->Internal->ContourRep) {
     this->Internal->ContourVis = (this->Internal->ContourVis + 1) % 3;
     if (this->Internal->ContourVis == 0) {
-      this->Internal->ContourRep->removeSelfFromRenderer(this->Internal->Renderer);
+      this->Internal->ContourRep->removeSelfFromRenderer(this->renderer());
     }
     else if (this->Internal->ContourVis == 1) {
-      this->Internal->ContourRep->addSelfToRenderer(this->Internal->Renderer);
+      this->Internal->ContourRep->addSelfToRenderer(this->renderer());
       this->Internal->ContourRep->mapper()->setColor(0.8, 0.8, 0.8, 0.3);
     }
     else {
@@ -526,7 +418,7 @@ void vesKiwiViewerApp::handleSingleTouchDown(int displayX, int displayY)
   }
 
   // calculate the focal depth so we'll know how far to move
-  vesRenderer* ren = this->Internal->Renderer;
+  vesRenderer* ren = this->renderer();
 
   // flip Y coordinate
   displayY = ren->height() - displayY;
@@ -576,20 +468,6 @@ void vesKiwiViewerApp::handleSingleTouchDown(int displayX, int displayY)
   else {
     this->Internal->SelectedImageDimension = -1;
   }
-}
-
-//----------------------------------------------------------------------------
-void vesKiwiViewerApp::handleTwoTouchPinchGesture(double scale)
-{
-  this->Internal->Renderer->camera()->Dolly(scale);
-}
-
-//----------------------------------------------------------------------------
-void vesKiwiViewerApp::handleTwoTouchRotationGesture(double rotation)
-{
-  vesCamera* camera = this->Internal->Renderer->camera();
-  camera->Roll(rotation * 180.0 / M_PI);
-  camera->OrthogonalizeViewUp();
 }
 
 //----------------------------------------------------------------------------
@@ -646,46 +524,19 @@ bool vesKiwiViewerApp::initializeShaderUniforms()
 //----------------------------------------------------------------------------
 bool vesKiwiViewerApp::initializeShaderProgram()
 {
-  this->Internal->ShaderProgram = new vesShaderProgram();
+  vesShaderProgram* shaderProgram = this->addShaderProgram(
+    this->Internal->VertexShaderSource, this->Internal->FragmentShaderSource);
 
-  this->Internal->ShaderProgram->addShader(
-    new vesShader(vesShader::Vertex, this->Internal->VertexShaderSource));
+  this->addModelViewMatrixUniform(shaderProgram);
+  this->addProjectionMatrixUniform(shaderProgram);
+  this->addNormalMatrixUniform(shaderProgram);
 
-  this->Internal->ShaderProgram->addShader(
-    new vesShader(vesShader::Fragment, this->Internal->FragmentShaderSource));
+  this->addVertexPositionAttribute(shaderProgram);
+  this->addVertexNormalAttribute(shaderProgram);
+  this->addVertexColorAttribute(shaderProgram);
+  this->addVertexTextureCoordinateAttribute(shaderProgram);
 
-
-  // \todo: Delete this during destructions.
-  this->Internal->ModelViewUniform    = new vesModelViewUniform();
-  this->Internal->ProjectionUnifom    = new vesProjectionUniform();
-  this->Internal->NormalMatrixUniform = new vesNormalMatrixUniform();
-
-  this->Internal->PositionVertexAttribute = new vesPositionVertexAttribute();
-  this->Internal->NormalVertexAttribute   = new vesNormalVertexAttribute();
-  this->Internal->ColorVertexAttribute    = new vesColorVertexAttribute();
-
-  this->Internal->ShaderProgram->addUniform(this->Internal->ModelViewUniform);
-  this->Internal->ShaderProgram->addUniform(this->Internal->ProjectionUnifom);
-  this->Internal->ShaderProgram->addUniform(this->Internal->NormalMatrixUniform);
-
-  this->Internal->ShaderProgram->addVertexAttribute(
-    this->Internal->PositionVertexAttribute, vesVertexAttributeKeys::Position);
-  this->Internal->ShaderProgram->addVertexAttribute(
-    this->Internal->NormalVertexAttribute, vesVertexAttributeKeys::Normal);
-  this->Internal->ShaderProgram->addVertexAttribute(
-    this->Internal->ColorVertexAttribute, vesVertexAttributeKeys::Color);
-
-  return true;
-}
-
-//----------------------------------------------------------------------------
-bool vesKiwiViewerApp::initializeRendering()
-{
-  assert(this->Internal->ShaderProgram);
-
-  this->Internal->Renderer = new vesRenderer();
-  this->Internal->Renderer->setBackgroundColor(63/255.0, 96/255.0, 144/255.0, 1.0f);
-
+  this->Internal->ShaderProgram = shaderProgram;
   return true;
 }
 
@@ -696,7 +547,7 @@ void vesKiwiViewerApp::removeAllDataRepresentations()
 
     vesKiwiDataRepresentation* rep = this->Internal->DataRepresentations[i];
 
-    rep->removeSelfFromRenderer(this->Internal->Renderer);
+    rep->removeSelfFromRenderer(this->renderer());
 
     if (rep->texture()) {
       this->Internal->TextureStorage.erase(rep->texture());
@@ -812,7 +663,7 @@ vesKiwiDataRepresentation* vesKiwiViewerApp::addPolyDataRepresentation(vtkPolyDa
   vesKiwiDataRepresentation* rep = new vesKiwiDataRepresentation();
   rep->initializeWithShader(program);
   rep->setDataSet(dataSet);
-  rep->addSelfToRenderer(this->Internal->Renderer);
+  rep->addSelfToRenderer(this->renderer());
   this->Internal->DataRepresentations.push_back(rep);
   return rep;
 }
@@ -863,35 +714,13 @@ vesKiwiDataRepresentation* vesKiwiViewerApp::addTextRepresentation(const std::st
 //----------------------------------------------------------------------------
 void vesKiwiViewerApp::initializeTextureShader()
 {
-  this->Internal->TextureShader = new vesShaderProgram();
-  this->Internal->TextureShader->addShader(
-    new vesShader(vesShader::Vertex, this->Internal->VertexShaderSource));
-  this->Internal->TextureShader->addShader(
-    new vesShader(vesShader::Fragment, this->Internal->FragmentShaderSource));
-
-  // \todo: Delete this during destructions.
-  this->Internal->ModelViewUniform    = new vesModelViewUniform();
-  this->Internal->ProjectionUnifom    = new vesProjectionUniform();
-  this->Internal->NormalMatrixUniform = new vesNormalMatrixUniform();
-
-  this->Internal->PositionVertexAttribute = new vesPositionVertexAttribute();
-  this->Internal->NormalVertexAttribute   = new vesNormalVertexAttribute();
-  this->Internal->ColorVertexAttribute    = new vesColorVertexAttribute();
-  this->Internal->TextureCoordinateVertexAttribute =
-    new vesTextureCoordinateVertexAttribute();
-
-  this->Internal->TextureShader->addUniform(this->Internal->ModelViewUniform);
-  this->Internal->TextureShader->addUniform(this->Internal->ProjectionUnifom);
-  this->Internal->TextureShader->addUniform(this->Internal->NormalMatrixUniform);
-
-  this->Internal->TextureShader->addVertexAttribute(this->Internal->PositionVertexAttribute,
-                                                    vesVertexAttributeKeys::Position);
-  this->Internal->TextureShader->addVertexAttribute(this->Internal->NormalVertexAttribute,
-                                                    vesVertexAttributeKeys::Normal);
-  this->Internal->TextureShader->addVertexAttribute(this->Internal->ColorVertexAttribute,
-                                                    vesVertexAttributeKeys::Color);
-  this->Internal->TextureShader->addVertexAttribute(this->Internal->TextureCoordinateVertexAttribute,
-                                                    vesVertexAttributeKeys::TextureCoordinate);
+  vesShaderProgram* shaderProgram = this->addShaderProgram(
+    this->Internal->VertexShaderSource, this->Internal->FragmentShaderSource);
+  this->addModelViewMatrixUniform(shaderProgram);
+  this->addProjectionMatrixUniform(shaderProgram);
+  this->addVertexPositionAttribute(shaderProgram);
+  this->addVertexTextureCoordinateAttribute(shaderProgram);
+  this->Internal->TextureShader = shaderProgram;
 }
 
 //----------------------------------------------------------------------------
@@ -899,7 +728,7 @@ void vesKiwiViewerApp::setBackgroundTexture(const std::string& filename)
 {
   vtkSmartPointer<vtkImageData> image = vtkImageData::SafeDownCast(this->Internal->DataLoader.loadDataset(filename));
   vesTexture* backgroundTexture = this->newTextureFromImage(image);
-  //this->Internal->Renderer->SetBackground(backgroundTexture);
+  //this->renderer()->SetBackground(backgroundTexture);
 }
 
 //----------------------------------------------------------------------------
@@ -978,7 +807,7 @@ void vesKiwiViewerApp::updateTextAnnotations()
   }
 
   vesVector3f worldPoint(34.3, 23.7, 0);
-  vesVector3f displayPoint = this->Internal->Renderer->computeWorldToDisplay(worldPoint);
+  vesVector3f displayPoint = this->renderer()->computeWorldToDisplay(worldPoint);
   displayPoint[2] = 0;
   this->Internal->TextRepresentation->actor()->setTranslation(displayPoint);
 }
@@ -1042,16 +871,4 @@ int vesKiwiViewerApp::numberOfModelLines() const
     count += static_cast<int>(this->Internal->DataRepresentations[i]->triangleData()->GetLines().size());
   }
   return count;
-}
-
-//----------------------------------------------------------------------------
-int vesKiwiViewerApp::viewWidth() const
-{
-  return this->Internal->Renderer->width();
-}
-
-//----------------------------------------------------------------------------
-int vesKiwiViewerApp::viewHeight() const
-{
-  return this->Internal->Renderer->height();
 }
