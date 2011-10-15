@@ -276,6 +276,8 @@ bool vesCamera::SetRenderTarget(vesRenderTarget *renderTarget)
   if (!renderTarget) {
     this->m_lastRenderTarget = this->m_renderTarget;
     this->m_renderTarget = this->m_defaultRenderTarget;
+
+    return true;
   }
 
   if (renderTarget == this->m_renderTarget) {
