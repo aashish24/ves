@@ -65,7 +65,6 @@ vesTexture::~vesTexture()
 
 void vesTexture::bind(const vesRenderState &renderState)
 {
-  glEnable(GL_TEXTURE_2D);
   glActiveTexture(GL_TEXTURE0 + this->m_textureUnit);
   glBindTexture(GL_TEXTURE_2D, this->m_textureHandle);
 }
@@ -73,7 +72,7 @@ void vesTexture::bind(const vesRenderState &renderState)
 
 void vesTexture::unbind(const vesRenderState &renderState)
 {
-  glDisable(GL_TEXTURE_2D);
+  glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 
