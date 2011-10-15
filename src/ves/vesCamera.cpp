@@ -18,11 +18,15 @@
   limitations under the License.
  ========================================================================*/
 
-// VES includes
-#include "vesGMTL.h"
 #include "vesCamera.h"
 
-// C++ includes
+// VES includes
+#include "vesGMTL.h"
+#include "vesRenderState.h"
+
+// C/C++ includes
+#include <algorithm>
+#include <cassert>
 #include <iostream>
 
 vesCamera::vesCamera()
@@ -55,8 +59,7 @@ vesCamera::vesCamera()
   this->WindowCenter[0] = 0.0;
   this->WindowCenter[1] = 0.0;
 
-  this->m_defaultRenderTarget = new vesRenderTarget();
-  this->m_renderTarget = this->m_defaultRenderTarget;
+  this->m_renderTargetStack.push_back(new vesRenderTarget());
 
   this->ComputeDistance();
 }
@@ -64,6 +67,10 @@ vesCamera::vesCamera()
 
 vesCamera::~vesCamera()
 {
+  // Delete only the first (default render target).
+  assert(!this->m_renderTargetStack.empty());
+
+  delete this->m_renderTargetStack[0];
 }
 
 
@@ -273,36 +280,51 @@ void vesCamera::ComputeViewPlaneNormal()
 bool vesCamera::SetRenderTarget(vesRenderTarget *renderTarget)
 {
   // If none is given, use the default.
-  if (!renderTarget) {
-    this->m_lastRenderTarget = this->m_renderTarget;
-    this->m_renderTarget = this->m_defaultRenderTarget;
+  if (!renderTarget && this->m_renderTargetStack.size() > 1) {
+
+    this->m_removedRenderTargetStack.push_back(this->m_renderTargetStack.back());
+    this->m_renderTargetStack.pop_back();
 
     return true;
   }
-
-  if (renderTarget == this->m_renderTarget) {
+  else if(!renderTarget){
     return false;
   }
 
-  this->m_renderTarget = renderTarget;
+  RenderTargetStack::iterator itr;
+  itr = std::find(this->m_renderTargetStack.begin(),
+                  this->m_renderTargetStack.end(), renderTarget);
 
-  return true;
+  if (itr == this->m_renderTargetStack.end()) {
+    this->m_renderTargetStack.push_back(renderTarget)  ;
+    return true;
+  }
+  else {
+    return false;
+  }
 }
 
 
 vesRenderTarget* vesCamera::RenderTarget()
 {
-  return this->m_renderTarget;
+  return this->m_renderTargetStack.back();
 }
 
 
 const vesRenderTarget* vesCamera::RenderTarget() const
 {
-  return this->m_renderTarget;
+  return this->m_renderTargetStack.back();
 }
 
 
-vesRenderTarget* vesCamera::LastRenderTarget()
+void vesCamera::ClearRenderTargets(vesRenderState &renderState)
 {
-  return this->m_lastRenderTarget;
+  for (size_t i = 0; i < this->m_removedRenderTargetStack.size(); ++i)  {
+    this->m_removedRenderTargetStack.back()->remove(renderState);
+  }
+
+  this->m_removedRenderTargetStack.clear();
 }
+
+
+

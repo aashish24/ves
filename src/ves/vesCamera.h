@@ -27,6 +27,9 @@
 #include "vesRenderTarget.h"
 #include "vesSetGet.h"
 
+// Forward declarations
+class vesRenderState;
+
 class vesCamera: public vsg::Transform
 {
 public:
@@ -60,8 +63,7 @@ public:
   bool                   SetRenderTarget(vesRenderTarget *renderTarget);
   vesRenderTarget*       RenderTarget();
   const vesRenderTarget* RenderTarget() const;
-  vesRenderTarget*       LastRenderTarget();
-
+  void                   ClearRenderTargets(vesRenderState &renderState);
 
 private:
   void ComputeDistance();
@@ -79,8 +81,9 @@ private:
   double        WindowCenter[2];
   bool          ParallelProjection;
 
-  vesRenderTarget *m_lastRenderTarget;
-  vesRenderTarget *m_defaultRenderTarget;
-  vesRenderTarget *m_renderTarget;
+  typedef std::vector<vesRenderTarget*> RenderTargetStack;
+
+  RenderTargetStack m_renderTargetStack;
+  RenderTargetStack m_removedRenderTargetStack;
 };
 #endif //__vesCamera_h

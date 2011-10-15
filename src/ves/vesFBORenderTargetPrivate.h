@@ -22,6 +22,7 @@
 #define VESFBORENDERTARGETPRIVATE_H
 
 // VES includes
+#include "vesRenderTarget.h"
 #include "vesTexture.h"
 
 // C++ includes
