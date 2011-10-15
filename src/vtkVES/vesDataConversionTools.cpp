@@ -18,7 +18,7 @@
   limitations under the License.
  ========================================================================*/
 
-#include "vtkPolyDataToTriangleData.h"
+#include "vesDataConversionTools.h"
 
 #include "vtkCellArray.h"
 #include "vesTriangleData.h"
@@ -31,7 +31,7 @@
 
 #include <cassert>
 
-void vtkPolyDataToTriangleData::ComputeVertexColorFromScalars(vtkPolyData* polyData, vesTriangleData* triangleData)
+void vesDataConversionTools::ComputeVertexColorFromScalars(vtkPolyData* polyData, vesTriangleData* triangleData)
 {
   // First look for a 3 component array named rgb_colors
   vtkUnsignedCharArray* colors = vtkUnsignedCharArray::SafeDownCast(polyData->GetPointData()->GetArray("rgb_colors"));
@@ -68,7 +68,7 @@ void vtkPolyDataToTriangleData::ComputeVertexColorFromScalars(vtkPolyData* polyD
     }
 }
 
-void vtkPolyDataToTriangleData::ConvertTextureCoordinates(vtkPolyData* polyData, vesTriangleData* triangleData)
+void vesDataConversionTools::ConvertTextureCoordinates(vtkPolyData* polyData, vesTriangleData* triangleData)
 {
   assert(polyData && triangleData);
   const size_t nPoints = triangleData->GetPoints().size();
@@ -87,7 +87,7 @@ void vtkPolyDataToTriangleData::ConvertTextureCoordinates(vtkPolyData* polyData,
     }
 }
 
-void vtkPolyDataToTriangleData::ConvertTriangles(vtkPolyData* input, vesTriangleData* output)
+void vesDataConversionTools::ConvertTriangles(vtkPolyData* input, vesTriangleData* output)
 {
   if (!input || !output)
   {
@@ -140,7 +140,7 @@ void vtkPolyDataToTriangleData::ConvertTriangles(vtkPolyData* input, vesTriangle
   output->ComputeBounds();
 }
 
-vesTriangleData* vtkPolyDataToTriangleData::Convert(vtkPolyData* input)
+vesTriangleData* vesDataConversionTools::Convert(vtkPolyData* input)
 {
   //cerr << "starting conversion" << endl;
   vesTriangleData* output = new vesTriangleData();

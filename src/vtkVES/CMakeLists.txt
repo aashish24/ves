@@ -11,7 +11,7 @@ set(sources
   vesKiwiDataRepresentation.cpp
   vesKiwiBaseApp.cpp
   vesKiwiViewerApp.cpp
-  vtkPolyDataToTriangleData.cpp)
+  vesDataConversionTools.cpp)
 
 include_directories(Text)
 include_directories("${VTK_SOURCE_DIR}/Utilities"

@@ -21,7 +21,7 @@
 class vtkPolyData;
 class vesTriangleData;
 
-class vtkPolyDataToTriangleData
+class vesDataConversionTools
 {
 public:
   static vesTriangleData* Convert(vtkPolyData* input);

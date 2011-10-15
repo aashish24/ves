@@ -29,7 +29,7 @@
 #include "vesShaderProgram.h"
 #include "vesTexture.h"
 
-#include "vtkPolyDataToTriangleData.h"
+#include "vesDataConversionTools.h"
 
 #include <vtkNew.h>
 #include <vtkTriangleFilter.h>
@@ -50,14 +50,14 @@ vesTriangleData* triangleDataFromPolyData(vtkPolyData* polyData)
     triangleFilter->SetInput(polyData);
     triangleFilter->Update();
     polyData = triangleFilter->GetOutput();
-    vesTriangleData* triangleData = vtkPolyDataToTriangleData::Convert(polyData);
-    vtkPolyDataToTriangleData::ComputeVertexColorFromScalars(polyData, triangleData);
-    vtkPolyDataToTriangleData::ConvertTextureCoordinates(polyData, triangleData);
+    vesTriangleData* triangleData = vesDataConversionTools::Convert(polyData);
+    vesDataConversionTools::ComputeVertexColorFromScalars(polyData, triangleData);
+    vesDataConversionTools::ConvertTextureCoordinates(polyData, triangleData);
     return triangleData;
     }
   else
     {
-    return vtkPolyDataToTriangleData::Convert(polyData);
+    return vesDataConversionTools::Convert(polyData);
     }
 }
 };
