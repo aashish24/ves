@@ -21,6 +21,7 @@
 #include "vesKiwiViewerApp.h"
 #include "vesKiwiDataLoader.h"
 #include "vesKiwiDataRepresentation.h"
+#include "vesDataConversionTools.h"
 
 #include "vesCamera.h"
 #include "vesColorUniform.h"
@@ -746,58 +747,40 @@ void vesKiwiViewerApp::setTextureFromImage(vesTexture* texture, vtkImageData* im
   assert(image->GetDataDimension() == 2);
   assert(image->GetPointData()->GetScalars());
 
-  vtkSmartPointer<vtkDataArray> scalars = image->GetPointData()->GetScalars();
-  if (scalars->GetNumberOfComponents() == 1) {
+  vtkSmartPointer<vtkUnsignedCharArray> pixels = vtkUnsignedCharArray::SafeDownCast(image->GetPointData()->GetScalars());
 
-    vtkNew<vtkUnsignedCharArray> colors;
-    colors->SetNumberOfComponents(4);
-    colors->SetNumberOfTuples(scalars->GetNumberOfTuples());
-
-    // Use a grayscale lookup table with scalar range hardcoded for the head image dataset
-    vtkNew<vtkLookupTable> table;
-    table->SetRange(this->Internal->ImageScalarRange);
-    table->SetValueRange(0.0, 1.0);
-    table->SetSaturationRange(0.0, 0.0);
-    table->SetHueRange(0.0, 0.0);
-
-    table->Build();
-    double rgb[3];
-    const size_t nTuples = scalars->GetNumberOfTuples();
-    for (size_t i = 0; i < nTuples; ++i) {
-      table->GetColor(scalars->GetComponent(i, 0), rgb);
-      colors->SetTuple4(i, rgb[0]*255, rgb[1]*255, rgb[2]*255, 255);
-    }
-    scalars = colors.GetPointer();
+  if (!pixels) {
+    vtkSmartPointer<vtkDataArray> scalars = image->GetPointData()->GetScalars();
+    vtkSmartPointer<vtkLookupTable> lut = vesDataConversionTools::GetGrayscaleLookupTable(this->Internal->ImageScalarRange);
+    pixels = vesDataConversionTools::MapScalars(scalars, lut);
   }
-
-  SFImage sfimage;
 
   int dimensions[3];
   image->GetDimensions(dimensions);
   const int flatDimension = GetImageFlatDimension(image);
+ 
+  int width;
+  int height;
 
   if (flatDimension == 2) {
     // XY plane
-    sfimage.width = image->GetDimensions()[0];
-    sfimage.height = image->GetDimensions()[1];
+    width = image->GetDimensions()[0];
+    height = image->GetDimensions()[1];
   }
   else if (flatDimension == 1) {
     // XZ plane
-    sfimage.width = image->GetDimensions()[0];
-    sfimage.height = image->GetDimensions()[2];
+    width = image->GetDimensions()[0];
+    height = image->GetDimensions()[2];
   }
   else {
     // YZ plane
-    sfimage.width = image->GetDimensions()[1];
-    sfimage.height = image->GetDimensions()[2];
+    width = image->GetDimensions()[1];
+    height = image->GetDimensions()[2];
   }
 
-
-  sfimage.data = scalars->WriteVoidPointer(0,0);
-
-  texture->setImageData(sfimage);
-  this->Internal->TextureStorage[texture] = scalars;
-};
+  vesDataConversionTools::SetTextureData(pixels, texture, width, height);
+  this->Internal->TextureStorage[texture] = pixels;
+}
 
 //----------------------------------------------------------------------------
 void vesKiwiViewerApp::updateTextAnnotations()

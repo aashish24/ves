@@ -33,32 +33,46 @@
 
 #include <vtkNew.h>
 #include <vtkTriangleFilter.h>
+#include <vtkLookupTable.h>
 
 #include <cassert>
 
 //----------------------------------------------------------------------------
 namespace {
-vesTriangleData* triangleDataFromPolyData(vtkPolyData* polyData)
+
+void ConvertVertexArrays(vtkDataSet* dataSet, vesTriangleData* triangleData)
 {
-  // Always use triangle filter for now.  This will ensure that models containing
+  vtkUnsignedCharArray* colors = vesDataConversionTools::FindRGBColorsArray(dataSet);
+  vtkDataArray* scalars = vesDataConversionTools::FindScalarsArray(dataSet);
+  vtkDataArray* tcoords = vesDataConversionTools::FindTextureCoordinatesArray(dataSet);
+  if (colors)
+    {
+    vesDataConversionTools::SetVertexColors(colors, triangleData);
+    }
+  else if (scalars)
+    {
+    vtkSmartPointer<vtkLookupTable> lut = vesDataConversionTools::GetRedToBlueLookupTable(scalars->GetRange());
+    vesDataConversionTools::SetVertexColors(scalars, lut, triangleData);
+    }
+  else if (tcoords)
+    {
+    vesDataConversionTools::SetTextureCoordinates(tcoords, triangleData);
+    }
+}
+
+vesTriangleData* TriangleDataFromPolyData(vtkPolyData* polyData)
+{
+  // Use triangle filter for now to ensure that models containing
   // polygons other than tris and quads will be rendered correctly.
-  const bool useTriangleFilter = true;
-  if (useTriangleFilter)
-    {
-    vtkNew<vtkTriangleFilter> triangleFilter;
-    triangleFilter->PassLinesOn();
-    triangleFilter->SetInput(polyData);
-    triangleFilter->Update();
-    polyData = triangleFilter->GetOutput();
-    vesTriangleData* triangleData = vesDataConversionTools::Convert(polyData);
-    vesDataConversionTools::ComputeVertexColorFromScalars(polyData, triangleData);
-    vesDataConversionTools::ConvertTextureCoordinates(polyData, triangleData);
-    return triangleData;
-    }
-  else
-    {
-    return vesDataConversionTools::Convert(polyData);
-    }
+
+  vtkNew<vtkTriangleFilter> triangleFilter;
+  triangleFilter->PassLinesOn();
+  triangleFilter->SetInput(polyData);
+  triangleFilter->Update();
+  polyData = triangleFilter->GetOutput();
+  vesTriangleData* triangleData = vesDataConversionTools::Convert(polyData);
+  ConvertVertexArrays(polyData, triangleData);
+  return triangleData;
 }
 };
 
@@ -112,7 +126,7 @@ void vesKiwiDataRepresentation::setDataSet(vtkDataSet* dataSet)
   assert(polyData);
   assert(this->Internal->Mapper);
 
-  vesTriangleData* triangleData = triangleDataFromPolyData(polyData);
+  vesTriangleData* triangleData = TriangleDataFromPolyData(polyData);
   delete this->Internal->Mapper->data();
   this->Internal->Mapper->setData(triangleData);
 }

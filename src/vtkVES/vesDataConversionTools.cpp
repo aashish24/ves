@@ -19,6 +19,7 @@
  ========================================================================*/
 
 #include "vesDataConversionTools.h"
+#include "vesTexture.h"
 
 #include "vtkCellArray.h"
 #include "vesTriangleData.h"
@@ -28,65 +29,187 @@
 #include "vtkNew.h"
 #include "vtkUnsignedCharArray.h"
 #include "vtkLookupTable.h"
+#include "vtkDiscretizableColorTransferFunction.h"
 
 #include <cassert>
 
-void vesDataConversionTools::ComputeVertexColorFromScalars(vtkPolyData* polyData, vesTriangleData* triangleData)
+
+//----------------------------------------------------------------------------
+vtkDataArray* vesDataConversionTools::FindScalarsArray(vtkDataSet* dataSet)
 {
-  // First look for a 3 component array named rgb_colors
-  vtkUnsignedCharArray* colors = vtkUnsignedCharArray::SafeDownCast(polyData->GetPointData()->GetArray("rgb_colors"));
-  if (colors && colors->GetNumberOfComponents() == 3)
+  vtkDataArray* scalars = dataSet->GetPointData()->GetScalars();
+  if (scalars && scalars->GetNumberOfComponents() == 1)
     {
-    unsigned char rgb[3];
-    const size_t nPoints = triangleData->GetPoints().size();
-    for (size_t i = 0; i < nPoints; ++i)
-        {
-        colors->GetTupleValue(i, rgb);
-        triangleData->GetVertexColors().push_back(vesVector3f(rgb[0]/255.0, rgb[1]/255.0, rgb[2]/255.0));
-        }
-    return;
+    return scalars;
     }
 
-  for (vtkIdType i = 0; i < polyData->GetPointData()->GetNumberOfArrays(); ++i)
+  for (vtkIdType i = 0; i < dataSet->GetPointData()->GetNumberOfArrays(); ++i)
     {
-    vtkDataArray* scalars = polyData->GetPointData()->GetArray(i);
+    scalars = dataSet->GetPointData()->GetArray(i);
     if (scalars && scalars->GetNumberOfComponents() == 1)
       {
-      vtkNew<vtkLookupTable> table;
-      table->SetRange(scalars->GetRange());
-      table->SetHueRange(0, 0.666);
-      table->Build();
-      double rgb[3];
-      const size_t nPoints = triangleData->GetPoints().size();
-      for (size_t i = 0; i < nPoints; ++i)
-        {
-        table->GetColor(scalars->GetComponent(i, 0), rgb);
-        triangleData->GetVertexColors().push_back(vesVector3f(rgb[0], rgb[1], rgb[2]));
-        }
-      break;
+      return scalars;
       }
     }
+
+  return 0;
 }
 
-void vesDataConversionTools::ConvertTextureCoordinates(vtkPolyData* polyData, vesTriangleData* triangleData)
+//----------------------------------------------------------------------------
+vtkUnsignedCharArray* vesDataConversionTools::FindRGBColorsArray(vtkDataSet* dataSet)
 {
-  assert(polyData && triangleData);
-  const size_t nPoints = triangleData->GetPoints().size();
-  for (vtkIdType i = 0; i < polyData->GetPointData()->GetNumberOfArrays(); ++i)
+  vtkUnsignedCharArray* colors = vtkUnsignedCharArray::SafeDownCast(dataSet->GetPointData()->GetArray("rgb_colors"));
+  if (colors && colors->GetNumberOfComponents() == 3)
     {
-    vtkDataArray* tcoords = polyData->GetPointData()->GetArray(i);
-    if (tcoords->GetNumberOfComponents() == 2 && tcoords->GetName() && (tcoords->GetName() == std::string("tcoords")))
-      {
-      assert(tcoords->GetNumberOfTuples() == nPoints);
-      for (size_t t = 0; t < nPoints; ++t)
-        {
-        double* values = tcoords->GetTuple(t);
-        triangleData->GetTextureCoordinates().push_back(vesVector2f(values[0], values[1]));
-        }
-      }
+    return colors;
+    }
+  return 0;
+}
+
+//----------------------------------------------------------------------------
+vtkDataArray* vesDataConversionTools::FindTextureCoordinatesArray(vtkDataSet* dataSet)
+{
+  vtkDataArray* tcoords = dataSet->GetPointData()->GetArray("tcoords");
+  if (tcoords && tcoords->GetNumberOfComponents() == 2)
+    {
+    return tcoords;
+    }
+  return 0;
+}
+
+//----------------------------------------------------------------------------
+vtkSmartPointer<vtkDiscretizableColorTransferFunction> GetBlackBodyRadiationColorMap(double scalarRange[2])
+{
+  //double range[2] = {-500, 6000};
+  double length = scalarRange[1] - scalarRange[0];
+  double points[4] = {0.0, 0.4, 0.75, 1.0};
+
+  vtkSmartPointer<vtkDiscretizableColorTransferFunction> function = vtkSmartPointer<vtkDiscretizableColorTransferFunction>::New();
+  function->DiscretizeOn();
+  function->SetColorSpaceToRGB();
+  function->SetNumberOfValues(256);
+  function->AddRGBPoint(scalarRange[0] + points[0]*length, 0, 0, 0);
+  function->AddRGBPoint(scalarRange[0] + points[1]*length, 1, 0, 0);
+  function->AddRGBPoint(scalarRange[0] + points[2]*length, 1, 1, 0);
+  function->AddRGBPoint(scalarRange[0] + points[3]*length, 1, 1, 1);
+  function->Build();
+  return function;
+}
+
+//----------------------------------------------------------------------------
+vtkSmartPointer<vtkLookupTable> vesDataConversionTools::GetRedToBlueLookupTable(double scalarRange[2])
+{
+  vtkSmartPointer<vtkLookupTable> table = vtkSmartPointer<vtkLookupTable>::New();
+  table->SetRange(scalarRange);
+  table->SetHueRange(0, 0.666);
+  table->Build();
+  return table;
+}
+
+//----------------------------------------------------------------------------
+vtkSmartPointer<vtkLookupTable> vesDataConversionTools::GetGrayscaleLookupTable(double scalarRange[2])
+{
+  vtkSmartPointer<vtkLookupTable> table = vtkSmartPointer<vtkLookupTable>::New();
+  table->SetRange(scalarRange);
+  table->SetValueRange(0.0, 1.0);
+  table->SetSaturationRange(0.0, 0.0);
+  table->SetHueRange(0.0, 0.0);
+  table->Build();
+  return table;
+}
+
+//----------------------------------------------------------------------------
+void vesDataConversionTools::SetVertexColors(vtkUnsignedCharArray* colors, vesTriangleData* triangleData)
+{
+  assert(triangleData);
+  assert(colors);
+  assert(colors->GetNumberOfComponents() == 3);
+
+  unsigned char rgb[3];
+  const size_t nTuples = colors->GetNumberOfTuples();
+  std::vector<vesVector3f>& vertexColors = triangleData->GetVertexColors();
+  vertexColors.resize(nTuples);
+
+  for (size_t i = 0; i < nTuples; ++i)
+    {
+    colors->GetTupleValue(i, rgb);
+    vertexColors[i] = vesVector3f(rgb[0]/255.0, rgb[1]/255.0, rgb[2]/255.0);
     }
 }
 
+//----------------------------------------------------------------------------
+void vesDataConversionTools::SetVertexColors(vtkDataArray* scalars, vtkScalarsToColors* scalarsToColors, vesTriangleData* triangleData)
+{
+  assert(scalars);
+  assert(scalars->GetNumberOfComponents() == 1);
+  assert(triangleData);
+
+  double rgb[3];
+  const size_t nTuples = scalars->GetNumberOfTuples();
+  std::vector<vesVector3f>& vertexColors = triangleData->GetVertexColors();
+  vertexColors.resize(nTuples);
+
+  for (size_t i = 0; i < nTuples; ++i)
+    {
+    scalarsToColors->GetColor(scalars->GetComponent(i, 0), rgb);
+    vertexColors[i] = vesVector3f(rgb[0], rgb[1], rgb[2]);
+    }
+}
+
+//----------------------------------------------------------------------------
+void vesDataConversionTools::SetTextureCoordinates(vtkDataArray* tcoords, vesTriangleData* triangleData)
+{
+  assert(tcoords);
+  assert(tcoords->GetNumberOfComponents() == 2);
+  assert(triangleData);
+
+  const size_t nTuples = tcoords->GetNumberOfTuples();
+  std::vector<vesVector2f>& vertexTCoords = triangleData->GetTextureCoordinates();
+  vertexTCoords.resize(nTuples);
+
+  for (size_t i = 0; i < nTuples; ++i)
+    {
+    double* values = tcoords->GetTuple(i);
+    vertexTCoords[i] = vesVector2f(values[0], values[1]);
+    }
+}
+
+//----------------------------------------------------------------------------
+vtkSmartPointer<vtkUnsignedCharArray> vesDataConversionTools::MapScalars(vtkDataArray* scalars, vtkScalarsToColors* scalarsToColors)
+{
+  assert(scalars->GetNumberOfComponents() == 1);
+
+  vtkSmartPointer<vtkUnsignedCharArray> colors = vtkSmartPointer<vtkUnsignedCharArray>::New();
+  colors->SetNumberOfComponents(4);
+  colors->SetNumberOfTuples(scalars->GetNumberOfTuples());
+
+  double rgb[3];
+  const size_t nTuples = scalars->GetNumberOfTuples();
+  for (size_t i = 0; i < nTuples; ++i)
+    {
+    scalarsToColors->GetColor(scalars->GetComponent(i, 0), rgb);
+    colors->SetTuple4(i, rgb[0]*255, rgb[1]*255, rgb[2]*255, 255);
+    }
+  return colors;
+}
+
+//----------------------------------------------------------------------------
+void vesDataConversionTools::SetTextureData(vtkUnsignedCharArray* pixels, vesTexture* texture, int width, int height)
+{
+  assert(pixels);
+  assert(pixels->GetNumberOfComponents() == 4);
+  assert(pixels->GetNumberOfTuples() == width*height);
+
+  SFImage sfimage;
+  sfimage.width = width;
+  sfimage.height = height;
+  sfimage.data = pixels->WriteVoidPointer(0, 0);
+
+  texture->setImageData(sfimage);
+}
+
+
+//----------------------------------------------------------------------------
 void vesDataConversionTools::ConvertTriangles(vtkPolyData* input, vesTriangleData* output)
 {
   if (!input || !output)
