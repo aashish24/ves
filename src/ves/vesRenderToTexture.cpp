@@ -88,24 +88,29 @@ void vesRenderToTexture::setup(vesRenderState &renderState)
 {
   if (this->m_dirtyState) {
     glGenFramebuffers(1, &this->m_internal->m_frameBufferHandle);
-    glBindFramebuffer(GL_FRAMEBUFFER, this->m_internal->m_frameBufferHandle);
 
     vesFBORenderTarget::vesInternal::BufferAttachmentMap::iterator itr =
       this->m_internal->m_bufferAttachmentMap.find(ColorAttachment0);
 
     if (itr != this->m_internal->m_bufferAttachmentMap.end()) {
+
+      itr->second.m_texture->setup(renderState);
+
+      glBindTexture(GL_TEXTURE_2D, itr->second.m_texture->textureHandle());
+
       unsigned int renderBufferHandle;
       glGenRenderbuffers(1, &renderBufferHandle);
       glBindRenderbuffer(GL_RENDERBUFFER, renderBufferHandle);
       glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16,
-        itr->second.m_texture->width(), itr->second.m_texture->height());
+                            itr->second.m_texture->width(),
+                            itr->second.m_texture->height());
 
       this->m_internal->m_renderBuffersHandle.push_back(renderBufferHandle);
 
-      glBindTexture(GL_TEXTURE_2D, itr->second.m_texture->textureHandle());
+      glBindFramebuffer(GL_FRAMEBUFFER, this->m_internal->m_frameBufferHandle);
 
       // Specify texture as color attachment
-      glFramebufferTexture2D(GL_FRAMEBUFFER, itr->first, GL_TEXTURE_2D,
+      glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
                              itr->second.m_texture->textureHandle(), 0);
 
       // Specify depth_renderbufer as depth attachment
@@ -125,12 +130,52 @@ void vesRenderToTexture::render(vesRenderState &renderState)
   // Call setup in case we have not done so already.
   this->setup(renderState);
 
-  glBindFramebuffer(GL_FRAMEBUFFER, this->m_internal->m_frameBufferHandle);
+  // Check for framebuffer complete
+  GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+  if(status == GL_FRAMEBUFFER_COMPLETE)
+  {
+    glClearColor(1.0, 0.0, 0.0, 1.0);
+    glBindFramebuffer(GL_FRAMEBUFFER, this->m_internal->m_frameBufferHandle);
+  }
+  else
+  {
+    switch(status)
+    {
+      case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+      {
+        std::cerr << "GL ERROR: GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT " << status << std::endl;
+        break;
+      }
+      case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS:
+      {
+        std::cerr << "GL ERROR: GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS " << status << std::endl;
+        break;
+      }
+      case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+      {
+        std::cerr << "GL ERROR: GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT " << status << std::endl;
+        break;
+      }
+      case GL_FRAMEBUFFER_UNSUPPORTED:
+      {
+        std::cerr << "GL ERROR: GL_FRAMEBUFFER_UNSUPPORTED " << status << std::endl;
+        break;
+      }
+      default:
+      {
+        std::cerr << "GL ERROR: Unknown error " << status << std::endl;
+      }
+    };
+  }
 }
 
 
 void vesRenderToTexture::remove(vesRenderState &renderState)
 {
+  glDeleteRenderbuffers(1, &this->m_internal->m_renderBuffersHandle[0]);
+  glDeleteFramebuffers (1, &this->m_internal->m_frameBufferHandle);
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+  this->m_internal->m_renderBuffersHandle.clear();
 }
 
