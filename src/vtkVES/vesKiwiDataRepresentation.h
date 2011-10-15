@@ -21,52 +21,28 @@
 #ifndef __vesKiwiDataRepresentation_h
 #define __vesKiwiDataRepresentation_h
 
-class vesTriangleData;
-class vesActor;
-class vesMapper;
-class vesRenderer;
-class vesShaderProgram;
-class vesTexture;
+#include "vesGMTL.h"
 
-class vtkDataSet;
+class vesRenderer;
 
 class vesKiwiDataRepresentation
 {
 public:
 
-  vesKiwiDataRepresentation();
-  ~vesKiwiDataRepresentation();
+  vesKiwiDataRepresentation() {}
+  ~vesKiwiDataRepresentation() {}
 
-  void initializeWithShader(vesShaderProgram* shaderProgram);
+  virtual void addSelfToRenderer(vesRenderer* renderer) = 0;
+  virtual void removeSelfFromRenderer(vesRenderer* renderer) = 0;
 
-  void setDataSet(vtkDataSet* data);
-  vesTriangleData* triangleData() const;
-
-  void addSelfToRenderer(vesRenderer* renderer);
-  void removeSelfFromRenderer(vesRenderer* renderer);
-
-  void setColor(double r, double g, double b, double a);
-
-  void setTexture(vesTexture* texture);
-  vesTexture* texture() const;
-
-  // todo:
-  // move these back to protected.  This class should provide public api so that
-  // the vesActor and vesMapper can remain implementation details that callers do
-  // not have to access.
-  vesMapper* mapper() const;
-  vesActor* actor() const;
-
-protected:
-
+  virtual int numberOfFacets() = 0;
+  virtual int numberOfVertices() = 0;
+  virtual int numberOfLines() = 0;
 
 private:
 
   vesKiwiDataRepresentation(const vesKiwiDataRepresentation&); // Not implemented
   void operator=(const vesKiwiDataRepresentation&); // Not implemented
-
-  class vesInternal;
-  vesInternal* Internal;
 };
 
 

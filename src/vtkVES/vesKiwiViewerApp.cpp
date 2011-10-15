@@ -21,6 +21,7 @@
 #include "vesKiwiViewerApp.h"
 #include "vesKiwiDataLoader.h"
 #include "vesKiwiDataRepresentation.h"
+#include "vesKiwiPolyDataRepresentation.h"
 #include "vesDataConversionTools.h"
 
 #include "vesCamera.h"
@@ -173,8 +174,8 @@ public:
   // todo- move these ivars to image representation class
   std::map<vesTexture*, vtkSmartPointer<vtkDataArray> > TextureStorage;
   vtkSmartPointer<vtkExtractVOI> SliceFilter;
-  std::vector<vesKiwiDataRepresentation*> SliceReps;
-  vesKiwiDataRepresentation* ContourRep;
+  std::vector<vesKiwiPolyDataRepresentation*> SliceReps;
+  vesKiwiPolyDataRepresentation* ContourRep;
   vtkSmartPointer<vtkCellLocator> Locator;
   vtkSmartPointer<vtkAppendPolyData> AppendFilter;
   int SelectedImageDimension;
@@ -196,7 +197,7 @@ public:
   std::vector<std::string> BuiltinShadingModels;
 
   vtkSmartPointer<vtkFreeTypeStringToImage> TextToImage;
-  vesKiwiDataRepresentation* TextRepresentation;
+  vesKiwiPolyDataRepresentation* TextRepresentation;
 };
 
 //----------------------------------------------------------------------------
@@ -368,9 +369,8 @@ void vesKiwiViewerApp::scrollImageSlice(double deltaX, double deltaY)
 
   this->Internal->AppendFilter->GetInput(flatDimension)->DeepCopy(imagePlane);
 
-  vesKiwiDataRepresentation* rep = this->Internal->SliceReps[flatDimension];
+  vesKiwiPolyDataRepresentation* rep = this->Internal->SliceReps[flatDimension];
   rep->setDataSet(imagePlane);
-
   this->Internal->TextureStorage.erase(rep->texture());
   this->setTextureFromImage(rep->texture(), sliceImage);
 }
@@ -547,11 +547,10 @@ void vesKiwiViewerApp::removeAllDataRepresentations()
   for (size_t i = 0; i < this->Internal->DataRepresentations.size(); ++i) {
 
     vesKiwiDataRepresentation* rep = this->Internal->DataRepresentations[i];
-
     rep->removeSelfFromRenderer(this->renderer());
 
-    if (rep->texture()) {
-      this->Internal->TextureStorage.erase(rep->texture());
+    if (static_cast<vesKiwiPolyDataRepresentation*>(rep)->texture()) {
+      this->Internal->TextureStorage.erase(static_cast<vesKiwiPolyDataRepresentation*>(rep)->texture());
     }
 
     delete rep;
@@ -629,7 +628,7 @@ void vesKiwiViewerApp::addRepresentationsForDataSet(vtkDataSet* dataSet)
         contour->ComputeScalarsOff();
         contour->ComputeNormalsOff();
         contour->Update();
-        vesKiwiDataRepresentation* contourRep = this->addPolyDataRepresentation(contour->GetOutput(), this->Internal->ShaderProgram);
+        vesKiwiPolyDataRepresentation* contourRep = this->addPolyDataRepresentation(contour->GetOutput(), this->Internal->ShaderProgram);
         contourRep->setColor(0.8, 0.8, 0.8, 0.4);
         this->Internal->ContourVis = 1;
         this->Internal->ContourRep = contourRep;
@@ -642,7 +641,7 @@ void vesKiwiViewerApp::addRepresentationsForDataSet(vtkDataSet* dataSet)
 
       vtkSmartPointer<vtkPolyData> imagePlane = GetPolyDataForImagePlane(image);
 
-      vesKiwiDataRepresentation* rep = this->addPolyDataRepresentation(imagePlane, this->Internal->TextureShader);
+      vesKiwiPolyDataRepresentation* rep = this->addPolyDataRepresentation(imagePlane, this->Internal->TextureShader);
       vesTexture* texture = this->newTextureFromImage(image);
 
       rep->setTexture(texture);
@@ -659,19 +658,18 @@ void vesKiwiViewerApp::addRepresentationsForDataSet(vtkDataSet* dataSet)
 }
 
 //----------------------------------------------------------------------------
-vesKiwiDataRepresentation* vesKiwiViewerApp::addPolyDataRepresentation(vtkPolyData* dataSet, vesShaderProgram* program)
+vesKiwiPolyDataRepresentation* vesKiwiViewerApp::addPolyDataRepresentation(vtkPolyData* polyData, vesShaderProgram* program)
 {
-  vesKiwiDataRepresentation* rep = new vesKiwiDataRepresentation();
+  vesKiwiPolyDataRepresentation* rep = new vesKiwiPolyDataRepresentation();
   rep->initializeWithShader(program);
-  rep->setDataSet(dataSet);
+  rep->setPolyData(polyData);
   rep->addSelfToRenderer(this->renderer());
   this->Internal->DataRepresentations.push_back(rep);
   return rep;
 }
 
-
 //----------------------------------------------------------------------------
-vesKiwiDataRepresentation* vesKiwiViewerApp::addTextRepresentation(const std::string& text)
+vesKiwiPolyDataRepresentation* vesKiwiViewerApp::addTextRepresentation(const std::string& text)
 {
   vtkNew<vtkTextProperty> textProperty;
   textProperty->SetFontFamilyToArial();
@@ -686,7 +684,7 @@ vesKiwiDataRepresentation* vesKiwiViewerApp::addTextRepresentation(const std::st
 
   vtkSmartPointer<vtkPolyData> textQuad = GetPolyDataForImagePlane(imageTexture.GetPointer());
 
-  vesKiwiDataRepresentation* rep = this->addPolyDataRepresentation(textQuad.GetPointer(), this->Internal->TextureShader);
+  vesKiwiPolyDataRepresentation* rep = this->addPolyDataRepresentation(textQuad.GetPointer(), this->Internal->TextureShader);
   vesTexture* texture = this->newTextureFromImage(imageTexture.GetPointer());
   rep->setTexture(texture);
 
@@ -710,7 +708,6 @@ vesKiwiDataRepresentation* vesKiwiViewerApp::addTextRepresentation(const std::st
   rep->actor()->material()->setBinNumber(20);
   return rep;
 }
-
 
 //----------------------------------------------------------------------------
 void vesKiwiViewerApp::initializeTextureShader()
@@ -792,7 +789,7 @@ void vesKiwiViewerApp::updateTextAnnotations()
   vesVector3f worldPoint(34.3, 23.7, 0);
   vesVector3f displayPoint = this->renderer()->computeWorldToDisplay(worldPoint);
   displayPoint[2] = 0;
-  this->Internal->TextRepresentation->actor()->setTranslation(displayPoint);
+  this->Internal->TextRepresentation->setTranslation(displayPoint);
 }
 
 //----------------------------------------------------------------------------
@@ -830,7 +827,7 @@ int vesKiwiViewerApp::numberOfModelFacets() const
 {
   int count = 0;
   for (size_t i = 0; i < this->Internal->DataRepresentations.size(); ++i) {
-    count += static_cast<int>(this->Internal->DataRepresentations[i]->triangleData()->GetTriangles().size());
+    count += this->Internal->DataRepresentations[i]->numberOfFacets();
   }
   return count;
 }
@@ -840,10 +837,9 @@ int vesKiwiViewerApp::numberOfModelVertices() const
 {
   int count = 0;
   for (size_t i = 0; i < this->Internal->DataRepresentations.size(); ++i) {
-    count += static_cast<int>(this->Internal->DataRepresentations[i]->triangleData()->GetPoints().size());
+    count += this->Internal->DataRepresentations[i]->numberOfVertices();
   }
   return count;
-
 }
 
 //----------------------------------------------------------------------------
@@ -851,7 +847,7 @@ int vesKiwiViewerApp::numberOfModelLines() const
 {
   int count = 0;
   for (size_t i = 0; i < this->Internal->DataRepresentations.size(); ++i) {
-    count += static_cast<int>(this->Internal->DataRepresentations[i]->triangleData()->GetLines().size());
+    count += this->Internal->DataRepresentations[i]->numberOfLines();
   }
   return count;
 }

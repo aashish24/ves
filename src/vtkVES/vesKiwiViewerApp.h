@@ -29,6 +29,7 @@
 // Forward declarations
 class vesCamera;
 class vesKiwiDataRepresentation;
+class vesKiwiPolyDataRepresentation;
 class vesRenderer;
 class vesShaderProgram;
 class vesTexture;
@@ -93,8 +94,8 @@ protected:
 
   void removeAllDataRepresentations();
   void addRepresentationsForDataSet(vtkDataSet* dataSet);
-  vesKiwiDataRepresentation* addPolyDataRepresentation(vtkPolyData* dataSet, vesShaderProgram* program);
-  vesKiwiDataRepresentation* addTextRepresentation(const std::string& text);
+  vesKiwiPolyDataRepresentation* addPolyDataRepresentation(vtkPolyData* polyData, vesShaderProgram* program);
+  vesKiwiPolyDataRepresentation* addTextRepresentation(const std::string& text);
   void updateTextAnnotations();
 
   vesTexture* newTextureFromImage(vtkImageData* image);
