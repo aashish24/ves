@@ -21,6 +21,7 @@
 #include "vesKiwiViewerApp.h"
 #include "vesKiwiDataLoader.h"
 #include "vesKiwiDataRepresentation.h"
+#include "vesKiwiImagePlaneDataRepresentation.h"
 #include "vesKiwiPolyDataRepresentation.h"
 #include "vesDataConversionTools.h"
 
@@ -73,78 +74,6 @@
 #include <string>
 #include <vector>
 
-// todo- move these functions to image representation class
-namespace {
-
-int GetImageFlatDimension(vtkImageData* image)
-{
-  int dimensions[3];
-  image->GetDimensions(dimensions);
-  for (int i = 0; i < 3; ++i) {
-    if (dimensions[i] == 1) {
-      return i;
-    }
-  }
-  return -1;
-}
-
-vtkSmartPointer<vtkPolyData> GetPolyDataForImagePlane(vtkImageData* image)
-{
-  double bounds[6];
-  image->GetBounds(bounds);
-
-  vtkNew<vtkPoints> quadPoints;
-  quadPoints->SetNumberOfPoints(4);
-
-  const int flatDimension = GetImageFlatDimension(image);
-  if (flatDimension == 2) {
-    // XY plane
-    quadPoints->SetPoint(0, bounds[0],bounds[2],bounds[4]);
-    quadPoints->SetPoint(1, bounds[1],bounds[2],bounds[4]);
-    quadPoints->SetPoint(2, bounds[1],bounds[3],bounds[4]);
-    quadPoints->SetPoint(3, bounds[0],bounds[3],bounds[4]);
-  }
-  else if (flatDimension == 1) {
-    // XZ plane
-    quadPoints->SetPoint(0, bounds[0],bounds[2],bounds[4]);
-    quadPoints->SetPoint(1, bounds[1],bounds[2],bounds[4]);
-    quadPoints->SetPoint(2, bounds[1],bounds[2],bounds[5]);
-    quadPoints->SetPoint(3, bounds[0],bounds[2],bounds[5]);
-  }
-  else {
-    // YZ plane
-    quadPoints->SetPoint(0, bounds[0],bounds[2],bounds[4]);
-    quadPoints->SetPoint(1, bounds[0],bounds[3],bounds[4]);
-    quadPoints->SetPoint(2, bounds[0],bounds[3],bounds[5]);
-    quadPoints->SetPoint(3, bounds[0],bounds[2],bounds[5]);
-  }
-
-  vtkNew<vtkQuad> quad;
-  quad->GetPointIds()->SetId(0, 0);
-  quad->GetPointIds()->SetId(1, 1);
-  quad->GetPointIds()->SetId(2, 2);
-  quad->GetPointIds()->SetId(3, 3);
-
-  vtkSmartPointer<vtkPolyData> polyData = vtkSmartPointer<vtkPolyData>::New();
-  polyData->Allocate(1, 1);
-  polyData->InsertNextCell(quad->GetCellType(), quad->GetPointIds());
-  polyData->SetPoints(quadPoints.GetPointer());
-
-  // add texture coordinates
-  vtkNew<vtkFloatArray> tcoords;
-  tcoords->SetName("tcoords");
-  tcoords->SetNumberOfComponents(2);
-  tcoords->SetNumberOfTuples(4);
-  tcoords->SetTuple2(0, 0,0);
-  tcoords->SetTuple2(1, 1,0);
-  tcoords->SetTuple2(2, 1,1);
-  tcoords->SetTuple2(3, 0,1);
-  polyData->GetPointData()->SetScalars(tcoords.GetPointer());
-
-  return polyData;
-}
-
-};
 
 //----------------------------------------------------------------------------
 class vesKiwiViewerApp::vesInternal
@@ -172,9 +101,8 @@ public:
   vesShaderProgram* TextureShader;
 
   // todo- move these ivars to image representation class
-  std::map<vesTexture*, vtkSmartPointer<vtkDataArray> > TextureStorage;
   vtkSmartPointer<vtkExtractVOI> SliceFilter;
-  std::vector<vesKiwiPolyDataRepresentation*> SliceReps;
+  std::vector<vesKiwiImagePlaneDataRepresentation*> SliceReps;
   vesKiwiPolyDataRepresentation* ContourRep;
   vtkSmartPointer<vtkCellLocator> Locator;
   vtkSmartPointer<vtkAppendPolyData> AppendFilter;
@@ -197,7 +125,7 @@ public:
   std::vector<std::string> BuiltinShadingModels;
 
   vtkSmartPointer<vtkFreeTypeStringToImage> TextToImage;
-  vesKiwiPolyDataRepresentation* TextRepresentation;
+  vesKiwiImagePlaneDataRepresentation* TextRepresentation;
 };
 
 //----------------------------------------------------------------------------
@@ -364,15 +292,10 @@ void vesKiwiViewerApp::scrollImageSlice(double deltaX, double deltaY)
   this->Internal->SliceFilter->Update();
   vtkImageData* sliceImage = this->Internal->SliceFilter->GetOutput();
 
-  vtkSmartPointer<vtkPolyData> imagePlane = GetPolyDataForImagePlane(sliceImage);
 
-
-  this->Internal->AppendFilter->GetInput(flatDimension)->DeepCopy(imagePlane);
-
-  vesKiwiPolyDataRepresentation* rep = this->Internal->SliceReps[flatDimension];
-  rep->setDataSet(imagePlane);
-  this->Internal->TextureStorage.erase(rep->texture());
-  this->setTextureFromImage(rep->texture(), sliceImage);
+  vesKiwiImagePlaneDataRepresentation* rep = this->Internal->SliceReps[flatDimension];
+  rep->setImageData(sliceImage);
+  this->Internal->AppendFilter->GetInput(flatDimension)->DeepCopy(rep->imagePlanePolyData());
 }
 
 //----------------------------------------------------------------------------
@@ -545,14 +468,8 @@ bool vesKiwiViewerApp::initializeShaderProgram()
 void vesKiwiViewerApp::removeAllDataRepresentations()
 {
   for (size_t i = 0; i < this->Internal->DataRepresentations.size(); ++i) {
-
     vesKiwiDataRepresentation* rep = this->Internal->DataRepresentations[i];
     rep->removeSelfFromRenderer(this->renderer());
-
-    if (static_cast<vesKiwiPolyDataRepresentation*>(rep)->texture()) {
-      this->Internal->TextureStorage.erase(static_cast<vesKiwiPolyDataRepresentation*>(rep)->texture());
-    }
-
     delete rep;
   }
 
@@ -639,19 +556,22 @@ void vesKiwiViewerApp::addRepresentationsForDataSet(vtkDataSet* dataSet)
 
       // have a 2d image
 
-      vtkSmartPointer<vtkPolyData> imagePlane = GetPolyDataForImagePlane(image);
+      vesKiwiImagePlaneDataRepresentation* rep = new vesKiwiImagePlaneDataRepresentation();
 
-      vesKiwiPolyDataRepresentation* rep = this->addPolyDataRepresentation(imagePlane, this->Internal->TextureShader);
-      vesTexture* texture = this->newTextureFromImage(image);
-
-      rep->setTexture(texture);
-
-      // only do this when the append filter is present, which means this 2d image
-      // is one slice from a 3d image
       if (this->Internal->AppendFilter) {
-        this->Internal->AppendFilter->AddInput(imagePlane);
+        rep->setGrayscaleColorMap(this->Internal->ImageScalarRange);
+      }
+
+      rep->initializeWithShader(this->Internal->TextureShader);
+      rep->setImageData(image);
+
+      if (this->Internal->AppendFilter) {
+        this->Internal->AppendFilter->AddInput(rep->imagePlanePolyData());
         this->Internal->SliceReps.push_back(rep);
       }
+
+      rep->addSelfToRenderer(this->renderer());
+      this->Internal->DataRepresentations.push_back(rep);
 
     }
   }
@@ -669,7 +589,7 @@ vesKiwiPolyDataRepresentation* vesKiwiViewerApp::addPolyDataRepresentation(vtkPo
 }
 
 //----------------------------------------------------------------------------
-vesKiwiPolyDataRepresentation* vesKiwiViewerApp::addTextRepresentation(const std::string& text)
+vesKiwiImagePlaneDataRepresentation* vesKiwiViewerApp::addTextRepresentation(const std::string& text)
 {
   vtkNew<vtkTextProperty> textProperty;
   textProperty->SetFontFamilyToArial();
@@ -682,12 +602,12 @@ vesKiwiPolyDataRepresentation* vesKiwiViewerApp::addTextRepresentation(const std
   // The above call to RenderString() sets the imageTexture origin so some nonzero value, not sure why
   imageTexture->SetOrigin(0, 0, 0);
 
-  vtkSmartPointer<vtkPolyData> textQuad = GetPolyDataForImagePlane(imageTexture.GetPointer());
 
-  vesKiwiPolyDataRepresentation* rep = this->addPolyDataRepresentation(textQuad.GetPointer(), this->Internal->TextureShader);
-  vesTexture* texture = this->newTextureFromImage(imageTexture.GetPointer());
-  rep->setTexture(texture);
-
+  vesKiwiImagePlaneDataRepresentation* rep = new vesKiwiImagePlaneDataRepresentation();
+  rep->initializeWithShader(this->Internal->TextureShader);
+  rep->setImageData(imageTexture.GetPointer());
+  rep->addSelfToRenderer(this->renderer());
+  this->Internal->DataRepresentations.push_back(rep);
 
   double bounds[6];
   imageTexture->GetBounds(bounds);
@@ -703,7 +623,7 @@ vesKiwiPolyDataRepresentation* vesKiwiViewerApp::addTextRepresentation(const std
   double x = 0 + xmargin;
   double y = screenHeight - (height + ymargin);
 
-  rep->actor()->setTranslation(vesVector3f(x, y, 0));
+  rep->setTranslation(vesVector3f(x, y, 0));
   rep->actor()->setIsOverlayActor(true);
   rep->actor()->material()->setBinNumber(20);
   return rep;
@@ -724,59 +644,9 @@ void vesKiwiViewerApp::initializeTextureShader()
 //----------------------------------------------------------------------------
 void vesKiwiViewerApp::setBackgroundTexture(const std::string& filename)
 {
-  vtkSmartPointer<vtkImageData> image = vtkImageData::SafeDownCast(this->Internal->DataLoader.loadDataset(filename));
-  vesTexture* backgroundTexture = this->newTextureFromImage(image);
+  //vtkSmartPointer<vtkImageData> image = vtkImageData::SafeDownCast(this->Internal->DataLoader.loadDataset(filename));
+  //vesTexture* backgroundTexture = this->newTextureFromImage(image);
   //this->renderer()->SetBackground(backgroundTexture);
-}
-
-//----------------------------------------------------------------------------
-vesTexture* vesKiwiViewerApp::newTextureFromImage(vtkImageData* image)
-{
-  vesTexture* texture = new vesTexture();
-  this->setTextureFromImage(texture, image);
-  return texture;
-}
-
-//----------------------------------------------------------------------------
-void vesKiwiViewerApp::setTextureFromImage(vesTexture* texture, vtkImageData* image)
-{
-  assert(image);
-  assert(image->GetDataDimension() == 2);
-  assert(image->GetPointData()->GetScalars());
-
-  vtkSmartPointer<vtkUnsignedCharArray> pixels = vtkUnsignedCharArray::SafeDownCast(image->GetPointData()->GetScalars());
-
-  if (!pixels) {
-    vtkSmartPointer<vtkDataArray> scalars = image->GetPointData()->GetScalars();
-    vtkSmartPointer<vtkLookupTable> lut = vesDataConversionTools::GetGrayscaleLookupTable(this->Internal->ImageScalarRange);
-    pixels = vesDataConversionTools::MapScalars(scalars, lut);
-  }
-
-  int dimensions[3];
-  image->GetDimensions(dimensions);
-  const int flatDimension = GetImageFlatDimension(image);
- 
-  int width;
-  int height;
-
-  if (flatDimension == 2) {
-    // XY plane
-    width = image->GetDimensions()[0];
-    height = image->GetDimensions()[1];
-  }
-  else if (flatDimension == 1) {
-    // XZ plane
-    width = image->GetDimensions()[0];
-    height = image->GetDimensions()[2];
-  }
-  else {
-    // YZ plane
-    width = image->GetDimensions()[1];
-    height = image->GetDimensions()[2];
-  }
-
-  vesDataConversionTools::SetTextureData(pixels, texture, width, height);
-  this->Internal->TextureStorage[texture] = pixels;
 }
 
 //----------------------------------------------------------------------------

@@ -10,6 +10,7 @@ set(sources
   vesKiwiDataLoader.cpp
   vesKiwiDataRepresentation.cpp
   vesKiwiPolyDataRepresentation.cpp
+  vesKiwiImagePlaneDataRepresentation.cpp
   vesKiwiBaseApp.cpp
   vesKiwiViewerApp.cpp
   vesDataConversionTools.cpp)

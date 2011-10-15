@@ -30,6 +30,7 @@
 class vesCamera;
 class vesKiwiDataRepresentation;
 class vesKiwiPolyDataRepresentation;
+class vesKiwiImagePlaneDataRepresentation;
 class vesRenderer;
 class vesShaderProgram;
 class vesTexture;
@@ -95,13 +96,8 @@ protected:
   void removeAllDataRepresentations();
   void addRepresentationsForDataSet(vtkDataSet* dataSet);
   vesKiwiPolyDataRepresentation* addPolyDataRepresentation(vtkPolyData* polyData, vesShaderProgram* program);
-  vesKiwiPolyDataRepresentation* addTextRepresentation(const std::string& text);
+  vesKiwiImagePlaneDataRepresentation* addTextRepresentation(const std::string& text);
   void updateTextAnnotations();
-
-  vesTexture* newTextureFromImage(vtkImageData* image);
-  void setTextureFromImage(vesTexture* texture, vtkImageData* image);
-
-
 
 private:
 
