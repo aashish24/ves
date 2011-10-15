@@ -87,6 +87,24 @@ void vesTexture::setTextureUnit(unsigned int unit)
 }
 
 
+void vesTexture::setWidth(int width)
+{
+  this->m_width = width;
+}
+
+
+void vesTexture::setHeight(int height)
+{
+  this->m_height = height;
+}
+
+
+void vesTexture::setDepth(int depth)
+{
+  this->m_depth = depth;
+}
+
+
 void vesTexture::setup(const vesRenderState &renderState)
 {
   if (this->dirtyState()) {
