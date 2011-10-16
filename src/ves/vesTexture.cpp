@@ -60,6 +60,7 @@ vesTexture::vesTexture() : vesMaterialAttribute(),
 
 vesTexture::~vesTexture()
 {
+  glDeleteTextures(1, &this->m_textureHandle);
 }
 
 
@@ -116,7 +117,7 @@ void vesTexture::setup(const vesRenderState &renderState)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-//    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
     if (this->m_image.width > 0 || this->m_image.height > 0) {
       glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, this->m_image.width, this->m_image.height,
