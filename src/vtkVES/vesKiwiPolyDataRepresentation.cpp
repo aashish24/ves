@@ -142,7 +142,8 @@ vesTriangleData* vesKiwiPolyDataRepresentation::triangleData() const
 //----------------------------------------------------------------------------
 void vesKiwiPolyDataRepresentation::setTranslation(const vesVector3f& translation)
 {
-  this->actor()->setTranslation(translation);
+  assert(this->Internal->Actor);
+  this->Internal->Actor->setTranslation(translation);
 }
 
 //----------------------------------------------------------------------------
@@ -169,8 +170,16 @@ void vesKiwiPolyDataRepresentation::initializeWithShader(vesShaderProgram* shade
 }
 
 //----------------------------------------------------------------------------
+void vesKiwiPolyDataRepresentation::setBinNumber(int binNumber)
+{
+  assert(this->Internal->Actor);
+  this->Internal->Actor->material()->setBinNumber(binNumber);
+}
+
+//----------------------------------------------------------------------------
 void vesKiwiPolyDataRepresentation::setTexture(vesTexture* texture)
 {
+  assert(this->Internal->Actor);
   this->Internal->Texture = texture;
   this->Internal->Actor->material()->addAttribute(texture);
 }

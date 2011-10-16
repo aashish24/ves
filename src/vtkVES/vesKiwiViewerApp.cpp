@@ -22,6 +22,7 @@
 #include "vesKiwiDataLoader.h"
 #include "vesKiwiDataRepresentation.h"
 #include "vesKiwiImagePlaneDataRepresentation.h"
+#include "vesKiwiImageWidgetRepresentation.h"
 #include "vesKiwiPolyDataRepresentation.h"
 #include "vesDataConversionTools.h"
 
@@ -41,27 +42,9 @@
 #include "vesVertexAttribute.h"
 #include "vesVertexAttributeKeys.h"
 
-
-#include <vtkDataSet.h>
-
-// todo- move these includes to image representation class
 #include <vtkNew.h>
 #include <vtkPolyData.h>
 #include <vtkImageData.h>
-#include <vtkCutter.h>
-#include <vtkPlane.h>
-#include <vtkOutlineFilter.h>
-#include <vtkQuad.h>
-#include <vtkPoints.h>
-#include <vtkFloatArray.h>
-#include <vtkPointData.h>
-#include <vtkExtractVOI.h>
-#include <vtkLookupTable.h>
-#include <vtkUnsignedCharArray.h>
-#include <vtkContourFilter.h>
-#include <vtkLineSource.h>
-#include <vtkCellLocator.h>
-#include <vtkAppendPolyData.h>
 
 // text tests
 #include <vtkTextProperty.h>
@@ -84,11 +67,10 @@ public:
   {
     this->ShaderProgram = 0;
     this->TextureShader = 0;
-    this->SelectedImageDimension = -1;
-    this->ContourRep = 0;
 
     this->TextToImage = vtkSmartPointer<vtkFreeTypeStringToImage>::New();
     this->TextRepresentation = 0;
+    this->ImageWidget = 0;
   }
 
   ~vesInternal()
@@ -96,20 +78,8 @@ public:
 
   }
 
-
   vesShaderProgram* ShaderProgram;
   vesShaderProgram* TextureShader;
-
-  // todo- move these ivars to image representation class
-  vtkSmartPointer<vtkExtractVOI> SliceFilter;
-  std::vector<vesKiwiImagePlaneDataRepresentation*> SliceReps;
-  vesKiwiPolyDataRepresentation* ContourRep;
-  vtkSmartPointer<vtkCellLocator> Locator;
-  vtkSmartPointer<vtkAppendPolyData> AppendFilter;
-  int SelectedImageDimension;
-  int CurrentSliceIndices[3];
-  int ContourVis;
-  double ImageScalarRange[2];
 
   std::vector<vesKiwiDataRepresentation*> DataRepresentations;
 
@@ -126,6 +96,8 @@ public:
 
   vtkSmartPointer<vtkFreeTypeStringToImage> TextToImage;
   vesKiwiImagePlaneDataRepresentation* TextRepresentation;
+
+  vesKiwiImageWidgetRepresentation* ImageWidget;
 };
 
 //----------------------------------------------------------------------------
@@ -174,7 +146,7 @@ int vesKiwiViewerApp::numberOfBuiltinDatasets() const
 //----------------------------------------------------------------------------
 int vesKiwiViewerApp::defaultBuiltinDatasetIndex() const
 {
-  return 1;
+  return 10;
 }
 
 //----------------------------------------------------------------------------
@@ -211,98 +183,10 @@ void vesKiwiViewerApp::willRender()
 }
 
 //----------------------------------------------------------------------------
-bool vesKiwiViewerApp::scrollSliceModeActive() const
-{
-  return (this->Internal->SelectedImageDimension >= 0);
-}
-
-//----------------------------------------------------------------------------
-void vesKiwiViewerApp::scrollImageSlice(double deltaX, double deltaY)
-{
-  if (!this->Internal->SliceFilter) {
-    return;
-  }
-
-  deltaY *= -1;
-
-  vesRenderer* ren = this->renderer();
-  vesCamera* camera = ren->camera();
-  vesVector3f viewFocus = camera->GetFocalPoint();
-  vesVector3f viewPoint = camera->GetPosition();
-  vesVector3f viewFocusDisplay = ren->computeWorldToDisplay(viewFocus);
-  float focalDepth = viewFocusDisplay[2];
-
-  double x0 = viewFocusDisplay[0];
-  double y0 = viewFocusDisplay[1];
-  double x1 = x0 + deltaX;
-  double y1 = y0 + deltaY;
-
-  // map change into world coordinates
-  vesVector3f point0 = ren->computeDisplayToWorld(vesVector3f(x0, y0, focalDepth));
-  vesVector3f point1 = ren->computeDisplayToWorld(vesVector3f(x1, y1, focalDepth));
-  vesVector3f motionVector = point1 - point0;
-
-
-
-  int flatDimension = this->Internal->SelectedImageDimension;
-
-  vesVector3f planeNormal(0, 0, 0);
-  planeNormal[flatDimension] = 1.0;
-
-  double vectorDot = gmtl::dot(motionVector, planeNormal);
-
-  //printf("motion vector: %f %f %f\n", motionVector[0],motionVector[1],motionVector[2]);
-  //printf("plane normal: %f %f %f\n", planeNormal[0],planeNormal[1],planeNormal[2]);
-  //printf("dot: %f\n", vectorDot);
-
-  double delta = vectorDot;
-  if (fabs(delta) < 1e-6) {
-    delta = deltaY;
-  }
-
-  int dimensions[3];
-  vtkImageData::SafeDownCast(this->Internal->SliceFilter->GetInput())->GetDimensions(dimensions);
-
-  int dimensionDelta = static_cast<int>(delta);
-  if (dimensionDelta == 0) {
-    dimensionDelta = delta > 0 ? 1 : -1;
-  }
-
-  // Get new VOI flat dimension
-  int newDimension = this->Internal->CurrentSliceIndices[flatDimension] + dimensionDelta;
-  if (newDimension < 0) {
-    newDimension = 0;
-  }
-  else if (newDimension >= dimensions[flatDimension]) {
-    newDimension = dimensions[flatDimension] - 1;
-  }
-
-  this->Internal->CurrentSliceIndices[flatDimension] = newDimension;
-
-  if (flatDimension == 0) {
-    this->Internal->SliceFilter->SetVOI(newDimension, newDimension, 0, dimensions[1], 0, dimensions[2]);
-  }
-  else if (flatDimension == 1) {
-    this->Internal->SliceFilter->SetVOI(0, dimensions[0], newDimension, newDimension, 0, dimensions[2]);
-  }
-  else {
-    this->Internal->SliceFilter->SetVOI(0, dimensions[0], 0, dimensions[1], newDimension, newDimension);
-  }
-
-  this->Internal->SliceFilter->Update();
-  vtkImageData* sliceImage = this->Internal->SliceFilter->GetOutput();
-
-
-  vesKiwiImagePlaneDataRepresentation* rep = this->Internal->SliceReps[flatDimension];
-  rep->setImageData(sliceImage);
-  this->Internal->AppendFilter->GetInput(flatDimension)->DeepCopy(rep->imagePlanePolyData());
-}
-
-//----------------------------------------------------------------------------
 void vesKiwiViewerApp::handleSingleTouchPanGesture(double deltaX, double deltaY)
 {
-  if (this->scrollSliceModeActive()) {
-    this->scrollImageSlice(deltaX, deltaY);
+  if (this->Internal->ImageWidget
+      && this->Internal->ImageWidget->handleSingleTouchPanGesture(deltaX, deltaY)) {
     return;
   }
 
@@ -313,85 +197,34 @@ void vesKiwiViewerApp::handleSingleTouchPanGesture(double deltaX, double deltaY)
 //----------------------------------------------------------------------------
 void vesKiwiViewerApp::handleDoubleTap()
 {
-  if (this->Internal->ContourRep) {
-    this->Internal->ContourVis = (this->Internal->ContourVis + 1) % 3;
-    if (this->Internal->ContourVis == 0) {
-      this->Internal->ContourRep->removeSelfFromRenderer(this->renderer());
-    }
-    else if (this->Internal->ContourVis == 1) {
-      this->Internal->ContourRep->addSelfToRenderer(this->renderer());
-      this->Internal->ContourRep->mapper()->setColor(0.8, 0.8, 0.8, 0.3);
-    }
-    else {
-      this->Internal->ContourRep->mapper()->setColor(0.8, 0.8, 0.8, 1.0);
-    }
+  if (this->Internal->ImageWidget) {
+    this->Internal->ImageWidget->handleDoubleTap();
   }
 }
 
 //----------------------------------------------------------------------------
 void vesKiwiViewerApp::handleSingleTouchUp()
 {
-  this->Internal->SelectedImageDimension = -1;
+  if (this->Internal->ImageWidget) {
+    this->Internal->ImageWidget->handleSingleTouchUp();
+  }
 }
 
 //----------------------------------------------------------------------------
 void vesKiwiViewerApp::handleSingleTouchDown(int displayX, int displayY)
 {
-  if (!this->Internal->AppendFilter) {
-    return;
+  if (this->Internal->ImageWidget) {
+    this->Internal->ImageWidget->handleSingleTouchDown(displayX, displayY);
   }
+}
 
-  // calculate the focal depth so we'll know how far to move
-  vesRenderer* ren = this->renderer();
-
-  // flip Y coordinate
-  displayY = ren->height() - displayY;
-
-  vesCamera* camera = ren->camera();
-  vesVector3f cameraFocalPoint = camera->GetFocalPoint();
-  vesVector3f cameraPosition = camera->GetPosition();
-  vesVector3f displayFocus = ren->computeWorldToDisplay(cameraFocalPoint);
-  float focalDepth = displayFocus[2];
-
-  vesVector3f rayPoint0 = cameraPosition;
-  vesVector3f rayPoint1 = ren->computeDisplayToWorld(vesVector3f(displayX, displayY, focalDepth));
-
-  vesVector3f rayDirection = rayPoint1 - rayPoint0;
-
-  gmtl::normalize(rayDirection);
-  rayDirection *= 1000.0;
-  rayPoint1 += rayDirection;
-
-  // visualize the pick line
-  /*
-  vtkNew<vtkLineSource> line;
-  line->SetPoint1(rayPoint0.getData());
-  line->SetPoint2(rayPoint1.getData());
-  line->Update();
-  this->addPolyDataRepresentation(line->GetOutput());
-  */
-
-  vtkNew<vtkCellLocator> locator;
-  this->Internal->AppendFilter->Update();
-  locator->SetDataSet(this->Internal->AppendFilter->GetOutput());
-  locator->BuildLocator();
-
-  double p0[3] = {rayPoint0[0], rayPoint0[1], rayPoint0[2]};
-  double p1[3] = {rayPoint1[0], rayPoint1[1], rayPoint1[2]};
-
-  double pickPoint[3];
-  double t;
-  double paramCoords[3];
-  vtkIdType cellId = -1;
-  int subId;
-
-  int result = locator->IntersectWithLine(p0, p1, 0.0, t, pickPoint, paramCoords, subId, cellId);
-  if (result == 1) {
-    this->Internal->SelectedImageDimension = cellId;
+//----------------------------------------------------------------------------
+bool vesKiwiViewerApp::scrollSliceModeActive() const
+{
+  if (this->Internal->ImageWidget) {
+    return this->Internal->ImageWidget->scrollSliceModeActive();
   }
-  else {
-    this->Internal->SelectedImageDimension = -1;
-  }
+  return false;
 }
 
 //----------------------------------------------------------------------------
@@ -473,12 +306,7 @@ void vesKiwiViewerApp::removeAllDataRepresentations()
     delete rep;
   }
 
-  // todo- move to image representation class
-  this->Internal->SliceReps.clear();
-  this->Internal->SliceFilter = 0;
-  this->Internal->AppendFilter = 0;
-  this->Internal->ContourRep = 0;
-
+  this->Internal->ImageWidget = 0;
   this->Internal->TextRepresentation = 0;
 
   this->Internal->DataRepresentations.clear();
@@ -493,83 +321,23 @@ void vesKiwiViewerApp::addRepresentationsForDataSet(vtkDataSet* dataSet)
   }
   else if (vtkImageData::SafeDownCast(dataSet)) {
 
-    // todo - move to image representation class
     vtkImageData* image = vtkImageData::SafeDownCast(dataSet);
+
     if (image->GetDataDimension() == 3) {
 
-      double bounds[6];
-      double boundsCenter[3];
-      image->GetBounds(bounds);
-      for (int i = 0; i < 3; ++i)
-        {
-        boundsCenter[i] = bounds[i*2] + (bounds[i*2+1]-bounds[i*2])/2.0;
-        }
-
-      this->Internal->AppendFilter = vtkSmartPointer<vtkAppendPolyData>::New();
-
-      int dimensions[3];
-      image->GetDimensions(dimensions);
-      image->GetPointData()->GetScalars()->GetRange(this->Internal->ImageScalarRange);
-
-      this->Internal->CurrentSliceIndices[0] = dimensions[0]/2;
-      this->Internal->CurrentSliceIndices[1] = dimensions[1]/2;
-      this->Internal->CurrentSliceIndices[2] = dimensions[2]/2;
-
-      vtkNew<vtkExtractVOI> voi;
-      this->Internal->SliceFilter = voi.GetPointer();
-      voi->SetInput(image);
-
-      voi->SetVOI(this->Internal->CurrentSliceIndices[0], this->Internal->CurrentSliceIndices[0], 0, dimensions[1], 0, dimensions[2]);
-      voi->Update();
-      this->addRepresentationsForDataSet(voi->GetOutput());
-
-      voi->SetVOI(0, dimensions[0], this->Internal->CurrentSliceIndices[1], this->Internal->CurrentSliceIndices[1], 0, dimensions[2]);
-      voi->Update();
-      this->addRepresentationsForDataSet(voi->GetOutput());
-
-      voi->SetVOI(0, dimensions[0], 0, dimensions[1], this->Internal->CurrentSliceIndices[2], this->Internal->CurrentSliceIndices[2]);
-      voi->Update();
-      this->addRepresentationsForDataSet(voi->GetOutput());
-
-
-      vtkNew<vtkOutlineFilter> outline;
-      outline->SetInput(image);
-      outline->Update();
-      this->addPolyDataRepresentation(outline->GetOutput(), this->Internal->ShaderProgram);
-
-      if (image->GetNumberOfPoints() < 600000) {
-        vtkNew<vtkContourFilter> contour;
-        contour->SetInput(image);
-        // contour value hardcoded for head image dataset
-        contour->SetValue(0, 1400);
-        contour->ComputeScalarsOff();
-        contour->ComputeNormalsOff();
-        contour->Update();
-        vesKiwiPolyDataRepresentation* contourRep = this->addPolyDataRepresentation(contour->GetOutput(), this->Internal->ShaderProgram);
-        contourRep->setColor(0.8, 0.8, 0.8, 0.4);
-        this->Internal->ContourVis = 1;
-        this->Internal->ContourRep = contourRep;
-      }
+      vesKiwiImageWidgetRepresentation* rep = new vesKiwiImageWidgetRepresentation();
+      rep->initializeWithShader(this->Internal->ShaderProgram, this->Internal->TextureShader);
+      rep->setImageData(image);
+      rep->addSelfToRenderer(this->renderer());
+      this->Internal->DataRepresentations.push_back(rep);
+      this->Internal->ImageWidget = rep;
 
     }
     else {
 
-      // have a 2d image
-
       vesKiwiImagePlaneDataRepresentation* rep = new vesKiwiImagePlaneDataRepresentation();
-
-      if (this->Internal->AppendFilter) {
-        rep->setGrayscaleColorMap(this->Internal->ImageScalarRange);
-      }
-
       rep->initializeWithShader(this->Internal->TextureShader);
       rep->setImageData(image);
-
-      if (this->Internal->AppendFilter) {
-        this->Internal->AppendFilter->AddInput(rep->imagePlanePolyData());
-        this->Internal->SliceReps.push_back(rep);
-      }
-
       rep->addSelfToRenderer(this->renderer());
       this->Internal->DataRepresentations.push_back(rep);
 

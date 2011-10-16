@@ -71,13 +71,11 @@ public:
   void initializeTextureShader();
   void setBackgroundTexture(const std::string& filename);
 
-
   virtual void handleSingleTouchPanGesture(double deltaX, double deltaY);
   virtual void handleSingleTouchDown(int displayX, int displayY);
   virtual void handleSingleTouchUp();
   virtual void handleDoubleTap();
 
-  void scrollImageSlice(double deltaX, double deltaY);
   bool scrollSliceModeActive() const;
 
   int numberOfModelFacets() const;

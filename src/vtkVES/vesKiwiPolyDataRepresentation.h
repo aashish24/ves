@@ -52,6 +52,8 @@ public:
   void setTexture(vesTexture* texture);
   vesTexture* texture() const;
 
+  void setBinNumber(int binNumber);
+
   virtual void setTranslation(const vesVector3f& translation);
 
   virtual int numberOfFacets();
