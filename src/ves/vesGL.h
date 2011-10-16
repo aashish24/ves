@@ -37,4 +37,19 @@
 #endif
 
 
+#define printGLError(os)        \
+  GLenum error = glGetError();  \
+  if (error != GL_NO_ERROR) {   \
+  os << "ERROR: Occured in " << __FILE__ << " at line " << __LINE__ << " (error code: " << error << ")\n";   \
+  }
+
+
+#define printGLErrorWithMessage(message, os)   \
+  GLenum error = glGetError();      \
+  if (error != GL_NO_ERROR) {       \
+    os << message << "\n";          \
+    os << "ERROR: Occured in " << __FILE__ << " at line " << __LINE__ << " (error code: " << error << ")\n";   \
+  }
+
+
 #endif

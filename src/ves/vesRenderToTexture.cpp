@@ -22,6 +22,7 @@
 
 // VES includes
 #include "vesFBORenderTargetPrivate.h"
+#include "vesGL.h"
 #include "vesTexture.h"
 
 // C/C++ includes
@@ -87,16 +88,12 @@ const vesTexture* vesRenderToTexture::texture() const
 void vesRenderToTexture::setup(vesRenderState &renderState)
 {
   if (this->m_dirtyState) {
-    glGenFramebuffers(1, &this->m_internal->m_frameBufferHandle);
-
     vesFBORenderTarget::vesInternal::BufferAttachmentMap::iterator itr =
       this->m_internal->m_bufferAttachmentMap.find(ColorAttachment0);
 
     if (itr != this->m_internal->m_bufferAttachmentMap.end()) {
 
       itr->second.m_texture->setup(renderState);
-
-      glBindTexture(GL_TEXTURE_2D, itr->second.m_texture->textureHandle());
 
       unsigned int renderBufferHandle;
       glGenRenderbuffers(1, &renderBufferHandle);
@@ -107,6 +104,7 @@ void vesRenderToTexture::setup(vesRenderState &renderState)
 
       this->m_internal->m_renderBuffersHandle.push_back(renderBufferHandle);
 
+      glGenFramebuffers(1, &this->m_internal->m_frameBufferHandle);
       glBindFramebuffer(GL_FRAMEBUFFER, this->m_internal->m_frameBufferHandle);
 
       // Specify texture as color attachment
@@ -116,6 +114,7 @@ void vesRenderToTexture::setup(vesRenderState &renderState)
       // Specify depth_renderbufer as depth attachment
       glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
                                 GL_RENDERBUFFER, renderBufferHandle);
+
     }
 
     this->setDirtyStateOff();
@@ -134,7 +133,6 @@ void vesRenderToTexture::render(vesRenderState &renderState)
   GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
   if(status == GL_FRAMEBUFFER_COMPLETE)
   {
-    glClearColor(1.0, 0.0, 0.0, 1.0);
     glBindFramebuffer(GL_FRAMEBUFFER, this->m_internal->m_frameBufferHandle);
   }
   else
@@ -172,6 +170,7 @@ void vesRenderToTexture::render(vesRenderState &renderState)
 
 void vesRenderToTexture::remove(vesRenderState &renderState)
 {
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
   glDeleteRenderbuffers(1, &this->m_internal->m_renderBuffersHandle[0]);
   glDeleteFramebuffers (1, &this->m_internal->m_frameBufferHandle);
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
