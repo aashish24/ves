@@ -30,7 +30,7 @@ class vesKiwiDataRepresentation
 public:
 
   vesKiwiDataRepresentation() {}
-  ~vesKiwiDataRepresentation() {}
+  virtual ~vesKiwiDataRepresentation() {}
 
   virtual void addSelfToRenderer(vesRenderer* renderer) = 0;
   virtual void removeSelfFromRenderer(vesRenderer* renderer) = 0;

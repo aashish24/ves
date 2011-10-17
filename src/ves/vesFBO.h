@@ -46,11 +46,11 @@ public:
   vesTexture*       texture(AttachmentType type);
   const vesTexture* texture(AttachmentType type) const;
 
-  void         setWidth (unsigned int width);
-  unsigned int width() const;
+  void setWidth (int width);
+  int width() const;
 
-  void         setHeight (unsigned int height);
-  unsigned int height() const;
+  void setHeight (int height);
+  int height() const;
 
   unsigned int frameBufferHandle();
 

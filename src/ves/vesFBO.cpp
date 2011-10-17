@@ -71,10 +71,10 @@ public:
   typedef std::map<AttachmentType, unsigned int> AttachmentToRBOMap;
 
 
-  unsigned int           m_frameBufferHandle;
+  unsigned int m_frameBufferHandle;
 
-  unsigned int           m_width;
-  unsigned int           m_height;
+  int m_width;
+  int m_height;
 
   AttachmentToTextureMap m_attachmentToTextureMap;
   AttachmentToRBOMap     m_attachmentToRBOMap;
@@ -150,7 +150,7 @@ const vesTexture* vesFBO::texture(AttachmentType type) const
 }
 
 
-void vesFBO::setWidth(unsigned int width)
+void vesFBO::setWidth(int width)
 {
   this->m_internal->m_width = width;
 
@@ -158,13 +158,13 @@ void vesFBO::setWidth(unsigned int width)
 }
 
 
-unsigned int vesFBO::width() const
+int vesFBO::width() const
 {
   return this->m_internal->m_width;
 }
 
 
-void vesFBO::setHeight(unsigned int height)
+void vesFBO::setHeight(int height)
 {
   this->m_internal->m_height = height;
 
@@ -172,7 +172,7 @@ void vesFBO::setHeight(unsigned int height)
 }
 
 
-unsigned int vesFBO::height() const
+int vesFBO::height() const
 {
   return this->m_internal->m_height;
 }
