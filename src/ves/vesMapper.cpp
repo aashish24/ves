@@ -169,7 +169,7 @@ void vesMapper::render(const vesRenderState &renderState)
     = this->m_internal->m_bufferVertexAttributeMap.begin();
 
   int bufferIndex = 0;
-  for (constItr; constItr != this->m_internal->m_bufferVertexAttributeMap.end();
+  for (; constItr != this->m_internal->m_bufferVertexAttributeMap.end();
        ++constItr) {
     glBindBuffer(GL_ARRAY_BUFFER, constItr->first);
     for (size_t i = 0; i < constItr->second.size(); ++i) {

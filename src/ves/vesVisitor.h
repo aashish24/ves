@@ -64,7 +64,7 @@ public:
   vesMatrix4x4f projectionMatrix();
 
   vesMatrix4x4f projection2DMatrix() { return this->m_projection2DMatrix; }
-  vesMatrix4x4f setProjection2DMatrix(const vesMatrix4x4f& matrix) { this->m_projection2DMatrix = matrix; }
+  void setProjection2DMatrix(const vesMatrix4x4f& matrix) { this->m_projection2DMatrix = matrix; }
 
   inline void traverse(vesActor& actor)
   {

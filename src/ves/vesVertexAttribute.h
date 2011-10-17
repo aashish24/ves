@@ -43,6 +43,12 @@ public:
   {
   }
 
+
+  virtual ~vesVertexAttribute()
+  {
+  }
+
+
   const std::string& name() const { return this->m_name; }
 
   virtual void bind         (const vesRenderState &renderState){}
