@@ -63,6 +63,8 @@ protected:
 
   SFImage      m_image;
 
+  bool         m_hasData;
+
   int          m_width;
   int          m_height;
   int          m_depth;

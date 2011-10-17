@@ -44,6 +44,7 @@ static const GLfloat textureVertices[] = {
 };
 
 vesTexture::vesTexture() : vesMaterialAttribute(),
+  m_hasData      (false),
   m_width        (0),
   m_height       (0),
   m_depth        (0),
@@ -53,6 +54,8 @@ vesTexture::vesTexture() : vesMaterialAttribute(),
   this->m_type    = vesMaterialAttribute::Texture;
   this->m_binding = vesMaterialAttribute::BindMinimal;
 
+  // Subsitution for a lack of a image class.
+  this->m_image.data   = 0x0;
   this->m_image.width  = 0;
   this->m_image.height = 0;
 }
@@ -79,6 +82,7 @@ void vesTexture::unbind(const vesRenderState &renderState)
 
 void vesTexture::setImageData(SFImage image)
 {
+  this->m_hasData = true;
   this->m_image = image;
   this->setDirtyStateOn();
 }
@@ -119,7 +123,7 @@ void vesTexture::setup(const vesRenderState &renderState)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-    if (this->m_image.width > 0 || this->m_image.height > 0) {
+    if (this->m_hasData) {
       glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, this->m_image.width, this->m_image.height,
                    0, GL_RGBA, GL_UNSIGNED_BYTE, this->m_image.data);
     }
