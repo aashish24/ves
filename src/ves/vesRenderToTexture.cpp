@@ -21,7 +21,7 @@
 #include "vesRenderToTexture.h"
 
 // VES includes
-#include "vesFBORenderTargetPrivate.h"
+#include "vesFBO.h"
 #include "vesGL.h"
 #include "vesTexture.h"
 
@@ -37,89 +37,38 @@ vesRenderToTexture::vesRenderToTexture() : vesFBORenderTarget()
 
 vesRenderToTexture::~vesRenderToTexture()
 {
-  glDeleteRenderbuffers(1, &this->m_internal->m_renderBuffersHandle[0]);
-  glDeleteFramebuffers (1, &this->m_internal->m_frameBufferHandle);
-
-  this->m_internal->m_renderBuffersHandle.clear();
 }
 
 
-bool vesRenderToTexture::setTexture(vesTexture *texture)
+bool vesRenderToTexture::setColorTexture(vesTexture *texture)
 {
-  if (!texture) {
-    return false;
+  bool result = this->m_fbo->setTexture(vesFBO::ColorAttachment0, texture);
+
+  if (result) {
+    this->setDirtyStateOn();
   }
 
-  std::map<AttachmentType, Attachment>::iterator itr;
-  itr = this->m_internal->m_bufferAttachmentMap.find(ColorAttachment0);
-  if (itr != this->m_internal->m_bufferAttachmentMap.end() &&
-      itr->second.m_texture == texture) {
-    return false;
-  }
-
-  this->setDirtyStateOn();
-
-  return this->attach(ColorAttachment0, texture);
+  return result;
 }
 
 
-vesTexture* vesRenderToTexture::texture()
+vesTexture* vesRenderToTexture::colorTexture()
 {
-  std::map<AttachmentType, Attachment>::iterator itr;
-  itr = this->m_internal->m_bufferAttachmentMap.find(ColorAttachment0);
-  if (itr != this->m_internal->m_bufferAttachmentMap.end()) {
-    return itr->second.m_texture;
-  }
-  else {
-    return 0x0;
-  }
+  return this->m_fbo->texture(vesFBO::ColorAttachment0);
 }
 
 
-const vesTexture* vesRenderToTexture::texture() const
+const vesTexture* vesRenderToTexture::colorTexture() const
 {
-  std::map<AttachmentType, Attachment>::const_iterator constItr;
-  constItr = this->m_internal->m_bufferAttachmentMap.find(ColorAttachment0);
-  if (constItr != this->m_internal->m_bufferAttachmentMap.end()) {
-    return constItr->second.m_texture;
-  }
-  else {
-    return 0x0;
-  }
+  return this->m_fbo->texture(vesFBO::ColorAttachment0);
 }
 
 
 void vesRenderToTexture::setup(vesRenderState &renderState)
 {
   if (this->m_dirtyState) {
-    vesFBORenderTarget::vesInternal::BufferAttachmentMap::iterator itr =
-      this->m_internal->m_bufferAttachmentMap.find(ColorAttachment0);
 
-    if (itr != this->m_internal->m_bufferAttachmentMap.end()) {
-
-      itr->second.m_texture->setup(renderState);
-
-      unsigned int renderBufferHandle;
-      glGenRenderbuffers(1, &renderBufferHandle);
-      glBindRenderbuffer(GL_RENDERBUFFER, renderBufferHandle);
-      glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16,
-                            itr->second.m_texture->width(),
-                            itr->second.m_texture->height());
-
-      this->m_internal->m_renderBuffersHandle.push_back(renderBufferHandle);
-
-      glGenFramebuffers(1, &this->m_internal->m_frameBufferHandle);
-      glBindFramebuffer(GL_FRAMEBUFFER, this->m_internal->m_frameBufferHandle);
-
-      // Specify texture as color attachment
-      glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D,
-                             itr->second.m_texture->textureHandle(), 0);
-
-      // Specify depth_renderbufer as depth attachment
-      glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT,
-                                GL_RENDERBUFFER, renderBufferHandle);
-
-    }
+    this->m_fbo->setup(renderState);
 
     this->setDirtyStateOff();
   }
@@ -128,52 +77,11 @@ void vesRenderToTexture::setup(vesRenderState &renderState)
 
 void vesRenderToTexture::render(vesRenderState &renderState)
 {
-  assert(this->m_internal->m_renderBuffersHandle.empty());
-
-  // Call setup in case we have not done so already.
-  this->setup(renderState);
-
-  // Check for framebuffer complete
-  GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-  if(status == GL_FRAMEBUFFER_COMPLETE)
-  {
-    glBindFramebuffer(GL_FRAMEBUFFER, this->m_internal->m_frameBufferHandle);
-  }
-  else
-  {
-    switch(status)
-    {
-      case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
-      {
-        std::cerr << "GL ERROR: GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT " << status << std::endl;
-        break;
-      }
-      case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS:
-      {
-        std::cerr << "GL ERROR: GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS " << status << std::endl;
-        break;
-      }
-      case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
-      {
-        std::cerr << "GL ERROR: GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT " << status << std::endl;
-        break;
-      }
-      case GL_FRAMEBUFFER_UNSUPPORTED:
-      {
-        std::cerr << "GL ERROR: GL_FRAMEBUFFER_UNSUPPORTED " << status << std::endl;
-        break;
-      }
-      default:
-      {
-        std::cerr << "GL ERROR: Unknown error " << status << std::endl;
-      }
-    };
-  }
+  this->m_fbo->render(renderState);
 }
 
 
 void vesRenderToTexture::remove(vesRenderState &renderState)
 {
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  this->m_fbo->remove(renderState);
 }
-

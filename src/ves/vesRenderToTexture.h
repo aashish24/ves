@@ -32,9 +32,14 @@ public:
            vesRenderToTexture();
   virtual ~vesRenderToTexture();
 
-  bool              setTexture(vesTexture *texture);
-  vesTexture*       texture();
-  const vesTexture* texture() const;
+  bool              setColorTexture(vesTexture *texture);
+  vesTexture*       colorTexture();
+  const vesTexture* colorTexture() const;
+
+  bool              setDepthTexture(vesTexture *texture);
+  vesTexture*       depthTexture();
+  const vesTexture* depthTexture() const;
+
 
 protected:
 

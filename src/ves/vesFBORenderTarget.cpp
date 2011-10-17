@@ -21,7 +21,7 @@
 #include "vesFBORenderTarget.h"
 
 // VES includes
-#include "vesFBORenderTargetPrivate.h"
+#include "vesFBO.h"
 #include "vesTexture.h"
 
 // C++ includes
@@ -29,27 +29,20 @@
 
 vesFBORenderTarget::vesFBORenderTarget() : vesRenderTarget()
 {
-  this->m_internal = new vesInternal();
-
   this->m_implementation = FrameBufferObject;
+  this->m_fbo = new vesFBO();
 }
 
 
 vesFBORenderTarget::~vesFBORenderTarget()
 {
-  delete this->m_internal;
+  delete this->m_fbo; this->m_fbo = 0x0;
 }
 
 
-bool vesFBORenderTarget::attach(AttachmentType type, vesTexture *texture)
+bool vesFBORenderTarget::attach(vesFBO::AttachmentType type, vesTexture *texture)
 {
-  if (texture) {
-    this->m_internal->m_bufferAttachmentMap[type].m_texture = texture;
-
-    return true;
-  }
-
-  return false;
+  return this->m_fbo->setTexture(type, texture);
 }
 
 

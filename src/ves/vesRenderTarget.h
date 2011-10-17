@@ -46,13 +46,6 @@ public:
       PixelBuffer
   };
 
-
-  enum AttachmentType
-  {
-    ColorAttachment0 = GL_COLOR_ATTACHMENT0,
-    DepthAttachment  = GL_DEPTH_ATTACHMENT
-  };
-
   virtual ~vesRenderTarget(){}
 
   virtual void setup (vesRenderState &renderState){}

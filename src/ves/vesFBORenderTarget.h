@@ -23,6 +23,9 @@
 
 #include "vesRenderTarget.h"
 
+// VES includes
+#include "vesFBO.h"
+
 // Forward declarations
 class vesTexture;
 
@@ -33,12 +36,11 @@ public:
            vesFBORenderTarget();
   virtual ~vesFBORenderTarget();
 
-  virtual bool attach(AttachmentType type, vesTexture *texture);
+  virtual bool attach(vesFBO::AttachmentType type, vesTexture *texture);
 
 protected:
 
-  class vesInternal;
-  vesInternal *m_internal;
+  vesFBO *m_fbo;
 };
 
 #endif // VESFBORENDERTARGET_H
