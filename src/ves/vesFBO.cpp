@@ -51,6 +51,22 @@ public:
   }
 
 
+  void validateAndFixTextureDimensions(vesTexture *texture)
+  {
+    if (!texture) {
+      return;
+    }
+
+    if (texture->width() != this->m_width) {
+      texture->setWidth(this->m_width);
+    }
+
+    if (texture->height() != this->m_height) {
+      texture->setHeight(this->m_height);
+    }
+  }
+
+
   typedef std::map<AttachmentType, vesTexture*>  AttachmentToTextureMap;
   typedef std::map<AttachmentType, unsigned int> AttachmentToRBOMap;
 
@@ -216,7 +232,8 @@ void vesFBO::createFBO(vesRenderState &renderState)
     this->m_internal->m_attachmentToRBOMap[ColorAttachment0] = colorBufferHandle;
   }
   else {
-    this->m_internal->m_attachmentToTextureMap[ColorAttachment0]->setup(renderState);
+    this->m_internal->validateAndFixTextureDimensions(itr->second);
+    itr->second->setup(renderState);
     glFramebufferTexture2D(GL_FRAMEBUFFER, ColorAttachment0, GL_TEXTURE_2D,
       this->m_internal->m_attachmentToTextureMap[ColorAttachment0]->textureHandle(), 0);
   }
@@ -235,7 +252,7 @@ void vesFBO::createFBO(vesRenderState &renderState)
     this->m_internal->m_attachmentToRBOMap[DepthAttachment] = depthBufferHandle;
   }
   else {
-    this->m_internal->m_attachmentToTextureMap[DepthAttachment]->setup(renderState);
+    this->m_internal->validateAndFixTextureDimensions(itr->second);
     glFramebufferTexture2D(GL_FRAMEBUFFER, DepthAttachment, GL_TEXTURE_2D,
       this->m_internal->m_attachmentToTextureMap[DepthAttachment]->textureHandle(), 0);
   }
