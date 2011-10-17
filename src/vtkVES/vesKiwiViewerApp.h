@@ -21,12 +21,16 @@
 #ifndef __vesKiwiViewerApp_h
 #define __vesKiwiViewerApp_h
 
+#include "vesKiwiBaseApp.h"
+
 // C++ includes
 #include <string>
 
 // Forward declarations
 class vesCamera;
 class vesKiwiDataRepresentation;
+class vesKiwiPolyDataRepresentation;
+class vesKiwiImagePlaneDataRepresentation;
 class vesRenderer;
 class vesShaderProgram;
 class vesTexture;
@@ -36,10 +40,11 @@ class vtkDataSet;
 class vtkPolyData;
 class vtkImageData;
 
-class vesKiwiViewerApp
+class vesKiwiViewerApp : public vesKiwiBaseApp
 {
 public:
 
+  typedef vesKiwiBaseApp Superclass;
   vesKiwiViewerApp();
   ~vesKiwiViewerApp();
 
@@ -62,41 +67,25 @@ public:
 
   bool initializeShaderUniforms();
   bool initializeShaderProgram();
-  bool initializeRendering();
-
-  void render();
-  void resetView();
-  void resizeView(int width, int height);
 
   void initializeTextureShader();
   void setBackgroundTexture(const std::string& filename);
 
-  void handleTwoTouchPanGesture(double x0, double y0, double x1, double y1);
-  void handleSingleTouchPanGesture(double deltaX, double deltaY);
-  void handleTwoTouchPinchGesture(double scale);
-  void handleTwoTouchRotationGesture(double rotation);
-  void handleSingleTouchDown(int displayX, int displayY);
-  void handleSingleTouchUp();
-  void handleDoubleTap();
+  virtual void handleSingleTouchPanGesture(double deltaX, double deltaY);
+  virtual void handleSingleTouchDown(int displayX, int displayY);
+  virtual void handleSingleTouchUp();
+  virtual void handleDoubleTap();
 
-  void scrollImageSlice(double delta);
   bool scrollSliceModeActive() const;
 
   int numberOfModelFacets() const;
   int numberOfModelVertices() const;
   int numberOfModelLines() const;
 
-  int viewWidth() const;
-  int viewHeight() const;
-
 protected:
 
-  // These accessors are protected so that apps cannot use the APIs of
-  // these objects.  Instead, this class should provide public methods to
-  // wrap the APIs.  The goal is to allow the ves APIs to be refactored
-  // without breaking the Android and iOS KiwiViewer apps.
-  vesCamera* camera() const;
-  vesRenderer* renderer() const;
+  virtual void willRender();
+
   vesShaderProgram* shaderProgram() const;
 
   void addBuiltinDataset(const std::string& name, const std::string& filename);
@@ -104,11 +93,9 @@ protected:
 
   void removeAllDataRepresentations();
   void addRepresentationsForDataSet(vtkDataSet* dataSet);
-  vesKiwiDataRepresentation* addPolyDataRepresentation(vtkPolyData* dataSet, vesShaderProgram* program);
-
-  vesTexture* newTextureFromImage(vtkImageData* image);
-  void setTextureFromImage(vesTexture* texture, vtkImageData* image);
-
+  vesKiwiPolyDataRepresentation* addPolyDataRepresentation(vtkPolyData* polyData, vesShaderProgram* program);
+  vesKiwiImagePlaneDataRepresentation* addTextRepresentation(const std::string& text);
+  void updateTextAnnotations();
 
 private:
 

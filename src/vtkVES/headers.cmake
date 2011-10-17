@@ -1,8 +1,9 @@
 set(headers
   vesKiwiDataLoader.h
   vesKiwiDataRepresentation.h
+  vesKiwiBaseApp.h
   vesKiwiViewerApp.h
-  vtkPolyDataToTriangleData.h)
+  vesDataConversionTools.h)
 
 set(header_dirs
   .

@@ -158,6 +158,10 @@ void vesMapper::render(const vesRenderState &renderState)
     this->setupDrawObjects(renderState);
   }
 
+  if (renderState.m_material->binNumber() == vesMaterial::Overlay) {
+    glDisable(GL_DEPTH_TEST);
+  }
+
   // Fixed vertex color.
   glVertexAttrib4fv(vesVertexAttributeKeys::Color, this->color());
 
@@ -214,6 +218,10 @@ void vesMapper::render(const vesRenderState &renderState)
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
+  if (renderState.m_material->binNumber() == vesMaterial::Overlay) {
+    glEnable(GL_DEPTH_TEST);
+  }
 }
 
 

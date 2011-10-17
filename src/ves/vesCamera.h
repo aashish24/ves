@@ -42,6 +42,7 @@ public:
   vesSetGetMacro(FocalPoint, vesVector3f)
   vesSetGetMacro(ViewUp, vesVector3f)
   vesSetGetMacro(ParallelScale, float)
+  vesSetGetMacro(ParallelProjection, bool)
 
   void Azimuth(double angle);
   void Elevation(double angle);

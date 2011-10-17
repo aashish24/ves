@@ -403,6 +403,11 @@ make_x_window(Display *x_dpy, EGLDisplay egl_dpy,
    *ctxRet = ctx;
 }
 
+bool haveLastMotion = false;
+int lastMotionX = 0;
+int lastMotionY = 0;
+int currentX = 0;
+int currentY = 0;
 
 static void
 event_loop(Display *dpy, Window win,
@@ -424,13 +429,27 @@ event_loop(Display *dpy, Window win,
 
       case ButtonPress:
         testHelper->app()->handleSingleTouchDown(event.xbutton.x, event.xbutton.y);
+
+        haveLastMotion = true;
+        lastMotionX = event.xbutton.x;
+        lastMotionY = event.xbutton.y;
         break;
 
       case ButtonRelease:
         testHelper->app()->handleSingleTouchUp();
+        haveLastMotion = false;
         break;
 
       case MotionNotify:
+
+        if (haveLastMotion) {
+          currentX = event.xmotion.x;
+          currentY = event.xmotion.y;
+          testHelper->app()->handleSingleTouchPanGesture(currentX - lastMotionX, currentY - lastMotionY);
+          lastMotionX = currentX;
+          lastMotionY = currentY;
+          redraw = 1;
+        }
         break;
 
       case KeyPress:

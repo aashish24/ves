@@ -105,6 +105,8 @@ public:
 
   virtual void traverse(vesVisitor &visitor);
 
+  void setIsOverlayActor(bool value) { this->m_isOverlayActor = value; }
+  bool isOverlayActor() const { return m_isOverlayActor; }
 
 protected:
 
@@ -114,6 +116,7 @@ protected:
   bool                  m_sensor;
   bool                  m_visible;
   bool                  m_boundsDirty;
+  bool                  m_isOverlayActor;
 
   vesMapper            *m_mapper;
   vesMaterial          *m_material;

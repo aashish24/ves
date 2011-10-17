@@ -31,7 +31,8 @@ vesActor::vesActor() : vsg::Transform(),
   m_visible (true),
   m_mapper  (0x0),
   m_material(0x0),
-  m_widget  (0x0)
+  m_widget  (0x0),
+  m_isOverlayActor(false)
 {
   // \todo: Create a default apperance.
 }
@@ -50,6 +51,10 @@ vesMatrix4x4f vesActor::modelViewMatrix()
 
 void vesActor::updateBounds(const vesActor *child)
 {
+  if (child->isOverlayActor()) {
+    return;
+  }
+
   vesVector3f min = child->boundsMinimum();
   vesVector3f max = child->boundsMaximum();
 

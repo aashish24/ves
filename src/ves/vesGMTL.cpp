@@ -74,9 +74,9 @@ vesMatrix4x4f vesOrtho(float left,
   float a = 2.0f / (right - left);
   float b = 2.0f / (top - bottom);
   float c = -2.0f / (far - near);
-  float tx = (right + left) / (right - left);
-  float ty = (top + bottom) / (top - bottom);
-  float tz = (far + near) / (far - near);
+  float tx = -(right + left) / (right - left);
+  float ty = -(top + bottom) / (top - bottom);
+  float tz = -(far + near) / (far - near);
   mat[0][0] = a; mat[0][1] = 0; mat[0][2] = 0; mat[0][3] = tx;
   mat[1][0] = 0; mat[1][1] = b; mat[1][2] = 0; mat[1][3] = ty;
   mat[2][0] = 0; mat[2][1] = 0; mat[2][2] = c; mat[2][3] = tz;

@@ -114,7 +114,7 @@ void vesTexture::Render()
   glBindTexture(GL_TEXTURE_2D, m_textureHandle);
 
   // Set uniforms
-  vesMatrix4x4f orthoProjection = vesOrtho(-1,1,-1,1,-1,1000);
+  vesMatrix4x4f orthoProjection = vesOrtho(-1,1,-1,1,-1,0.0001);
 
   vesUniform *mvpUniform = this->ShaderProgram->uniform("modelViewProjectionMatrix");
   assert(mvpUniform);

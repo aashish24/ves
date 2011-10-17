@@ -44,6 +44,7 @@
 		436B34B613C802D500C5726C /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 436B34B113C802D500C5726C /* icon.png */; };
 		436B34B713C802D500C5726C /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = 436B34B213C802D500C5726C /* iTunesArtwork */; };
 		436B34B813C802D500C5726C /* Kiwi_Splash_72.png in Resources */ = {isa = PBXBuildFile; fileRef = 436B34B313C802D500C5726C /* Kiwi_Splash_72.png */; };
+		437857F71446577900FEDC72 /* libvtkfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 437857F61446577900FEDC72 /* libvtkfreetype.a */; };
 		43BA864814299E77000D91C3 /* libvtkFiltersSources.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43BA864514299E77000D91C3 /* libvtkFiltersSources.a */; };
 		43BA864914299E78000D91C3 /* libvtkImagingCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43BA864614299E77000D91C3 /* libvtkImagingCore.a */; };
 		43BA864A14299E78000D91C3 /* libvtkIOImage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43BA864714299E77000D91C3 /* libvtkIOImage.a */; };
@@ -120,6 +121,7 @@
 		436B34B113C802D500C5726C /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		436B34B213C802D500C5726C /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; path = iTunesArtwork; sourceTree = "<group>"; };
 		436B34B313C802D500C5726C /* Kiwi_Splash_72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Kiwi_Splash_72.png; sourceTree = "<group>"; };
+		437857F61446577900FEDC72 /* libvtkfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkfreetype.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-device/lib/libvtkfreetype.a"; sourceTree = "<group>"; };
 		43BA864514299E77000D91C3 /* libvtkFiltersSources.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkFiltersSources.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-device/lib/libvtkFiltersSources.a"; sourceTree = "<group>"; };
 		43BA864614299E77000D91C3 /* libvtkImagingCore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkImagingCore.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-device/lib/libvtkImagingCore.a"; sourceTree = "<group>"; };
 		43BA864714299E77000D91C3 /* libvtkIOImage.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkIOImage.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-device/lib/libvtkIOImage.a"; sourceTree = "<group>"; };
@@ -184,6 +186,7 @@
 				43BA864A14299E78000D91C3 /* libvtkIOImage.a in Frameworks */,
 				43BA864E14299EB2000D91C3 /* libvtkjpeg.a in Frameworks */,
 				43BA864F14299EB2000D91C3 /* libvtkpng.a in Frameworks */,
+				437857F71446577900FEDC72 /* libvtkfreetype.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -252,6 +255,7 @@
 		432DE16E13D15E8C000F8EC0 /* vtkmodular libs */ = {
 			isa = PBXGroup;
 			children = (
+				437857F61446577900FEDC72 /* libvtkfreetype.a */,
 				43BA864C14299EB2000D91C3 /* libvtkjpeg.a */,
 				43BA864D14299EB2000D91C3 /* libvtkpng.a */,
 				43BA864514299E77000D91C3 /* libvtkFiltersSources.a */,

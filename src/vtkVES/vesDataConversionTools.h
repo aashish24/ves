@@ -19,9 +19,19 @@
  ========================================================================*/
 
 class vtkPolyData;
-class vesTriangleData;
+class vtkDataSet;
+class vtkDiscretizableColorTransferFunction;
+class vtkLookupTable;
+class vtkUnsignedCharArray;
+class vtkDataArray;
+class vtkScalarsToColors;
 
-class vtkPolyDataToTriangleData
+class vesTriangleData;
+class vesTexture;
+
+#include <vtkSmartPointer.h>
+
+class vesDataConversionTools
 {
 public:
   static vesTriangleData* Convert(vtkPolyData* input);
@@ -35,19 +45,19 @@ public:
   //       this would be wortwhile future work.
   static void ConvertTriangles(vtkPolyData* input, vesTriangleData* output);
 
-  // This is a convenience method for populating the vertex colors array on a
-  // vesTriangleData object.  First, it looks on the given polydata for an
-  // unsigned char array named rgb_colors.  If that is not found, it will
-  // looks for a point data array with a single component.  If such an array is found,
-  // a blue to red vtkLookupTable is used to generate vertex color values from
-  // the scalar array. This will use the first suitable array that is found.
-  // If no array is found, this method doesn't do anything.
-  static void ComputeVertexColorFromScalars(vtkPolyData* polyData, vesTriangleData* triangleData);
 
-  // This is a convenience method for populating the TextureCoordinates array on
-  // a vesTriangleData object.  It searchs the point data of the given polyData
-  // for a two component array with the name 'tcoords'.  If found, the array
-  // will be copied into the vesTriangleData.
-  static void ConvertTextureCoordinates(vtkPolyData* polyData, vesTriangleData* triangleData);
+  static vtkUnsignedCharArray* FindRGBColorsArray(vtkDataSet* dataSet);
+  static vtkDataArray* FindScalarsArray(vtkDataSet* dataSet);
+  static vtkDataArray* FindTextureCoordinatesArray(vtkDataSet* dataSet);
+
+  static vtkSmartPointer<vtkDiscretizableColorTransferFunction> GetBlackBodyRadiationColorMap(double scalarRange[2]);
+  static vtkSmartPointer<vtkLookupTable> GetRedToBlueLookupTable(double scalarRange[2]);
+  static vtkSmartPointer<vtkLookupTable> GetGrayscaleLookupTable(double scalarRange[2]);
+  static void SetVertexColors(vtkUnsignedCharArray* colors, vesTriangleData* triangleData);
+  static void SetVertexColors(vtkDataArray* scalars, vtkScalarsToColors* scalarsToColors, vesTriangleData* triangleData);
+  static void SetTextureCoordinates(vtkDataArray* tcoords, vesTriangleData* triangleData);
+
+  static vtkSmartPointer<vtkUnsignedCharArray> MapScalars(vtkDataArray* scalars, vtkScalarsToColors* scalarsToColors);
+  static void SetTextureData(vtkUnsignedCharArray* pixels, vesTexture* texture, int width, int height);
 
 };

@@ -67,9 +67,9 @@ void vesRenderer::setSceneRoot(vesActor *root)
 void vesRenderer::render()
 {
   // Clear the buffers
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   glClearColor(this->m_backgroundColor[0], this->m_backgroundColor[1],
                this->m_backgroundColor[2], this->m_backgroundColor[3]);
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   glEnable(GL_DEPTH_TEST);
 
@@ -360,6 +360,9 @@ void vesRenderer::cullTraverseScene()
 
   vesMatrix4x4f viewMatrix =
     this->m_camera->ComputeViewTransform();
+
+  vesMatrix4x4f projection2DMatrix = vesOrtho(0, this->width(), 0, this->height(), -1, 1);
+  cullVisitor.setProjection2DMatrix(projection2DMatrix);
 
   cullVisitor.pushProjectionMatrix(projectionMatrix);
   cullVisitor.pushModelViewMatrix(viewMatrix);

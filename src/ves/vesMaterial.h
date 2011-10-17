@@ -116,7 +116,8 @@ public:
   {
     Default     = 0,
     Opaque      = 1,
-    Transparent = 10
+    Transparent = 10,
+    Overlay     = 20
   };
 
            vesMaterial();
