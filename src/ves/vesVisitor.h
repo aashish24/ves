@@ -66,23 +66,7 @@ public:
   vesMatrix4x4f projection2DMatrix() { return this->m_projection2DMatrix; }
   void setProjection2DMatrix(const vesMatrix4x4f& matrix) { this->m_projection2DMatrix = matrix; }
 
-  inline void traverse(vesActor& actor)
-  {
-    std::cout << "traversing " << std::endl;
-
-    if (m_traversalMode == TraverseParents) {
-      actor.ascend(*this);
-    }
-    else if (m_traversalMode != TraverseNone) {
-      actor.traverse(*this);
-    }
-  }
-
   virtual void visit(vesActor  &actor);
-
-#if 0
-  virtual void visit(vesMaterial& material);
-#endif
 
   VisitorType   type(){ return this->m_visitorType; }
   TraversalMode mode(){ return this->m_traversalMode; }
