@@ -1,3 +1,10 @@
+-- Fast instructions
+
+If you already have Android SDK and NDK installed, and you are familiar with
+the android command line tools, you can get started quickly by jumping to the
+'Building VES' section.
+
+
 -- Getting started
 
 The first several sections describe the steps I took to setup my OSX system
@@ -41,10 +48,12 @@ Android SDK components.  You should follow the instructions here:
 
 Using the Android SDK and AVD Manager provided by the ADT plugin,  I installed
 'Android SDK Platform-tools' and 'SDK Platform Android 3.1, API 12'.
-I selected 'SDK Platform Android 3.1, API 12' because that is the version of Android that
-is running on my tablet.  Later, when building apps I can specify android-12 as
-the platform target.  In order to specify other platform targets, I would have to
-download them first.
+I selected 'SDK Platform Android 3.1, API 12' which is the current version of
+Android for tablets.  You should also download API 10, which is the earliest
+API that VES will support.  You can determine which targets you have downloaded
+by executing the command line:
+
+  android list targets
 
 
 --Download the NDK
@@ -63,20 +72,20 @@ comes with the Android NDK.  Make sure you have CMake version 2.8.4 or higher.
 
 The main tools used will be 'android' and 'adb'.  These can be found in the Android SDK:
 
-  /path/to/android/android-sdk/tools/android
-  /path/to/android/android-sdk/platform-tools/adb
+  /path/to/android-sdk/tools/android
+  /path/to/android-sdk/platform-tools/adb
 
 
 --Building VES
 
 Execute the following commands:
 
-export ANDROID_NDK=/path/to/android/android-ndk-r6
+export ANDROID_NDK=/path/to/android-ndk-r6
 
-cd /path/to/ves/Apps/Android/CMakeBuild
-mkdir build
+cd Apps/Android/CMakeBuild
+cmake -P configure.cmake
+
 cd build
-cmake ../
 make -j4
 
 
@@ -84,24 +93,12 @@ make -j4
 
 Execute the following commands:
 
-export ANDROID_NDK=/path/to/android/android-ndk-r6
+export ANDROID_NDK=/path/to/android-ndk-r6
 
-# build native code
-# this will create a library and put it where ant will find it
-cd /path/to/ves/Apps/Android/Kiwi
-mkdir build
-cd build
-cmake -DANDROID_LEVEL=9 -DCMAKE_TOOLCHAIN_FILE=../../CMakeBuild/cmake/android.toolchain.cmake -DVTK_DIR=../../CMakeBuild/build/CMakeExternals/Build/vtkmodular-android -DVES_DIR=../../CMakeBuild/build/CMakeExternals/Build/ves-android ../
-make
-
-# create ant build files
-# you can run 'android list targets' to find out the available targets
-
-cd /path/to/ves/Apps/Android/Kiwi
-android update project --name KiwiViewer --path . --target android-12
-
-# build app
-ant debug
+cd Apps/Android/Kiwi
+./configure_cmake.sh
+./configure_ant.sh
+./compile.sh
 
 
 --Running on your device
@@ -121,10 +118,7 @@ adb from working.  See this blog to disable it:
 
 Execute the following commands:
 
-# install to device
-adb -d install -r bin/KiwiViewer-debug.apk
-
-# launch
-adb shell am start -a android.intent.action.MAIN -n com.kitware.KiwiViewer/.KiwiViewerActivity
+# install and run on device
+./run.sh
 
 
