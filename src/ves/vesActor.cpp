@@ -51,7 +51,7 @@ vesMatrix4x4f vesActor::modelViewMatrix()
 
 void vesActor::updateBounds(vesActor *child)
 {
-  if (child->isOverlayActor() || !child) {
+  if (!child || child->isOverlayActor()) {
     return;
   }
 
