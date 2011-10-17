@@ -37,6 +37,10 @@ vesRenderToTexture::vesRenderToTexture() : vesFBORenderTarget()
 
 vesRenderToTexture::~vesRenderToTexture()
 {
+  glDeleteRenderbuffers(1, &this->m_internal->m_renderBuffersHandle[0]);
+  glDeleteFramebuffers (1, &this->m_internal->m_frameBufferHandle);
+
+  this->m_internal->m_renderBuffersHandle.clear();
 }
 
 
@@ -171,10 +175,5 @@ void vesRenderToTexture::render(vesRenderState &renderState)
 void vesRenderToTexture::remove(vesRenderState &renderState)
 {
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
-  glDeleteRenderbuffers(1, &this->m_internal->m_renderBuffersHandle[0]);
-  glDeleteFramebuffers (1, &this->m_internal->m_frameBufferHandle);
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-  this->m_internal->m_renderBuffersHandle.clear();
 }
 
