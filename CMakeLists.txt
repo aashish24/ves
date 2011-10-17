@@ -1,5 +1,11 @@
-project(VES)
 cmake_minimum_required(VERSION 2.8.3)
+include(CMake/ves-superbuild.cmake)
+if(ves_superbuild_enabled)
+  return()
+endif()
+
+
+project(VES)
 
 # set project variables
 set(VES_MAJOR_VERSION 0)

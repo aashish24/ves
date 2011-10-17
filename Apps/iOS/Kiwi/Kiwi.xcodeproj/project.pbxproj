@@ -54,6 +54,7 @@
 		43E0526E1424014300FC4F02 /* head.vti in Resources */ = {isa = PBXBuildFile; fileRef = 43E0526D1424014300FC4F02 /* head.vti */; };
 		43E58D9014299CC100D53D13 /* kiwi.png in Resources */ = {isa = PBXBuildFile; fileRef = 43E58D8F14299CC100D53D13 /* kiwi.png */; };
 		43EB039814105402002F463B /* libvtkVES.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43EB039714105402002F463B /* libvtkVES.a */; };
+		43F0A7A31448D1E500A8CE8D /* kiwi.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 43F0A7A21448D1E500A8CE8D /* kiwi.xcconfig */; };
 		43FA5BE4141705FD00ECC80E /* kiwiAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 43FA5BE3141705FD00ECC80E /* kiwiAppDelegate.mm */; };
 		453036EB1406A298003A861A /* InfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 453036EA1406A298003A861A /* InfoView.xib */; };
 		6F25E721137DEA5400BF4BCA /* current.stl in Resources */ = {isa = PBXBuildFile; fileRef = 6F25E720137DEA5400BF4BCA /* current.stl */; };
@@ -100,20 +101,20 @@
 		431FC64D1408B7A5006B9246 /* TitleBarViewContainer.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TitleBarViewContainer.xib; sourceTree = "<group>"; };
 		432DE13013D158B8000F8EC0 /* Shader.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = Shader.fsh; path = ../../../../src/shaders/Shader.fsh; sourceTree = "<group>"; };
 		432DE13113D158B8000F8EC0 /* Shader.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = Shader.vsh; path = ../../../../src/shaders/Shader.vsh; sourceTree = "<group>"; };
-		432DE15213D15DFC000F8EC0 /* libvtkCommonCore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkCommonCore.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-device/lib/libvtkCommonCore.a"; sourceTree = "<group>"; };
-		432DE15313D15DFC000F8EC0 /* libvtkCommonDataModel.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkCommonDataModel.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-device/lib/libvtkCommonDataModel.a"; sourceTree = "<group>"; };
-		432DE15413D15DFC000F8EC0 /* libvtkCommonMath.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkCommonMath.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-device/lib/libvtkCommonMath.a"; sourceTree = "<group>"; };
-		432DE15513D15DFC000F8EC0 /* libvtkCommonMisc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkCommonMisc.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-device/lib/libvtkCommonMisc.a"; sourceTree = "<group>"; };
-		432DE15613D15DFC000F8EC0 /* libvtkCommonSystem.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkCommonSystem.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-device/lib/libvtkCommonSystem.a"; sourceTree = "<group>"; };
-		432DE15713D15DFC000F8EC0 /* libvtkCommonTransforms.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkCommonTransforms.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-device/lib/libvtkCommonTransforms.a"; sourceTree = "<group>"; };
-		432DE15813D15DFC000F8EC0 /* libvtkexpat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkexpat.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-device/lib/libvtkexpat.a"; sourceTree = "<group>"; };
-		432DE15913D15DFC000F8EC0 /* libvtkFiltersCore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkFiltersCore.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-device/lib/libvtkFiltersCore.a"; sourceTree = "<group>"; };
-		432DE15A13D15DFC000F8EC0 /* libvtkIOCore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkIOCore.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-device/lib/libvtkIOCore.a"; sourceTree = "<group>"; };
-		432DE15B13D15DFC000F8EC0 /* libvtkIOGeometry.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkIOGeometry.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-device/lib/libvtkIOGeometry.a"; sourceTree = "<group>"; };
-		432DE15C13D15DFC000F8EC0 /* libvtkIOXML.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkIOXML.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-device/lib/libvtkIOXML.a"; sourceTree = "<group>"; };
-		432DE15D13D15DFC000F8EC0 /* libvtksys.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtksys.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-device/lib/libvtksys.a"; sourceTree = "<group>"; };
-		432DE15E13D15DFC000F8EC0 /* libvtkzlib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkzlib.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-device/lib/libvtkzlib.a"; sourceTree = "<group>"; };
-		432DE16C13D15E1C000F8EC0 /* libves.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libves.a; path = "../CMakeBuild/build/CMakeExternals/Build/ves-device/lib/libves.a"; sourceTree = "<group>"; };
+		432DE15213D15DFC000F8EC0 /* libvtkCommonCore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkCommonCore.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-ios-device/lib/libvtkCommonCore.a"; sourceTree = "<group>"; };
+		432DE15313D15DFC000F8EC0 /* libvtkCommonDataModel.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkCommonDataModel.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-ios-device/lib/libvtkCommonDataModel.a"; sourceTree = "<group>"; };
+		432DE15413D15DFC000F8EC0 /* libvtkCommonMath.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkCommonMath.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-ios-device/lib/libvtkCommonMath.a"; sourceTree = "<group>"; };
+		432DE15513D15DFC000F8EC0 /* libvtkCommonMisc.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkCommonMisc.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-ios-device/lib/libvtkCommonMisc.a"; sourceTree = "<group>"; };
+		432DE15613D15DFC000F8EC0 /* libvtkCommonSystem.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkCommonSystem.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-ios-device/lib/libvtkCommonSystem.a"; sourceTree = "<group>"; };
+		432DE15713D15DFC000F8EC0 /* libvtkCommonTransforms.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkCommonTransforms.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-ios-device/lib/libvtkCommonTransforms.a"; sourceTree = "<group>"; };
+		432DE15813D15DFC000F8EC0 /* libvtkexpat.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkexpat.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-ios-device/lib/libvtkexpat.a"; sourceTree = "<group>"; };
+		432DE15913D15DFC000F8EC0 /* libvtkFiltersCore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkFiltersCore.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-ios-device/lib/libvtkFiltersCore.a"; sourceTree = "<group>"; };
+		432DE15A13D15DFC000F8EC0 /* libvtkIOCore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkIOCore.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-ios-device/lib/libvtkIOCore.a"; sourceTree = "<group>"; };
+		432DE15B13D15DFC000F8EC0 /* libvtkIOGeometry.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkIOGeometry.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-ios-device/lib/libvtkIOGeometry.a"; sourceTree = "<group>"; };
+		432DE15C13D15DFC000F8EC0 /* libvtkIOXML.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkIOXML.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-ios-device/lib/libvtkIOXML.a"; sourceTree = "<group>"; };
+		432DE15D13D15DFC000F8EC0 /* libvtksys.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtksys.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-ios-device/lib/libvtksys.a"; sourceTree = "<group>"; };
+		432DE15E13D15DFC000F8EC0 /* libvtkzlib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkzlib.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-ios-device/lib/libvtkzlib.a"; sourceTree = "<group>"; };
+		432DE16C13D15E1C000F8EC0 /* libves.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libves.a; path = "../CMakeBuild/build/CMakeExternals/Build/ves-ios-device/lib/libves.a"; sourceTree = "<group>"; };
 		435026ED140E93C9000C315D /* caffeine.pdb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = caffeine.pdb; sourceTree = "<group>"; };
 		435026EE140E93C9000C315D /* motor.g */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = motor.g; sourceTree = "<group>"; };
 		436B34AF13C802D500C5726C /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
@@ -121,16 +122,17 @@
 		436B34B113C802D500C5726C /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		436B34B213C802D500C5726C /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; path = iTunesArtwork; sourceTree = "<group>"; };
 		436B34B313C802D500C5726C /* Kiwi_Splash_72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Kiwi_Splash_72.png; sourceTree = "<group>"; };
-		437857F61446577900FEDC72 /* libvtkfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkfreetype.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-device/lib/libvtkfreetype.a"; sourceTree = "<group>"; };
-		43BA864514299E77000D91C3 /* libvtkFiltersSources.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkFiltersSources.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-device/lib/libvtkFiltersSources.a"; sourceTree = "<group>"; };
-		43BA864614299E77000D91C3 /* libvtkImagingCore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkImagingCore.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-device/lib/libvtkImagingCore.a"; sourceTree = "<group>"; };
-		43BA864714299E77000D91C3 /* libvtkIOImage.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkIOImage.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-device/lib/libvtkIOImage.a"; sourceTree = "<group>"; };
-		43BA864C14299EB2000D91C3 /* libvtkjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkjpeg.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-device/lib/libvtkjpeg.a"; sourceTree = "<group>"; };
-		43BA864D14299EB2000D91C3 /* libvtkpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkpng.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-device/lib/libvtkpng.a"; sourceTree = "<group>"; };
+		437857F61446577900FEDC72 /* libvtkfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkfreetype.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-ios-device/lib/libvtkfreetype.a"; sourceTree = "<group>"; };
+		43BA864514299E77000D91C3 /* libvtkFiltersSources.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkFiltersSources.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-ios-device/lib/libvtkFiltersSources.a"; sourceTree = "<group>"; };
+		43BA864614299E77000D91C3 /* libvtkImagingCore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkImagingCore.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-ios-device/lib/libvtkImagingCore.a"; sourceTree = "<group>"; };
+		43BA864714299E77000D91C3 /* libvtkIOImage.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkIOImage.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-ios-device/lib/libvtkIOImage.a"; sourceTree = "<group>"; };
+		43BA864C14299EB2000D91C3 /* libvtkjpeg.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkjpeg.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-ios-device/lib/libvtkjpeg.a"; sourceTree = "<group>"; };
+		43BA864D14299EB2000D91C3 /* libvtkpng.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkpng.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-ios-device/lib/libvtkpng.a"; sourceTree = "<group>"; };
 		43C1C1CD1410533A00A721F7 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		43E0526D1424014300FC4F02 /* head.vti */ = {isa = PBXFileReference; lastKnownFileType = file; path = head.vti; sourceTree = "<group>"; };
 		43E58D8F14299CC100D53D13 /* kiwi.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = kiwi.png; sourceTree = "<group>"; };
-		43EB039714105402002F463B /* libvtkVES.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkVES.a; path = "../CMakeBuild/build/CMakeExternals/Build/ves-device/lib/libvtkVES.a"; sourceTree = "<group>"; };
+		43EB039714105402002F463B /* libvtkVES.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkVES.a; path = "../CMakeBuild/build/CMakeExternals/Build/ves-ios-device/lib/libvtkVES.a"; sourceTree = "<group>"; };
+		43F0A7A21448D1E500A8CE8D /* kiwi.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = kiwi.xcconfig; sourceTree = "<group>"; };
 		43FA5BE3141705FD00ECC80E /* kiwiAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = kiwiAppDelegate.mm; sourceTree = "<group>"; };
 		453036EA1406A298003A861A /* InfoView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InfoView.xib; sourceTree = "<group>"; };
 		6F25E720137DEA5400BF4BCA /* current.stl */ = {isa = PBXFileReference; lastKnownFileType = file; path = current.stl; sourceTree = "<group>"; };
@@ -332,6 +334,7 @@
 		6F25E6F3137D8B5600BF4BCA /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				43F0A7A21448D1E500A8CE8D /* kiwi.xcconfig */,
 				431CFCD91429A23800317693 /* BackgroundTexture.fsh */,
 				431CFCDA1429A23800317693 /* BackgroundTexture.vsh */,
 				432DE13013D158B8000F8EC0 /* Shader.fsh */,
@@ -428,6 +431,7 @@
 				43C1C1CE1410533A00A721F7 /* Default.png in Resources */,
 				43E0526E1424014300FC4F02 /* head.vti in Resources */,
 				43E58D9014299CC100D53D13 /* kiwi.png in Resources */,
+				43F0A7A31448D1E500A8CE8D /* kiwi.xcconfig in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -466,7 +470,7 @@
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				HEADER_SEARCH_PATHS = (
-					"$(ves_cmakeexternals)/Source/vtkmodular/**",
+					"$(ves_build)/CMakeExternals/Source/vtkmodular/**",
 					"$(ves_source)/src",
 					"$(ves_source)/src/vtkVES",
 					"$(ves_source)/src/ves/**",
@@ -476,20 +480,19 @@
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				"LIBRARY_SEARCH_PATHS[sdk=iphoneos*][arch=*]" = (
 					"$(inherited)",
-					"\"$(ves_cmakeexternals)/Build/vtkmodular-device/lib\"",
-					"\"$(ves_cmakeexternals)/Build/ves-device/lib\"",
+					"\"$(ves_build)/CMakeExternals/Build/vtkmodular-ios-device/lib\"",
+					"\"$(ves_build)/CMakeExternals/Build/ves-ios-device/lib\"",
 				);
 				"LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*][arch=*]" = (
 					"$(inherited)",
-					"\"$(ves_cmakeexternals)/Build/vtkmodular-simulator/lib\"",
-					"\"$(ves_cmakeexternals)/Build/ves-simulator/lib\"",
+					"\"$(ves_build)/CMakeExternals/Build/vtkmodular-ios-simulator/lib\"",
+					"\"$(ves_build)/CMakeExternals/Build/ves-ios-simulator/lib\"",
 				);
 				PRODUCT_NAME = kiwi;
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
 				VALIDATE_PRODUCT = YES;
-				ves_cmakeexternals = "$(SRCROOT)/../CMakeBuild/build/CMakeExternals";
 				ves_source = "$(SRCROOT)/../../..";
 			};
 			name = Debug;
@@ -507,7 +510,7 @@
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				HEADER_SEARCH_PATHS = (
-					"$(ves_cmakeexternals)/Source/vtkmodular/**",
+					"$(ves_build)/CMakeExternals/Source/vtkmodular/**",
 					"$(ves_source)/src",
 					"$(ves_source)/src/vtkVES",
 					"$(ves_source)/src/ves/**",
@@ -517,13 +520,13 @@
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				"LIBRARY_SEARCH_PATHS[sdk=iphoneos*][arch=*]" = (
 					"$(inherited)",
-					"\"$(ves_cmakeexternals)/Build/vtkmodular-device/lib\"",
-					"\"$(ves_cmakeexternals)/Build/ves-device/lib\"",
+					"\"$(ves_build)/CMakeExternals/Build/vtkmodular-ios-device/lib\"",
+					"\"$(ves_build)/CMakeExternals/Build/ves-ios-device/lib\"",
 				);
 				"LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*][arch=*]" = (
 					"$(inherited)",
-					"\"$(ves_cmakeexternals)/Build/vtkmodular-simulator/lib\"",
-					"\"$(ves_cmakeexternals)/Build/ves-simulator/lib\"",
+					"\"$(ves_build)/CMakeExternals/Build/vtkmodular-ios-simulator/lib\"",
+					"\"$(ves_build)/CMakeExternals/Build/ves-ios-simulator/lib\"",
 				);
 				PRODUCT_NAME = kiwi;
 				PROVISIONING_PROFILE = "";
@@ -531,13 +534,13 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
 				VALIDATE_PRODUCT = YES;
-				ves_cmakeexternals = "$(SRCROOT)/../CMakeBuild/build/CMakeExternals";
 				ves_source = "$(SRCROOT)/../../..";
 			};
 			name = Release;
 		};
 		7001CD6813F2BCE900346099 /* AppStoreDistributionConfiguration */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 43F0A7A21448D1E500A8CE8D /* kiwi.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Kitware Inc.";
@@ -572,7 +575,7 @@
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				HEADER_SEARCH_PATHS = (
-					"$(ves_cmakeexternals)/Source/vtkmodular/**",
+					"$(ves_build)/CMakeExternals/Source/vtkmodular/**",
 					"$(ves_source)/src",
 					"$(ves_source)/src/vtkVES",
 					"$(ves_source)/src/ves/**",
@@ -582,13 +585,13 @@
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				"LIBRARY_SEARCH_PATHS[sdk=iphoneos*][arch=*]" = (
 					"$(inherited)",
-					"\"$(ves_cmakeexternals)/Build/vtkmodular-device/lib\"",
-					"\"$(ves_cmakeexternals)/Build/ves-device/lib\"",
+					"\"$(ves_build)/CMakeExternals/Build/vtkmodular-ios-device/lib\"",
+					"\"$(ves_build)/CMakeExternals/Build/ves-ios-device/lib\"",
 				);
 				"LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*][arch=*]" = (
 					"$(inherited)",
-					"\"$(ves_cmakeexternals)/Build/vtkmodular-simulator/lib\"",
-					"\"$(ves_cmakeexternals)/Build/ves-simulator/lib\"",
+					"\"$(ves_build)/CMakeExternals/Build/vtkmodular-ios-simulator/lib\"",
+					"\"$(ves_build)/CMakeExternals/Build/ves-ios-simulator/lib\"",
 				);
 				PRODUCT_NAME = kiwi;
 				PROVISIONING_PROFILE = "B8AED505-0041-4D2F-BA3C-8E3073226432";
@@ -596,13 +599,13 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
 				VALIDATE_PRODUCT = YES;
-				ves_cmakeexternals = "$(SRCROOT)/../CMakeBuild/build/CMakeExternals";
 				ves_source = "$(SRCROOT)/../../..";
 			};
 			name = AppStoreDistributionConfiguration;
 		};
 		7001CD6A13F2BDDE00346099 /* RelWithDebug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 43F0A7A21448D1E500A8CE8D /* kiwi.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -634,7 +637,7 @@
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				HEADER_SEARCH_PATHS = (
-					"$(ves_cmakeexternals)/Source/vtkmodular/**",
+					"$(ves_build)/CMakeExternals/Source/vtkmodular/**",
 					"$(ves_source)/src",
 					"$(ves_source)/src/vtkVES",
 					"$(ves_source)/src/ves/**",
@@ -644,13 +647,13 @@
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				"LIBRARY_SEARCH_PATHS[sdk=iphoneos*][arch=*]" = (
 					"$(inherited)",
-					"\"$(ves_cmakeexternals)/Build/vtkmodular-device/lib\"",
-					"\"$(ves_cmakeexternals)/Build/ves-device/lib\"",
+					"\"$(ves_build)/CMakeExternals/Build/vtkmodular-ios-device/lib\"",
+					"\"$(ves_build)/CMakeExternals/Build/ves-ios-device/lib\"",
 				);
 				"LIBRARY_SEARCH_PATHS[sdk=iphonesimulator*][arch=*]" = (
 					"$(inherited)",
-					"\"$(ves_cmakeexternals)/Build/vtkmodular-simulator/lib\"",
-					"\"$(ves_cmakeexternals)/Build/ves-simulator/lib\"",
+					"\"$(ves_build)/CMakeExternals/Build/vtkmodular-ios-simulator/lib\"",
+					"\"$(ves_build)/CMakeExternals/Build/ves-ios-simulator/lib\"",
 				);
 				PRODUCT_NAME = kiwi;
 				PROVISIONING_PROFILE = "";
@@ -658,13 +661,13 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
 				VALIDATE_PRODUCT = YES;
-				ves_cmakeexternals = "$(SRCROOT)/../CMakeBuild/build/CMakeExternals";
 				ves_source = "$(SRCROOT)/../../..";
 			};
 			name = RelWithDebug;
 		};
 		C01FCF4F08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 43F0A7A21448D1E500A8CE8D /* kiwi.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
@@ -685,6 +688,7 @@
 		};
 		C01FCF5008A954540054247B /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 43F0A7A21448D1E500A8CE8D /* kiwi.xcconfig */;
 			buildSettings = {
 				ARCHS = "$(ARCHS_UNIVERSAL_IPHONE_OS)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
