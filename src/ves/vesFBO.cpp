@@ -150,6 +150,34 @@ const vesTexture* vesFBO::texture(AttachmentType type) const
 }
 
 
+void vesFBO::setWidth(unsigned int width)
+{
+  this->m_internal->m_width = width;
+
+  this->setDirtyStateOn();
+}
+
+
+unsigned int vesFBO::width() const
+{
+  return this->m_internal->m_width;
+}
+
+
+void vesFBO::setHeight(unsigned int height)
+{
+  this->m_internal->m_height = height;
+
+  this->setDirtyStateOn();
+}
+
+
+unsigned int vesFBO::height() const
+{
+  return this->m_internal->m_height;
+}
+
+
 void vesFBO::setup(vesRenderState &renderState)
 {
   if (this->m_dirtyState) {

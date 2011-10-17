@@ -42,19 +42,17 @@ public:
            vesFBO();
   virtual ~vesFBO();
 
-   bool              setTexture(AttachmentType type, vesTexture *texture);
-   vesTexture*       texture(AttachmentType type);
-   const vesTexture* texture(AttachmentType type) const;
+  bool              setTexture(AttachmentType type, vesTexture *texture);
+  vesTexture*       texture(AttachmentType type);
+  const vesTexture* texture(AttachmentType type) const;
 
-   void         setWidth (unsigned int width);
-   unsigned int width() const;
-   unsigned int width();
+  void         setWidth (unsigned int width);
+  unsigned int width() const;
 
-   void         setHeight (unsigned int height);
-   unsigned int height() const;
-   unsigned int height();
+  void         setHeight (unsigned int height);
+  unsigned int height() const;
 
-   unsigned int      frameBufferHandle();
+  unsigned int frameBufferHandle();
 
   virtual void setup(vesRenderState &renderState);
   virtual void render(vesRenderState &renderState);
