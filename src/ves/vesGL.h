@@ -37,19 +37,42 @@
 #endif
 
 
-#define printGLError(os)        \
-  GLenum error = glGetError();  \
-  if (error != GL_NO_ERROR) {   \
-  os << "ERROR: Occured in " << __FILE__ << " at line " << __LINE__ << " (error code: " << error << ")\n";   \
-  }
+#define flushGLError(os, glEnum) \
+{ \
+  os << "ERROR: Occured in " << __FILE__ << " at line " << __LINE__ << " (error code: " << #glEnum << ")\n"; \
+} \
 
 
-#define printGLErrorWithMessage(message, os)   \
-  GLenum error = glGetError();      \
-  if (error != GL_NO_ERROR) {       \
-    os << message << "\n";          \
-    os << "ERROR: Occured in " << __FILE__ << " at line " << __LINE__ << " (error code: " << error << ")\n";   \
-  }
+#define printGLErrorEnum(os, error) \
+{ \
+  switch(error) \
+  { \
+    case GL_INVALID_ENUM: { flushGLError(os, GL_INVALID_ENUM); break; } \
+    case GL_INVALID_FRAMEBUFFER_OPERATION: { flushGLError(os, GL_INVALID_FRAMEBUFFER_OPERATION); break; } \
+    case GL_INVALID_VALUE: { flushGLError(os, GL_INVALID_VALUE); break; } \
+    case GL_INVALID_OPERATION: { flushGLError(os, GL_INVALID_OPERATION); break; } \
+    case GL_OUT_OF_MEMORY: { flushGLError(os, GL_OUT_OF_MEMORY); break; } \
+  }; \
+} \
+
+
+#define printGLError(os) \
+{ \
+  GLenum error = glGetError(); \
+  if (error != GL_NO_ERROR) { \
+    printGLErrorEnum(os, error); \
+  } \
+} \
+
+
+#define printGLErrorWithMessage(message, os) \
+{ \
+  GLenum error = glGetError(); \
+  if (error != GL_NO_ERROR) { \
+    os << message << "\n"; \
+    printGLErrorEnum(os, error); \
+  } \
+} \
 
 
 #endif
