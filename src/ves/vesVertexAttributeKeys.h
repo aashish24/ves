@@ -23,8 +23,7 @@
 
 struct vesVertexAttributeKeys
 {
-  enum Key
-  {
+  enum Key {
     Position            = 0,
     Normal              = 1,
     TextureCoordinate   = 2,

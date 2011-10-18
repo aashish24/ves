@@ -45,30 +45,25 @@ public:
     SortByState
   };
 
-
   vesRenderStage()
   {
     // Do nothing as of now.
   }
-
 
  ~vesRenderStage()
   {
     this->m_binRenderLeavesMap.clear();
   }
 
-
   void addRenderLeaf(const vesRenderLeaf &renderLeaf)
   {
     this->m_binRenderLeavesMap[renderLeaf.m_bin].push_back(renderLeaf);
   }
 
-
   void sort(SortMode mode)
   {
     // \todo: Implement this.
   }
-
 
   void render(vesRenderState &renderState, vesRenderLeaf *previous)
   {
@@ -89,20 +84,17 @@ public:
     }
   }
 
-
   void clearAll()
   {
     this->m_binRenderLeavesMap.clear();
   }
 
-
 private:
-
   BinRenderLeavesMap  m_binRenderLeavesMap;
 
   // Not implemented.
-  vesRenderStage   (const vesRenderStage&);
-  void operator=   (const vesRenderStage&);
+  vesRenderStage(const vesRenderStage&);
+  void operator=(const vesRenderStage&);
 };
 
 #endif // VESRENDERSTAGE_H

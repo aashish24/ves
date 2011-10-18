@@ -18,31 +18,27 @@
   limitations under the License.
  ========================================================================*/
 
-#ifndef VESMODELVIEWUNIFORM_H
-#define VESMODELVIEWUNIFORM_H
+#ifndef VESFBORENDERTARGET_H
+#define VESFBORENDERTARGET_H
 
-#include "vesUniform.h"
+#include "vesRenderTarget.h"
 
 // VES includes
-#include "vesGMTL.h"
-#include "vesRenderStage.h"
+#include "vesFBO.h"
 
-// C++ includes
-#include <string>
+// Forward declarations
+class vesTexture;
 
-class vesModelViewUniform : public vesUniform
+class vesFBORenderTarget : public vesRenderTarget
 {
 public:
-  vesModelViewUniform(const std::string &name="modelViewMatrix") :
-    vesUniform(name, vesMatrix4x4f())
-  {
-  }
+  vesFBORenderTarget();
+  virtual ~vesFBORenderTarget();
 
-  virtual void update(const vesRenderState &renderState, const vesShaderProgram &program)
-  {
-    this->set(*renderState.m_modelViewMatrix);
-  }
+  virtual bool attach(vesFBO::AttachmentType type, vesTexture *texture);
+
+protected:
+  vesFBO *m_fbo;
 };
 
-
-#endif // VESMODELVIEWUNIFORM_H
+#endif // VESFBORENDERTARGET_H

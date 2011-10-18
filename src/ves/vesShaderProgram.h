@@ -37,8 +37,8 @@ class vesVertexAttribute;
 class vesShaderProgram : public vesMaterialAttribute
 {
 public:
-            vesShaderProgram();
-   virtual ~vesShaderProgram();
+  vesShaderProgram();
+  virtual ~vesShaderProgram();
 
   bool addShader(vesShader *shader);
 
@@ -47,11 +47,11 @@ public:
 
   bool addBindAttributeLocation(const std::string &name, int location);
 
-  int  uniformLocation  (const std::string &name) const;
-  int  attributeLocation(const std::string &name) const;
+  int uniformLocation (const std::string &name) const;
+  int attributeLocation(const std::string &name) const;
 
-  vesUniform* uniform     (const std::string &name);
-  bool        uniformExist(const std::string &name);
+  vesUniform* uniform (const std::string &name);
+  bool uniformExist(const std::string &name);
 
   virtual void updateUniforms();
 
@@ -64,32 +64,28 @@ public:
   void deleteProgram();
   void deleteVertexAndFragment();
 
-  unsigned int        programHandle();
+  unsigned int programHandle();
   const unsigned int& programHandle() const;
 
-  virtual void bind         (const vesRenderState &renderState);
-  virtual void unbind       (const vesRenderState &renderState);
-  virtual void setup        (const vesRenderState &renderState);
+  virtual void bind(const vesRenderState &renderState);
+  virtual void unbind(const vesRenderState &renderState);
+  virtual void setup(const vesRenderState &renderState);
 
-  virtual void bindVertexData   (const vesRenderState &renderState, int key);
-  virtual void unbindVertexData (const vesRenderState &renderState, int key);
-  virtual void setupVertexData  (const vesRenderState &renderState, int key);
+  virtual void bindVertexData(const vesRenderState &renderState, int key);
+  virtual void unbindVertexData(const vesRenderState &renderState, int key);
+  virtual void setupVertexData(const vesRenderState &renderState, int key);
 
-  virtual void bindRenderData   (const vesRenderState &renderState,
-                                 const vesRenderData &renderData);
-
+  virtual void bindRenderData(const vesRenderState &renderState,
+                              const vesRenderData &renderData);
 
 protected:
-
-  int  queryUniformLocation  (const std::string &value);
+  int  queryUniformLocation(const std::string &value);
   int  queryAttributeLocation(const std::string &value);
 
   void bindAttributes();
   void bindUniforms();
 
-
 private:
-
   class vesInternal;
   vesInternal *m_internal;
 

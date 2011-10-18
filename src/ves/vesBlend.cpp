@@ -20,6 +20,7 @@
 
 #include "vesBlend.h"
 
+// C/C++ includes
 #include <iostream>
 
 vesBlend::vesBlend() : vesMaterialAttribute(),

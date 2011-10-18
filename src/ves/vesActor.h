@@ -67,7 +67,7 @@ public:
   void setRotation(const vesVector4f &rotation);
 
   /** Get the rotation for the actor.
-   * \return The rotation of the actor from the origin.
+     \return The rotation of the actor from the origin.
    */
   vesVector4f rotation() const;
 
@@ -83,45 +83,40 @@ public:
   */
   bool isSensor() const { return m_sensor; }
 
-  void                       setWidget(vesMultitouchWidget *widget);
-  vesMultitouchWidget*       widget()       { return this->m_widget; }
+  void setWidget(vesMultitouchWidget *widget);
+  vesMultitouchWidget* widget() { return this->m_widget; }
   const vesMultitouchWidget* widget() const { return this->m_widget; }
 
   void setVisible(bool value);
   bool isVisible() const { return m_visible; }
 
-  void             setMapper(vesMapper *mapper);
-  vesMapper*       mapper()       { return this->m_mapper; }
+  void setMapper(vesMapper *mapper);
+  vesMapper* mapper() { return this->m_mapper; }
   const vesMapper* mapper() const { return this->m_mapper; }
 
-  void                setMaterial(vesMaterial *material);
-  vesMaterial*        material()       { return this->m_material; }
-  const vesMaterial*  material() const { return this->m_material; }
-
+  void setMaterial(vesMaterial *material);
+  vesMaterial* material() { return this->m_material; }
+  const vesMaterial* material() const { return this->m_material; }
 
   virtual void accept(vesVisitor &visitor);
-
   virtual void ascend(vesVisitor &visitor);
-
   virtual void traverse(vesVisitor &visitor);
 
   void setIsOverlayActor(bool value) { this->m_isOverlayActor = value; }
   bool isOverlayActor() const { return m_isOverlayActor; }
 
 protected:
-
-  virtual void updateBounds(const vesActor *child);
+  virtual void updateBounds(vesActor *child);
   virtual void computeBounds();
 
-  bool                  m_sensor;
-  bool                  m_visible;
-  bool                  m_boundsDirty;
-  bool                  m_isOverlayActor;
+  bool m_sensor;
+  bool m_visible;
+  bool m_boundsDirty;
+  bool m_isOverlayActor;
 
-  vesMapper            *m_mapper;
-  vesMaterial          *m_material;
-  vesMultitouchWidget  *m_widget;
-
+  vesMapper *m_mapper;
+  vesMaterial *m_material;
+  vesMultitouchWidget *m_widget;
 
 private:
 };

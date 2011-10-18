@@ -29,12 +29,10 @@
 class vesProjectionUniform : public vesUniform
 {
 public:
-
   vesProjectionUniform(const std::string &name="projectionMatrix") :
     vesUniform(name, vesMatrix4x4f())
   {
   }
-
 
   virtual void update(const vesRenderState &renderState,
                       const vesShaderProgram &program)

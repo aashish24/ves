@@ -6,6 +6,7 @@ set(sources
   vesCamera.cpp
   vesCameraSensor.cpp
   vesCullVisitor.cpp
+  vesFBO.cpp
   vesFileReader.cpp
   vesGMTL.cpp
   vesLegacyReader.cpp
@@ -14,7 +15,9 @@ set(sources
   vesMultitouchCamera.cpp
   vesMultitouchWidget.cpp
   vesMultitouchSensorNode.cpp
+  vesFBORenderTarget.cpp
   vesRenderer.cpp
+  vesRenderToTexture.cpp
   vesShader.cpp
   vesTexture.cpp
   vesShaderProgram.cpp

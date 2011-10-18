@@ -13,7 +13,6 @@
 class vesColorUniform : public vesUniform
 {
 public:
-
   vesColorUniform(const std::string &name="colorUniform") :
     vesUniform(name, vesVector4f())
   {

@@ -88,8 +88,8 @@ public:
     }
   }
 
-  vesMaterial   *m_material;
-  vesMapper     *m_mapper;
+  vesMaterial *m_material;
+  vesMapper *m_mapper;
   vesMatrix4x4f *m_identity;
   vesMatrix4x4f *m_projectionMatrix;
   vesMatrix4x4f *m_modelViewMatrix;

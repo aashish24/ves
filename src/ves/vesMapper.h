@@ -33,24 +33,22 @@ class vesRenderState;
 class vesMapper : public vsgBoundedObject
 {
 public:
-           vesMapper();
+  vesMapper();
   virtual ~vesMapper();
 
   virtual void computeBounds();
 
-  void                   setData(vesTriangleData *data);
-  vesTriangleData*       data()       { return this->m_data; }
+  void setData(vesTriangleData *data);
+  vesTriangleData* data() { return this->m_data; }
   const vesTriangleData* data() const { return this->m_data; }
 
-  void          setColor(float r, float g, float b, float a);
-  float*        color();
-  const float*  color() const;
+  void setColor(float r, float g, float b, float a);
+  float* color();
+  const float* color() const;
 
   virtual void render(const vesRenderState &renderState);
 
-
 private:
-
   virtual void setupDrawObjects(const vesRenderState &renderState);
 
   virtual void createVertexBufferObjects();
@@ -60,17 +58,15 @@ private:
   void normalize();
   vesMatrix4x4f m_normalizedMatrix;
 
-
 protected:
+  bool m_initialized;
 
-  bool              m_initialized;
+  const int m_maximumTrianglesPerDraw;
 
-  const int         m_maximumTrianglesPerDraw;
-
-  vesTriangleData   *m_data;
+  vesTriangleData *m_data;
 
   class vesInternal;
-  vesInternal       *m_internal;
+  vesInternal *m_internal;
 };
 
 #endif

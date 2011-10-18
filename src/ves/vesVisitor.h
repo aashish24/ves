@@ -32,10 +32,10 @@ class vesVisitor
 public:
   enum TraversalMode
   {
-    TraverseNone            = 0x1,
-    TraverseParents         = 0x2,
-    TraverseAllChildren     = 0x4,
-    TraverseActiveChildren  = 0x8
+    TraverseNone           = 0x1,
+    TraverseParents        = 0x2,
+    TraverseAllChildren    = 0x4,
+    TraverseActiveChildren = 0x8
   };
 
   enum VisitorType
@@ -46,49 +46,35 @@ public:
     CullVisitor   = 0x8
   };
 
-           vesVisitor(VisitorType type, TraversalMode=TraverseNone);
+  vesVisitor(VisitorType type, TraversalMode=TraverseNone);
   virtual ~vesVisitor();
 
-  void            pushActor(const vesActor& actor);
-  void            popActor();
-  vesActor*       actor();
+  void pushActor(const vesActor& actor);
+  void popActor();
+  vesActor* actor();
   const vesActor* actor() const;
 
-  void  pushModelViewMatrix(const vesMatrix4x4f& matrix);
-  void  popModelViewMatrix ();
+  void pushModelViewMatrix(const vesMatrix4x4f& matrix);
+  void popModelViewMatrix ();
 
-  void  pushProjectionMatrix(const vesMatrix4x4f& matrix);
-  void  popProjectionMatrix ();
+  void pushProjectionMatrix(const vesMatrix4x4f& matrix);
+  void popProjectionMatrix ();
 
   vesMatrix4x4f modelViewMatrix();
   vesMatrix4x4f projectionMatrix();
 
   vesMatrix4x4f projection2DMatrix() { return this->m_projection2DMatrix; }
-  vesMatrix4x4f setProjection2DMatrix(const vesMatrix4x4f& matrix) { this->m_projection2DMatrix = matrix; }
-
-  inline void traverse(vesActor& actor)
-  {
-      if (m_traversalMode == TraverseParents) {
-        actor.ascend(*this);
-      }
-      else if (m_traversalMode != TraverseNone) {
-        actor.traverse(*this);
-      }
-  }
+  void setProjection2DMatrix(const vesMatrix4x4f& matrix) { this->m_projection2DMatrix = matrix; }
 
   virtual void visit(vesActor  &actor);
 
-#if 0
-  virtual void visit(vesMaterial& material);
-#endif
+  VisitorType type(){ return this->m_visitorType; }
 
-  VisitorType   type(){ return this->m_visitorType; }
   TraversalMode mode(){ return this->m_traversalMode; }
 
 protected:
-
   TraversalMode m_traversalMode;
-  VisitorType   m_visitorType;
+  VisitorType m_visitorType;
 
   vesMatrix4x4f m_projection2DMatrix;
 

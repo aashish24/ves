@@ -17,12 +17,16 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
+
 #include "vesCamera.h"
+
+// VES includes
 #include "vesGMTL.h"
+#include "vesRenderState.h"
 
-#include "gmtl/Generate.h"
-
-// C++ includes
+// C/C++ includes
+#include <algorithm>
+#include <cassert>
 #include <iostream>
 
 vesCamera::vesCamera()
@@ -55,12 +59,18 @@ vesCamera::vesCamera()
   this->WindowCenter[0] = 0.0;
   this->WindowCenter[1] = 0.0;
 
+  this->m_renderTargetStack.push_back(new vesRenderTarget());
+
   this->ComputeDistance();
 }
 
 
 vesCamera::~vesCamera()
 {
+  // Delete only the first (default render target).
+  assert(!this->m_renderTargetStack.empty());
+
+  delete this->m_renderTargetStack[0];
 }
 
 
@@ -267,37 +277,54 @@ void vesCamera::ComputeViewPlaneNormal()
 }
 
 
-//void vesCamera::computeBounds()
-//{
-//  vesVector3f allMin(0,0,0);
-//  vesVector3f allMax(0,0,0);
+bool vesCamera::SetRenderTarget(vesRenderTarget *renderTarget)
+{
+  // If none is given, use the default.
+  if (!renderTarget && this->m_renderTargetStack.size() > 1) {
 
-//  for (int i =0; i<this->get_children().size(); ++i)
-//  {
-//    vesActorCollection* child = (vesActorCollection*) this->get_children()[i];
-//    child->computeBounds();
-//    vesVector3f min = child->get_min();
-//    vesVector3f max = child->get_max();
+    this->m_removedRenderTargetStack.push_back(this->m_renderTargetStack.back());
+    this->m_renderTargetStack.pop_back();
 
-//    if (i == 0)
-//    {
-//      allMin = min;
-//      allMax = max;
-//    }
+    return true;
+  }
+  else if(!renderTarget){
+    return false;
+  }
 
-//    for (int i = 0; i < 3; ++i)
-//    {
-//      if (max[i] > allMax[i])
-//      {
-//        allMax[i] = max[i];
-//      }
-//      if (min[i] < allMin[i])
-//      {
-//        allMin[i] = min[i];
-//      }
-//    }
-//  }
+  RenderTargetStack::iterator itr;
+  itr = std::find(this->m_renderTargetStack.begin(),
+                  this->m_renderTargetStack.end(), renderTarget);
 
-//  set_BBoxCenter(allMin, allMax);
-//  set_BBoxSize(allMin, allMax);
-//}
+  if (itr == this->m_renderTargetStack.end()) {
+    this->m_renderTargetStack.push_back(renderTarget)  ;
+    return true;
+  }
+  else {
+    return false;
+  }
+}
+
+
+vesRenderTarget* vesCamera::RenderTarget()
+{
+  return this->m_renderTargetStack.back();
+}
+
+
+const vesRenderTarget* vesCamera::RenderTarget() const
+{
+  return this->m_renderTargetStack.back();
+}
+
+
+void vesCamera::ClearRenderTargets(vesRenderState &renderState)
+{
+  for (size_t i = 0; i < this->m_removedRenderTargetStack.size(); ++i)  {
+    this->m_removedRenderTargetStack.back()->remove(renderState);
+  }
+
+  this->m_removedRenderTargetStack.clear();
+}
+
+
+

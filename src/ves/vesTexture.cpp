@@ -44,22 +44,31 @@ static const GLfloat textureVertices[] = {
 };
 
 vesTexture::vesTexture() : vesMaterialAttribute(),
+  m_hasData      (false),
+  m_width        (0),
+  m_height       (0),
+  m_depth        (0),
   m_textureHandle(0),
   m_textureUnit  (0)
 {
   this->m_type    = vesMaterialAttribute::Texture;
   this->m_binding = vesMaterialAttribute::BindMinimal;
+
+  // Subsitution for a lack of a image class.
+  this->m_image.data   = 0x0;
+  this->m_image.width  = 0;
+  this->m_image.height = 0;
 }
 
 
 vesTexture::~vesTexture()
 {
+  glDeleteTextures(1, &this->m_textureHandle);
 }
 
 
 void vesTexture::bind(const vesRenderState &renderState)
 {
-  glEnable(GL_TEXTURE_2D);
   glActiveTexture(GL_TEXTURE0 + this->m_textureUnit);
   glBindTexture(GL_TEXTURE_2D, this->m_textureHandle);
 }
@@ -67,14 +76,39 @@ void vesTexture::bind(const vesRenderState &renderState)
 
 void vesTexture::unbind(const vesRenderState &renderState)
 {
-  glDisable(GL_TEXTURE_2D);
+  glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 
 void vesTexture::setImageData(SFImage image)
 {
+  this->m_hasData = true;
   this->m_image = image;
   this->setDirtyStateOn();
+}
+
+
+void vesTexture::setTextureUnit(unsigned int unit)
+{
+  this->m_textureUnit = unit;
+}
+
+
+void vesTexture::setWidth(int width)
+{
+  this->m_width = width;
+}
+
+
+void vesTexture::setHeight(int height)
+{
+  this->m_height = height;
+}
+
+
+void vesTexture::setDepth(int depth)
+{
+  this->m_depth = depth;
 }
 
 
@@ -88,15 +122,15 @@ void vesTexture::setup(const vesRenderState &renderState)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glTexImage2D(GL_TEXTURE_2D,
-                 0,
-                 GL_RGBA,
-                 this->m_image.width,
-                 this->m_image.height,
-                 0,
-                 GL_RGBA,
-                 GL_UNSIGNED_BYTE,
-                 this->m_image.data);
+
+    if (this->m_hasData) {
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, this->m_image.width, this->m_image.height,
+                   0, GL_RGBA, GL_UNSIGNED_BYTE, this->m_image.data);
+    }
+    else {
+      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, this->m_width, this->m_height, 0, GL_RGB,
+                   GL_UNSIGNED_SHORT_5_6_5, NULL);
+    }
 
     this->setDirtyStateOff();
   }

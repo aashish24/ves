@@ -49,14 +49,19 @@ vesMatrix4x4f vesActor::modelViewMatrix()
 }
 
 
-void vesActor::updateBounds(const vesActor *child)
+void vesActor::updateBounds(vesActor *child)
 {
-  if (child->isOverlayActor()) {
+  if (!child || child->isOverlayActor()) {
     return;
   }
 
   vesVector3f min = child->boundsMinimum();
   vesVector3f max = child->boundsMaximum();
+
+  min = transformPoint3f(this->eval(), min);
+  max = transformPoint3f(this->eval(), max);
+
+  child->setBounds(min, max);
 
   if (!this->m_mapper) {
     this->setBounds(min, max);

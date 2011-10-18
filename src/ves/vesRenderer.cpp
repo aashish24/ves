@@ -83,6 +83,13 @@ void vesRenderer::render()
 
     vesRenderState renderState;
 
+    // Clear all the previous render targets.
+    this->m_camera->ClearRenderTargets(renderState);
+
+    // For now, lets not push camera to the stage, just call
+    // render on render target of the current camera.
+    this->m_camera->RenderTarget()->render(renderState);
+
     this->m_renderStage->render(renderState, 0);
 
     // \note: For now clear the stage.

@@ -18,31 +18,38 @@
   limitations under the License.
  ========================================================================*/
 
-#ifndef VESMODELVIEWUNIFORM_H
-#define VESMODELVIEWUNIFORM_H
+#ifndef VESRENDERTARGET_H
+#define VESRENDERTARGET_H
 
-#include "vesUniform.h"
+#include "vesObject.h"
 
 // VES includes
-#include "vesGMTL.h"
-#include "vesRenderStage.h"
+#include "vesGL.h"
 
-// C++ includes
-#include <string>
+// Forward declarations
+class vesRenderState;
 
-class vesModelViewUniform : public vesUniform
+class vesRenderTarget : public vesObject
 {
 public:
-  vesModelViewUniform(const std::string &name="modelViewMatrix") :
-    vesUniform(name, vesMatrix4x4f())
+  enum ImplementationType
   {
-  }
+    // Default
+    FrameBuffer = 0,
+    FrameBufferObject,
+    PixelBuffer
+  };
 
-  virtual void update(const vesRenderState &renderState, const vesShaderProgram &program)
-  {
-    this->set(*renderState.m_modelViewMatrix);
-  }
+  vesRenderTarget() : m_implementation(FrameBuffer) {}
+  virtual ~vesRenderTarget(){}
+
+  virtual void setup (vesRenderState &renderState){}
+  virtual void render(vesRenderState &renderState){}
+  virtual void remove(vesRenderState &renderState){}
+
+ protected:
+   ImplementationType m_implementation;
 };
 
 
-#endif // VESMODELVIEWUNIFORM_H
+#endif // VESRENDERTARGET_H

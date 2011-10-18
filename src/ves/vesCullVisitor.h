@@ -36,11 +36,9 @@ public:
   {
   }
 
-
   ~vesCullVisitor()
   {
   }
-
 
   void setRenderStage(vesRenderStage *renderStage)
   {
@@ -49,24 +47,19 @@ public:
     }
   }
 
-
   vesRenderStage* renderStage()
   {
     return this->m_renderStage;
   }
-
 
   const vesRenderStage* renderStage() const
   {
     return this->m_renderStage;
   }
 
-
   virtual void visit(vesActor  &actor);
 
-
 protected:
-
   void addGeometryAndStates(vesMapper *mapper, vesMaterial *material,
                             const vesMatrix4x4f &modelViewMatrix,
                             const vesMatrix4x4f& projectionMatrix,

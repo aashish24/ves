@@ -35,7 +35,7 @@ class vesKiwiBaseApp
 public:
 
   vesKiwiBaseApp();
-  ~vesKiwiBaseApp();
+  virtual ~vesKiwiBaseApp();
 
   virtual bool initializeRendering();
 

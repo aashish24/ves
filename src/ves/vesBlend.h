@@ -28,15 +28,15 @@
 class vesBlend : public vesMaterialAttribute
 {
 public:
-             vesBlend();
+    vesBlend();
     virtual ~vesBlend();
 
-                void       setBlendFunction(const vesBlendFunction& blendFunction);
-   vesBlendFunction        blendFunction();
+   void setBlendFunction(const vesBlendFunction& blendFunction);
+   vesBlendFunction blendFunction();
    const vesBlendFunction& blendFunction() const;
 
-   virtual void bind         (const vesRenderState &renderState);
-   virtual void unbind       (const vesRenderState &renderState);
+   virtual void bind (const vesRenderState &renderState);
+   virtual void unbind (const vesRenderState &renderState);
 
 protected:
    vesBlendFunction m_blendFunction;
