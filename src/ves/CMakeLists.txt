@@ -30,6 +30,7 @@ set(sources
 
   # -----------------------------------------------------------------------Core
   vsg/Core/vsgBindableNode.cpp
+  vsg/Core/vsgChildNode.cpp
   vsg/Core/vsgNode.cpp
   vsg/Core/vsgSensorNode.cpp
 
