@@ -272,13 +272,6 @@ bool vesKiwiViewerApp::setShadingModel(const std::string& name)
 }
 
 //----------------------------------------------------------------------------
-bool vesKiwiViewerApp::initializeShaderUniforms()
-{
-  // Do nothing.
-  return true;
-}
-
-//----------------------------------------------------------------------------
 bool vesKiwiViewerApp::initializeShaderProgram()
 {
   vesShaderProgram* shaderProgram = this->addShaderProgram(

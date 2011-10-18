@@ -65,7 +65,6 @@ public:
   std::string getShadingModel(int index) const;
   bool setShadingModel(const std::string& name);
 
-  bool initializeShaderUniforms();
   bool initializeShaderProgram();
 
   void initializeTextureShader();
