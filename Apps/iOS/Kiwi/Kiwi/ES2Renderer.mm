@@ -31,18 +31,15 @@
   self = [super init];
   if (self)
   {
+    self->mApp = new vesKiwiViewerApp;
+
     NSString* vertShaderPathname = [[NSBundle mainBundle] pathForResource:@"Shader" ofType:@"vsh"];
     NSString* fragShaderPathname = [[NSBundle mainBundle] pathForResource:@"Shader" ofType:@"fsh"];
     NSString* vertexSourceStr = [NSString stringWithContentsOfFile:vertShaderPathname
                                           encoding:NSUTF8StringEncoding error:nil];
     NSString* fragmentSourceStr = [NSString stringWithContentsOfFile:fragShaderPathname
                                             encoding:NSUTF8StringEncoding error:nil];
-
-    self->mApp = new vesKiwiViewerApp;
-    self->mApp->setVertexShaderSource([vertexSourceStr UTF8String]);
-    self->mApp->setFragmentShaderSource([fragmentSourceStr UTF8String]);
-    self->mApp->initializeShaderProgram();
-    self->mApp->initializeRendering();
+    self->mApp->initGouraudShader([vertexSourceStr UTF8String], [fragmentSourceStr UTF8String]);
 
     vertShaderPathname = [[NSBundle mainBundle] pathForResource:@"BackgroundTexture" ofType:@"vsh"];
     fragShaderPathname = [[NSBundle mainBundle] pathForResource:@"BackgroundTexture" ofType:@"fsh"];
@@ -50,9 +47,7 @@
                                           encoding:NSUTF8StringEncoding error:nil];
     fragmentSourceStr = [NSString stringWithContentsOfFile:fragShaderPathname
                                             encoding:NSUTF8StringEncoding error:nil];
-    self->mApp->setVertexShaderSource([vertexSourceStr UTF8String]);
-    self->mApp->setFragmentShaderSource([fragmentSourceStr UTF8String]);
-    self->mApp->initializeTextureShader();
+    self->mApp->initTextureShader([vertexSourceStr UTF8String], [fragmentSourceStr UTF8String]);
   }
 
   return self;

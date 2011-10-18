@@ -57,17 +57,16 @@ public:
   std::string loadDatasetErrorTitle() const;
   std::string loadDatasetErrorMessage() const;
 
-  void setVertexShaderSource(const std::string& source);
-  void setFragmentShaderSource(const std::string& source);
-
   int  getNumberOfShadingModels() const;
   std::string getCurrentShadingModel() const;
   std::string getShadingModel(int index) const;
   bool setShadingModel(const std::string& name);
 
-  bool initializeShaderProgram();
+  bool initGouraudShader(const std::string& vertexSource, const std::string& fragmentSource);
+  bool initBlinnPhongShader(const std::string& vertexSource, const std::string& fragmentSource);
+  bool initToonShader(const std::string& vertexSource, const std::string& fragmentSource);
+  bool initTextureShader(const std::string& vertexSource, const std::string& fragmentSource);
 
-  void initializeTextureShader();
   void setBackgroundTexture(const std::string& filename);
 
   virtual void handleSingleTouchPanGesture(double deltaX, double deltaY);

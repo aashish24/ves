@@ -224,29 +224,13 @@ std::string GetFileContents(const std::string& filename)
 //----------------------------------------------------------------------------
 void InitRendering()
 {
-  std::string vertexShaderFile = testHelper->sourceDirectory() + "/src/shaders/Shader.vsh";
-  std::string fragmentShaderFile = testHelper->sourceDirectory() + "/src/shaders/Shader.fsh";
+  std::string vertexSource = GetFileContents(testHelper->sourceDirectory() + "/src/shaders/Shader.vsh");
+  std::string fragmentSource = GetFileContents(testHelper->sourceDirectory() + "/src/shaders/Shader.fsh");
+  testHelper->app()->initGouraudShader(vertexSource, fragmentSource);
 
-  std::string vertexSourceStr = GetFileContents(vertexShaderFile);
-  std::string fragmentSourceStr = GetFileContents(fragmentShaderFile);
-
-  testHelper->app()->setVertexShaderSource(vertexSourceStr);
-  testHelper->app()->setFragmentShaderSource(fragmentSourceStr);
-
-  testHelper->app()->initializeShaderProgram();
-  testHelper->app()->initializeRendering();
-
-  // background texture
-  vertexShaderFile = testHelper->sourceDirectory() + "/src/shaders/BackgroundTexture.vsh";
-  fragmentShaderFile = testHelper->sourceDirectory() + "/src/shaders/BackgroundTexture.fsh";
-
-  vertexSourceStr = GetFileContents(vertexShaderFile);
-  fragmentSourceStr = GetFileContents(fragmentShaderFile);
-
-  testHelper->app()->setVertexShaderSource(vertexSourceStr);
-  testHelper->app()->setFragmentShaderSource(fragmentSourceStr);
-
-  testHelper->app()->initializeTextureShader();
+  vertexSource = GetFileContents(testHelper->sourceDirectory() + "/src/shaders/BackgroundTexture.vsh");
+  fragmentSource = GetFileContents(testHelper->sourceDirectory() + "/src/shaders/BackgroundTexture.fsh");
+  testHelper->app()->initTextureShader(vertexSource, fragmentSource);
 }
 
 //----------------------------------------------------------------------------
