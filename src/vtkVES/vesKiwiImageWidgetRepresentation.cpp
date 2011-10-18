@@ -62,6 +62,9 @@ public:
 
   ~vesInternal()
   {
+    for (size_t i = 0; i < this->AllReps.size(); ++i) {
+      delete this->AllReps[i];
+    }
   }
 
   vesRenderer* Renderer;
