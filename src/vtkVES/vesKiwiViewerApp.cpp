@@ -129,7 +129,13 @@ vesKiwiViewerApp::~vesKiwiViewerApp()
 }
 
 //----------------------------------------------------------------------------
-vesShaderProgram* vesKiwiViewerApp::shaderProgram() const
+const vesShaderProgram* vesKiwiViewerApp::shaderProgram() const
+{
+  return this->Internal->ShaderProgram;
+}
+
+//----------------------------------------------------------------------------
+vesShaderProgram* vesKiwiViewerApp::shaderProgram()
 {
   return this->Internal->ShaderProgram;
 }
@@ -427,7 +433,7 @@ bool vesKiwiViewerApp::loadDataset(const std::string& filename)
   this->removeAllDataRepresentations();
   this->addRepresentationsForDataSet(dataSet);
 
-  if (filename.find("teapot.vtp") != std::string::npos) { 
+  if (filename.find("teapot.vtp") != std::string::npos) {
     this->Internal->TextRepresentation = this->addTextRepresentation("this is a teapot");
   }
 

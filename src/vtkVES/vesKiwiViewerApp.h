@@ -80,11 +80,13 @@ public:
   int numberOfModelVertices() const;
   int numberOfModelLines() const;
 
+  const vesShaderProgram* shaderProgram() const;
+  vesShaderProgram* shaderProgram();
+
+
 protected:
 
   virtual void willRender();
-
-  vesShaderProgram* shaderProgram() const;
 
   void addBuiltinDataset(const std::string& name, const std::string& filename);
   void addBuiltinShadingModel(const std::string& name);
