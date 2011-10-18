@@ -130,9 +130,8 @@ vesTexture* vesFBO::texture(AttachmentType type)
   if (itr != this->m_internal->m_attachmentToTextureMap.end()) {
     return itr->second;
   }
-  else {
-    return 0x0;
-  }
+
+  return 0x0;
 }
 
 
@@ -144,9 +143,8 @@ const vesTexture* vesFBO::texture(AttachmentType type) const
   if (itr != this->m_internal->m_attachmentToTextureMap.end()) {
     return itr->second;
   }
-  else {
-    return 0x0;
-  }
+
+  return 0x0;
 }
 
 
@@ -196,38 +194,26 @@ void vesFBO::render(vesRenderState &renderState)
 
   // Check for framebuffer complete
   GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-  if(status == GL_FRAMEBUFFER_COMPLETE)
-  {
+  if (status == GL_FRAMEBUFFER_COMPLETE) {
     glBindFramebuffer(GL_FRAMEBUFFER, this->m_internal->m_frameBufferHandle);
   }
-  else
-  {
-    switch(status)
-    {
-      case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
-      {
-        std::cerr << "GL ERROR: GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT " << status << std::endl;
-        break;
-      }
-      case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS:
-      {
-        std::cerr << "GL ERROR: GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS " << status << std::endl;
-        break;
-      }
-      case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
-      {
-        std::cerr << "GL ERROR: GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT " << status << std::endl;
-        break;
-      }
-      case GL_FRAMEBUFFER_UNSUPPORTED:
-      {
-        std::cerr << "GL ERROR: GL_FRAMEBUFFER_UNSUPPORTED " << status << std::endl;
-        break;
-      }
-      default:
-      {
-        std::cerr << "GL ERROR: Unknown error " << status << std::endl;
-      }
+  else {
+    switch(status) {
+    case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
+      std::cerr << "GL ERROR: GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT " << status << std::endl;
+      break;
+    case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS:
+      std::cerr << "GL ERROR: GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS " << status << std::endl;
+      break;
+    case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
+      std::cerr << "GL ERROR: GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT " << status << std::endl;
+      break;
+    case GL_FRAMEBUFFER_UNSUPPORTED:
+      std::cerr << "GL ERROR: GL_FRAMEBUFFER_UNSUPPORTED " << status << std::endl;
+      break;
+    default:
+      std::cerr << "GL ERROR: Unknown error " << status << std::endl;
+      break;
     };
   }
 }

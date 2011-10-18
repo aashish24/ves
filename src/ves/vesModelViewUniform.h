@@ -33,12 +33,10 @@
 class vesModelViewUniform : public vesUniform
 {
 public:
-
   vesModelViewUniform(const std::string &name="modelViewMatrix") :
     vesUniform(name, vesMatrix4x4f())
   {
   }
-
 
   virtual void update(const vesRenderState &renderState, const vesShaderProgram &program)
   {

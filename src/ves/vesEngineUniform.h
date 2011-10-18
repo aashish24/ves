@@ -13,22 +13,17 @@ public:
   {
   }
 
-
   virtual ~vesEngineUniform()
   {
     delete this->m_uniform;
   }
 
-
   virtual void bindRenderData(const vesRenderState &renderState,
                               const vesRenderData  &renderData){}
 
-
   vesUniform* uniform(){ return this->m_uniform; }
 
-
 protected:
-
   vesUniform *m_uniform;
 };
 
@@ -46,12 +41,10 @@ public:
 class vesPrimitiveType : public vesEngineUniform
 {
 public:
-
   vesPrimitiveType() : vesEngineUniform()
   {
     this->m_uniform = new vesIntegerUniform("primitiveType");
   }
-
 
   virtual void bindRenderData(const vesRenderState &renderState,
                               const vesRenderData  &renderData)
@@ -60,7 +53,6 @@ public:
     this->m_uniform->callGL(renderState.m_material->shaderProgram()->
                             uniformLocation(this->m_uniform->name()));
   }
-
 };
 
 #endif // VESENGINEUNIFORM_H

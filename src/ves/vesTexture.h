@@ -30,49 +30,44 @@
 class vesTexture : public vesMaterialAttribute
 {
 public:
-
   vesTexture();
   virtual ~vesTexture();
 
-  virtual void bind         (const vesRenderState &renderState);
-  virtual void unbind       (const vesRenderState &renderState);
-  virtual void setup        (const vesRenderState &renderState);
+  virtual void bind(const vesRenderState &renderState);
+  virtual void unbind(const vesRenderState &renderState);
+  virtual void setup(const vesRenderState &renderState);
 
   void setImageData(SFImage image);
 
   void setTextureUnit(unsigned int unit);
-  unsigned int textureUnit()       { return this->m_textureUnit; }
+  unsigned int textureUnit() { return this->m_textureUnit; }
   unsigned int textureUnit() const { return this->m_textureUnit; }
 
   void setWidth(int width);
-  int  width()       { return this->m_width; }
-  int  width() const { return this->m_width; }
+  int width() { return this->m_width; }
+  int width() const { return this->m_width; }
 
   void setHeight(int height);
-  int  height()       { return this->m_height; }
-  int  height() const { return this->m_height; }
+  int height() { return this->m_height; }
+  int height() const { return this->m_height; }
 
   void setDepth(int depth);
-  int  depth()       { return this->m_depth; }
-  int  depth() const { return this->m_depth; }
+  int depth() { return this->m_depth; }
+  int depth() const { return this->m_depth; }
 
-  unsigned int textureHandle()        { return this->m_textureHandle; }
+  unsigned int textureHandle() { return this->m_textureHandle; }
   unsigned int textureHandle() const  { return this->m_textureHandle; }
 
 protected:
+  SFImage m_image;
 
-  SFImage      m_image;
+  bool m_hasData;
 
-  bool         m_hasData;
-
-  int          m_width;
-  int          m_height;
-  int          m_depth;
+  int m_width;
+  int m_height;
+  int m_depth;
 
   unsigned int m_textureHandle;
   unsigned int m_textureUnit;
-
-private:
-
 };
 #endif // __vesTexture_h

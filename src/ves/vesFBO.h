@@ -39,11 +39,11 @@ public:
     DepthAttachment   = GL_DEPTH_ATTACHMENT
   };
 
-           vesFBO();
+  vesFBO();
   virtual ~vesFBO();
 
-  bool              setTexture(AttachmentType type, vesTexture *texture);
-  vesTexture*       texture(AttachmentType type);
+  bool setTexture(AttachmentType type, vesTexture *texture);
+  vesTexture* texture(AttachmentType type);
   const vesTexture* texture(AttachmentType type) const;
 
   void setWidth (int width);
@@ -58,9 +58,7 @@ public:
   virtual void render(vesRenderState &renderState);
   virtual void remove(vesRenderState &renderState);
 
-
 protected:
-
    virtual void createFBO(vesRenderState &renderState);
    virtual void deleteFBO(vesRenderState &renderState);
 

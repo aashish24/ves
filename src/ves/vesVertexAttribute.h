@@ -37,17 +37,14 @@
 class vesVertexAttribute
 {
 public:
-
   vesVertexAttribute(const std::string &name) :
     m_name(name)
   {
   }
 
-
   virtual ~vesVertexAttribute()
   {
   }
-
 
   const std::string& name() const { return this->m_name; }
 
@@ -62,9 +59,7 @@ public:
   virtual void update(const vesRenderState &renderState,
                       const vesShaderProgram &shaderProgram, int key){;}
 
-
 protected:
-
   std::string m_name;
 };
 
@@ -72,12 +67,10 @@ protected:
 class vesPositionVertexAttribute : public vesVertexAttribute
 {
 public:
-
   vesPositionVertexAttribute(const std::string &name="vertexPosition") :
     vesVertexAttribute(name)
   {
   }
-
 
   virtual void bindVertexData(const vesRenderState &renderState, int key)
   {
@@ -89,7 +82,6 @@ public:
     glEnableVertexAttribArray(renderState.m_material->shaderProgram()->
                               attributeLocation(this->m_name));
   }
-
 
   virtual void unbindVertexData(const vesRenderState &renderState, int key)
   {
@@ -104,7 +96,6 @@ public:
 class vesNormalVertexAttribute : public vesVertexAttribute
 {
 public:
-
   vesNormalVertexAttribute(const std::string &name="vertexNormal") :
     vesVertexAttribute(name)
   {
@@ -121,7 +112,6 @@ public:
                               attributeLocation(this->m_name));
   }
 
-
   virtual void unbindVertexData(const vesRenderState &renderState, int key)
   {
     assert(renderState.m_material && renderState.m_material->shaderProgram());
@@ -135,7 +125,6 @@ public:
 class vesColorVertexAttribute : public vesVertexAttribute
 {
 public:
-
   vesColorVertexAttribute(const std::string &name="vertexColor") :
     vesVertexAttribute(name)
   {
@@ -153,7 +142,6 @@ public:
                               attributeLocation(this->m_name));
   }
 
-
   virtual void unbindVertexData(const vesRenderState &renderState, int key)
   {
     assert(renderState.m_material && renderState.m_material->shaderProgram());
@@ -168,7 +156,6 @@ public:
 class vesTextureCoordinateVertexAttribute : public vesVertexAttribute
 {
 public:
-
   vesTextureCoordinateVertexAttribute(const std::string &name="vertexTextureCoordinate") :
     vesVertexAttribute(name)
   {
@@ -185,7 +172,6 @@ public:
     glEnableVertexAttribArray(renderState.m_material->shaderProgram()->
                               attributeLocation(this->m_name));
   }
-
 
   virtual void unbindVertexData(const vesRenderState &renderState, int key)
   {

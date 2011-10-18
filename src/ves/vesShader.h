@@ -24,47 +24,43 @@
 #ifndef VESSHADER_H
 #define VESSHADER_H
 
+// VES includes
 #include "vesGL.h"
 
+// C/C++ includes
 #include <string>
 
 class vesShader
 {
 public:
-
  // \note: GL* types can be moved to some external header.
  enum ShaderType
  {
-     Vertex         = GL_VERTEX_SHADER,
+    Vertex = GL_VERTEX_SHADER,
 
     // \note: Currently GLES does not support other shaders.
    //TESSCONTROL    = GL_TESS_CONTROL_SHADER,
    //TESSEVALUATION = GL_TESS_EVALUATION_SHADER,
    //GEOMETRY       = GL_GEOMETRY_SHADER_EXT,
 
-     Fragment       = GL_FRAGMENT_SHADER,
-     Undefined      = -1
+    Fragment = GL_FRAGMENT_SHADER,
+    Undefined = -1
  };
 
 
-         vesShader(ShaderType type = Undefined);
-         vesShader(ShaderType type, const std::string &source);
-
- virtual ~vesShader();
-
- // \todo: Support shader binaries.
+  vesShader(ShaderType type = Undefined);
+  vesShader(ShaderType type, const std::string &source);
+  virtual ~vesShader();
 
  // \todo: Implement these useful functions.
  // int compare(const vesShader &rhs);
  inline unsigned int shaderHandle() { return this->m_shaderHandle; }
-
 
  bool setShaderType(ShaderType type);
  inline ShaderType shaderType() const
  {
    return m_type;
  }
-
 
  inline void setFileName(const std::string &fileName)
  {
@@ -73,12 +69,10 @@ public:
    // \todo: Make state dirty.
  }
 
-
  inline const std::string& fileName() const
  {
    return this->m_shaderFileName;
  }
-
 
  inline void setShaderSource(const std::string &sourceText)
  {
@@ -115,14 +109,13 @@ public:
 
 
 protected:
-
-   ShaderType   m_type;
+   ShaderType m_type;
 
    unsigned int m_shaderHandle;
 
-   std::string  m_shaderFileName;
+   std::string m_shaderFileName;
 
-   std::string  m_shaderSource;
+   std::string m_shaderSource;
 };
 
 #endif

@@ -36,8 +36,8 @@ public:
                 const vesMatrix4x4f &projectionMatrix,
                 vesMaterial *material, vesMapper *mapper)
   {
-    this->m_depth            = depth;
-    this->m_modelViewMatrix  = modelViewMatrix;
+    this->m_depth = depth;
+    this->m_modelViewMatrix = modelViewMatrix;
     this->m_projectionMatrix = projectionMatrix;
 
     this->m_material = material;
@@ -88,14 +88,14 @@ public:
   }
 
 
-  int            m_depth;
-  int            m_bin;
+  int m_depth;
+  int m_bin;
 
   vesMatrix4x4f m_projectionMatrix;
   vesMatrix4x4f m_modelViewMatrix;
 
-  vesMaterial   *m_material;
-  vesMapper     *m_mapper;
+  vesMaterial *m_material;
+  vesMapper *m_mapper;
 };
 
 #endif // VESRENDERLEAF_H

@@ -30,12 +30,10 @@
 class vesNormalMatrixUniform : public vesUniform
 {
 public:
-
   vesNormalMatrixUniform(const std::string &name="normalMatrix") :
     vesUniform(name, vesMatrix3x3f())
   {
   }
-
 
   virtual void update(const vesRenderState &renderState,
                       const vesShaderProgram &program)

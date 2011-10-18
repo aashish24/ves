@@ -60,10 +60,10 @@ public:
   void SetClippingRange(float near, float far);
   void Reset();
 
-  bool                   SetRenderTarget(vesRenderTarget *renderTarget);
-  vesRenderTarget*       RenderTarget();
+  bool SetRenderTarget(vesRenderTarget *renderTarget);
+  vesRenderTarget* RenderTarget();
   const vesRenderTarget* RenderTarget() const;
-  void                   ClearRenderTargets(vesRenderState &renderState);
+  void ClearRenderTargets(vesRenderState &renderState);
 
 private:
   void ComputeDistance();

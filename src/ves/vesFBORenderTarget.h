@@ -32,14 +32,12 @@ class vesTexture;
 class vesFBORenderTarget : public vesRenderTarget
 {
 public:
-
-           vesFBORenderTarget();
+  vesFBORenderTarget();
   virtual ~vesFBORenderTarget();
 
   virtual bool attach(vesFBO::AttachmentType type, vesTexture *texture);
 
 protected:
-
   vesFBO *m_fbo;
 };
 

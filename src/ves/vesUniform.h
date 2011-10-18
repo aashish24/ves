@@ -40,7 +40,6 @@ template <typename DataType>
 class vesUniformDataArray
 {
 public:
-
   typedef typename std::vector<DataType>::reference reference;
 
   vesUniformDataArray(int size)
@@ -65,7 +64,6 @@ public:
 class vesUniform
 {
 public:
-
   typedef vesUniformDataArray<GLint>   IntArray;
   typedef vesUniformDataArray<GLfloat> FloatArray;
 
@@ -97,10 +95,8 @@ public:
   };
 
 public:
-
-           vesUniform();
+  vesUniform();
   virtual ~vesUniform();
-
 
   /*! Set the type of glUniform, ensuring it is only set once.*/
   bool setType(Type t);
@@ -171,9 +167,7 @@ public:
 
   void callGL(int location) const;
 
-
 protected:
-
   vesUniform& operator=(const vesUniform&);
 
   void setMinimalDefaults();
@@ -183,18 +177,18 @@ protected:
   inline bool isScalar() const { return m_numberElements==1; }
 
   unsigned int getInternalArrayNumberOfElements() const;
-  int          getTypeNumberOfComponents(Type type) const;
-  GLenum       getInternalArrayType(Type type) const;
+  int getTypeNumberOfComponents(Type type) const;
+  GLenum getInternalArrayType(Type type) const;
 
   void allocateDataArray();
 
-  Type                m_type;
-  std::string         m_name;
+  Type m_type;
+  std::string m_name;
 
-  unsigned int        m_numberElements;
+  unsigned int m_numberElements;
 
-  IntArray           *m_intArray;
-  FloatArray         *m_floatArray;
+  IntArray *m_intArray;
+  FloatArray *m_floatArray;
 };
 
 #endif // VESUNIFORM_H

@@ -28,21 +28,18 @@
 class vesRenderToTexture : public vesFBORenderTarget
 {
 public:
-
-           vesRenderToTexture();
+  vesRenderToTexture();
   virtual ~vesRenderToTexture();
 
-  bool              setColorTexture(vesTexture *texture);
-  vesTexture*       colorTexture();
+  bool setColorTexture(vesTexture *texture);
+  vesTexture* colorTexture();
   const vesTexture* colorTexture() const;
 
-  bool              setDepthTexture(vesTexture *texture);
-  vesTexture*       depthTexture();
+  bool setDepthTexture(vesTexture *texture);
+  vesTexture* depthTexture();
   const vesTexture* depthTexture() const;
 
-
 protected:
-
   void setup (vesRenderState &renderState);
   void render(vesRenderState &renderState);
   void remove(vesRenderState &renderState);

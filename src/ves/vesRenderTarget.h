@@ -32,29 +32,22 @@ class vesRenderState;
 class vesRenderTarget : public vesObject
 {
 public:
-  vesRenderTarget() :
-    m_implementation(FrameBuffer)
-  {
-  }
-
-
   enum ImplementationType
   {
-      // Default
-      FrameBuffer = 0,
-      FrameBufferObject,
-      PixelBuffer
+    // Default
+    FrameBuffer = 0,
+    FrameBufferObject,
+    PixelBuffer
   };
 
+  vesRenderTarget() : m_implementation(FrameBuffer) {}
   virtual ~vesRenderTarget(){}
 
   virtual void setup (vesRenderState &renderState){}
   virtual void render(vesRenderState &renderState){}
   virtual void remove(vesRenderState &renderState){}
 
-
  protected:
-
    ImplementationType m_implementation;
 };
 
