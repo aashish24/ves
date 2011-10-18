@@ -167,22 +167,17 @@ bool setupGraphics(int w, int h)
   // Pipe VTK messages into the android log
   vtkAndroidOutputWindow::Install();
 
-  std::string vertex_source = getContentsOfAssetFile("Shader.vsh");
-  std::string fragment_source = getContentsOfAssetFile("Shader.fsh");
-  //LOGI("vertex_source: %s\n", vertex_source.c_str());
-  //LOGI("fragment_source: %s\n", fragment_source.c_str());
+  std::string vertexSource = getContentsOfAssetFile("Shader.vsh");
+  std::string fragmentSource = getContentsOfAssetFile("Shader.fsh");
+  //LOGI("vertex_source: %s\n", vertexSource.c_str());
+  //LOGI("fragment_source: %s\n", fragment_Source.c_str());
 
   app = new vesKiwiViewerApp();
-  app->setVertexShaderSource(vertex_source);
-  app->setFragmentShaderSource(fragment_source);
-  app->initializeShaderProgram();
-  app->initializeRendering();
+  app->initGouraudShader(vertexSource, fragmentSource);
 
-  vertex_source = getContentsOfAssetFile("BackgroundTexture.vsh");
-  fragment_source = getContentsOfAssetFile("BackgroundTexture.fsh");
-  app->setVertexShaderSource(vertex_source);
-  app->setFragmentShaderSource(fragment_source);
-  app->initializeTextureShader();
+  vertexSource = getContentsOfAssetFile("BackgroundTexture.vsh");
+  fragmentSource = getContentsOfAssetFile("BackgroundTexture.fsh");
+  app->initTextureShader(vertexSource, fragmentSource);
 
   loadDataset(app->defaultBuiltinDatasetIndex());
   app->resizeView(w, h);

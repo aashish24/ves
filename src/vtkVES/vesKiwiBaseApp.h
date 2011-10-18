@@ -37,8 +37,6 @@ public:
   vesKiwiBaseApp();
   virtual ~vesKiwiBaseApp();
 
-  virtual bool initializeRendering();
-
   void render();
 
   virtual void resetView();

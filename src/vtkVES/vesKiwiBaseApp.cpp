@@ -211,12 +211,6 @@ void vesKiwiBaseApp::handleTwoTouchRotationGesture(double rotation)
 }
 
 //----------------------------------------------------------------------------
-bool vesKiwiBaseApp::initializeRendering()
-{
-  return true;
-}
-
-//----------------------------------------------------------------------------
 vesShaderProgram* vesKiwiBaseApp::addShaderProgram(const std::string& vertexShaderSource,
                                                       const std::string& fragmentShaderSource)
 {
