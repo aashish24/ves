@@ -37,10 +37,13 @@
 #undef Bool
 #endif
 
-#include <vesKiwiViewerApp.h>
+#include <vesKiwiBaseApp.h>
+#include <vesKiwiDataLoader.h>
+#include <vesKiwiPolyDataRepresentation.h>
 #include <vesShaderProgram.h>
 #include <vesUniform.h>
 
+#include <vtkPolyData.h>
 #include <vtkErrorCode.h>
 #include <vtkImageData.h>
 #include <vtkImageDifference.h>
@@ -54,22 +57,70 @@
 //----------------------------------------------------------------------------
 namespace {
 
+
+class vesClipApp : public vesKiwiBaseApp {
+public:
+
+  vesClipApp()
+  {
+    this->ClipUniform = 0;
+    this->ClipShader = 0;
+    this->DataRep = 0;
+  }
+
+  ~vesClipApp()
+  {
+    delete this->DataRep;
+  }
+
+  void initClipShader(const std::string& vertexSource, const std::string fragmentSource)
+  {
+    vesShaderProgram* shaderProgram = this->addShaderProgram(vertexSource, fragmentSource);
+    this->addModelViewMatrixUniform(shaderProgram);
+    this->addProjectionMatrixUniform(shaderProgram);
+    this->addNormalMatrixUniform(shaderProgram);
+    this->addVertexPositionAttribute(shaderProgram);
+    this->addVertexNormalAttribute(shaderProgram);
+    this->addVertexColorAttribute(shaderProgram);
+    this->addVertexTextureCoordinateAttribute(shaderProgram);
+    this->ClipShader = shaderProgram;
+
+    this->ClipUniform = new vesUniform("clipPlaneEquation", vesVector4f(-1.0f, 0.0f, 0.0f, 0.0f));
+    this->ClipShader->addUniform(this->ClipUniform);
+    this->storeUniformForDeletion(this->ClipUniform);
+  }
+
+  void loadData(const std::string& filename)
+  {
+    vesKiwiDataLoader loader;
+    vtkSmartPointer<vtkPolyData> polyData = vtkPolyData::SafeDownCast(loader.loadDataset(filename));
+    assert(polyData.GetPointer());
+
+    vesKiwiPolyDataRepresentation* rep = new vesKiwiPolyDataRepresentation();
+    rep->initializeWithShader(this->ClipShader);
+    rep->setPolyData(polyData);
+    rep->addSelfToRenderer(this->renderer());
+    this->DataRep = rep;
+  }
+
+
+  vesUniform* ClipUniform;
+  vesShaderProgram* ClipShader;
+  vesKiwiPolyDataRepresentation* DataRep;
+};
+
 class vesTestHelper {
 public:
 
   vesTestHelper()
   {
-    this->TestName = "Clipped Standford Bunny";
-    this->ClipPlaneEqualtion =
-      new vesUniform("clipPlaneEquation", vesVector4f(-1.0f, 0.0f, 0.0f, 0.0f));
   }
 
   ~vesTestHelper()
   {
-    delete this->ClipPlaneEqualtion;
   }
 
-  vesKiwiViewerApp* app() {
+  vesClipApp* app() {
     return &this->App;
   }
 
@@ -89,15 +140,6 @@ public:
     this->DataDirectory = dir;
   }
 
-
-  std::string dataSetName() {
-    return this->DataSetName;
-  }
-
-  void setDataSetName(std::string name) {
-    this->DataSetName = name;
-  }
-
   bool isTesting() {
     return this->IsTesting;
   }
@@ -106,27 +148,12 @@ public:
     this->IsTesting = testing;
   }
 
-  vesUniform* clipPlaneEquation() {
-    return this->ClipPlaneEqualtion;
-  }
-
-  std::string testName() {
-    return this->TestName;
-  }
-
-
-
 private:
 
-  vesKiwiViewerApp App;
-
-  std::string       TestName;
+  vesClipApp        App;
   std::string       SourceDirectory;
   std::string       DataDirectory;
-  std::string       DataSetName;
   bool              IsTesting;
-
-  vesUniform       *ClipPlaneEqualtion;
 };
 
 //----------------------------------------------------------------------------
@@ -135,10 +162,10 @@ vesTestHelper* testHelper;
 //----------------------------------------------------------------------------
 void LoadData()
 {
-  testHelper->setDataSetName("bunny.vtp");
   std::string filename = testHelper->sourceDirectory() +
-    std::string("/Apps/iOS/Kiwi/Kiwi/Data/") + testHelper->dataSetName();
-  testHelper->app()->loadDataset(filename);
+    std::string("/Apps/iOS/Kiwi/Kiwi/Data/bunny.vtp");
+
+  testHelper->app()->loadData(filename);
   testHelper->app()->resetView();
 }
 
@@ -198,7 +225,7 @@ bool DoTesting()
     LoadData();
 
     testHelper->app()->render();
-    std::string testName = testHelper->testName();
+    std::string testName = "Clipped Standford Bunny";
 
     std::string inFile = testHelper->dataDirectory() + "/" + testName + ".png";
     std::string outFile = testName + ".png";
@@ -257,19 +284,9 @@ std::string GetFileContents(const std::string& filename)
 //----------------------------------------------------------------------------
 void InitRendering()
 {
-  std::string vertexShaderFile = testHelper->sourceDirectory() + "/src/shaders/ClipPlane.vsh";
-  std::string fragmentShaderFile = testHelper->sourceDirectory() + "/src/shaders/ClipPlane.fsh";
-
-  std::string vertexSourceStr = GetFileContents(vertexShaderFile);
-  std::string fragmentSourceStr = GetFileContents(fragmentShaderFile);
-
-  testHelper->app()->setVertexShaderSource(vertexSourceStr);
-  testHelper->app()->setFragmentShaderSource(fragmentSourceStr);
-
-  testHelper->app()->initializeShaderProgram();
-  testHelper->app()->initializeRendering();
-
-  testHelper->app()->shaderProgram()->addUniform(testHelper->clipPlaneEquation());
+  testHelper->app()->initClipShader(
+    GetFileContents(testHelper->sourceDirectory() + "/src/shaders/ClipPlane.vsh"),
+    GetFileContents(testHelper->sourceDirectory() + "/src/shaders/ClipPlane.fsh"));
 }
 
 //----------------------------------------------------------------------------
@@ -499,16 +516,6 @@ event_loop(Display *dpy, Window win,
                if (buffer[0] == 27) {
                   /* escape */
                   return;
-               }
-               if (buffer[0] == 't') {
-                 static int currentShadingModelIndex = 0;
-
-                 currentShadingModelIndex = (currentShadingModelIndex + 1) %
-
-                 testHelper->app()->getNumberOfShadingModels();
-
-                 testHelper->app()->setShadingModel(testHelper->app()->getShadingModel(
-                    currentShadingModelIndex));
                }
                else if (buffer[0] == 'r') {
                  testHelper->app()->resetView();
