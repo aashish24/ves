@@ -150,6 +150,7 @@ vtkPoint3f transformPoint3f(vesMatrix4x4f matrix, vtkPoint3f vec)
   return ret;
 }
 
+// ----------------------------------------------------------------------------
 float deg2Rad(float degree)
 {
   return gmtl::Math::deg2Rad(degree);

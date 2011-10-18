@@ -42,22 +42,25 @@ public:
   const SFVec3f& boundsMaximum() const {return this->m_boundsMaximum;}
 
   const SFVec3f& boundsCenter() const {return this->m_boundsCenter;}
-  const SFVec3f& boundsSize()   const {return this->m_boundsSize;}
+  const SFVec3f& boundsSize() const {return this->m_boundsSize;}
 
-  void setBoundsCenter(const vesVector3f& center);
-  void setBoundsSize  (const vesVector3f& size);
+  void setBoundsCenter(const vesVector3f &center);
+  void setBoundsSize(const vesVector3f &size);
 
   void  setBounds(vesVector3f min, vesVector3f max);
 
   float boundsRadius();
 
   void setBoundsDirty(bool value);
-  bool boundsDirty()        { return this->m_boundsDirty; }
-  bool boundsDirty() const  { return this->m_boundsDirty; }
+  bool boundsDirty() { return this->m_boundsDirty; }
+  bool boundsDirty() const { return this->m_boundsDirty; }
+
+  void resetBounds();
+
 
 protected:
 
-  bool    m_boundsDirty;
+  bool m_boundsDirty;
 
   SFVec3f m_boundsCenter;
   SFVec3f m_boundsSize;
