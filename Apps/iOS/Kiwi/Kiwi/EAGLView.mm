@@ -353,7 +353,7 @@
   [self addGestureRecognizer:rotate2DGesture];
   [rotate2DGesture release];
   
-  UIRotationGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]
+  UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]
                                              initWithTarget:self action:@selector(handleTapGesture:)];
   // this is needed so that the buttons on top of the render view will 
   // work since this is the first responder---is this the best way to 
