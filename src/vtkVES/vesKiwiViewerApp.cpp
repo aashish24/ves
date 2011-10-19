@@ -78,6 +78,19 @@ public:
 
   }
 
+
+  struct vesShaderProgramData
+  {
+    vesShaderProgramData(const std::string &name,
+                         vesShaderProgram *shaderProgram) :
+      Name(name), ShaderProgram(shaderProgram)
+    {
+    }
+
+    std::string Name;
+    vesShaderProgram *ShaderProgram;
+  };
+
   vesShaderProgram* ShaderProgram;
   vesShaderProgram* TextureShader;
 
@@ -89,7 +102,7 @@ public:
   std::vector<std::string> BuiltinDatasetFilenames;
 
   std::string CurrentShadingModel;
-  std::vector<std::string> BuiltinShadingModels;
+  std::vector<vesShaderProgramData> BuiltinShadingModels;
 
   vtkSmartPointer<vtkFreeTypeStringToImage> TextToImage;
   vesKiwiImagePlaneDataRepresentation* TextRepresentation;
@@ -115,10 +128,6 @@ vesKiwiViewerApp::vesKiwiViewerApp()
   this->addBuiltinDataset("Caffeine", "caffeine.pdb");
   this->addBuiltinDataset("Head", "head.vti");
   this->addBuiltinDataset("KiwiViewer Logo", "kiwi.png");
-
-  this->addBuiltinShadingModel("Gouraud");
-  this->addBuiltinShadingModel("Blinn-Phong");
-  this->addBuiltinShadingModel("Toon");
 }
 
 //----------------------------------------------------------------------------
@@ -174,9 +183,25 @@ void vesKiwiViewerApp::addBuiltinDataset(const std::string& name, const std::str
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiViewerApp::addBuiltinShadingModel(const std::string &name)
+void vesKiwiViewerApp::addBuiltinShadingModel(const std::string &name,
+                                              vesShaderProgram *shaderProgram)
 {
-  this->Internal->BuiltinShadingModels.push_back(name);
+  assert(shaderProgram);
+
+  if (!shaderProgram) {
+    return;
+  }
+
+  for(size_t i=0; i < this->Internal->BuiltinShadingModels.size(); ++i) {
+    if (this->Internal->BuiltinShadingModels[i].Name == name) {
+      delete this->Internal->BuiltinShadingModels[i].ShaderProgram;
+      this->Internal->BuiltinShadingModels[i].ShaderProgram = shaderProgram;
+      return;
+    }
+  }
+
+  this->Internal->BuiltinShadingModels.push_back(
+    vesInternal::vesShaderProgramData(name, shaderProgram));
 }
 
 //----------------------------------------------------------------------------
@@ -233,6 +258,7 @@ bool vesKiwiViewerApp::scrollSliceModeActive() const
 //----------------------------------------------------------------------------
 int vesKiwiViewerApp::getNumberOfShadingModels() const
 {
+  std::cout << "this->Internal->BuiltinShadingModels.size() " << this->Internal->BuiltinShadingModels.size() << std::endl;
   return static_cast<int>(this->Internal->BuiltinShadingModels.size());
 }
 
@@ -252,14 +278,34 @@ std::string vesKiwiViewerApp::getShadingModel(int index) const
   return empty;
   }
 
-  return this->Internal->BuiltinShadingModels[index];
+  return this->Internal->BuiltinShadingModels[index].Name;
 }
 
 //----------------------------------------------------------------------------
 bool vesKiwiViewerApp::setShadingModel(const std::string& name)
 {
+  std::cout << "Setting " << name << std::endl;
   bool success = true;
-  return success;
+
+  for(size_t i=0; i < this->Internal->BuiltinShadingModels.size(); ++i) {
+    if (this->Internal->BuiltinShadingModels[i].Name == name) {
+      this->Internal->ShaderProgram = this->Internal->BuiltinShadingModels[i].ShaderProgram;
+
+      vesKiwiPolyDataRepresentation *polyDataRepresentation =
+        dynamic_cast<vesKiwiPolyDataRepresentation*>(this->Internal->DataRepresentations.back());
+
+      if (polyDataRepresentation) {
+        polyDataRepresentation->setShaderProgram(this->Internal->ShaderProgram);
+      }
+      else {
+        // Do nothing.
+      }
+
+      return success;
+    }
+  }
+
+  return !success;
 }
 
 //----------------------------------------------------------------------------
@@ -274,6 +320,9 @@ bool vesKiwiViewerApp::initGouraudShader(const std::string& vertexSource, const 
   this->addVertexColorAttribute(shaderProgram);
   this->addVertexTextureCoordinateAttribute(shaderProgram);
   this->Internal->ShaderProgram = shaderProgram;
+
+  this->addBuiltinShadingModel("Gouraud", shaderProgram);
+
   return true;
 }
 
@@ -286,6 +335,17 @@ bool vesKiwiViewerApp::initBlinnPhongShader(const std::string& vertexSource, con
 //----------------------------------------------------------------------------
 bool vesKiwiViewerApp::initToonShader(const std::string& vertexSource, const std::string& fragmentSource)
 {
+  vesShaderProgram* shaderProgram = this->addShaderProgram(vertexSource, fragmentSource);
+  this->addModelViewMatrixUniform(shaderProgram);
+  this->addProjectionMatrixUniform(shaderProgram);
+  this->addNormalMatrixUniform(shaderProgram);
+  this->addVertexPositionAttribute(shaderProgram);
+  this->addVertexNormalAttribute(shaderProgram);
+
+  this->Internal->ShaderProgram = shaderProgram;
+
+  this->addBuiltinShadingModel("Toon", shaderProgram);
+
   return true;
 }
 
