@@ -288,7 +288,6 @@ bool vesKiwiViewerApp::scrollSliceModeActive() const
 //----------------------------------------------------------------------------
 int vesKiwiViewerApp::getNumberOfShadingModels() const
 {
-  std::cout << "this->Internal->BuiltinShadingModels.size() " << this->Internal->BuiltinShadingModels.size() << std::endl;
   return static_cast<int>(this->Internal->BuiltinShadingModels.size());
 }
 
