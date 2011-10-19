@@ -354,6 +354,17 @@ bool vesKiwiViewerApp::initGouraudShader(const std::string& vertexSource, const 
 //----------------------------------------------------------------------------
 bool vesKiwiViewerApp::initBlinnPhongShader(const std::string& vertexSource, const std::string& fragmentSource)
 {
+  vesShaderProgram* shaderProgram = this->addShaderProgram(vertexSource, fragmentSource);
+  this->addModelViewMatrixUniform(shaderProgram);
+  this->addProjectionMatrixUniform(shaderProgram);
+  this->addNormalMatrixUniform(shaderProgram);
+  this->addVertexPositionAttribute(shaderProgram);
+  this->addVertexNormalAttribute(shaderProgram);
+  this->addVertexColorAttribute(shaderProgram);
+  this->Internal->ShaderProgram = shaderProgram;
+
+  this->addBuiltinShadingModel("BlinnPhong", shaderProgram);
+
   return true;
 }
 

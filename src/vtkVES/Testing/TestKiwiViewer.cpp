@@ -224,8 +224,12 @@ std::string GetFileContents(const std::string& filename)
 //----------------------------------------------------------------------------
 void InitRendering()
 {
-  std::string vertexSource = GetFileContents(testHelper->sourceDirectory() + "/src/shaders/ToonShader.vsh");
-  std::string fragmentSource = GetFileContents(testHelper->sourceDirectory() + "/src/shaders/ToonShader.fsh");
+  std::string vertexSource = GetFileContents(testHelper->sourceDirectory() + "/src/shaders/BlinnPhong.vsh");
+  std::string fragmentSource = GetFileContents(testHelper->sourceDirectory() + "/src/shaders/BlinnPhong.fsh");
+  testHelper->app()->initBlinnPhongShader(vertexSource, fragmentSource);
+
+  vertexSource = GetFileContents(testHelper->sourceDirectory() + "/src/shaders/ToonShader.vsh");
+  fragmentSource = GetFileContents(testHelper->sourceDirectory() + "/src/shaders/ToonShader.fsh");
   testHelper->app()->initToonShader(vertexSource, fragmentSource);
 
   vertexSource = GetFileContents(testHelper->sourceDirectory() + "/src/shaders/Shader.vsh");
