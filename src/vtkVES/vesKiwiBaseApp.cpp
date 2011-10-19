@@ -228,6 +228,25 @@ vesShaderProgram* vesKiwiBaseApp::addShaderProgram(const std::string& vertexShad
 }
 
 //----------------------------------------------------------------------------
+void vesKiwiBaseApp::deleteShaderProgram(vesShaderProgram *shaderProgram)
+{
+  if (!shaderProgram) {
+    // Nothing to remove.
+    return;
+  }
+
+  // Remove only one.
+  std::vector<vesShaderProgram*>::iterator itr =
+    std::find(this->Internal->ShaderPrograms.begin(),
+              this->Internal->ShaderPrograms.end(), shaderProgram);
+
+  if (itr != this->Internal->ShaderPrograms.end()) {
+    this->Internal->ShaderPrograms.erase(itr);
+    delete shaderProgram;
+  }
+}
+
+//----------------------------------------------------------------------------
 vesUniform* vesKiwiBaseApp::addModelViewMatrixUniform(vesShaderProgram* program, const std::string& name)
 {
   this->Internal->Uniforms.push_back(

@@ -75,16 +75,11 @@ public:
 
   ~vesInternal()
   {
-    for (size_t i = 0; i < this->BuiltinShadingModels.size(); ++i) {
-      delete this->BuiltinShadingModels[i].ShaderProgram;
-    }
-
     this->DataRepresentations.clear();
     this->BuiltinDatasetNames.clear();
     this->BuiltinDatasetFilenames.clear();
     this->BuiltinShadingModels.clear();
   }
-
 
   struct vesShaderProgramData
   {
@@ -97,6 +92,8 @@ public:
     std::string Name;
     vesShaderProgram *ShaderProgram;
   };
+
+  bool setShaderProgramOnRepresentations(vesShaderProgram *shaderProgram);
 
   vesShaderProgram* ShaderProgram;
   vesShaderProgram* TextureShader;
@@ -116,6 +113,32 @@ public:
 
   vesKiwiImageWidgetRepresentation* ImageWidget;
 };
+
+//----------------------------------------------------------------------------
+bool vesKiwiViewerApp::vesInternal::setShaderProgramOnRepresentations(
+  vesShaderProgram *shaderProgram)
+{
+  bool success = false;
+
+  for (size_t i = 0; i < this->DataRepresentations.size(); ++i) {
+    vesKiwiPolyDataRepresentation *polyDataRepresentation =
+        dynamic_cast<vesKiwiPolyDataRepresentation*>(this->DataRepresentations[i]);
+
+    vesKiwiImageWidgetRepresentation *imageWidgetRepresentation =
+        dynamic_cast<vesKiwiImageWidgetRepresentation*>(this->DataRepresentations[i]);
+
+    if (polyDataRepresentation) {
+      polyDataRepresentation->setShaderProgram(shaderProgram);
+      success = true;
+    }
+    else if (imageWidgetRepresentation) {
+      imageWidgetRepresentation->setShaderProgram(shaderProgram);
+      success = true;
+    }
+  }
+
+  return success;
+}
 
 //----------------------------------------------------------------------------
 vesKiwiViewerApp::vesKiwiViewerApp()
@@ -201,7 +224,7 @@ void vesKiwiViewerApp::addBuiltinShadingModel(const std::string &name,
 
   for(size_t i=0; i < this->Internal->BuiltinShadingModels.size(); ++i) {
     if (this->Internal->BuiltinShadingModels[i].Name == name) {
-      delete this->Internal->BuiltinShadingModels[i].ShaderProgram;
+      this->deleteShaderProgram(this->Internal->BuiltinShadingModels[i].ShaderProgram);
       this->Internal->BuiltinShadingModels[i].ShaderProgram = shaderProgram;
       return;
     }
@@ -291,33 +314,18 @@ std::string vesKiwiViewerApp::getShadingModel(int index) const
 //----------------------------------------------------------------------------
 bool vesKiwiViewerApp::setShadingModel(const std::string& name)
 {
-  std::cout << "Setting " << name << std::endl;
   bool success = true;
 
   for(size_t i=0; i < this->Internal->BuiltinShadingModels.size(); ++i) {
+    // Check if we have a match.
     if (this->Internal->BuiltinShadingModels[i].Name == name) {
-
+      // Check if we have a valid shader program before we switch.
       if (this->Internal->BuiltinShadingModels[i].ShaderProgram) {
+        this->Internal->ShaderProgram =
+          this->Internal->BuiltinShadingModels[i].ShaderProgram;
 
-        this->Internal->ShaderProgram = this->Internal->BuiltinShadingModels[i].ShaderProgram;
-
-        vesKiwiPolyDataRepresentation *polyDataRepresentation =
-          dynamic_cast<vesKiwiPolyDataRepresentation*>(this->Internal->DataRepresentations.back());
-
-        vesKiwiImageWidgetRepresentation *imageWidgetRepresentation =
-          dynamic_cast<vesKiwiImageWidgetRepresentation*>(this->Internal->DataRepresentations.back());
-
-        if (polyDataRepresentation) {
-          polyDataRepresentation->setShaderProgram(this->Internal->ShaderProgram);
-        }
-        else if (imageWidgetRepresentation) {
-          imageWidgetRepresentation->setShaderProgram(this->Internal->ShaderProgram);
-        }
-
-        return success;
-      }
-      else {
-        return !success;
+        return this->Internal->setShaderProgramOnRepresentations(
+          this->Internal->ShaderProgram);
       }
     }
   }

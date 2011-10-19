@@ -64,6 +64,7 @@ protected:
 
   vesShaderProgram* addShaderProgram(const std::string& vertexShaderSource,
                                      const std::string& fragmentShaderSource);
+  void deleteShaderProgram(vesShaderProgram *shaderProgram);
 
 
   vesUniform* addModelViewMatrixUniform(vesShaderProgram* program, const std::string& name=std::string());
