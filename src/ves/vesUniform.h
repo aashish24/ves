@@ -60,7 +60,6 @@ public:
   std::vector<DataType> m_data;
 };
 
-
 class vesUniform
 {
 public:

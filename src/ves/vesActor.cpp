@@ -51,6 +51,10 @@ vesMatrix4x4f vesActor::modelViewMatrix()
 
 void vesActor::updateBounds(vesActor *child)
 {
+  if (!this->boundsDirty()) {
+    return;
+  }
+
   if (!child || child->isOverlayActor()) {
     return;
   }
@@ -63,20 +67,18 @@ void vesActor::updateBounds(vesActor *child)
 
   child->setBounds(min, max);
 
-  if (!this->m_mapper) {
-    this->setBounds(min, max);
-  }
-  else
-  {
-    for (int i = 0; i < 3; ++i) {
-      if (max[i] > this->m_boundsMaximum[i]) {
-        this->m_boundsMaximum[i] = max[i];
-      }
-      if (min[i] < this->m_boundsMinimum[i]) {
-        this->m_boundsMinimum[i] = min[i];
-      }
+  for (int i = 0; i < 3; ++i) {
+    if (max[i] > this->m_boundsMaximum[i]) {
+      this->m_boundsMaximum[i] = max[i];
+    }
+
+    if (min[i] < this->m_boundsMinimum[i]) {
+      this->m_boundsMinimum[i] = min[i];
     }
   }
+
+  // Now update the bounds, bounds size and center.
+  this->setBounds(this->m_boundsMinimum, this->m_boundsMaximum);
 }
 
 
@@ -89,6 +91,7 @@ void vesActor::setVisible(bool value)
 void vesActor::setTranslation(const vesVector3f& translation)
 {
   set_translation(translation);
+  this->setBoundsDirty(true);
 }
 
 
@@ -101,6 +104,7 @@ vesVector3f vesActor::translation() const
 void vesActor::setRotation(const vesVector4f& rotation)
 {
   set_rotation(rotation);
+  this->setBoundsDirty(true);
 }
 
 
@@ -122,6 +126,7 @@ void vesActor::setMapper(vesMapper *mapper)
 {
   if (mapper) {
     this->m_mapper = mapper;
+    this->setBoundsDirty(true);
   }
 }
 
@@ -206,5 +211,12 @@ void vesActor::computeBounds()
     vesVector3f max = transformPoint3f(this->eval(), this->m_mapper->boundsMaximum());
 
     this->setBounds(min, max);
+
+    // Since now we have new internal bounds, we would have to
+    // calculate whole bounds for this actor once again.
+    this->setBoundsDirty(true);
+  }
+  else if (!this->m_mapper && this->boundsDirty()) {
+    this->resetBounds();
   }
 }

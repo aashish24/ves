@@ -20,25 +20,13 @@
 
 #include "vsgBoundedObject.h"
 
-vsgBoundedObject::vsgBoundedObject()
+// C/C++ includes
+#include <limits>
+
+vsgBoundedObject::vsgBoundedObject() :
+  m_boundsDirty(true)
 {
-  this->m_boundsDirty = true;
-
-  this->m_boundsCenter[0] = 0;
-  this->m_boundsCenter[1] = 0;
-  this->m_boundsCenter[2] = 0;
-
-  this->m_boundsSize[0] = -1;
-  this->m_boundsSize[1] = -1;
-  this->m_boundsSize[2] = -1;
-
-  this->m_boundsMinimum[0] = 0;
-  this->m_boundsMinimum[1] = 0;
-  this->m_boundsMinimum[2] = 0;
-
-  this->m_boundsMaximum[0] = 0;
-  this->m_boundsMaximum[1] = 0;
-  this->m_boundsMaximum[2] = 0;
+  this->resetBounds();
 }
 
 vsgBoundedObject::~vsgBoundedObject()
@@ -66,13 +54,6 @@ void vsgBoundedObject::setBounds(vesVector3f min, vesVector3f max)
   this->m_boundsCenter = 0.5f * (max + min);
 
   this->m_boundsSize = max - min;
-
-  for (int i=0; i<3; ++i) {
-    if (this->m_boundsSize[i] < 0) {
-      this->m_boundsSize *= -1;
-    }
-  }
-
 }
 
 
@@ -89,4 +70,27 @@ float vsgBoundedObject::boundsRadius()
 void vsgBoundedObject::setBoundsDirty(bool value)
 {
   this->m_boundsDirty = value;
+}
+
+
+void vsgBoundedObject::resetBounds()
+{
+  this->m_boundsCenter[0] = 0;
+  this->m_boundsCenter[1] = 0;
+  this->m_boundsCenter[2] = 0;
+
+  this->m_boundsSize[0] = 0;
+  this->m_boundsSize[1] = 0;
+  this->m_boundsSize[2] = 0;
+
+  this->m_boundsMinimum[0] = std::numeric_limits<float>::max();
+  this->m_boundsMinimum[1] = std::numeric_limits<float>::max();
+  this->m_boundsMinimum[2] = std::numeric_limits<float>::max();
+
+  // std::numeric_limits<float>::min() returns lowest possible absolute value.
+  // As far as the compiler / platform support IEEE floating point (754) (most of them)
+  // the code below should work. in C++11 we have ::lowest().
+  this->m_boundsMaximum[0] = -std::numeric_limits<float>::max();
+  this->m_boundsMaximum[1] = -std::numeric_limits<float>::max();
+  this->m_boundsMaximum[2] = -std::numeric_limits<float>::max();
 }

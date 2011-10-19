@@ -187,6 +187,7 @@ void vesRenderer::resetCamera()
   }
 
   double radius = this->m_sceneRoot->boundsRadius();
+
   radius = (radius==0)? (.5) : (radius);
 
   double angle = deg2Rad(this->m_camera->GetViewAngle());

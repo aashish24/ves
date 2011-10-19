@@ -18,11 +18,10 @@
   limitations under the License.
  ========================================================================*/
 
-/**
- * @section DESCRIPTION
- *
- * Specifies bounds of an object
- */
+
+/// \section DESCRIPTION
+///
+///Specifies bounds of an object
 
 #ifndef __vsgBoundedObject_h
 #define __vsgBoundedObject_h
@@ -33,31 +32,32 @@
 class vsgBoundedObject
 {
 public:
-           vsgBoundedObject();
+  vsgBoundedObject();
   virtual ~vsgBoundedObject();
 
-  virtual void computeBounds()=0;
+  virtual void computeBounds() = 0;
 
   const SFVec3f& boundsMinimum() const {return this->m_boundsMinimum;}
   const SFVec3f& boundsMaximum() const {return this->m_boundsMaximum;}
 
   const SFVec3f& boundsCenter() const {return this->m_boundsCenter;}
-  const SFVec3f& boundsSize()   const {return this->m_boundsSize;}
+  const SFVec3f& boundsSize() const {return this->m_boundsSize;}
 
-  void setBoundsCenter(const vesVector3f& center);
-  void setBoundsSize  (const vesVector3f& size);
+  void setBoundsCenter(const vesVector3f &center);
+  void setBoundsSize(const vesVector3f &size);
 
   void  setBounds(vesVector3f min, vesVector3f max);
 
   float boundsRadius();
 
   void setBoundsDirty(bool value);
-  bool boundsDirty()        { return this->m_boundsDirty; }
-  bool boundsDirty() const  { return this->m_boundsDirty; }
+  bool boundsDirty() { return this->m_boundsDirty; }
+  bool boundsDirty() const { return this->m_boundsDirty; }
+
+  void resetBounds();
 
 protected:
-
-  bool    m_boundsDirty;
+  bool m_boundsDirty;
 
   SFVec3f m_boundsCenter;
   SFVec3f m_boundsSize;
