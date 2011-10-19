@@ -470,11 +470,11 @@ event_loop(Display *dpy, Window win,
                   return;
                }
                if (buffer[0] == 't') {
-                 static int currentShadingModelIndex = 0;
+                 static int currentShadingModelIndex =
+                   testHelper->app()->getNumberOfShadingModels() - 1;
 
                  currentShadingModelIndex = (currentShadingModelIndex + 1) %
-
-                 testHelper->app()->getNumberOfShadingModels();
+                   testHelper->app()->getNumberOfShadingModels();
 
                  testHelper->app()->setShadingModel(testHelper->app()->getShadingModel(
                     currentShadingModelIndex));
