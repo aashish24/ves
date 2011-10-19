@@ -75,7 +75,14 @@ public:
 
   ~vesInternal()
   {
+    for (size_t i = 0; i < this->BuiltinShadingModels.size(); ++i) {
+      delete this->BuiltinShadingModels[i].ShaderProgram;
+    }
 
+    this->DataRepresentations.clear();
+    this->BuiltinDatasetNames.clear();
+    this->BuiltinDatasetFilenames.clear();
+    this->BuiltinShadingModels.clear();
   }
 
 
