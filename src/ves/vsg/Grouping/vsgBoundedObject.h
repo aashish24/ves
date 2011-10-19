@@ -18,11 +18,10 @@
   limitations under the License.
  ========================================================================*/
 
-/**
- * @section DESCRIPTION
- *
- * Specifies bounds of an object
- */
+
+/// \section DESCRIPTION
+///
+///Specifies bounds of an object
 
 #ifndef __vsgBoundedObject_h
 #define __vsgBoundedObject_h
@@ -33,10 +32,10 @@
 class vsgBoundedObject
 {
 public:
-           vsgBoundedObject();
+  vsgBoundedObject();
   virtual ~vsgBoundedObject();
 
-  virtual void computeBounds()=0;
+  virtual void computeBounds() = 0;
 
   const SFVec3f& boundsMinimum() const {return this->m_boundsMinimum;}
   const SFVec3f& boundsMaximum() const {return this->m_boundsMaximum;}
@@ -57,9 +56,7 @@ public:
 
   void resetBounds();
 
-
 protected:
-
   bool m_boundsDirty;
 
   SFVec3f m_boundsCenter;
