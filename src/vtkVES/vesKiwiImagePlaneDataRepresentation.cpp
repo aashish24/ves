@@ -104,6 +104,12 @@ void vesKiwiImagePlaneDataRepresentation::setGrayscaleColorMap(double scalarRang
 }
 
 //----------------------------------------------------------------------------
+void vesKiwiImagePlaneDataRepresentation::setShaderProgram(vesShaderProgram *shaderProgram)
+{
+  // Do nothing.
+}
+
+//----------------------------------------------------------------------------
 vesTexture* vesKiwiImagePlaneDataRepresentation::newTextureFromImage(vtkImageData* image)
 {
   vesTexture* texture = new vesTexture();
@@ -129,7 +135,7 @@ void vesKiwiImagePlaneDataRepresentation::setTextureFromImage(vesTexture* textur
   int dimensions[3];
   image->GetDimensions(dimensions);
   const int flatDimension = this->imageFlatDimension(image);
- 
+
   int width;
   int height;
 

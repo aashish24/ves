@@ -54,6 +54,9 @@ public:
 
   bool scrollSliceModeActive() const;
 
+  virtual void setShaderProgram(vesShaderProgram *shaderProgram);
+  virtual vesShaderProgram* shaderProgram() const;
+
   // HACK
   // A renderer should be passed into all the methods that require a renderer.  This class should
   // not store a single renderer, it should work with multiple renderers.
