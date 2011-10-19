@@ -568,6 +568,7 @@ main(int argc, char *argv[])
 
   // render once
   testHelper->app()->resizeView(winWidth, winHeight);
+  testHelper->app()->resetView();
   testHelper->app()->render();
   eglSwapBuffers(egl_dpy, egl_surf);
 

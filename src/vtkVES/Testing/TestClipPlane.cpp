@@ -70,7 +70,7 @@ public:
 
   ~vesClipApp()
   {
-    delete this->DataRep;
+    this->unloadData();
   }
 
   void initClipShader(const std::string& vertexSource, const std::string fragmentSource)
@@ -90,8 +90,19 @@ public:
     this->storeUniformForDeletion(this->ClipUniform);
   }
 
+  void unloadData()
+  {
+    if (this->DataRep) {
+      this->DataRep->removeSelfFromRenderer(this->renderer());
+      delete this->DataRep;
+      this->DataRep = 0;
+    }
+  }
+
   void loadData(const std::string& filename)
   {
+    this->unloadData();
+
     vesKiwiDataLoader loader;
     vtkSmartPointer<vtkPolyData> polyData = vtkPolyData::SafeDownCast(loader.loadDataset(filename));
     assert(polyData.GetPointer());
@@ -220,9 +231,6 @@ bool DoTesting()
 {
   const double threshold = 10.0;
   bool allTestsPassed = true;
-
-    // This loads each builtin dataset, renders it, and saves a screenshot
-    LoadData();
 
     testHelper->app()->render();
     std::string testName = "Clipped Standford Bunny";
@@ -609,6 +617,7 @@ main(int argc, char *argv[])
 
   // render once
   testHelper->app()->resizeView(winWidth, winHeight);
+  testHelper->app()->resetView();
   testHelper->app()->render();
   eglSwapBuffers(egl_dpy, egl_surf);
 
