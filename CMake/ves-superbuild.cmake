@@ -122,3 +122,8 @@ if(VES_LINUX_SUPERBUILD)
 endif()
 
 set(ves_superbuild_enabled ON)
+
+
+# CTestCustom.cmake needs to be placed at the top level build directory
+configure_file(${CMAKE_SOURCE_DIR}/CMake/CTestCustom.cmake.in
+               ${CMAKE_BINARY_DIR}/CTestCustom.cmake COPYONLY)
