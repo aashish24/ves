@@ -1,6 +1,6 @@
 
 // Uniforms.
-uniform lowp bool  hasVertexColors;
+uniform bool  hasVertexColors;
 uniform mediump vec3 lightDirection;
 uniform highp mat4 modelViewMatrix;
 uniform mediump mat3 normalMatrix;
