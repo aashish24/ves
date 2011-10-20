@@ -54,20 +54,25 @@ public:
   void setTextureUnit(unsigned int unit);
   unsigned int textureUnit() const { return this->m_textureUnit; }
 
+  /// Set width of the texture, used as fallback when no image is attached.
   bool setWidth(int width);
   int width() const;
 
+  /// Set height of the texture, used as fallback when no image is attached.
   bool setHeight(int height);
   int height() const;
 
+  /// Set depth of the texture, used as fallback when no image is attached.
   bool setDepth(int depth);
   int depth() const;
 
   unsigned int textureHandle() const  { return this->m_textureHandle; }
 
+  /// Set pixel format type, used as fallback when no image is attached.
   bool setPixelFormat(vesColorDataType::PixelFormat pixelFormat);
   vesColorDataType::PixelFormat pixelFormat() const;
 
+  /// Set internal format type. In general this is computed from the image attached.
   bool setInternalFormat(int internalFormat);
   int internalFormat() const;
 
