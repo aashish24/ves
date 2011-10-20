@@ -23,13 +23,24 @@
 
 #include "vesMaterial.h"
 
+#include "vesColorDataType.h"
+#include "vesImage.h"
+
 #include "vsg/Utility/vsgMacro.h"
-#include "vsg/Utility/vsgTypes.h"
 
 
 class vesTexture : public vesMaterialAttribute
 {
 public:
+  enum InternalFormat
+  {
+    Alpha           = GL_ALPHA,
+    Luminance       = GL_LUMINANCE,
+    LuminanceAlpha  = GL_LUMINANCE_ALPHA,
+    RGB             = GL_RGB,
+    RGBA            = GL_RGBA
+  };
+
   vesTexture();
   virtual ~vesTexture();
 
@@ -37,31 +48,34 @@ public:
   virtual void unbind(const vesRenderState &renderState);
   virtual void setup(const vesRenderState &renderState);
 
-  void setImageData(SFImage image);
+  void setImage(vesImage image);
+  vesImage image() const;
 
   void setTextureUnit(unsigned int unit);
-  unsigned int textureUnit() { return this->m_textureUnit; }
   unsigned int textureUnit() const { return this->m_textureUnit; }
 
-  void setWidth(int width);
-  int width() { return this->m_width; }
-  int width() const { return this->m_width; }
+  bool setWidth(int width);
+  int width() const;
 
-  void setHeight(int height);
-  int height() { return this->m_height; }
-  int height() const { return this->m_height; }
+  bool setHeight(int height);
+  int height() const;
 
-  void setDepth(int depth);
-  int depth() { return this->m_depth; }
-  int depth() const { return this->m_depth; }
+  bool setDepth(int depth);
+  int depth() const;
 
-  unsigned int textureHandle() { return this->m_textureHandle; }
   unsigned int textureHandle() const  { return this->m_textureHandle; }
 
-protected:
-  SFImage m_image;
+  bool setPixelFormat(vesColorDataType::PixelFormat pixelFormat);
+  vesColorDataType::PixelFormat pixelFormat() const;
 
-  bool m_hasData;
+
+protected:
+  void computeInternalFormatUsingImage();
+  void updateDimensions();
+
+  vesImage m_image;
+
+  bool m_hasImage;
 
   int m_width;
   int m_height;
@@ -69,5 +83,9 @@ protected:
 
   unsigned int m_textureHandle;
   unsigned int m_textureUnit;
+
+  vesColorDataType::PixelFormat m_pixelFormat;
+
+  int m_internalFormat;
 };
 #endif // __vesTexture_h

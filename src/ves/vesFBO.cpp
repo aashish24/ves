@@ -25,6 +25,7 @@
 
 // C/C++ includes
 #include <algorithm>
+#include <iostream>
 #include <map>
 
 class vesFBO::vesInternal
