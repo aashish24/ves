@@ -190,8 +190,9 @@ void vesTexture::setup(const vesRenderState &renderState)
     }
     else {
       glTexImage2D(GL_TEXTURE_2D, 0, this->m_internalFormat, this->m_width,
-                   this->m_height, 0, this->m_pixelFormat, GL_UNSIGNED_SHORT_5_6_5,
-                   NULL);
+                   this->m_height, 0,
+                   this->m_pixelFormat ? this->m_pixelFormat : this->m_internalFormat,
+                   GL_UNSIGNED_SHORT_5_6_5, NULL);
     }
 
     this->setDirtyStateOff();
@@ -214,11 +215,9 @@ void vesTexture::computeInternalFormatUsingImage()
   case vesColorDataType::LuminanceAlpha:
     this->m_internalFormat = vesColorDataType::LuminanceAlpha;
     break;
+  // Do nothing when image pixel format is none or undefined.
   case vesColorDataType::None:
-    this->m_internalFormat = 0;
-    break;
   default:
-    this->m_internalFormat = 0;
     break;
   };
 }
