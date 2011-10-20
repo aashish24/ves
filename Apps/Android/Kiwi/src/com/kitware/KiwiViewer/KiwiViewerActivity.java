@@ -23,64 +23,57 @@ package com.kitware.KiwiViewer;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
-import android.view.WindowManager;
 
 import android.content.res.AssetManager;
 
 import android.view.View;
-import android.view.Gravity;
-import android.view.ViewGroup.LayoutParams;
+import android.widget.ArrayAdapter;
 import android.widget.LinearLayout;
 import android.widget.Button;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 public class KiwiViewerActivity extends Activity {
 
     KiwiGLSurfaceView mView;
-
 
     LinearLayout mRootLayout;
     LinearLayout mButtonLayout;
 
     Button  mLoadButton;
     Button  mResetViewButton;
+    
+    ListView mDatasetList;
 
     static AssetManager assetManager;
 
     @Override protected void onCreate(Bundle icicle) {
       super.onCreate(icicle);
 
-
-      mView = new KiwiGLSurfaceView(getApplication());
+      this.setContentView(R.layout.kiwivieweractivity);
+      
+      mView = (KiwiGLSurfaceView) this.findViewById(R.id.glSurfaceView);
 
       assetManager = getAssets();
       String storageDir = Environment.getExternalStorageDirectory().getAbsolutePath();
       KiwiNative.loadAssets(assetManager, storageDir);
 
-      mRootLayout = new LinearLayout(this);
-      mRootLayout.setOrientation(LinearLayout.VERTICAL);
-      mRootLayout.setLayoutParams(new LayoutParams(
-                              LayoutParams.MATCH_PARENT,
-                              LayoutParams.MATCH_PARENT));
+      mLoadButton = (Button) this.findViewById(R.id.loadButton);
+      mResetViewButton = (Button) this.findViewById(R.id.resetButton);
 
-
-      mButtonLayout = new LinearLayout(this);
-      mButtonLayout.setOrientation(LinearLayout.HORIZONTAL);
-      mButtonLayout.setLayoutParams(new LayoutParams(
-                              LayoutParams.MATCH_PARENT,
-                              LayoutParams.WRAP_CONTENT));
-
-      mLoadButton = new Button(this);
-      mLoadButton.setText("Load Data");
-
-      mResetViewButton = new Button(this);
-      mResetViewButton.setText("Reset View");
 
       mLoadButton.setOnClickListener(new Button.OnClickListener() {
           public void onClick(View v) {
               // todo- maybe check storage state first?
               // Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)
-              mView.loadNextDataset();
+              //mView.loadNextDataset();
+              String[] test = {"Foo","Bar","Baz"};
+              ListAdapter dataSetAdapter = new ArrayAdapter<String>(getBaseContext(),android.R.layout.simple_list_item_1,test);
+              mDatasetList = new ListView(getBaseContext());
+              mDatasetList.setAdapter(dataSetAdapter);
+              RelativeLayout layout = (RelativeLayout) findViewById(R.id.RelativeLayout1);
+              layout.addView(mDatasetList);
           }
       });
 
@@ -89,17 +82,6 @@ public class KiwiViewerActivity extends Activity {
               mView.resetCamera();
           }
       });
-
-      mButtonLayout.addView(mResetViewButton);
-      mButtonLayout.addView(mLoadButton);
-      mButtonLayout.setGravity(Gravity.RIGHT);
-
-      this.addContentView(mView, new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
-
-      LinearLayout ll = new LinearLayout(this);
-      ll.addView(mButtonLayout);
-      ll.setGravity(Gravity.RIGHT | Gravity.BOTTOM);
-      this.addContentView(ll, new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
 
     }
 

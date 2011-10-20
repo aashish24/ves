@@ -55,7 +55,8 @@ import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.opengles.GL10;
 
 
-class KiwiGLSurfaceView extends GLSurfaceView implements MultiTouchObjectCanvas<KiwiGLSurfaceView> {
+public class KiwiGLSurfaceView extends GLSurfaceView implements MultiTouchObjectCanvas<KiwiGLSurfaceView> {
+  
     private static String TAG = "KiwiViewer";
     private static final boolean DEBUG = false;
 
@@ -100,6 +101,16 @@ class KiwiGLSurfaceView extends GLSurfaceView implements MultiTouchObjectCanvas<
 
       // requires api level 11
       //setPreserveEGLContextOnPause(true);
+
+      init(true, 8, 0);
+    }
+
+
+    public KiwiGLSurfaceView(Context context, AttributeSet attrs) {
+      super(context, attrs);
+      
+      // requires api level 11
+      setPreserveEGLContextOnPause(true);
 
       init(true, 8, 0);
     }
