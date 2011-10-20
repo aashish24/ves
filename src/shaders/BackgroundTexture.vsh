@@ -1,10 +1,10 @@
-uniform mat4 modelViewMatrix;
-uniform mat4 projectionMatrix;
+uniform highp mat4 modelViewMatrix;
+uniform highp mat4 projectionMatrix;
 
-attribute vec4 vertexPosition;
-attribute vec4 vertexTextureCoordinate;
+attribute highp vec4 vertexPosition;
+attribute mediump vec4 vertexTextureCoordinate;
 
-varying vec2 textureCoordinate;
+varying mediump vec2 textureCoordinate;
 
 void main()
 

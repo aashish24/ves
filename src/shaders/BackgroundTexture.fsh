@@ -1,6 +1,6 @@
-varying highp vec2 textureCoordinate;
+varying mediump vec2 textureCoordinate;
 
-uniform sampler2D image;
+uniform highp sampler2D image;
 
 void main()
 {
