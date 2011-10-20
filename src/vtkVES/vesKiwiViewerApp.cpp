@@ -342,7 +342,6 @@ bool vesKiwiViewerApp::initGouraudShader(const std::string& vertexSource, const 
   this->addVertexPositionAttribute(shaderProgram);
   this->addVertexNormalAttribute(shaderProgram);
   this->addVertexColorAttribute(shaderProgram);
-  this->addVertexTextureCoordinateAttribute(shaderProgram);
   this->Internal->ShaderProgram = shaderProgram;
 
   this->addBuiltinShadingModel("Gouraud", shaderProgram);
