@@ -26,28 +26,30 @@
 
 @synthesize app = mApp;
 
+
+-(NSString*) stringFromFileContents:(NSString*)filename
+{
+    NSString* absoluteFilename = [[NSBundle mainBundle] pathForResource:filename ofType:nil];
+    return [NSString stringWithContentsOfFile:absoluteFilename
+              encoding:NSUTF8StringEncoding error:nil];
+}
+
 - (id)init
 {
   self = [super init];
   if (self)
   {
     self->mApp = new vesKiwiViewerApp;
+    self->mApp->initGouraudShader([[self stringFromFileContents:@"Shader.vsh"] UTF8String],
+                                  [[self stringFromFileContents:@"Shader.fsh"] UTF8String]);
+    self->mApp->initBlinnPhongShader([[self stringFromFileContents:@"BlinnPhong.vsh"] UTF8String],
+                                     [[self stringFromFileContents:@"BlinnPhong.fsh"] UTF8String]);
+    self->mApp->initToonShader([[self stringFromFileContents:@"ToonShader.vsh"] UTF8String],
+                               [[self stringFromFileContents:@"ToonShader.fsh"] UTF8String]);
+    self->mApp->initTextureShader([[self stringFromFileContents:@"BackgroundTexture.vsh"] UTF8String],
+                                  [[self stringFromFileContents:@"BackgroundTexture.fsh"] UTF8String]);
 
-    NSString* vertShaderPathname = [[NSBundle mainBundle] pathForResource:@"Shader" ofType:@"vsh"];
-    NSString* fragShaderPathname = [[NSBundle mainBundle] pathForResource:@"Shader" ofType:@"fsh"];
-    NSString* vertexSourceStr = [NSString stringWithContentsOfFile:vertShaderPathname
-                                          encoding:NSUTF8StringEncoding error:nil];
-    NSString* fragmentSourceStr = [NSString stringWithContentsOfFile:fragShaderPathname
-                                            encoding:NSUTF8StringEncoding error:nil];
-    self->mApp->initGouraudShader([vertexSourceStr UTF8String], [fragmentSourceStr UTF8String]);
-
-    vertShaderPathname = [[NSBundle mainBundle] pathForResource:@"BackgroundTexture" ofType:@"vsh"];
-    fragShaderPathname = [[NSBundle mainBundle] pathForResource:@"BackgroundTexture" ofType:@"fsh"];
-    vertexSourceStr = [NSString stringWithContentsOfFile:vertShaderPathname
-                                          encoding:NSUTF8StringEncoding error:nil];
-    fragmentSourceStr = [NSString stringWithContentsOfFile:fragShaderPathname
-                                            encoding:NSUTF8StringEncoding error:nil];
-    self->mApp->initTextureShader([vertexSourceStr UTF8String], [fragmentSourceStr UTF8String]);
+    self->mApp->setShadingModel("Gouraud");
   }
 
   return self;
