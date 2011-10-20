@@ -144,7 +144,8 @@ public:
 class vesTestHelper {
 public:
 
-  vesTestHelper()
+  vesTestHelper() :
+    IsTesting(false)
   {
   }
 
