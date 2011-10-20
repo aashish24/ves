@@ -14,7 +14,7 @@
  =========================================================================*/
 
 // Uniforms.
-uniform int primitiveType;
+uniform lowp int primitiveType;
 
 // Varying attributes.
 varying mediump vec4 varPosition;

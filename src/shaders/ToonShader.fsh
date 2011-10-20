@@ -14,7 +14,7 @@
  =========================================================================*/
 
 // Uniforms.
-uniform int primitiveType;
+uniform lowp int primitiveType;
 
 // Varying attributes.
 varying mediump vec4 varPosition;
@@ -27,9 +27,9 @@ void main()
 
   // 3 is line.
   if (primitiveType != 3) {
-    highp float intensity;
+    mediump float intensity;
 
-    highp vec3 n = normalize(varNormal);
+    mediump vec3 n = normalize(varNormal);
 
     intensity = dot(varLightDirection, n);
 

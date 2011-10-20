@@ -13,7 +13,7 @@
 
  =========================================================================*/
 
-varying lowp vec4  varColor;
+varying lowp vec4 varColor;
 
 void main()
 {

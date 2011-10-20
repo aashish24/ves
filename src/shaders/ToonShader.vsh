@@ -1,15 +1,15 @@
 
 // Uniforms.
-uniform bool   hasVertexColors;
-uniform vec3   lightDirection;
-uniform mat4   modelViewMatrix;
-uniform mat3   normalMatrix;
-uniform int    primitiveType;
-uniform mat4   projectionMatrix;
+uniform lowp bool  hasVertexColors;
+uniform mediump vec3 lightDirection;
+uniform highp mat4 modelViewMatrix;
+uniform mediump mat3 normalMatrix;
+uniform lowp int   primitiveType;
+uniform highp mat4 projectionMatrix;
 
 // Vertex attributes.
-attribute vec3 vertexPosition;
-attribute vec3 vertexNormal;
+attribute highp vec3 vertexPosition;
+attribute mediump vec3 vertexNormal;
 
 // Varying attributes.
 varying mediump vec4 varPosition;
