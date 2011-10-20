@@ -255,7 +255,7 @@ bool DoTesting()
   bool allTestsPassed = true;
 
     testHelper->app()->render();
-    std::string testName = "Clipped Standford Bunny";
+    std::string testName = "Textured Plane";
 
     std::string inFile = testHelper->dataDirectory() + "/" + testName + ".png";
     std::string outFile = testName + ".png";
