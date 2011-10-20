@@ -68,6 +68,9 @@ public:
   bool setPixelFormat(vesColorDataType::PixelFormat pixelFormat);
   vesColorDataType::PixelFormat pixelFormat() const;
 
+  bool setInternalFormat(int internalFormat);
+  int internalFormat() const;
+
 protected:
   void computeInternalFormatUsingImage();
   void updateDimensions();

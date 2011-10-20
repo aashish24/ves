@@ -30,13 +30,14 @@
 
 
 vesTexture::vesTexture() : vesMaterialAttribute(),
-  m_hasImage      (false),
-  m_width        (0),
-  m_height       (0),
-  m_depth        (0),
+  m_hasImage(false),
+  m_width(0),
+  m_height(0),
+  m_depth(0),
   m_textureHandle(0),
-  m_textureUnit  (0),
-  m_pixelFormat  (vesColorDataType::None)
+  m_textureUnit(0),
+  m_pixelFormat(vesColorDataType::None),
+  m_internalFormat()
 {
   this->m_type    = vesMaterialAttribute::Texture;
   this->m_binding = vesMaterialAttribute::BindMinimal;
@@ -169,6 +170,22 @@ vesColorDataType::PixelFormat vesTexture::pixelFormat() const
 }
 
 
+bool vesTexture::setInternalFormat(int internalFormat)
+{
+  bool success = true;
+
+  this->m_internalFormat = internalFormat;
+
+  return success;
+}
+
+
+int vesTexture::internalFormat() const
+{
+  return this->m_internalFormat;
+}
+
+
 void vesTexture::setup(const vesRenderState &renderState)
 {
   if (this->dirtyState()) {
@@ -202,6 +219,9 @@ void vesTexture::setup(const vesRenderState &renderState)
 
 void vesTexture::computeInternalFormatUsingImage()
 {
+  // Currently image does not define internal format
+  // and hence it's pixel format is the only way to query
+  // information on how color has been stored.
   switch (this->m_image.m_pixelFormat) {
   case vesColorDataType::RGB:
     this->m_internalFormat = vesColorDataType::RGB;
