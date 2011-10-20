@@ -167,17 +167,16 @@ bool setupGraphics(int w, int h)
   // Pipe VTK messages into the android log
   vtkAndroidOutputWindow::Install();
 
-  std::string vertexSource = getContentsOfAssetFile("Shader.vsh");
-  std::string fragmentSource = getContentsOfAssetFile("Shader.fsh");
-  //LOGI("vertex_source: %s\n", vertexSource.c_str());
-  //LOGI("fragment_source: %s\n", fragment_Source.c_str());
-
   app = new vesKiwiViewerApp();
-  app->initGouraudShader(vertexSource, fragmentSource);
-
-  vertexSource = getContentsOfAssetFile("BackgroundTexture.vsh");
-  fragmentSource = getContentsOfAssetFile("BackgroundTexture.fsh");
-  app->initTextureShader(vertexSource, fragmentSource);
+  app->initGouraudShader(getContentsOfAssetFile("Shader.vsh"),
+                         getContentsOfAssetFile("Shader.fsh"));
+  app->initTextureShader(getContentsOfAssetFile("BackgroundTexture.vsh"),
+                         getContentsOfAssetFile("BackgroundTexture.fsh"));
+  app->initBlinnPhongShader(getContentsOfAssetFile("BlinnPhong.vsh"),
+                         getContentsOfAssetFile("BlinnPhong.fsh"));
+  app->initToonShader(getContentsOfAssetFile("ToonShader.vsh"),
+                         getContentsOfAssetFile("ToonShader.fsh"));
+  app->setShadingModel("Gouraud");
 
   loadDataset(app->defaultBuiltinDatasetIndex());
   app->resizeView(w, h);
