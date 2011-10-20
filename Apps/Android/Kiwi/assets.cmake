@@ -17,7 +17,13 @@ set(assets
   ../../../src/shaders/Shader.vsh
   ../../../src/shaders/BackgroundTexture.fsh
   ../../../src/shaders/BackgroundTexture.vsh
-)
+  ../../../src/shaders/BlinnPhong.fsh
+  ../../../src/shaders/BlinnPhong.vsh
+  ../../../src/shaders/ClipPlane.fsh
+  ../../../src/shaders/ClipPlane.vsh
+  ../../../src/shaders/ToonShader.fsh
+  ../../../src/shaders/ToonShader.vsh
+  )
 
 foreach(f ${assets})
   get_filename_component(fname ${f} NAME)

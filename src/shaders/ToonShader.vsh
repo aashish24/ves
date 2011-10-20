@@ -1,6 +1,6 @@
 
 // Uniforms.
-uniform lowp bool  hasVertexColors;
+uniform bool  hasVertexColors;
 uniform mediump vec3 lightDirection;
 uniform highp mat4 modelViewMatrix;
 uniform mediump mat3 normalMatrix;
@@ -12,13 +12,12 @@ attribute highp vec3 vertexPosition;
 attribute mediump vec3 vertexNormal;
 
 // Varying attributes.
-varying mediump vec4 varPosition;
 varying mediump vec3 varNormal;
 varying mediump vec3 varLightDirection;
 
 void main()
 {
-  varPosition = projectionMatrix * modelViewMatrix * vec4(vertexPosition, 1.0);
+  vec4 varPosition = projectionMatrix * modelViewMatrix * vec4(vertexPosition, 1.0);
 
   // 3 is line
   if (primitiveType != 3) {

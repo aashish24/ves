@@ -47,6 +47,12 @@ set(RESOURCES
   ../../../../src/shaders/BackgroundTexture.vsh
   ../../../../src/shaders/Shader.fsh
   ../../../../src/shaders/Shader.vsh
+  ../../../../src/shaders/BlinnPhong.fsh
+  ../../../../src/shaders/BlinnPhong.vsh
+  ../../../../src/shaders/ClipPlane.fsh
+  ../../../../src/shaders/ClipPlane.vsh
+  ../../../../src/shaders/ToonShader.fsh
+  ../../../../src/shaders/ToonShader.vsh
 
   Images/Default-Landscape~ipad.png
   Images/Default-Portrait~ipad.png

@@ -17,7 +17,6 @@
 uniform lowp int primitiveType;
 
 // Varying attributes.
-varying mediump vec4 varPosition;
 varying mediump vec3 varNormal;
 varying mediump vec3 varLightDirection;
 
