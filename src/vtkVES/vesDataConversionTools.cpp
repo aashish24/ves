@@ -204,6 +204,7 @@ void vesDataConversionTools::SetTextureData(vtkUnsignedCharArray* pixels, vesTex
   image.m_width = width;
   image.m_height = height;
   image.m_pixelFormat = vesColorDataType::RGBA;
+  image.m_pixelDataType = vesColorDataType::UnsignedByte;
   image.m_data = pixels->WriteVoidPointer(0, 0);
 
   texture->setImage(image);

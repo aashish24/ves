@@ -76,6 +76,10 @@ public:
   bool setInternalFormat(int internalFormat);
   int internalFormat() const;
 
+  /// Set pixel data type, In general this is computed from the image attached.
+  bool setPixelDataType(vesColorDataType::PixelDataType pixelDataType);
+  vesColorDataType::PixelDataType pixelDataType() const;
+
 protected:
   void computeInternalFormatUsingImage();
   void updateDimensions();
@@ -92,6 +96,7 @@ protected:
   unsigned int m_textureUnit;
 
   vesColorDataType::PixelFormat m_pixelFormat;
+  vesColorDataType::PixelDataType m_pixelDataType;
 
   int m_internalFormat;
 };

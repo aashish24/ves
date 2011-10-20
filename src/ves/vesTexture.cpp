@@ -36,7 +36,8 @@ vesTexture::vesTexture() : vesMaterialAttribute(),
   m_depth(0),
   m_textureHandle(0),
   m_textureUnit(0),
-  m_pixelFormat(vesColorDataType::None),
+  m_pixelFormat(vesColorDataType::PixelFormatNone),
+  m_pixelDataType(vesColorDataType::PixelDataTypeNone),
   m_internalFormat()
 {
   this->m_type    = vesMaterialAttribute::Texture;
@@ -98,6 +99,9 @@ bool vesTexture::setWidth(int width)
   }
 
   this->m_width = width;
+
+  this->setDirtyStateOn();
+
   return success;
 }
 
@@ -119,6 +123,9 @@ bool vesTexture::setHeight(int height)
   }
 
   this->m_height = height;
+
+  this->setDirtyStateOn();
+
   return success;
 }
 
@@ -138,6 +145,9 @@ bool vesTexture::setDepth(int depth)
   }
 
   this->m_depth = depth;
+
+  this->setDirtyStateOn();
+
   return success;
 }
 
@@ -157,6 +167,10 @@ bool vesTexture::setPixelFormat(vesColorDataType::PixelFormat pixelFormat)
   }
 
   this->m_pixelFormat = pixelFormat;
+
+  this->setDirtyStateOn();
+
+  return success;
 }
 
 
@@ -176,6 +190,8 @@ bool vesTexture::setInternalFormat(int internalFormat)
 
   this->m_internalFormat = internalFormat;
 
+  this->setDirtyStateOn();
+
   return success;
 }
 
@@ -183,6 +199,28 @@ bool vesTexture::setInternalFormat(int internalFormat)
 int vesTexture::internalFormat() const
 {
   return this->m_internalFormat;
+}
+
+
+bool vesTexture::setPixelDataType(vesColorDataType::PixelDataType pixelDataType)
+{
+  bool success = true;
+
+  if (this->m_hasImage) {
+    return !success;
+  }
+
+  this->m_pixelDataType = pixelDataType;
+
+  this->setDirtyStateOn();
+
+  return success;
+}
+
+
+vesColorDataType::PixelDataType vesTexture::pixelDataType() const
+{
+  return this->m_pixelDataType;
 }
 
 
@@ -203,13 +241,13 @@ void vesTexture::setup(const vesRenderState &renderState)
 
       glTexImage2D(GL_TEXTURE_2D, 0, this->m_internalFormat, this->m_width, this->m_height, 0,
                    this->m_pixelFormat ? this->m_pixelFormat : this->m_internalFormat,
-                   GL_UNSIGNED_BYTE, this->m_image.m_data);
+                   this->m_pixelDataType ? this->m_pixelDataType : GL_UNSIGNED_BYTE, this->m_image.m_data);
     }
     else {
       glTexImage2D(GL_TEXTURE_2D, 0, this->m_internalFormat, this->m_width,
                    this->m_height, 0,
                    this->m_pixelFormat ? this->m_pixelFormat : this->m_internalFormat,
-                   GL_UNSIGNED_SHORT_5_6_5, NULL);
+                   this->m_pixelDataType ? this->m_pixelDataType : GL_UNSIGNED_BYTE, NULL);
     }
 
     this->setDirtyStateOff();
@@ -236,7 +274,7 @@ void vesTexture::computeInternalFormatUsingImage()
     this->m_internalFormat = vesColorDataType::LuminanceAlpha;
     break;
   // Do nothing when image pixel format is none or undefined.
-  case vesColorDataType::None:
+  case vesColorDataType::PixelFormatNone:
   default:
     break;
   };
