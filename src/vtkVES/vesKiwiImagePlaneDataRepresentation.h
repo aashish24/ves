@@ -45,6 +45,8 @@ public:
 
   void setGrayscaleColorMap(double scalarRange[2]);
 
+  virtual void setShaderProgram(vesShaderProgram *shaderProgram);
+
   static vtkSmartPointer<vtkPolyData> polyDataForImagePlane(vtkImageData* image);
   static int imageFlatDimension(vtkImageData* image);
 

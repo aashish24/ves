@@ -212,7 +212,7 @@ void vesKiwiBaseApp::handleTwoTouchRotationGesture(double rotation)
 
 //----------------------------------------------------------------------------
 vesShaderProgram* vesKiwiBaseApp::addShaderProgram(const std::string& vertexShaderSource,
-                                                      const std::string& fragmentShaderSource)
+                                                   const std::string& fragmentShaderSource)
 {
   vesShaderProgram* shaderProgram = new vesShaderProgram();
   vesShader* vertexShader = new vesShader(vesShader::Vertex, vertexShaderSource);
@@ -225,6 +225,25 @@ vesShaderProgram* vesKiwiBaseApp::addShaderProgram(const std::string& vertexShad
   this->Internal->Shaders.push_back(vertexShader);
   this->Internal->Shaders.push_back(fragmentShader);
   return shaderProgram;
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiBaseApp::deleteShaderProgram(vesShaderProgram *shaderProgram)
+{
+  if (!shaderProgram) {
+    // Nothing to remove.
+    return;
+  }
+
+  // Remove only one.
+  std::vector<vesShaderProgram*>::iterator itr =
+    std::find(this->Internal->ShaderPrograms.begin(),
+              this->Internal->ShaderPrograms.end(), shaderProgram);
+
+  if (itr != this->Internal->ShaderPrograms.end()) {
+    this->Internal->ShaderPrograms.erase(itr);
+    delete shaderProgram;
+  }
 }
 
 //----------------------------------------------------------------------------

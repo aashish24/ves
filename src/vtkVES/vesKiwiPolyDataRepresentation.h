@@ -56,6 +56,9 @@ public:
 
   virtual void setTranslation(const vesVector3f& translation);
 
+  virtual void setShaderProgram(vesShaderProgram *shaderProgram);
+  virtual vesShaderProgram* shaderProgram() const;
+
   virtual int numberOfFacets();
   virtual int numberOfVertices();
   virtual int numberOfLines();

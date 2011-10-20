@@ -172,6 +172,24 @@ bool vesKiwiImageWidgetRepresentation::scrollSliceModeActive() const
 }
 
 //----------------------------------------------------------------------------
+void vesKiwiImageWidgetRepresentation::setShaderProgram(vesShaderProgram *shaderProgram)
+{
+  if (!shaderProgram) {
+    return;
+  }
+
+  // Use new shader only for polydata representations.
+  this->Internal->ContourRep->setShaderProgram(shaderProgram);
+  this->Internal->OutlineRep->setShaderProgram(shaderProgram);
+}
+
+//----------------------------------------------------------------------------
+vesShaderProgram* vesKiwiImageWidgetRepresentation::shaderProgram() const
+{
+  return this->Internal->ContourRep->shaderProgram();
+}
+
+//----------------------------------------------------------------------------
 void vesKiwiImageWidgetRepresentation::scrollImageSlice(double deltaX, double deltaY)
 {
   deltaY *= -1;

@@ -13,9 +13,8 @@
 
  =========================================================================*/
 
-varying lowp vec4  varColor;
-
-varying float clipDistance;
+varying lowp vec4   varColor;
+varying highp float clipDistance;
 
 void main()
 {

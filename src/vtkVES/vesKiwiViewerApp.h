@@ -89,7 +89,7 @@ protected:
   virtual void willRender();
 
   void addBuiltinDataset(const std::string& name, const std::string& filename);
-  void addBuiltinShadingModel(const std::string& name);
+  void addBuiltinShadingModel(const std::string& name, vesShaderProgram *shaderProgram);
 
   void removeAllDataRepresentations();
   void addRepresentationsForDataSet(vtkDataSet* dataSet);

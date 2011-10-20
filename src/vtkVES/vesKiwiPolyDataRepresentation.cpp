@@ -147,6 +147,22 @@ void vesKiwiPolyDataRepresentation::setTranslation(const vesVector3f& translatio
 }
 
 //----------------------------------------------------------------------------
+void vesKiwiPolyDataRepresentation::setShaderProgram(vesShaderProgram *shaderProgram)
+{
+  if (!shaderProgram) {
+    return;
+  }
+
+  this->Internal->Actor->material()->setShaderProgram(shaderProgram);
+}
+
+//----------------------------------------------------------------------------
+vesShaderProgram* vesKiwiPolyDataRepresentation::shaderProgram() const
+{
+  return this->Internal->Actor->material()->shaderProgram();
+}
+
+//----------------------------------------------------------------------------
 void vesKiwiPolyDataRepresentation::initializeWithShader(vesShaderProgram* shaderProgram)
 {
   assert(shaderProgram);
