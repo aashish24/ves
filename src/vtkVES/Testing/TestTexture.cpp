@@ -61,16 +61,18 @@
 namespace {
 
 
-class vesClipApp : public vesKiwiBaseApp {
+class vesTextureApp : public vesKiwiBaseApp {
 public:
 
-  vesClipApp()
+  vesTextureApp()
   {
-    this->TextureShader = 0;
-    this->DataRep = 0;
+    this->Image = 0x0;
+    this->Texture = 0x0;
+    this->TextureShader = 0x0;
+    this->DataRep = 0x0;
   }
 
-  ~vesClipApp()
+  ~vesTextureApp()
   {
     this->unloadData();
   }
@@ -98,9 +100,9 @@ public:
     this->Image->m_pixelDataType = vesColorDataType::UnsignedByte;
     this->Image->m_pixelFormat = vesColorDataType::RGBA;
 
-    vesTexture *texture = new vesTexture();
-    texture->setImage(*this->Image);
-    this->DataRep->setTexture(texture);
+    this->Texture = new vesTexture();
+    this->Texture->setImage(*this->Image);
+    this->DataRep->setTexture(this->Texture);
   }
 
   void unloadData()
@@ -110,6 +112,8 @@ public:
       delete this->DataRep;
       this->DataRep = 0;
     }
+
+    delete this->Image; this->Image = 0x0;
   }
 
   void loadData(const std::string& filename)
@@ -117,7 +121,8 @@ public:
     this->unloadData();
 
     vesKiwiDataLoader loader;
-    vtkSmartPointer<vtkPolyData> polyData = vtkPolyData::SafeDownCast(loader.loadDataset(filename));
+    vtkSmartPointer<vtkPolyData> polyData =
+      vtkPolyData::SafeDownCast(loader.loadDataset(filename));
     assert(polyData.GetPointer());
 
     vesKiwiPolyDataRepresentation* rep = new vesKiwiPolyDataRepresentation();
@@ -130,6 +135,7 @@ public:
   }
 
   vesImage *Image;
+  vesTexture *Texture;
   vtkSmartPointer<vtkLookupTable> LookupTable;
   vesShaderProgram* TextureShader;
   vesKiwiPolyDataRepresentation* DataRep;
@@ -146,7 +152,7 @@ public:
   {
   }
 
-  vesClipApp* app() {
+  vesTextureApp* app() {
     return &this->App;
   }
 
@@ -176,7 +182,7 @@ public:
 
 private:
 
-  vesClipApp        App;
+  vesTextureApp     App;
   std::string       SourceDirectory;
   std::string       DataDirectory;
   bool              IsTesting;
