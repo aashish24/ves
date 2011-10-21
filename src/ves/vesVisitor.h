@@ -80,7 +80,7 @@ public:
   inline void traverse(vesNode &node)
   {
     if (this->m_traversalMode == TraverseParents) {
-//      node.ascend(*this);
+      node.ascend(*this);
     }
     else {
       node.traverse(*this);

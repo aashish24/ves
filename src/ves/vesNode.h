@@ -44,6 +44,10 @@ public:
   inline void setIsOverlayNode(bool value) { this->m_isOverlayNode = value; }
   inline bool isOverlayNode() const { return m_isOverlayNode; }
 
+  /// Traverse upwards.
+  virtual void ascend(vesVisitor &visitor){}
+
+  /// Traverse downwards.
   virtual void traverse(vesVisitor &visitor){}
 
 protected:
