@@ -46,6 +46,9 @@ public:
 
   vesMatrix4x4f eval();
 
+protected:
+  void updateBounds(vesNode &child);
+
 private:
   void setInternals();
   vesMatrix4x4f computeTransform();

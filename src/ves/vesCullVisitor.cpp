@@ -38,7 +38,7 @@ void vesCullVisitor::visit(vesActor &actor)
 {
   this->pushModelViewMatrix(actor.modelViewMatrix());
 
-   if (actor.isOverlayActor()) {
+   if (actor.isOverlayNode()) {
     this->addGeometryAndStates(actor.mapper(), actor.material(),
                                actor.modelViewMatrix(),  this->projection2DMatrix(),
                                1);

@@ -490,7 +490,7 @@ vesKiwiImagePlaneDataRepresentation* vesKiwiViewerApp::addTextRepresentation(con
   double y = screenHeight - (height + ymargin);
 
   rep->setTranslation(vesVector3f(x, y, 0));
-  rep->actor()->setIsOverlayActor(true);
+  rep->actor()->setIsOverlayNode(true);
   rep->actor()->material()->setBinNumber(20);
   return rep;
 }

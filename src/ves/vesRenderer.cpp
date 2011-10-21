@@ -358,7 +358,8 @@ void vesRenderer::updateTraverseScene()
   // Update traversal.
   vesVisitor     updateVisitor(vesVisitor::UpdateVisitor,
                                vesVisitor::TraverseAllChildren);
-  updateVisitor.visit(*this->m_sceneRoot);
+
+  this->m_sceneRoot->accept(updateVisitor);
 }
 
 
@@ -378,7 +379,9 @@ void vesRenderer::cullTraverseScene()
   cullVisitor.pushProjectionMatrix(projectionMatrix);
   cullVisitor.pushModelViewMatrix(viewMatrix);
   cullVisitor.setRenderStage(this->m_renderStage);
-  cullVisitor.visit(*this->m_sceneRoot);
+
+  this->m_sceneRoot->accept(cullVisitor);
+
   cullVisitor.popModelViewMatrix();
   cullVisitor.popProjectionMatrix();
 }

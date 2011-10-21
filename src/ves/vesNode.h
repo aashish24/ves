@@ -25,6 +25,7 @@
 #include "vesObject.h"
 
 // Forward declarations.
+class vesMaterial;
 class vesGroupNode;
 class vesVisitor;
 
@@ -40,7 +41,19 @@ public:
 
   bool setParent(vesGroupNode *parent);
 
+  inline void setIsOverlayNode(bool value) { this->m_isOverlayNode = value; }
+  inline bool isOverlayNode() const { return m_isOverlayNode; }
+
+  virtual void traverse(vesVisitor &visitor){}
+
 protected:
+  virtual void updateBounds(vesNode &child){}
+
+  bool m_isOverlayNode;
+  bool m_visible;
+  bool m_boundsDirty;
+
+  vesMaterial *m_material;
   vesGroupNode *m_parent;
 };
 

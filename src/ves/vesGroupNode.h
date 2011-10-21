@@ -40,7 +40,11 @@ public:
   Children&       children()       { return this->m_children; }
   const Children& children() const { return this->m_children; }
 
+  virtual void traverse(vesVisitor &visitor);
+
 protected:
+  virtual void updateBounds(vesNode &child);
+
   Children m_children;
 };
 

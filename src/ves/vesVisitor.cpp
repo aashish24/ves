@@ -129,23 +129,23 @@ vesMatrix4x4f vesVisitor::projectionMatrix()
 
 void vesVisitor::visit(vesNode &node)
 {
-  node.accept(*this);
+  this->traverse(node);
 }
 
 
 void vesVisitor::visit(vesGroupNode & groupNode)
 {
-  groupNode.accept(*this);
+  this->visit(static_cast<vesNode&>(groupNode));
 }
 
 
 void vesVisitor::visit(vesTransformNode &transformNode)
 {
-  transformNode.accept(*this);
+  this->visit(static_cast<vesGroupNode&>(transformNode));
 }
 
 
 void vesVisitor::visit(vesActor &actor)
 {
-  actor.accept(*this);
+  this->visit(static_cast<vesTransformNode&>(actor));
 }

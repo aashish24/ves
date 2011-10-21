@@ -20,7 +20,10 @@
 
 #include "vesGroupNode.h"
 
-vesGroupNode::vesGroupNode()
+// VES includes.
+#include "vesVisitor.h"
+
+vesGroupNode::vesGroupNode() : vesNode()
 {
 }
 
@@ -73,4 +76,47 @@ bool vesGroupNode::removeChild(vesNode *child)
   }
 
   return false;
+}
+
+
+void vesGroupNode::traverse(vesVisitor &visitor)
+{
+  Children::iterator itr = this->m_children.begin();
+
+  if (visitor.mode() == vesVisitor::TraverseAllChildren) {
+    for (; itr != this->m_children.end(); ++itr) {
+      (*itr)->accept(visitor);
+    }
+  }
+  else if (visitor.mode() == vesVisitor::TraverseActiveChildren) {
+    // \todo: Implement this.
+  }
+}
+
+
+void vesGroupNode::updateBounds(vesNode &child)
+{
+  if (!this->boundsDirty()) {
+    return;
+  }
+
+  if (child.isOverlayNode()) {
+    return;
+  }
+
+  vesVector3f min = child.boundsMinimum();
+  vesVector3f max = child.boundsMaximum();
+
+  for (int i = 0; i < 3; ++i) {
+    if (max[i] > this->m_boundsMaximum[i]) {
+      this->m_boundsMaximum[i] = max[i];
+    }
+
+    if (min[i] < this->m_boundsMinimum[i]) {
+      this->m_boundsMinimum[i] = min[i];
+    }
+  }
+
+  // Now update the bounds, bounds size and center.
+  this->setBounds(this->m_boundsMinimum, this->m_boundsMaximum);
 }

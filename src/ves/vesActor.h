@@ -44,28 +44,9 @@ public:
   /// \return The 4x4 matrix of the actor.
   vesMatrix4x4f modelViewMatrix();
 
-  /// Set the translation for the actor.
-  /// \param translation Translation of the actor from the origin.
-  void setTranslation(const vesVector3f &translation);
-
-  /// Get the translation for the actor.
-  /// \return The translation of the actor from the origin.
-  vesVector3f translation() const;
-
-
-  /// Set the rotation for the actor.
-  /// \param rotation Rotation of the actor.
-  void setRotation(const vesVector4f &rotation);
-
-  /// Get the rotation for the actor.
-  /// \return The rotation of the actor from the origin.
-  vesVector4f rotation() const;
-
-
   /// Mark the actor as a sensor (true denotes an actor that is a sensor).
   /// \param isSensor True to mark the actor as a sensor in the scene.
   void setSensor(bool isSensor) { m_sensor = isSensor; }
-
 
   /// Check if this actor instance is a sensor.
   /// \return true if the actor is a sensor.
@@ -90,20 +71,13 @@ public:
   virtual void ascend(vesVisitor &visitor);
   virtual void traverse(vesVisitor &visitor);
 
-  void setIsOverlayActor(bool value) { this->m_isOverlayActor = value; }
-  bool isOverlayActor() const { return m_isOverlayActor; }
-
 protected:
-  virtual void updateBounds(vesActor *child);
   virtual void computeBounds();
 
   bool m_sensor;
-  bool m_visible;
-  bool m_boundsDirty;
-  bool m_isOverlayActor;
+
 
   vesMapper *m_mapper;
-  vesMaterial *m_material;
   vesMultitouchWidget *m_widget;
 
 private:

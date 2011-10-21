@@ -21,7 +21,10 @@
 #include  "vesNode.h"
 #include  "vesGroupNode.h"
 
-vesNode::vesNode()
+vesNode::vesNode() : vesObject(),
+  m_visible (true),
+  m_material(0x0),
+  m_isOverlayNode(false)
 {
   this->m_parent = 0x0;
 }
@@ -42,3 +45,4 @@ bool vesNode::setParent(vesGroupNode *parent)
 
   return true;
 }
+

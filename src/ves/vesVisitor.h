@@ -23,6 +23,7 @@
 
 // VES includes.
 #include "vesGMTL.h"
+#include "vesNode.h"
 
 // Forward declarations
 class vesActor;
@@ -75,6 +76,16 @@ public:
   virtual void visit(vesGroupNode &groupNode);
   virtual void visit(vesTransformNode &transformNode);
   virtual void visit(vesActor  &actor);
+
+  inline void traverse(vesNode &node)
+  {
+    if (this->m_traversalMode == TraverseParents) {
+//      node.ascend(*this);
+    }
+    else {
+      node.traverse(*this);
+    }
+  }
 
   VisitorType type(){ return this->m_visitorType; }
 

@@ -60,7 +60,7 @@ public:
 };
 
 
-vesTransformNode::vesTransformNode()
+vesTransformNode::vesTransformNode() : vesGroupNode()
 {
   this->m_internal = new vesInternal();
   this->m_center = vesVector3f (0,0,0);
@@ -164,5 +164,37 @@ vesMatrix4x4f vesTransformNode::computeTransform()
   return m_internal->Eval();
 }
 
+
+void vesTransformNode::updateBounds(vesNode &child)
+{
+  if (!this->boundsDirty()) {
+    return;
+  }
+
+  if (child.isOverlayNode()) {
+    return;
+  }
+
+  vesVector3f min = child.boundsMinimum();
+  vesVector3f max = child.boundsMaximum();
+
+  min = transformPoint3f(this->eval(), min);
+  max = transformPoint3f(this->eval(), max);
+
+  child.setBounds(min, max);
+
+  for (int i = 0; i < 3; ++i) {
+    if (max[i] > this->m_boundsMaximum[i]) {
+      this->m_boundsMaximum[i] = max[i];
+    }
+
+    if (min[i] < this->m_boundsMinimum[i]) {
+      this->m_boundsMinimum[i] = min[i];
+    }
+  }
+
+  // Now update the bounds, bounds size and center.
+  this->setBounds(this->m_boundsMinimum, this->m_boundsMaximum);
+}
 
 
