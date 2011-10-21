@@ -19,15 +19,16 @@
  ========================================================================*/
 
 #include "vesTexture.h"
+
+// VES includes
+#include "vesGL.h"
+#include "vesRenderState.h"
 #include "vesShaderProgram.h"
 #include "vesUniform.h"
-#include "vesRenderState.h"
 
-#include "vesGL.h"
-
+// C/C++ includes
 #include <cassert>
 #include <cstdio>
-
 
 vesTexture::vesTexture() : vesMaterialAttribute(),
   m_hasImage(false),
@@ -38,7 +39,7 @@ vesTexture::vesTexture() : vesMaterialAttribute(),
   m_textureUnit(0),
   m_pixelFormat(vesColorDataType::PixelFormatNone),
   m_pixelDataType(vesColorDataType::PixelDataTypeNone),
-  m_internalFormat()
+  m_internalFormat(0)
 {
   this->m_type    = vesMaterialAttribute::Texture;
   this->m_binding = vesMaterialAttribute::BindMinimal;
@@ -108,8 +109,6 @@ bool vesTexture::setWidth(int width)
 
 int vesTexture::width() const
 {
-  bool success = true;
-
   this->m_width;
 }
 

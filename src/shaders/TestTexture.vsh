@@ -7,9 +7,8 @@ attribute mediump vec4 vertexTextureCoordinate;
 varying mediump vec2 textureCoordinate;
 
 void main()
-
 {
-    gl_Position = projectionMatrix * modelViewMatrix * vertexPosition;
+  gl_Position = projectionMatrix * modelViewMatrix * vertexPosition;
 
-    textureCoordinate = vec2(vertexTextureCoordinate.x, 0.0);
+  textureCoordinate = vec2(vertexTextureCoordinate.x, 0.0);
 }

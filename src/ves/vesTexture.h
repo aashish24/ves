@@ -28,7 +28,6 @@
 
 #include "vsg/Utility/vsgMacro.h"
 
-
 class vesTexture : public vesMaterialAttribute
 {
 public:
