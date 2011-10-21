@@ -18,19 +18,32 @@
   limitations under the License.
  ========================================================================*/
 
-#ifndef VESRENDERDATA_H
-#define VESRENDERDATA_H
+#ifndef VESCOLORDATATYPE_H
+#define VESCOLORDATATYPE_H
 
-#include "vesGLTypes.h"
+#include "vesGL.h"
 
-struct vesRenderData
+struct vesColorDataType
 {
-  vesRenderData(int primitiveType) :
-    m_pritimiveType(primitiveType)
+  enum PixelFormat
   {
-  }
+    PixelFormatNone = 0,
+    Alpha           = GL_ALPHA,
+    Luminance       = GL_LUMINANCE,
+    LuminanceAlpha  = GL_LUMINANCE_ALPHA,
+    RGB             = GL_RGB,
+    RGBA            = GL_RGBA
+  };
 
-  int m_pritimiveType;
+  enum PixelDataType
+  {
+    PixelDataTypeNone = 0,
+    UnsignedByte      = GL_UNSIGNED_BYTE,
+    UnsignedShort565  = GL_UNSIGNED_SHORT_5_6_5,
+    UnsignedShort4444 = GL_UNSIGNED_SHORT_4_4_4_4,
+    UnsignedShort5551 = GL_UNSIGNED_SHORT_5_5_5_1
+  };
 };
 
-#endif // VESRENDERDATA_H
+
+#endif // VESCOLORDATATYPE_H

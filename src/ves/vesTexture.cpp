@@ -19,45 +19,30 @@
  ========================================================================*/
 
 #include "vesTexture.h"
+
+// VES includes
+#include "vesGL.h"
+#include "vesRenderState.h"
 #include "vesShaderProgram.h"
 #include "vesUniform.h"
-#include "vesRenderState.h"
 
-#include "vesGL.h"
-
+// C/C++ includes
 #include <cassert>
 #include <cstdio>
 
-
-static const GLfloat squareVertices[] = {
-  1.0f,  1.0f,
-  1.0f, -1.0f,
-  -1.0f,  1.0f,
-  -1.0f, -1.0f,
-};
-
-static const GLfloat textureVertices[] = {
-  1.0f, 1.0f,
-  1.0f, 0.0f,
-  0.0f,  1.0f,
-  0.0f,  0.0f,
-};
-
 vesTexture::vesTexture() : vesMaterialAttribute(),
-  m_hasData      (false),
-  m_width        (0),
-  m_height       (0),
-  m_depth        (0),
+  m_hasImage(false),
+  m_width(0),
+  m_height(0),
+  m_depth(0),
   m_textureHandle(0),
-  m_textureUnit  (0)
+  m_textureUnit(0),
+  m_pixelFormat(vesColorDataType::PixelFormatNone),
+  m_pixelDataType(vesColorDataType::PixelDataTypeNone),
+  m_internalFormat(0)
 {
   this->m_type    = vesMaterialAttribute::Texture;
   this->m_binding = vesMaterialAttribute::BindMinimal;
-
-  // Subsitution for a lack of a image class.
-  this->m_image.data   = 0x0;
-  this->m_image.width  = 0;
-  this->m_image.height = 0;
 }
 
 
@@ -80,35 +65,161 @@ void vesTexture::unbind(const vesRenderState &renderState)
 }
 
 
-void vesTexture::setImageData(SFImage image)
+void vesTexture::setImage(vesImage image)
 {
-  this->m_hasData = true;
-  this->m_image = image;
-  this->setDirtyStateOn();
+  if (image.m_data) {
+    this->m_hasImage = true;
+    this->m_image = image;
+
+    this->updateDimensions();
+
+    this->setDirtyStateOn();
+  }
+}
+
+
+vesImage vesTexture::image() const
+{
+  return this->m_image;
 }
 
 
 void vesTexture::setTextureUnit(unsigned int unit)
 {
   this->m_textureUnit = unit;
+  this->setDirtyStateOn();
 }
 
 
-void vesTexture::setWidth(int width)
+bool vesTexture::setWidth(int width)
 {
+  bool success = true;
+
+  if (this->m_hasImage) {
+    return !success;
+  }
+
   this->m_width = width;
+
+  this->setDirtyStateOn();
+
+  return success;
 }
 
 
-void vesTexture::setHeight(int height)
+int vesTexture::width() const
 {
+  this->m_width;
+}
+
+
+bool vesTexture::setHeight(int height)
+{
+  bool success = true;
+
+  if (this->m_hasImage) {
+    return !success;
+  }
+
   this->m_height = height;
+
+  this->setDirtyStateOn();
+
+  return success;
 }
 
 
-void vesTexture::setDepth(int depth)
+int vesTexture::height() const
 {
+  return this->m_height;
+}
+
+
+bool vesTexture::setDepth(int depth)
+{
+  bool success = true;
+
+  if (this->m_hasImage) {
+    return !success;
+  }
+
   this->m_depth = depth;
+
+  this->setDirtyStateOn();
+
+  return success;
+}
+
+
+int vesTexture::depth() const
+{
+  return this->m_depth;
+}
+
+
+bool vesTexture::setPixelFormat(vesColorDataType::PixelFormat pixelFormat)
+{
+  bool success = true;
+
+  if (this->m_hasImage) {
+    return !success;
+  }
+
+  this->m_pixelFormat = pixelFormat;
+
+  this->setDirtyStateOn();
+
+  return success;
+}
+
+
+vesColorDataType::PixelFormat vesTexture::pixelFormat() const
+{
+  if (this->m_hasImage) {
+    return this->m_image.m_pixelFormat;
+  }
+
+  return this->m_pixelFormat;
+}
+
+
+bool vesTexture::setInternalFormat(int internalFormat)
+{
+  bool success = true;
+
+  this->m_internalFormat = internalFormat;
+
+  this->setDirtyStateOn();
+
+  return success;
+}
+
+
+int vesTexture::internalFormat() const
+{
+  return this->m_internalFormat;
+}
+
+
+bool vesTexture::setPixelDataType(vesColorDataType::PixelDataType pixelDataType)
+{
+  bool success = true;
+
+  if (this->m_hasImage) {
+    return !success;
+  }
+
+  this->m_pixelDataType = pixelDataType;
+
+  this->setDirtyStateOn();
+
+  return success;
+}
+
+
+vesColorDataType::PixelDataType vesTexture::pixelDataType() const
+{
+  return this->m_pixelDataType;
 }
 
 
@@ -123,18 +234,61 @@ void vesTexture::setup(const vesRenderState &renderState)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-    if (this->m_hasData) {
-      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, this->m_image.width, this->m_image.height,
-                   0, GL_RGBA, GL_UNSIGNED_BYTE, this->m_image.data);
+    if (this->m_hasImage) {
+      this->updateDimensions();
+      this->computeInternalFormatUsingImage();
+
+      glTexImage2D(GL_TEXTURE_2D, 0, this->m_internalFormat, this->m_width, this->m_height, 0,
+                   this->m_pixelFormat ? this->m_pixelFormat : this->m_internalFormat,
+                   this->m_pixelDataType ? this->m_pixelDataType : GL_UNSIGNED_BYTE, this->m_image.m_data);
     }
     else {
-      glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, this->m_width, this->m_height, 0, GL_RGB,
-                   GL_UNSIGNED_SHORT_5_6_5, NULL);
+      glTexImage2D(GL_TEXTURE_2D, 0, this->m_internalFormat, this->m_width,
+                   this->m_height, 0,
+                   this->m_pixelFormat ? this->m_pixelFormat : this->m_internalFormat,
+                   this->m_pixelDataType ? this->m_pixelDataType : GL_UNSIGNED_BYTE, NULL);
     }
 
     this->setDirtyStateOff();
   }
 }
+
+
+void vesTexture::computeInternalFormatUsingImage()
+{
+  // Currently image does not define internal format
+  // and hence it's pixel format is the only way to query
+  // information on how color has been stored.
+  switch (this->m_image.m_pixelFormat) {
+  case vesColorDataType::RGB:
+    this->m_internalFormat = vesColorDataType::RGB;
+    break;
+  case vesColorDataType::RGBA:
+    this->m_internalFormat = vesColorDataType::RGBA;
+    break;
+  case vesColorDataType::Luminance:
+    this->m_internalFormat = vesColorDataType::Luminance;
+    break;
+  case vesColorDataType::LuminanceAlpha:
+    this->m_internalFormat = vesColorDataType::LuminanceAlpha;
+    break;
+  // Do nothing when image pixel format is none or undefined.
+  case vesColorDataType::PixelFormatNone:
+  default:
+    break;
+  };
+}
+
+
+void vesTexture::updateDimensions()
+{
+  if (this->m_hasImage) {
+    this->m_width = this->m_image.m_width;
+    this->m_height = this->m_image.m_height;
+    this->m_depth  = this->m_image.m_depth;
+  }
+}
+
 
 #if 0
 void vesTexture::Render()

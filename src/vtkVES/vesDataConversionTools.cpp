@@ -200,12 +200,14 @@ void vesDataConversionTools::SetTextureData(vtkUnsignedCharArray* pixels, vesTex
   assert(pixels->GetNumberOfComponents() == 4);
   assert(pixels->GetNumberOfTuples() == width*height);
 
-  SFImage sfimage;
-  sfimage.width = width;
-  sfimage.height = height;
-  sfimage.data = pixels->WriteVoidPointer(0, 0);
+  vesImage image;
+  image.m_width = width;
+  image.m_height = height;
+  image.m_pixelFormat = vesColorDataType::RGBA;
+  image.m_pixelDataType = vesColorDataType::UnsignedByte;
+  image.m_data = pixels->WriteVoidPointer(0, 0);
 
-  texture->setImageData(sfimage);
+  texture->setImage(image);
 }
 
 

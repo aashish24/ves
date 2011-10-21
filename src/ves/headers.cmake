@@ -21,8 +21,10 @@ set(headers
   vesByteSwap.h
   vesCamera.h
   vesCameraSensor.h
+  vesColorDataType.h
   vesFileReader.h
   vesGMTL.h
+  vesImage.h
   vesLegacyReader.h
   vesMapper.h
   vesMultitouchCamera.h
