@@ -20,17 +20,20 @@
 #ifndef __vesCamera_h
 #define __vesCamera_h
 
-#include "vsg/Grouping/Transform.h"
+#include "vesTransformNode.h"
 
 // VES includes
 #include "vesGMTL.h"
 #include "vesRenderTarget.h"
 #include "vesSetGet.h"
 
+// C/C++ includes
+#include <vector>
+
 // Forward declarations
 class vesRenderState;
 
-class vesCamera: public vsg::Transform
+class vesCamera: public vesTransformNode
 {
 public:
            vesCamera();

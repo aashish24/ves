@@ -23,10 +23,9 @@
 
 #include "vesMaterial.h"
 
+// VES includes.
 #include "vesColorDataType.h"
 #include "vesImage.h"
-
-#include "vsg/Utility/vsgMacro.h"
 
 class vesTexture : public vesMaterialAttribute
 {

@@ -20,8 +20,12 @@
 
 #include "vesVisitor.h"
 
+#include "vesActor.h"
 #include "vesGMTL.h"
+#include "vesGroupNode.h"
 #include "vesMapper.h"
+#include "vesNode.h"
+#include "vesTransformNode.h"
 
 // C++ includes
 #include <deque>
@@ -120,6 +124,24 @@ vesMatrix4x4f vesVisitor::projectionMatrix()
   }
 
   return matrix;
+}
+
+
+void vesVisitor::visit(vesNode &node)
+{
+  node.accept(*this);
+}
+
+
+void vesVisitor::visit(vesGroupNode & groupNode)
+{
+  groupNode.accept(*this);
+}
+
+
+void vesVisitor::visit(vesTransformNode &transformNode)
+{
+  transformNode.accept(*this);
 }
 
 

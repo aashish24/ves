@@ -30,6 +30,8 @@ public:
   {
   }
 
+  virtual ~vesObject() {}
+
   void        setDirty(const bool &value)
                                     { this->m_dirtyState = value; }
   void        setDirtyStateOn()     { this->setDirty(true); }

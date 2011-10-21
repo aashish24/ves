@@ -26,7 +26,7 @@
 #include "vesVisitor.h"
 
 
-vesActor::vesActor() : vsg::Transform(),
+vesActor::vesActor() : vesTransformNode(),
   m_sensor  (false),
   m_visible (true),
   m_mapper  (0x0),
@@ -45,7 +45,7 @@ vesActor::~vesActor()
 
 vesMatrix4x4f vesActor::modelViewMatrix()
 {
-  return this->Transform::eval();
+  return this->vesTransformNode::eval();
 }
 
 
@@ -90,27 +90,27 @@ void vesActor::setVisible(bool value)
 
 void vesActor::setTranslation(const vesVector3f& translation)
 {
-  set_translation(translation);
+  this->setTranslation(translation);
   this->setBoundsDirty(true);
 }
 
 
 vesVector3f vesActor::translation() const
 {
-  return get_translation();
+  return vesTransformNode::translation();
 }
 
 
 void vesActor::setRotation(const vesVector4f& rotation)
 {
-  set_rotation(rotation);
+  this->setRotation(rotation);
   this->setBoundsDirty(true);
 }
 
 
 vesVector4f vesActor::rotation() const
 {
-  return get_rotation();
+  return vesTransformNode::rotation();
 }
 
 

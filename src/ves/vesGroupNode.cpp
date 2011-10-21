@@ -18,20 +18,19 @@
   limitations under the License.
  ========================================================================*/
 
-# include "vsgGroupingNode.h"
+#include "vesGroupNode.h"
 
-
-vsgGroupingNode::vsgGroupingNode()
+vesGroupNode::vesGroupNode()
 {
 }
 
 
-vsgGroupingNode::~vsgGroupingNode()
+vesGroupNode::~vesGroupNode()
 {
 }
 
 
-bool vsgGroupingNode::addChild(vsgNode *child)
+bool vesGroupNode::addChild(vesNode *child)
 {
   if (!child) {
     return false;
@@ -45,7 +44,7 @@ bool vsgGroupingNode::addChild(vsgNode *child)
     }
   }
 
-  child->m_parent = this;
+  child->setParent(this);
 
   this->m_children.push_back(child);
 
@@ -55,7 +54,7 @@ bool vsgGroupingNode::addChild(vsgNode *child)
 }
 
 
-bool vsgGroupingNode::removeChild(vsgNode *child)
+bool vesGroupNode::removeChild(vesNode *child)
 {
   if (!child) {
     return false;
@@ -67,8 +66,6 @@ bool vsgGroupingNode::removeChild(vsgNode *child)
   // \note: Ensure that parent of this node is "this" group node.
   if (child->parent() == this) {
     this->m_children.remove(child);
-
-    child->m_parent = 0x0;
 
     this->setBoundsDirty(true);
 

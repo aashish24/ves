@@ -23,25 +23,24 @@
 ///
 ///Specifies bounds of an object
 
-#ifndef __vsgBoundedObject_h
-#define __vsgBoundedObject_h
+#ifndef __vesBoundingObject_h
+#define __vesBoundingObject_h
 
-#include "vsgMacro.h"
-#include "vsgTypes.h"
+#include "vesGMTL.h"
 
-class vsgBoundedObject
+class vesBoundingObject
 {
 public:
-  vsgBoundedObject();
-  virtual ~vsgBoundedObject();
+  vesBoundingObject();
+  virtual ~vesBoundingObject();
 
   virtual void computeBounds() = 0;
 
-  const SFVec3f& boundsMinimum() const {return this->m_boundsMinimum;}
-  const SFVec3f& boundsMaximum() const {return this->m_boundsMaximum;}
+  const vesVector3f& boundsMinimum() const {return this->m_boundsMinimum;}
+  const vesVector3f& boundsMaximum() const {return this->m_boundsMaximum;}
 
-  const SFVec3f& boundsCenter() const {return this->m_boundsCenter;}
-  const SFVec3f& boundsSize() const {return this->m_boundsSize;}
+  const vesVector3f& boundsCenter() const {return this->m_boundsCenter;}
+  const vesVector3f& boundsSize() const {return this->m_boundsSize;}
 
   void setBoundsCenter(const vesVector3f &center);
   void setBoundsSize(const vesVector3f &size);
@@ -59,11 +58,11 @@ public:
 protected:
   bool m_boundsDirty;
 
-  SFVec3f m_boundsCenter;
-  SFVec3f m_boundsSize;
+  vesVector3f m_boundsCenter;
+  vesVector3f m_boundsSize;
 
-  SFVec3f m_boundsMinimum;
-  SFVec3f m_boundsMaximum;
+  vesVector3f m_boundsMinimum;
+  vesVector3f m_boundsMaximum;
 };
 
-#endif // __vsgBoundedObject_h
+#endif // __vesBoundingObject_h

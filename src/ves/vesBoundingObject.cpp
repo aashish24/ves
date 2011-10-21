@@ -18,35 +18,35 @@
   limitations under the License.
  ========================================================================*/
 
-#include "vsgBoundedObject.h"
+#include "vesBoundingObject.h"
 
 // C/C++ includes
 #include <limits>
 
-vsgBoundedObject::vsgBoundedObject() :
+vesBoundingObject::vesBoundingObject() :
   m_boundsDirty(true)
 {
   this->resetBounds();
 }
 
-vsgBoundedObject::~vsgBoundedObject()
+vesBoundingObject::~vesBoundingObject()
 {
 }
 
 
-void vsgBoundedObject::setBoundsCenter(const vesVector3f &center)
+void vesBoundingObject::setBoundsCenter(const vesVector3f &center)
 {
     this->m_boundsCenter = center;
 }
 
 
-void vsgBoundedObject::setBoundsSize(const vesVector3f &size)
+void vesBoundingObject::setBoundsSize(const vesVector3f &size)
 {
     this->m_boundsSize = size;
 }
 
 
-void vsgBoundedObject::setBounds(vesVector3f min, vesVector3f max)
+void vesBoundingObject::setBounds(vesVector3f min, vesVector3f max)
 {
   this->m_boundsMinimum = min;
   this->m_boundsMaximum = max;
@@ -57,7 +57,7 @@ void vsgBoundedObject::setBounds(vesVector3f min, vesVector3f max)
 }
 
 
-float vsgBoundedObject::boundsRadius()
+float vesBoundingObject::boundsRadius()
 {
   vesVector3f temp = this->m_boundsSize;
 
@@ -67,13 +67,13 @@ float vsgBoundedObject::boundsRadius()
 }
 
 
-void vsgBoundedObject::setBoundsDirty(bool value)
+void vesBoundingObject::setBoundsDirty(bool value)
 {
   this->m_boundsDirty = value;
 }
 
 
-void vsgBoundedObject::resetBounds()
+void vesBoundingObject::resetBounds()
 {
   this->m_boundsCenter[0] = 0;
   this->m_boundsCenter[1] = 0;

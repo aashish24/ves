@@ -18,41 +18,30 @@
   limitations under the License.
  ========================================================================*/
 
-#ifndef __vsgNode_h
-#define __vsgNode_h
+#ifndef __VESNODE_H
+#define __VESNODE_H
 
-# include "vsgMacro.h"
-# include "vsgTypes.h"
-# include <vector>
+#include "vesBoundingObject.h"
+#include "vesObject.h"
 
+// Forward declarations.
+class vesGroupNode;
 class vesVisitor;
 
-class Painter;
-
-class vsgGroupingNode;
-
-class vsgNode
+class vesNode : public vesObject, public vesBoundingObject
 {
 public:
-           vsgNode();
-  virtual ~vsgNode();
+  vesNode();
+  virtual ~vesNode();
 
   virtual void accept(vesVisitor &visitor){}
 
-  inline vsgGroupingNode* parent(){ return this->m_parent; }
+  inline vesGroupNode* parent(){ return this->m_parent; }
 
-//  virtual bool read() = 0;
-//  virtual void render(Painter * render) =0;
+  bool setParent(vesGroupNode *parent);
 
 protected:
-  friend class vsgGroupingNode;
-
-  bool setParent(vsgGroupingNode *parent);
-
-  vsgGroupingNode *m_parent;
+  vesGroupNode *m_parent;
 };
 
-typedef vsgNode* SFNode;
-typedef std::vector<SFNode> MFNode;
-
-#endif // __vsgNode_h
+#endif // __VESNODE_H

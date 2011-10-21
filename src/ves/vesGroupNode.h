@@ -18,34 +18,30 @@
   limitations under the License.
  ========================================================================*/
 
-#ifndef __vsgGroupingNode_h
-#define __vsgGroupingNode_h
+#ifndef __VESGROUPNODE_H
+#define __VESGROUPNODE_H
 
-#include "vsg/Utility/vsgMacro.h"
-#include "vsg/Utility/vsgTypes.h"
+#include "vesNode.h"
 
-#include "vsg/Core/vsgNode.h"
-#include "vsg/Grouping/vsgBoundedObject.h"
-
+// C/C++ includes
 #include <list>
 
-class vsgGroupingNode: public vsgNode, public vsgBoundedObject
+class vesGroupNode: public vesNode
 {
 public:
-           vsgGroupingNode();
-  virtual ~vsgGroupingNode();
+  vesGroupNode();
+  virtual ~vesGroupNode();
 
-  typedef std::list<vsgNode*> Children;
+  typedef std::list<vesNode*> Children;
 
-  bool addChild   (vsgNode *child);
-  bool removeChild(vsgNode *child);
+  bool addChild   (vesNode *child);
+  bool removeChild(vesNode *child);
 
   Children&       children()       { return this->m_children; }
   const Children& children() const { return this->m_children; }
-
 
 protected:
   Children m_children;
 };
 
-#endif // __vsgGroupingNode_h
+#endif // __VESGROUPNODE_H

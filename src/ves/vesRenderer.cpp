@@ -18,6 +18,7 @@
   limitations under the License.
  ========================================================================*/
 
+#include "vesActor.h"
 #include "vesCamera.h"
 #include "vesCullVisitor.h"
 #include "vesFileReader.h"

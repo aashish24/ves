@@ -21,11 +21,16 @@
 #ifndef VESVISITOR_H
 #define VESVISITOR_H
 
-#include "vesActor.h"
+// VES includes.
+#include "vesGMTL.h"
 
 // Forward declarations
+class vesActor;
+class vesGroupNode;
 class vesMapper;
 class vesMaterial;
+class vesNode;
+class vesTransformNode;
 
 class vesVisitor
 {
@@ -66,6 +71,9 @@ public:
   vesMatrix4x4f projection2DMatrix() { return this->m_projection2DMatrix; }
   void setProjection2DMatrix(const vesMatrix4x4f& matrix) { this->m_projection2DMatrix = matrix; }
 
+  virtual void visit(vesNode &node);
+  virtual void visit(vesGroupNode &groupNode);
+  virtual void visit(vesTransformNode &transformNode);
   virtual void visit(vesActor  &actor);
 
   VisitorType type(){ return this->m_visitorType; }

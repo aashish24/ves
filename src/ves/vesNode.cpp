@@ -18,21 +18,21 @@
   limitations under the License.
  ========================================================================*/
 
-#include  "vsgNode.h"
-#include  "vsgGroupingNode.h"
+#include  "vesNode.h"
+#include  "vesGroupNode.h"
 
-vsgNode::vsgNode()
+vesNode::vesNode()
 {
   this->m_parent = 0x0;
 }
 
 
-vsgNode::~vsgNode()
+vesNode::~vesNode()
 {
 }
 
 
-bool vsgNode::setParent(vsgGroupingNode *parent)
+bool vesNode::setParent(vesGroupNode *parent)
 {
   if (this->m_parent) {
     this->m_parent->removeChild(this);
