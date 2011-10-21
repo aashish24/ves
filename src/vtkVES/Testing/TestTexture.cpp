@@ -60,7 +60,6 @@
 //----------------------------------------------------------------------------
 namespace {
 
-
 class vesTextureApp : public vesKiwiBaseApp {
 public:
 
