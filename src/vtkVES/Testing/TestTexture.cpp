@@ -82,9 +82,7 @@ public:
     vesShaderProgram* shaderProgram = this->addShaderProgram(vertexSource, fragmentSource);
     this->addModelViewMatrixUniform(shaderProgram);
     this->addProjectionMatrixUniform(shaderProgram);
-    this->addNormalMatrixUniform(shaderProgram);
     this->addVertexPositionAttribute(shaderProgram);
-    this->addVertexNormalAttribute(shaderProgram);
     this->addVertexTextureCoordinateAttribute(shaderProgram);
     this->TextureShader = shaderProgram;
   }
