@@ -23,6 +23,7 @@
 #include "vesCullVisitor.h"
 #include "vesFileReader.h"
 #include "vesGMTL.h"
+#include "vesGroupNode.h"
 #include "vesRenderer.h"
 #include "vesRenderStage.h"
 #include "vesShaderProgram.h"
@@ -31,7 +32,6 @@
 // C++ includes
 #include <iostream>
 #include <string>
-
 
 vesRenderer::vesRenderer()
 {
@@ -46,7 +46,9 @@ vesRenderer::vesRenderer()
   this->m_backgroundColor[3] = 1.0f;
 
   this->m_camera    = new vesCamera();
-  this->m_sceneRoot = new vesActor();
+  this->m_sceneRoot = new vesGroupNode();
+
+  this->m_camera->addChild(this->m_sceneRoot);
 
   this->m_renderStage = new vesRenderStage();
 }
@@ -57,13 +59,6 @@ vesRenderer::~vesRenderer()
   delete this->m_camera; this->m_camera = 0x0;
   delete this->m_sceneRoot; this->m_sceneRoot = 0x0;
   delete this->m_renderStage; this->m_renderStage = 0x0;
-}
-
-
-void vesRenderer::setSceneRoot(vesActor *root)
-{
-  // \todo: Release graphics resources for the last scene root.
-  this->m_sceneRoot = root;
 }
 
 
@@ -359,7 +354,7 @@ void vesRenderer::updateTraverseScene()
   vesVisitor     updateVisitor(vesVisitor::UpdateVisitor,
                                vesVisitor::TraverseAllChildren);
 
-  this->m_sceneRoot->accept(updateVisitor);
+  this->m_camera->accept(updateVisitor);
 }
 
 
@@ -380,7 +375,7 @@ void vesRenderer::cullTraverseScene()
   cullVisitor.pushModelViewMatrix(viewMatrix);
   cullVisitor.setRenderStage(this->m_renderStage);
 
-  this->m_sceneRoot->accept(cullVisitor);
+  this->m_camera->accept(cullVisitor);
 
   cullVisitor.popModelViewMatrix();
   cullVisitor.popProjectionMatrix();

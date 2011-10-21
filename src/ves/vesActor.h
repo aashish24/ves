@@ -69,7 +69,6 @@ public:
 
   virtual void accept(vesVisitor &visitor);
   virtual void ascend(vesVisitor &visitor);
-  virtual void traverse(vesVisitor &visitor);
 
 protected:
   virtual void computeBounds();

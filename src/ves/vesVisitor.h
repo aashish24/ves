@@ -27,6 +27,7 @@
 
 // Forward declarations
 class vesActor;
+class vesCamera;
 class vesGroupNode;
 class vesMapper;
 class vesMaterial;
@@ -75,7 +76,8 @@ public:
   virtual void visit(vesNode &node);
   virtual void visit(vesGroupNode &groupNode);
   virtual void visit(vesTransformNode &transformNode);
-  virtual void visit(vesActor  &actor);
+  virtual void visit(vesActor &actor);
+  virtual void visit(vesCamera &camera);
 
   inline void traverse(vesNode &node)
   {

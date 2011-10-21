@@ -35,14 +35,17 @@ public:
   vesNode();
   virtual ~vesNode();
 
-  virtual void accept(vesVisitor &visitor){}
+  virtual void accept(vesVisitor &visitor);
 
   inline vesGroupNode* parent(){ return this->m_parent; }
 
   bool setParent(vesGroupNode *parent);
 
   inline void setIsOverlayNode(bool value) { this->m_isOverlayNode = value; }
-  inline bool isOverlayNode() const { return m_isOverlayNode; }
+  inline bool isOverlayNode() const { return this->m_isOverlayNode; }
+
+  void setVisible(bool value);
+  bool isVisible() const { return this->m_visible; }
 
   /// Traverse upwards.
   virtual void ascend(vesVisitor &visitor){}
@@ -51,6 +54,7 @@ public:
   virtual void traverse(vesVisitor &visitor){}
 
 protected:
+  virtual void computeBounds();
   virtual void updateBounds(vesNode &child){}
 
   bool m_isOverlayNode;

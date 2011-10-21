@@ -40,9 +40,13 @@ public:
   Children&       children()       { return this->m_children; }
   const Children& children() const { return this->m_children; }
 
+  virtual void accept(vesVisitor &visitor);
   virtual void traverse(vesVisitor &visitor);
 
 protected:
+  void traverseChildrenAndUpdateBounds(vesVisitor &visitor);
+  void traverseChildren(vesVisitor &visitor);
+
   virtual void updateBounds(vesNode &child);
 
   Children m_children;

@@ -20,6 +20,9 @@
 
 #include "vesTransformNode.h"
 
+// VES includes
+#include "vesVisitor.h"
+
 class vesTransformNode::vesInternal
 {
 private:
@@ -77,7 +80,7 @@ vesTransformNode::~vesTransformNode()
 }
 
 
-vesMatrix4x4f vesTransformNode::eval()
+vesMatrix4x4f vesTransformNode::matrix()
 {
   this->setInternals();
   return m_internal->Eval();
@@ -165,6 +168,12 @@ vesMatrix4x4f vesTransformNode::computeTransform()
 }
 
 
+void vesTransformNode::accept(vesVisitor &visitor)
+{
+  visitor.visit(*this);
+}
+
+
 void vesTransformNode::updateBounds(vesNode &child)
 {
   if (!this->boundsDirty()) {
@@ -178,8 +187,8 @@ void vesTransformNode::updateBounds(vesNode &child)
   vesVector3f min = child.boundsMinimum();
   vesVector3f max = child.boundsMaximum();
 
-  min = transformPoint3f(this->eval(), min);
-  max = transformPoint3f(this->eval(), max);
+  min = transformPoint3f(this->matrix(), min);
+  max = transformPoint3f(this->matrix(), max);
 
   child.setBounds(min, max);
 

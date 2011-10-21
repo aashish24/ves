@@ -23,6 +23,7 @@
 // VES includes
 #include "vesGMTL.h"
 #include "vesRenderState.h"
+#include "vesVisitor.h"
 
 // C/C++ includes
 #include <algorithm>
@@ -326,5 +327,10 @@ void vesCamera::ClearRenderTargets(vesRenderState &renderState)
   this->m_removedRenderTargetStack.clear();
 }
 
+
+void vesCamera::accept(vesVisitor &visitor)
+{
+  visitor.visit(*this);
+}
 
 

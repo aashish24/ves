@@ -79,18 +79,62 @@ bool vesGroupNode::removeChild(vesNode *child)
 }
 
 
+void vesGroupNode::accept(vesVisitor &visitor)
+{
+  visitor.visit(*this);
+}
+
+
 void vesGroupNode::traverse(vesVisitor &visitor)
 {
+  switch(visitor.type())
+  {
+  // Update
+  case vesVisitor::UpdateVisitor:
+    this->traverseChildrenAndUpdateBounds(visitor);
+    break;
+  case vesVisitor::CullVisitor:
+    this->traverseChildren(visitor);
+    break;
+  default:
+    // Do nothing.
+    break;
+  };
+}
+
+
+void vesGroupNode::traverseChildren(vesVisitor &visitor)
+{
+  Children::iterator itr = this->m_children.begin();
+  if (visitor.mode() == vesVisitor::TraverseAllChildren) {
+    for (; itr != this->m_children.end(); ++itr) {
+
+      (*itr)->accept(visitor);
+    }
+  }
+}
+
+
+void vesGroupNode::traverseChildrenAndUpdateBounds(vesVisitor &visitor)
+{
+  this->computeBounds();
+
   Children::iterator itr = this->m_children.begin();
 
   if (visitor.mode() == vesVisitor::TraverseAllChildren) {
     for (; itr != this->m_children.end(); ++itr) {
+
       (*itr)->accept(visitor);
+
+      this->updateBounds(*(*itr));
     }
   }
-  else if (visitor.mode() == vesVisitor::TraverseActiveChildren) {
-    // \todo: Implement this.
+
+  if (this->m_parent && this->boundsDirty()) {
+    // Flag parents bounds dirty.
+    this->m_parent->setBoundsDirty(true);
   }
+  this->setBoundsDirty(false);
 }
 
 

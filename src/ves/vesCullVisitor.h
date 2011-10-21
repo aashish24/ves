@@ -25,6 +25,7 @@
 #include "vesVisitor.h"
 
 // Forward declarations
+class vesCamera;
 class vesRenderStage;
 
 class vesCullVisitor : public vesVisitor
@@ -57,13 +58,22 @@ public:
     return this->m_renderStage;
   }
 
-  virtual void visit(vesActor  &actor);
+  virtual void visit(vesNode &node);
+  virtual void visit(vesGroupNode &groupNode);
+  virtual void visit(vesTransformNode &transformNode);
+  virtual void visit(vesActor &actor);
+  virtual void visit(vesCamera &camera);
 
 protected:
   void addGeometryAndStates(vesMapper *mapper, vesMaterial *material,
                             const vesMatrix4x4f &modelViewMatrix,
                             const vesMatrix4x4f& projectionMatrix,
                             float depth);
+
+  inline void invokeCallbacksAndTraverse(vesNode &node)
+  {
+    this->traverse(node);
+  }
 
   vesRenderStage *m_renderStage;
 };

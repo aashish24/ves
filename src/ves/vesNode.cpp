@@ -19,7 +19,10 @@
  ========================================================================*/
 
 #include  "vesNode.h"
+
+// VES includes.
 #include  "vesGroupNode.h"
+#include "vesVisitor.h"
 
 vesNode::vesNode() : vesObject(),
   m_visible (true),
@@ -35,6 +38,12 @@ vesNode::~vesNode()
 }
 
 
+void vesNode::accept(vesVisitor &visitor)
+{
+  visitor.visit(*this);
+}
+
+
 bool vesNode::setParent(vesGroupNode *parent)
 {
   if (this->m_parent) {
@@ -46,3 +55,10 @@ bool vesNode::setParent(vesGroupNode *parent)
   return true;
 }
 
+
+void vesNode::computeBounds()
+{
+  if (this->boundsDirty()) {
+    this->resetBounds();
+  }
+}

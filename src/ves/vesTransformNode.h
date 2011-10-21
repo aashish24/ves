@@ -44,7 +44,9 @@ public:
   void setTranslation(const vesVector3f &translation);
   const vesVector3f& translation() const;
 
-  vesMatrix4x4f eval();
+  vesMatrix4x4f matrix();
+
+  virtual void accept(vesVisitor &visitor);
 
 protected:
   void updateBounds(vesNode &child);

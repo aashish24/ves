@@ -21,6 +21,7 @@
 #include "vesVisitor.h"
 
 #include "vesActor.h"
+#include "vesCamera.h"
 #include "vesGMTL.h"
 #include "vesGroupNode.h"
 #include "vesMapper.h"
@@ -133,7 +134,7 @@ void vesVisitor::visit(vesNode &node)
 }
 
 
-void vesVisitor::visit(vesGroupNode & groupNode)
+void vesVisitor::visit(vesGroupNode &groupNode)
 {
   this->visit(static_cast<vesNode&>(groupNode));
 }
@@ -148,4 +149,9 @@ void vesVisitor::visit(vesTransformNode &transformNode)
 void vesVisitor::visit(vesActor &actor)
 {
   this->visit(static_cast<vesTransformNode&>(actor));
+}
+
+void vesVisitor::visit(vesCamera &camera)
+{
+  this->visit(static_cast<vesTransformNode&>(camera));
 }

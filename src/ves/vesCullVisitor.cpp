@@ -22,6 +22,10 @@
 
 // VES includes
 #include "vesActor.h"
+#include "vesCamera.h"
+#include "vesGroupNode.h"
+#include "vesNode.h"
+#include "vesTransformNode.h"
 #include "vesRenderStage.h"
 
 void vesCullVisitor::addGeometryAndStates(vesMapper *mapper, vesMaterial *material,
@@ -31,6 +35,28 @@ void vesCullVisitor::addGeometryAndStates(vesMapper *mapper, vesMaterial *materi
 {
   this->m_renderStage->addRenderLeaf(
     vesRenderLeaf(depth, modelViewMatrix, projectionMatrix, material, mapper));
+}
+
+
+void vesCullVisitor::visit(vesNode &node)
+{
+  this->invokeCallbacksAndTraverse(node);
+}
+
+
+void vesCullVisitor::visit(vesGroupNode &groupNode)
+{
+  this->invokeCallbacksAndTraverse(groupNode);
+}
+
+
+void vesCullVisitor::visit(vesTransformNode &transformNode)
+{
+  this->pushModelViewMatrix(transformNode.matrix());
+
+  this->invokeCallbacksAndTraverse(transformNode);
+
+  this->popModelViewMatrix();
 }
 
 
@@ -44,14 +70,19 @@ void vesCullVisitor::visit(vesActor &actor)
                                1);
   }
   else {
-
     // \todo: We could do some optimization here.
     this->addGeometryAndStates(actor.mapper(), actor.material(),
                                this->modelViewMatrix(), this->projectionMatrix(),
                                1);
   }
 
-  this->vesVisitor::visit(actor);
+  this->invokeCallbacksAndTraverse(actor);
 
   this->popModelViewMatrix();
+}
+
+
+void vesCullVisitor::visit(vesCamera &camera)
+{
+  this->invokeCallbacksAndTraverse(camera);
 }

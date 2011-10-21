@@ -32,14 +32,13 @@
 
 // Forward declarations
 class vesRenderState;
+class vesVisitor;
 
 class vesCamera: public vesTransformNode
 {
 public:
-           vesCamera();
+  vesCamera();
   virtual  ~vesCamera();
-
-  virtual void computeBounds(){}
 
   vesSetGetMacro(UseHorizontalViewAngle,bool)
   vesSetGetMacro(ViewPlaneNormal,vesVector3f)
@@ -67,6 +66,8 @@ public:
   vesRenderTarget* RenderTarget();
   const vesRenderTarget* RenderTarget() const;
   void ClearRenderTargets(vesRenderState &renderState);
+
+  virtual void accept(vesVisitor &visitor);
 
 private:
   void ComputeDistance();

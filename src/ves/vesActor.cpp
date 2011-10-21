@@ -42,7 +42,7 @@ vesActor::~vesActor()
 
 vesMatrix4x4f vesActor::modelViewMatrix()
 {
-  return this->vesTransformNode::eval();
+  return this->vesTransformNode::matrix();
 }
 
 
@@ -89,54 +89,13 @@ void vesActor::ascend(vesVisitor &visitor)
 }
 
 
-void vesActor::traverse(vesVisitor &visitor)
-{
-  Children::iterator itr = this->m_children.begin();
-
-  switch(visitor.type())
-  {
-    // Update
-    case vesVisitor::UpdateVisitor:
-    {
-      this->computeBounds();
-
-      if (visitor.mode() == vesVisitor::TraverseAllChildren) {
-        for (; itr != this->m_children.end(); ++itr) {
-
-          (*itr)->accept(visitor);
-
-          this->updateBounds(*(*itr));
-        }
-      }
-
-      if (this->m_parent && this->boundsDirty()) {
-        // Flag parents bounds dirty.
-        this->m_parent->setBoundsDirty(true);
-      }
-      this->setBoundsDirty(false);
-
-      break;
-    }
-    case vesVisitor::CullVisitor:
-    {
-      vesTransformNode::traverse(visitor);
-      break;
-    }
-    default:
-    {
-      // Do nothing.
-    }
-  };
-}
-
-
 void vesActor::computeBounds()
 {
   if (this->m_mapper && this->m_mapper->boundsDirty()) {
     this->m_mapper->computeBounds();
 
-    vesVector3f min = transformPoint3f(this->eval(), this->m_mapper->boundsMinimum());
-    vesVector3f max = transformPoint3f(this->eval(), this->m_mapper->boundsMaximum());
+    vesVector3f min = transformPoint3f(this->matrix(), this->m_mapper->boundsMinimum());
+    vesVector3f max = transformPoint3f(this->matrix(), this->m_mapper->boundsMaximum());
 
     this->setBounds(min, max);
 
