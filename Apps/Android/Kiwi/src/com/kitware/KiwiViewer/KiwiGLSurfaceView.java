@@ -110,7 +110,7 @@ public class KiwiGLSurfaceView extends GLSurfaceView implements MultiTouchObject
       super(context, attrs);
       
       // requires api level 11
-      setPreserveEGLContextOnPause(true);
+      //setPreserveEGLContextOnPause(true);
 
       init(true, 8, 0);
     }

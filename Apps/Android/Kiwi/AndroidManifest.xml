@@ -20,6 +20,16 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        
+        <activity android:name=".DatasetListActivity"
+            	  android:theme="@android:style/Theme.Dialog">
+            <intent-filter>
+                <action android:name="com.kitware.KiwiViewer.action.DatasetList"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+            </intent-filter>
+        </activity>
+            	  
+            
     </application>
 
 </manifest>

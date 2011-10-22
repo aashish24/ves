@@ -255,8 +255,13 @@ extern "C" {
   JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_resetCamera(JNIEnv * env, jobject obj);
   JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_loadNextDataset(JNIEnv * env, jobject obj);
   JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_loadAssets(JNIEnv* env, jclass obj, jobject assetManager, jstring filename);
+  JNIEXPORT jstring JNICALL Java_com_kitware_KiwiViewer_KiwiNative_getDatasetName(JNIEnv* env, jobject obj, jint offset);
+  JNIEXPORT jstring JNICALL Java_com_kitware_KiwiViewer_KiwiNative_getDatasetFilename(JNIEnv* env, jobject obj, jint offset);
+  JNIEXPORT jint JNICALL Java_com_kitware_KiwiViewer_KiwiNative_getNumberOfBuiltinDatasets(JNIEnv* env, jobject obj);
+  JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_loadDatasetWithOffset(JNIEnv * env, jobject obj, jint offset);
 };
 
+//-----------------------------------------------------------------------------
 JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_init(JNIEnv * env, jobject obj,  jint width, jint height)
 {
   LOGI("setupGraphics(%d, %d)", width, height);
@@ -365,4 +370,30 @@ JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_loadAssets(JNIEnv*
   storageDir = javaStr;
   env->ReleaseStringUTFChars(filename, javaStr);
   LOGI("Using external storage directory %s", storageDir.c_str());
+}
+
+JNIEXPORT jstring JNICALL Java_com_kitware_KiwiViewer_KiwiNative_getDatasetName(JNIEnv* env, jobject obj, jint offset)
+{
+  std::string name = app->builtinDatasetName(offset);
+  const char* nameForOutput = name.c_str();  
+  LOGI("Returning dataset name: %s", name.c_str());
+  return(env->NewStringUTF(name.c_str()));
+}
+
+JNIEXPORT jstring JNICALL Java_com_kitware_KiwiViewer_KiwiNative_getDatasetFilename(JNIEnv* env, jobject obj, jint offset)
+{
+  std::string name = app->builtinDatasetFilename(offset);
+  const char* nameForOutput = name.c_str();  
+  LOGI("Returning dataset filename: %s", name.c_str());
+  return(env->NewStringUTF(name.c_str()));
+}
+
+JNIEXPORT jint JNICALL Java_com_kitware_KiwiViewer_KiwiNative_getNumberOfBuiltinDatasets(JNIEnv* env, jobject obj)
+{
+  return static_cast<jint>(app->numberOfBuiltinDatasets());
+}
+
+JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_loadDatasetWithOffset(JNIEnv * env, jobject obj, jint offset)
+{
+  loadDataset(offset);
 }

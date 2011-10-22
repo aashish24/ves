@@ -40,4 +40,8 @@ public class KiwiNative {
      public static native void resetCamera();
      public static native void loadNextDataset();
      public static native void loadAssets(AssetManager assetManager, String filename);
+     public static native String getDatasetName(int offset);
+     public static native String getDatasetFilename(int offset);
+     public static native int getNumberOfBuiltinDatasets();
+     public static native void loadDatasetWithOffset(int offset);
 }
