@@ -31,7 +31,9 @@
 #include <vector>
 
 // Forward declarations
+class vesRenderStage;
 class vesRenderState;
+class vesViewport;
 class vesVisitor;
 
 class vesCamera: public vesTransformNode
@@ -67,6 +69,15 @@ public:
   const vesRenderTarget* RenderTarget() const;
   void ClearRenderTargets(vesRenderState &renderState);
 
+  const vesViewport* viewport() const;
+  vesViewport* viewport();
+
+  const vesRenderStage* renderStage() const;
+  vesRenderStage* getOrCreateRenderStage();
+
+  vesMatrix4x4f modelViewMatrix();
+  vesMatrix4x4f projectionMatrix();
+
   virtual void accept(vesVisitor &visitor);
 
 private:
@@ -84,6 +95,9 @@ private:
   vesVector3f   DirectionOfProjection;
   double        WindowCenter[2];
   bool          ParallelProjection;
+
+  vesViewport *m_viewport;
+  vesRenderStage *m_renderStage;
 
   typedef std::vector<vesRenderTarget*> RenderTargetStack;
 

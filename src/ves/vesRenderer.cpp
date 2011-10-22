@@ -50,7 +50,7 @@ vesRenderer::vesRenderer()
 
   this->m_camera->addChild(this->m_sceneRoot);
 
-  this->m_renderStage = new vesRenderStage();
+  this->m_renderStage = this->m_camera->getOrCreateRenderStage();
 }
 
 
@@ -58,7 +58,6 @@ vesRenderer::~vesRenderer()
 {
   delete this->m_camera; this->m_camera = 0x0;
   delete this->m_sceneRoot; this->m_sceneRoot = 0x0;
-  delete this->m_renderStage; this->m_renderStage = 0x0;
 }
 
 
@@ -103,8 +102,10 @@ void vesRenderer::resize(int width, int height, float scale)
   this->m_width  = (width  > 0) ? width  : 1;
   this->m_height = (height > 0) ? height : 1;
 
-  this->m_aspect[0] = static_cast<double>(this->m_height)/this->m_width;
-  this->m_aspect[1] = static_cast<double>(this->m_width) /this->m_height;
+  this->m_camera->viewport()->setViewport(0, 0, this->m_width, this->m_height);
+
+  this->m_aspect[0] = this->m_camera->viewport()->inverseAspect();
+  this->m_aspect[1] = this->m_camera->viewport()->aspect();
 }
 
 
@@ -362,22 +363,11 @@ void vesRenderer::cullTraverseScene()
 {
   vesCullVisitor cullVisitor;
 
-  vesMatrix4x4f projectionMatrix =
-    this->m_camera->ComputeProjectionTransform(this->m_aspect[1], -1, 1);
-
-  vesMatrix4x4f viewMatrix =
-    this->m_camera->ComputeViewTransform();
-
   vesMatrix4x4f projection2DMatrix = vesOrtho(0, this->width(), 0, this->height(), -1, 1);
   cullVisitor.setProjection2DMatrix(projection2DMatrix);
 
-  cullVisitor.pushProjectionMatrix(projectionMatrix);
-  cullVisitor.pushModelViewMatrix(viewMatrix);
   cullVisitor.setRenderStage(this->m_renderStage);
 
   this->m_camera->accept(cullVisitor);
-
-  cullVisitor.popModelViewMatrix();
-  cullVisitor.popProjectionMatrix();
 }
 

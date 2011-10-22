@@ -26,6 +26,7 @@
 #include "vesMapper.h"
 #include "vesMaterial.h"
 #include "vesRenderLeaf.h"
+#include "vesViewport.h"
 
 // C++ includes
 #include <map>
@@ -60,6 +61,14 @@ public:
     this->m_binRenderLeavesMap[renderLeaf.m_bin].push_back(renderLeaf);
   }
 
+  // void setCamera(...)
+  // vesCamera* camera()..
+  // vesCamera*....
+
+  void setViewport(vesViewport *viewport) { this->m_viewport = viewport; }
+  const vesViewport* viewport() const { return this->m_viewport; }
+  vesViewport* viewport() { return this->m_viewport; }
+
   void sort(SortMode mode)
   {
     // \todo: Implement this.
@@ -67,6 +76,8 @@ public:
 
   void render(vesRenderState &renderState, vesRenderLeaf *previous)
   {
+    this->m_viewport->render(renderState);
+
     BinRenderLeavesMap::iterator itr = this->m_binRenderLeavesMap.begin();
     RenderLeaves::iterator rlsItr;
 
@@ -90,6 +101,8 @@ public:
   }
 
 private:
+  vesViewport *m_viewport;
+
   BinRenderLeavesMap  m_binRenderLeavesMap;
 
   // Not implemented.

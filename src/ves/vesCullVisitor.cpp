@@ -29,9 +29,8 @@
 #include "vesRenderStage.h"
 
 void vesCullVisitor::addGeometryAndStates(vesMapper *mapper, vesMaterial *material,
-                                          const vesMatrix4x4f &modelViewMatrix,
-                                          const vesMatrix4x4f &projectionMatrix,
-                                          float depth)
+  const vesMatrix4x4f &modelViewMatrix, const vesMatrix4x4f &projectionMatrix,
+  float depth)
 {
   this->m_renderStage->addRenderLeaf(
     vesRenderLeaf(depth, modelViewMatrix, projectionMatrix, material, mapper));
@@ -66,14 +65,12 @@ void vesCullVisitor::visit(vesActor &actor)
 
    if (actor.isOverlayNode()) {
     this->addGeometryAndStates(actor.mapper(), actor.material(),
-                               actor.modelViewMatrix(),  this->projection2DMatrix(),
-                               1);
+      actor.modelViewMatrix(),  this->projection2DMatrix(), 1);
   }
   else {
     // \todo: We could do some optimization here.
     this->addGeometryAndStates(actor.mapper(), actor.material(),
-                               this->modelViewMatrix(), this->projectionMatrix(),
-                               1);
+      this->modelViewMatrix(), this->projectionMatrix(), 1);
   }
 
   this->invokeCallbacksAndTraverse(actor);
@@ -84,5 +81,25 @@ void vesCullVisitor::visit(vesActor &actor)
 
 void vesCullVisitor::visit(vesCamera &camera)
 {
+  vesRenderStage *renderStage = camera.getOrCreateRenderStage();
+  renderStage->clearAll();
+  renderStage->setViewport(camera.viewport());
+
+  if (camera.referenceFrame() == vesTransformNode::Relative) {
+    this->pushProjectionMatrix(this->projectionMatrix() * camera.projectionMatrix());
+    this->pushModelViewMatrix(this->modelViewMatrix() * camera.modelViewMatrix());
+  }
+  else {
+    this->pushProjectionMatrix(camera.projectionMatrix());
+    this->pushModelViewMatrix(camera.modelViewMatrix());
+  }
+
+  this->pushRenderStage(renderStage);
+
   this->invokeCallbacksAndTraverse(camera);
+
+  this->popRenderStage();
+
+  this->popProjectionMatrix();
+  this->popModelViewMatrix();
 }

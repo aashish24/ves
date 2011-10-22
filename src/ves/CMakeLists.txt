@@ -25,6 +25,7 @@ set(sources
   vesSTLReader.cpp
   vesTriangleData.cpp
   vesUniform.cpp
+  vesViewport.cpp
   vesVisitor.cpp
 )
 

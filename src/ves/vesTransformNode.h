@@ -26,6 +26,12 @@
 class vesTransformNode : public vesGroupNode
 {
 public:
+  enum ReferenceFrame
+  {
+    Relative = 0,
+    Absolute = 1
+  };
+
   vesTransformNode();
   virtual ~vesTransformNode();
 
@@ -44,7 +50,13 @@ public:
   void setTranslation(const vesVector3f &translation);
   const vesVector3f& translation() const;
 
+  bool setReferenceFrame(ReferenceFrame referenceFrame);
+  ReferenceFrame referenceFrame() const;
+
   vesMatrix4x4f matrix();
+
+  virtual vesTransformNode* asTransformNode() { return this; }
+  virtual const vesTransformNode* asTransformNode() const { return this; }
 
   virtual void accept(vesVisitor &visitor);
 
@@ -60,6 +72,8 @@ private:
   vesVector3f m_scale;
   vesVector4f m_scaleOrientation;
   vesVector3f m_translation;
+
+  ReferenceFrame m_referenceFrame;
 
   class vesInternal;
   vesInternal *m_internal;

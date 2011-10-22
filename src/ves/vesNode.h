@@ -25,8 +25,11 @@
 #include "vesObject.h"
 
 // Forward declarations.
-class vesMaterial;
+class vesActor;
+class vesCamera;
 class vesGroupNode;
+class vesMaterial;
+class vesTransformNode;
 class vesVisitor;
 
 class vesNode : public vesObject, public vesBoundingObject
@@ -46,6 +49,15 @@ public:
 
   void setVisible(bool value);
   bool isVisible() const { return this->m_visible; }
+
+  virtual vesGroupNode* asGroupNode() { return 0x0; }
+  virtual const vesGroupNode* asGroupNode() const { return 0x0; }
+  virtual vesTransformNode* asTransformNode() { return 0x0; }
+  virtual const vesTransformNode* asTransformNode() const { return 0x0; }
+  virtual vesCamera* asCamera() { return 0x0; }
+  virtual const vesCamera* asCamera() const { return 0x0; }
+  virtual vesActor* asActor() { return 0x0; }
+  virtual const vesActor* asActor() const { return 0x0; }
 
   /// Traverse upwards.
   virtual void ascend(vesVisitor &visitor){}

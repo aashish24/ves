@@ -22,7 +22,9 @@
 
 // VES includes
 #include "vesGMTL.h"
+#include "vesRenderStage.h"
 #include "vesRenderState.h"
+#include "vesViewport.h"
 #include "vesVisitor.h"
 
 // C/C++ includes
@@ -30,8 +32,10 @@
 #include <cassert>
 #include <iostream>
 
-vesCamera::vesCamera()
+vesCamera::vesCamera() : vesTransformNode()
 {
+  this->setReferenceFrame(Absolute);
+
   this->FocalPoint[0] = 0.0;
   this->FocalPoint[1] = 0.0;
   this->FocalPoint[2] = 0.0;
@@ -51,14 +55,18 @@ vesCamera::vesCamera()
   this->ViewAngle = 30.0;
   this->UseHorizontalViewAngle = 0;
 
-  this->ClippingRange[0] = 10.0;
-  this->ClippingRange[1] = 1010.0;
+  this->ClippingRange[0] = 10.0f;
+  this->ClippingRange[1] = 1010.0f;
 
   this->ParallelProjection = false;
   this->ParallelScale = 1.0;
 
   this->WindowCenter[0] = 0.0;
   this->WindowCenter[1] = 0.0;
+
+  this->m_viewport = new vesViewport();
+
+  this->m_renderStage = 0x0;
 
   this->m_renderTargetStack.push_back(new vesRenderTarget());
 
@@ -72,6 +80,8 @@ vesCamera::~vesCamera()
   assert(!this->m_renderTargetStack.empty());
 
   delete this->m_renderTargetStack[0];
+
+  delete this->m_renderStage;
 }
 
 
@@ -328,9 +338,48 @@ void vesCamera::ClearRenderTargets(vesRenderState &renderState)
 }
 
 
+const vesViewport* vesCamera::viewport() const
+{
+  return this->m_viewport;
+}
+
+
+vesViewport* vesCamera::viewport()
+{
+  return this->m_viewport;
+}
+
+
+const vesRenderStage* vesCamera::renderStage() const
+{
+  return this->m_renderStage;
+}
+
+
+vesRenderStage* vesCamera::getOrCreateRenderStage()
+{
+  if (!this->m_renderStage) {
+    this->m_renderStage = new vesRenderStage();
+  }
+  return this->m_renderStage;
+}
+
+
+vesMatrix4x4f vesCamera::modelViewMatrix()
+{
+  return this->ComputeViewTransform();
+}
+
+
+vesMatrix4x4f vesCamera::projectionMatrix()
+{
+  // Hard code -1, 1 for now.
+  return this->ComputeProjectionTransform(
+    this->m_viewport->aspect(), -1, 1);
+}
+
+
 void vesCamera::accept(vesVisitor &visitor)
 {
   visitor.visit(*this);
 }
-
-

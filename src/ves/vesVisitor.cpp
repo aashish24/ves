@@ -119,9 +119,8 @@ vesMatrix4x4f vesVisitor::modelViewMatrix()
 vesMatrix4x4f vesVisitor::projectionMatrix()
 {
   vesMatrix4x4f matrix;
-  size_t count = this->m_internal->m_projectionMatrixStack.size();
-  for (size_t i = 0; i < count; ++i) {
-    matrix *= *this->m_internal->m_projectionMatrixStack [i];
+  if (!this->m_internal->m_projectionMatrixStack.empty()) {
+    matrix = *this->m_internal->m_projectionMatrixStack.back();
   }
 
   return matrix;

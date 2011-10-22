@@ -152,6 +152,26 @@ const vesVector3f& vesTransformNode::translation() const
 }
 
 
+bool vesTransformNode::setReferenceFrame(ReferenceFrame referenceFrame)
+{
+  bool success = true;
+
+  if (this->m_referenceFrame != referenceFrame) {
+    this->setBoundsDirty(true);
+    this->m_referenceFrame = referenceFrame;
+    return success;
+  }
+
+  return !success;
+}
+
+
+vesTransformNode::ReferenceFrame vesTransformNode::referenceFrame() const
+{
+  return this->m_referenceFrame;
+}
+
+
 void vesTransformNode::setInternals()
 {
   m_internal->SetTranslation(m_translation);
@@ -180,6 +200,12 @@ void vesTransformNode::updateBounds(vesNode &child)
     return;
   }
 
+  if (child.asTransformNode()
+      && child.asTransformNode()->referenceFrame() == Absolute )
+  {
+    return;
+  }
+
   if (child.isOverlayNode()) {
     return;
   }
@@ -205,5 +231,3 @@ void vesTransformNode::updateBounds(vesNode &child)
   // Now update the bounds, bounds size and center.
   this->setBounds(this->m_boundsMinimum, this->m_boundsMaximum);
 }
-
-

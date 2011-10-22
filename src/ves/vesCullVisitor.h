@@ -21,8 +21,10 @@
 #ifndef VESCULLVISITOR_H
 #define VESCULLVISITOR_H
 
-// Base class
 #include "vesVisitor.h"
+
+// C/C++ includes.
+#include <vector>
 
 // Forward declarations
 class vesCamera;
@@ -41,21 +43,39 @@ public:
   {
   }
 
-  void setRenderStage(vesRenderStage *renderStage)
+  bool setRenderStage(vesRenderStage *renderStage)
   {
+    bool success = true;
+
     if (renderStage && this->m_renderStage != renderStage) {
       this->m_renderStage = renderStage;
+      this->m_renderStageStack.push_back(this->m_renderStage);
+
+      return success;
     }
+
+    return !success;
   }
 
   vesRenderStage* renderStage()
   {
-    return this->m_renderStage;
+    return this->m_renderStageStack.back();
   }
 
   const vesRenderStage* renderStage() const
   {
-    return this->m_renderStage;
+    return this->m_renderStageStack.back();
+  }
+
+  void pushRenderStage(vesRenderStage *renderStage)
+  {
+    // No check is applied here.
+    this->m_renderStageStack.push_back(renderStage);
+  }
+
+  void popRenderStage()
+  {
+    this->m_renderStageStack.pop_back();
   }
 
   virtual void visit(vesNode &node);
@@ -75,6 +95,9 @@ protected:
     this->traverse(node);
   }
 
+  typedef std::vector<vesRenderStage*> RenderStageStack;
+
+  RenderStageStack m_renderStageStack;
   vesRenderStage *m_renderStage;
 };
 
