@@ -43,8 +43,18 @@
 
 namespace {
 
+class AndroidAppState {
+public:
+
+  std::string currentDataset;
+  vesVector3f cameraPosition;
+  vesVector3f cameraFocalPoint;
+  vesVector3f cameraViewUp;
+};
+
 //----------------------------------------------------------------------------
 vesKiwiViewerApp* app;
+AndroidAppState appState;
 std::string storageDir;
 AAssetManager* assetManager;
 
@@ -127,17 +137,28 @@ void updateInertialMotion()
 }
 
 //----------------------------------------------------------------------------
+void loadDataset(std::string filename)
+{
+  LOGI("loadDataset(%s)", filename.c_str());
+
+  app->loadDataset(filename);
+
+  // we may need to restore this dataset later if the android app
+  // loses its GL resources
+  appState.currentDataset = filename;
+}
+
+//----------------------------------------------------------------------------
 void loadDataset(int index)
 {
   std::string datasetFilename = app->builtinDatasetFilename(index);
-  datasetFilename = copyAssetToExternalStorage(datasetFilename);
-  app->loadDataset(datasetFilename);
+  std::string absoluteFilename = copyAssetToExternalStorage(datasetFilename);
+  loadDataset(absoluteFilename);
 }
 
 //----------------------------------------------------------------------------
 void loadNextDataset()
 {
-  LOGI("Load next dataset");
   static int currentDatasetIndex = -1;
   currentDatasetIndex++;
   if (currentDatasetIndex >= app->numberOfBuiltinDatasets())
@@ -158,10 +179,36 @@ std::string getContentsOfAssetFile(const std::string filename)
 }
 
 //----------------------------------------------------------------------------
+void storeCameraState()
+{
+
+  appState.cameraPosition = app->cameraPosition();
+  appState.cameraFocalPoint = app->cameraFocalPoint();
+  appState.cameraViewUp = app->cameraViewUp();
+}
+
+//----------------------------------------------------------------------------
+void restoreCameraState()
+{
+  app->setCameraPosition(appState.cameraPosition);
+  app->setCameraFocalPoint(appState.cameraFocalPoint);
+  app->setCameraViewUp(appState.cameraViewUp);
+}
+
+//----------------------------------------------------------------------------
 bool setupGraphics(int w, int h)
 {
-  if (app) {
-    return true;
+
+  // For android 2.3, the app may lose its GL context and so it
+  // calls setupGraphics when the app resumes.  We don't have an
+  // easy way to re-initialize just the GL resources, so the strategy
+  // for now is to delete the whole app instance and then restore
+  // the current dataset and camera state.
+  bool isResume = app != NULL;
+  if (isResume) {
+    storeCameraState();
+    delete app; app = 0;
+    isResume = true;
   }
 
   // Pipe VTK messages into the android log
@@ -177,11 +224,16 @@ bool setupGraphics(int w, int h)
   app->initToonShader(getContentsOfAssetFile("ToonShader.vsh"),
                          getContentsOfAssetFile("ToonShader.fsh"));
   app->setShadingModel("Gouraud");
-
-  loadDataset(app->defaultBuiltinDatasetIndex());
   app->resizeView(w, h);
-  app->resetView();
 
+  if (!isResume) {
+    loadDataset(app->defaultBuiltinDatasetIndex());
+    app->resetView();
+  }
+  else {
+    app->loadDataset(appState.currentDataset);
+    restoreCameraState();
+  }
 
   fpsFrames = 0;
   fpsT0 = vtkTimerLog::GetUniversalTime();

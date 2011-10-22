@@ -331,3 +331,39 @@ int vesKiwiBaseApp::viewHeight() const
 {
   return this->Internal->Renderer->height();
 }
+
+//----------------------------------------------------------------------------
+vesVector3f vesKiwiBaseApp::cameraPosition() const
+{
+  return this->renderer()->camera()->GetPosition();
+}
+
+//----------------------------------------------------------------------------
+vesVector3f vesKiwiBaseApp::cameraFocalPoint() const
+{
+  return this->renderer()->camera()->GetFocalPoint();
+}
+
+//----------------------------------------------------------------------------
+vesVector3f vesKiwiBaseApp::cameraViewUp() const
+{
+  return this->renderer()->camera()->GetViewUp();
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiBaseApp::setCameraPosition(const vesVector3f& position)
+{
+  this->renderer()->camera()->SetPosition(position);
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiBaseApp::setCameraFocalPoint(const vesVector3f& focalPoint)
+{
+  this->renderer()->camera()->SetFocalPoint(focalPoint);
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiBaseApp::setCameraViewUp(const vesVector3f& viewUp)
+{
+  this->renderer()->camera()->SetViewUp(viewUp);
+}

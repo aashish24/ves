@@ -21,6 +21,7 @@
 #ifndef __vesKiwiBaseApp_h
 #define __vesKiwiBaseApp_h
 
+#include <vesGMTL.h>
 #include <string>
 
 class vesCamera;
@@ -54,6 +55,14 @@ public:
 
   int viewWidth() const;
   int viewHeight() const;
+
+  vesVector3f cameraPosition() const;
+  vesVector3f cameraFocalPoint() const;
+  vesVector3f cameraViewUp() const;
+
+  void setCameraPosition(const vesVector3f& position);
+  void setCameraFocalPoint(const vesVector3f& focalPoint);
+  void setCameraViewUp(const vesVector3f& viewUp);
 
 protected:
 
