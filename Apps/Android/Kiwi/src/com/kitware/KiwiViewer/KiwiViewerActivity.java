@@ -28,6 +28,7 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -37,8 +38,8 @@ public class KiwiViewerActivity extends Activity {
   
     protected KiwiGLSurfaceView mView;
 
-    protected Button  mLoadButton;
-    protected Button  mResetViewButton;
+    protected ImageButton  mLoadButton;
+    protected ImageButton  mResetViewButton;
     
     protected ListView mDatasetList;
 
@@ -71,8 +72,8 @@ public class KiwiViewerActivity extends Activity {
       String storageDir = Environment.getExternalStorageDirectory().getAbsolutePath();
       KiwiNative.loadAssets(assetManager, storageDir);
 
-      mLoadButton = (Button) this.findViewById(R.id.loadButton);
-      mResetViewButton = (Button) this.findViewById(R.id.resetButton);
+      mLoadButton = (ImageButton) this.findViewById(R.id.loadDataButton);
+      mResetViewButton = (ImageButton) this.findViewById(R.id.resetButton);
 
 
       mLoadButton.setOnClickListener(new Button.OnClickListener() {

@@ -11,20 +11,20 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true" />
 
-    <Button
-        android:id="@+id/loadButton"
+    <ImageButton
+        android:id="@+id/loadDataButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:text="Datasets" />
+        android:background="@drawable/opendata"/>
 
-    <Button
+    <ImageButton
         android:id="@+id/resetButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:text="Reset View" />
+        android:background="@drawable/reset"/>
 
 </RelativeLayout>
