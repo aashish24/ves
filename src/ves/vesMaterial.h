@@ -50,6 +50,7 @@ public:
 
 
   vesMaterialAttribute() : vesObject(),
+    m_enable(true),
     m_type(Undefined),
     m_binding(BindMinimal)
   {
@@ -60,14 +61,16 @@ public:
   {
   }
 
+  inline void enable() { this->m_enable = true; }
+  inline void disable() { this->m_enable = false; }
+  inline bool isEnabled() const { return this->m_enable; }
+
   bool setType(AttributeType type) { this->m_type = type; return true; }
   AttributeType type() { return this->m_type; }
   AttributeType type() const { return this->m_type; }
 
-
-  /*! Define what sort of bind calls required by the attribute
-   * Should be set at the time of creation of the attribute.
-   */
+  /// Define what sort of bind calls required by the attribute
+  ///Should be set at the time of creation of the attribute.
   bool setBinding(AttributeBinding binding) { this->m_binding = binding; return true; }
   AttributeBinding binding() { return this->m_binding; }
   AttributeBinding binding() const { return this->m_binding; }
@@ -85,7 +88,7 @@ public:
                               const vesRenderData  &renderData){}
 
 protected:
-
+  bool m_enable;
   AttributeType m_type;
   AttributeBinding m_binding;
 };

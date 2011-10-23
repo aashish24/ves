@@ -39,6 +39,7 @@ public:
    virtual void unbind (const vesRenderState &renderState);
 
 protected:
+   bool m_wasEnabled;
    vesBlendFunction m_blendFunction;
 };
 

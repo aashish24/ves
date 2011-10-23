@@ -24,9 +24,11 @@
 #include <iostream>
 
 vesBlend::vesBlend() : vesMaterialAttribute(),
+  m_wasEnabled(false),
   m_blendFunction(vesBlendFunction::SrcAlpha, vesBlendFunction::OneMinusSrcAlpha)
 {
-  this->m_type    = Blend;
+  this->m_enable = true;
+  this->m_type = Blend;
   this->m_binding = BindMinimal;
 }
 
@@ -45,14 +47,26 @@ void vesBlend::setBlendFunction(const vesBlendFunction &blendFunction)
 
 void vesBlend::bind(const vesRenderState &renderState)
 {
-  glEnable(GL_BLEND);
-  this->m_blendFunction.apply(renderState);
+  if (this->m_enable) {
+    //\todo: We don't have overriden flags. Someting we may need in future.
+    this->m_wasEnabled = glIsEnabled(GL_BLEND);
+
+    glEnable(GL_BLEND);
+    this->m_blendFunction.apply(renderState);
+  }
 }
 
 
 void vesBlend::unbind(const vesRenderState &renderState)
 {
-  glDisable(GL_BLEND);
+  if (this->m_enable) {
+    if (this->m_wasEnabled) {
+      glEnable(GL_BLEND);
+    }
+    else {
+      glDisable(GL_BLEND);
+    }
+  }
 
   this->setDirtyStateOff();
 }
