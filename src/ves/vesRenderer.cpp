@@ -50,7 +50,7 @@ vesRenderer::vesRenderer()
 
   this->m_camera->addChild(this->m_sceneRoot);
 
-  this->m_renderStage = this->m_camera->getOrCreateRenderStage();
+  this->m_renderStage = new vesRenderStage();
 }
 
 
@@ -58,6 +58,7 @@ vesRenderer::~vesRenderer()
 {
   delete this->m_camera; this->m_camera = 0x0;
   delete this->m_sceneRoot; this->m_sceneRoot = 0x0;
+  delete this->m_renderStage; this->m_renderStage = 0x0;
 }
 
 

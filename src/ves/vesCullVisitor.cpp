@@ -81,6 +81,10 @@ void vesCullVisitor::visit(vesActor &actor)
 
 void vesCullVisitor::visit(vesCamera &camera)
 {
+  if (camera.viewport()) {
+    this->renderStage()->setViewport(camera.viewport());
+  }
+
   vesRenderStage *renderStage = camera.getOrCreateRenderStage();
   renderStage->clearAll();
   renderStage->setViewport(camera.viewport());

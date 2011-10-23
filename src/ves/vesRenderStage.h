@@ -110,12 +110,11 @@ public:
   void renderPreRenderStages(vesRenderState &renderState, vesRenderLeaf *previous);
   void renderPostRenderStages(vesRenderState &renderState, vesRenderLeaf *previous);
 
-
 private:
+  vesViewport *m_viewport;
+
   typedef std::pair< int, vesRenderStage* > RenderStageOrderPair;
   typedef std::list< RenderStageOrderPair > RenderStageList;
-
-  vesViewport *m_viewport;
 
   BinRenderLeavesMap  m_binRenderLeavesMap;
 
