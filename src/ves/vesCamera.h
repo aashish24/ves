@@ -42,6 +42,13 @@ public:
   vesCamera();
   virtual  ~vesCamera();
 
+  enum RenderOrder
+  {
+    PreRender = 0,
+    PostRender,
+    InOrder
+  };
+
   vesSetGetMacro(UseHorizontalViewAngle,bool)
   vesSetGetMacro(ViewPlaneNormal,vesVector3f)
   vesSetGetMacro(ViewAngle, float)
@@ -78,6 +85,10 @@ public:
   vesMatrix4x4f modelViewMatrix();
   vesMatrix4x4f projectionMatrix();
 
+  void setRenderOrder(RenderOrder renderOrder, int renderOrderPriority=0);
+  RenderOrder renderOrder() const;
+  int renderOrderPriority() const;
+
   virtual void accept(vesVisitor &visitor);
 
 private:
@@ -98,6 +109,9 @@ private:
 
   vesViewport *m_viewport;
   vesRenderStage *m_renderStage;
+
+  RenderOrder m_renderOrder;
+  int         m_renderOrderPriority;
 
   typedef std::vector<vesRenderTarget*> RenderTargetStack;
 

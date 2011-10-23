@@ -68,6 +68,10 @@ vesCamera::vesCamera() : vesTransformNode()
 
   this->m_renderStage = 0x0;
 
+  this->m_renderOrder = InOrder;
+
+  this->m_renderOrderPriority = 0;
+
   this->m_renderTargetStack.push_back(new vesRenderTarget());
 
   this->ComputeDistance();
@@ -376,6 +380,25 @@ vesMatrix4x4f vesCamera::projectionMatrix()
   // Hard code -1, 1 for now.
   return this->ComputeProjectionTransform(
     this->m_viewport->aspect(), -1, 1);
+}
+
+
+void vesCamera::setRenderOrder(RenderOrder renderOrder, int renderOrderPriority)
+{
+  this->m_renderOrder = renderOrder;
+  this->m_renderOrderPriority = renderOrderPriority;
+}
+
+
+vesCamera::RenderOrder vesCamera::renderOrder() const
+{
+  return this->m_renderOrder;
+}
+
+
+int vesCamera::renderOrderPriority() const
+{
+  return this->m_renderOrderPriority;
 }
 
 

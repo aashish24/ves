@@ -17,6 +17,7 @@ set(sources
   vesMaterial.cpp
   vesNode.cpp
   vesRenderer.cpp
+  vesRenderStage.cpp
   vesRenderToTexture.cpp
   vesShader.cpp
   vesTexture.cpp

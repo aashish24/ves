@@ -29,6 +29,7 @@
 #include "vesViewport.h"
 
 // C++ includes
+#include <list>
 #include <map>
 #include <vector>
 
@@ -46,7 +47,8 @@ public:
     SortByState
   };
 
-  vesRenderStage()
+  vesRenderStage() :
+    m_viewport(0x0)
   {
     // Do nothing as of now.
   }
@@ -61,10 +63,6 @@ public:
     this->m_binRenderLeavesMap[renderLeaf.m_bin].push_back(renderLeaf);
   }
 
-  // void setCamera(...)
-  // vesCamera* camera()..
-  // vesCamera*....
-
   void setViewport(vesViewport *viewport) { this->m_viewport = viewport; }
   const vesViewport* viewport() const { return this->m_viewport; }
   vesViewport* viewport() { return this->m_viewport; }
@@ -76,6 +74,8 @@ public:
 
   void render(vesRenderState &renderState, vesRenderLeaf *previous)
   {
+    this->renderPreRenderStages(renderState, previous);
+
     this->m_viewport->render(renderState);
 
     BinRenderLeavesMap::iterator itr = this->m_binRenderLeavesMap.begin();
@@ -93,17 +93,34 @@ public:
         (*(--rlsItr)).finalize(renderState);
       }
     }
+
+    this->renderPostRenderStages(renderState, previous);
   }
 
   void clearAll()
   {
     this->m_binRenderLeavesMap.clear();
+    this->m_preRenderList.clear();
+    this->m_postRenderList.clear();
   }
 
+  void addPreRenderStage(vesRenderStage *renderStage, int priority);
+  void addPostRenderStage(vesRenderStage *renderStage, int priority);
+
+  void renderPreRenderStages(vesRenderState &renderState, vesRenderLeaf *previous);
+  void renderPostRenderStages(vesRenderState &renderState, vesRenderLeaf *previous);
+
+
 private:
+  typedef std::pair< int, vesRenderStage* > RenderStageOrderPair;
+  typedef std::list< RenderStageOrderPair > RenderStageList;
+
   vesViewport *m_viewport;
 
   BinRenderLeavesMap  m_binRenderLeavesMap;
+
+  RenderStageList m_preRenderList;
+  RenderStageList m_postRenderList;
 
   // Not implemented.
   vesRenderStage(const vesRenderStage&);

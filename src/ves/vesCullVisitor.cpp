@@ -100,6 +100,15 @@ void vesCullVisitor::visit(vesCamera &camera)
 
   this->popRenderStage();
 
+  switch (camera.renderOrder()) {
+  case vesCamera::PreRender:
+    this->renderStage()->addPreRenderStage(renderStage, camera.renderOrderPriority());
+    break;
+  case vesCamera::PostRender:
+    this->renderStage()->addPostRenderStage(  renderStage, camera.renderOrderPriority());
+    break;
+  };
+
   this->popProjectionMatrix();
   this->popModelViewMatrix();
 }
