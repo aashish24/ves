@@ -74,7 +74,6 @@ private:
   double m_aspect[2];
   int m_width;
   int m_height;
-  float m_backgroundColor[4];
 
   vesCamera *m_camera;
   vesGroupNode *m_sceneRoot;

@@ -40,11 +40,6 @@ vesRenderer::vesRenderer()
 
   this->m_aspect[0] = this->m_aspect[1] = 1.0;
 
-  this->m_backgroundColor[0] = 0.5f;
-  this->m_backgroundColor[1] = 0.5f;
-  this->m_backgroundColor[2] = 0.5f;
-  this->m_backgroundColor[3] = 1.0f;
-
   this->m_camera    = new vesCamera();
   this->m_sceneRoot = new vesGroupNode();
 
@@ -64,11 +59,7 @@ vesRenderer::~vesRenderer()
 
 void vesRenderer::render()
 {
-  // Clear the buffers
-  glClearColor(this->m_backgroundColor[0], this->m_backgroundColor[1],
-               this->m_backgroundColor[2], this->m_backgroundColor[3]);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+  // By default enable depth test.
   glEnable(GL_DEPTH_TEST);
 
   if (this->m_sceneRoot) {
@@ -321,10 +312,7 @@ void vesRenderer::resetCameraClippingRange(float bounds[6])
 
 void vesRenderer::setBackgroundColor(float r, float g, float b, float a)
 {
-  this->m_backgroundColor[0] = r;
-  this->m_backgroundColor[1] = g;
-  this->m_backgroundColor[2] = b;
-  this->m_backgroundColor[3] = a;
+  this->m_camera->setClearColor(vesVector4f(r, g, b, a));
 }
 
 
@@ -353,8 +341,8 @@ void vesRenderer::removeActor(vesActor *actor)
 void vesRenderer::updateTraverseScene()
 {
   // Update traversal.
-  vesVisitor     updateVisitor(vesVisitor::UpdateVisitor,
-                               vesVisitor::TraverseAllChildren);
+  vesVisitor updateVisitor(vesVisitor::UpdateVisitor,
+                           vesVisitor::TraverseAllChildren);
 
   this->m_camera->accept(updateVisitor);
 }
@@ -371,4 +359,3 @@ void vesRenderer::cullTraverseScene()
 
   this->m_camera->accept(cullVisitor);
 }
-

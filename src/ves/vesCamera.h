@@ -89,13 +89,24 @@ public:
   RenderOrder renderOrder() const;
   int renderOrderPriority() const;
 
+  void setClearMask(unsigned int clearMask);
+  unsigned int clearMask() const;
+
+  void setClearColor(const vesVector4f &clearColor);
+  vesVector4f clearColor();
+  const vesVector4f& clearColor() const;
+
+  void setClearDepth(double depth);
+  double clearDepth() const;
+
   virtual void accept(vesVisitor &visitor);
 
 private:
   void ComputeDistance();
   void ComputeViewPlaneNormal();
 
-  // \todo: Move all this to internal.
+  typedef std::vector<vesRenderTarget*> RenderTargetStack;
+
   float         ViewAngle;
   bool          UseHorizontalViewAngle;
   vesVector3f   ViewPlaneNormal;
@@ -113,9 +124,11 @@ private:
   RenderOrder m_renderOrder;
   int         m_renderOrderPriority;
 
-  typedef std::vector<vesRenderTarget*> RenderTargetStack;
-
   RenderTargetStack m_renderTargetStack;
   RenderTargetStack m_removedRenderTargetStack;
+
+  unsigned int m_clearMask;
+  vesVector4f m_clearColor;
+  double m_clearDepth;
 };
 #endif //__vesCamera_h

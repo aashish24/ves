@@ -88,6 +88,9 @@ void vesCullVisitor::visit(vesCamera &camera)
   vesRenderStage *renderStage = camera.getOrCreateRenderStage();
   renderStage->clearAll();
   renderStage->setViewport(camera.viewport());
+  renderStage->setClearColor(camera.clearColor());
+  renderStage->setClearMask(camera.clearMask());
+  renderStage->setClearDepth(camera.clearDepth());
 
   if (camera.referenceFrame() == vesTransformNode::Relative) {
     this->pushProjectionMatrix(this->projectionMatrix() * camera.projectionMatrix());

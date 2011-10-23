@@ -21,11 +21,13 @@
 #ifndef VESRENDERSTAGE_H
 #define VESRENDERSTAGE_H
 
-// VES includes
+// VES includes.
+#include "vesGL.h"
 #include "vesGMTL.h"
 #include "vesMapper.h"
 #include "vesMaterial.h"
 #include "vesRenderLeaf.h"
+#include "vesStateAttributeBits.h"
 #include "vesViewport.h"
 
 // C++ includes
@@ -50,7 +52,10 @@ public:
   vesRenderStage() :
     m_viewport(0x0)
   {
-    // Do nothing as of now.
+    this->m_clearMask = vesStateAttributeBits::ColorBufferBit
+      | vesStateAttributeBits::DepthBufferBit;
+    this->m_clearColor = vesVector4f(1.0f, 1.0f, 1.0f, 1.0f);
+    this->m_clearDepth = 1.0;
   }
 
  ~vesRenderStage()
@@ -77,6 +82,18 @@ public:
     this->renderPreRenderStages(renderState, previous);
 
     this->m_viewport->render(renderState);
+
+    glClear(this->m_clearMask);
+
+    if (this->m_clearMask & GL_COLOR_BUFFER_BIT) {
+      glClearColor(this->m_clearColor[0], this->m_clearColor[1],
+        this->m_clearColor[2], this->m_clearColor[2]);
+    }
+
+    if (this->m_clearMask & GL_DEPTH_BUFFER_BIT) {
+      glClearDepthf(this->m_clearDepth);
+      glDepthMask( GL_TRUE );
+    }
 
     BinRenderLeavesMap::iterator itr = this->m_binRenderLeavesMap.begin();
     RenderLeaves::iterator rlsItr;
@@ -110,6 +127,16 @@ public:
   void renderPreRenderStages(vesRenderState &renderState, vesRenderLeaf *previous);
   void renderPostRenderStages(vesRenderState &renderState, vesRenderLeaf *previous);
 
+  void setClearMask(unsigned int mask);
+  unsigned int clearMask() const;
+
+  void setClearColor(const vesVector4f &clearColor);
+  vesVector4f clearColor();
+  const vesVector4f& clearColor() const;
+
+  void setClearDepth(double depth);
+  double clearDepth() const;
+
 private:
   vesViewport *m_viewport;
 
@@ -120,6 +147,10 @@ private:
 
   RenderStageList m_preRenderList;
   RenderStageList m_postRenderList;
+
+  unsigned int m_clearMask;
+  vesVector4f m_clearColor;
+  double m_clearDepth;
 
   // Not implemented.
   vesRenderStage(const vesRenderStage&);

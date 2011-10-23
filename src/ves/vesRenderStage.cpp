@@ -62,3 +62,44 @@ void vesRenderStage::renderPostRenderStages(vesRenderState &renderState, vesRend
     itr->second->render(renderState, previous);
   }
 }
+
+
+void vesRenderStage::setClearMask(unsigned int mask)
+{
+  this->m_clearMask = mask;
+}
+
+
+unsigned int vesRenderStage::clearMask() const
+{
+  return this->m_clearMask;
+}
+
+
+void vesRenderStage::setClearColor(const vesVector4f &clearColor)
+{
+  this->m_clearColor = clearColor;
+}
+
+
+vesVector4f vesRenderStage::clearColor()
+{
+  return this->m_clearColor;
+}
+
+
+const vesVector4f& vesRenderStage::clearColor() const
+{
+  return this->m_clearColor;
+}
+
+void vesRenderStage::setClearDepth(double depth)
+{
+  this->m_clearDepth = depth;
+}
+
+
+double vesRenderStage::clearDepth() const
+{
+  return this->m_clearDepth;
+}

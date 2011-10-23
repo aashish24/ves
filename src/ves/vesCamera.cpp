@@ -21,6 +21,7 @@
 #include "vesCamera.h"
 
 // VES includes
+#include "vesStateAttributeBits.h"
 #include "vesGMTL.h"
 #include "vesRenderStage.h"
 #include "vesRenderState.h"
@@ -73,6 +74,11 @@ vesCamera::vesCamera() : vesTransformNode()
   this->m_renderOrderPriority = 0;
 
   this->m_renderTargetStack.push_back(new vesRenderTarget());
+
+  this->m_clearMask = vesStateAttributeBits::ColorBufferBit
+    | vesStateAttributeBits::DepthBufferBit;
+  this->m_clearColor = vesVector4f(1.0f, 1.0f, 1.0f, 1.0f);
+  this->m_clearDepth = 1.0;
 
   this->ComputeDistance();
 }
@@ -399,6 +405,47 @@ vesCamera::RenderOrder vesCamera::renderOrder() const
 int vesCamera::renderOrderPriority() const
 {
   return this->m_renderOrderPriority;
+}
+
+
+void vesCamera::setClearMask(unsigned int clearMask)
+{
+  this->m_clearMask = clearMask;
+}
+
+
+unsigned int vesCamera::clearMask() const
+{
+  return this->m_clearMask;
+}
+
+
+void vesCamera::setClearColor(const vesVector4f &clearColor)
+{
+  this->m_clearColor = clearColor;
+}
+
+
+vesVector4f vesCamera::clearColor()
+{
+  return this->m_clearColor;
+}
+
+
+const vesVector4f& vesCamera::clearColor() const
+{
+  return this->m_clearColor;
+}
+
+void vesCamera::setClearDepth(double depth)
+{
+  this->m_clearDepth = depth;
+}
+
+
+double vesCamera::clearDepth() const
+{
+  return this->m_clearDepth;
 }
 
 
