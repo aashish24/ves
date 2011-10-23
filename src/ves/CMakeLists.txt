@@ -1,5 +1,6 @@
 set(sources
   vesActor.cpp
+  vesBackground.cpp
   vesBlend.cpp
   vesBlendFunction.cpp
   vesBoundingObject.cpp

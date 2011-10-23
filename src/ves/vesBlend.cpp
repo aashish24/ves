@@ -27,7 +27,6 @@ vesBlend::vesBlend() : vesMaterialAttribute(),
   m_wasEnabled(false),
   m_blendFunction(vesBlendFunction::SrcAlpha, vesBlendFunction::OneMinusSrcAlpha)
 {
-  this->m_enable = true;
   this->m_type = Blend;
   this->m_binding = BindMinimal;
 }
@@ -54,18 +53,19 @@ void vesBlend::bind(const vesRenderState &renderState)
     glEnable(GL_BLEND);
     this->m_blendFunction.apply(renderState);
   }
+  else {
+    glDisable(GL_BLEND);
+  }
 }
 
 
 void vesBlend::unbind(const vesRenderState &renderState)
 {
-  if (this->m_enable) {
-    if (this->m_wasEnabled) {
-      glEnable(GL_BLEND);
-    }
-    else {
-      glDisable(GL_BLEND);
-    }
+  if (this->m_wasEnabled) {
+    glEnable(GL_BLEND);
+  }
+  else {
+    glDisable(GL_BLEND);
   }
 
   this->setDirtyStateOff();

@@ -23,8 +23,12 @@ public:
   double aspect() const;
   double inverseAspect() const;
 
-  virtual void render(vesRenderState &renderState);
+  inline int x() const { return this->m_x; }
+  inline int y() const { return this->m_y; }
+  inline int width() const { return this->m_width; }
+  inline int height() const { return this->m_height; }
 
+  virtual void render(vesRenderState &renderState);
 
 protected:
   virtual ~vesViewport();

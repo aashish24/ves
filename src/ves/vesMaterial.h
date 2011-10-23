@@ -36,7 +36,8 @@ public:
     Undefined = 0x0,
     Shader = 0x1,
     Texture = 0x2,
-    Blend = 0x3
+    Blend = 0x3,
+    Depth = 0x4
   };
 
 

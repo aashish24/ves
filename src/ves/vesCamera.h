@@ -82,9 +82,6 @@ public:
   const vesRenderStage* renderStage() const;
   vesRenderStage* getOrCreateRenderStage();
 
-  vesMatrix4x4f modelViewMatrix();
-  vesMatrix4x4f projectionMatrix();
-
   void setRenderOrder(RenderOrder renderOrder, int renderOrderPriority=0);
   RenderOrder renderOrder() const;
   int renderOrderPriority() const;
@@ -99,9 +96,12 @@ public:
   void setClearDepth(double depth);
   double clearDepth() const;
 
+  virtual vesMatrix4x4f modelViewMatrix();
+  virtual vesMatrix4x4f projectionMatrix();
+
   virtual void accept(vesVisitor &visitor);
 
-private:
+protected:
   void ComputeDistance();
   void ComputeViewPlaneNormal();
 
