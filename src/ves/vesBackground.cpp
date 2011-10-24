@@ -82,8 +82,6 @@ public:
     delete this->m_backgroundMapper; this->m_backgroundMapper = 0x0;
     delete this->m_backgroundMaterial; this->m_backgroundMaterial = 0x0;
     delete this->m_shaderProgram; this->m_shaderProgram = 0x0;
-    delete this->m_vertexShader; this->m_vertexShader = 0x0;
-    delete this->m_fragmentShader; this->m_fragmentShader = 0x0;
     delete this->m_modelViewUniform; this->m_modelViewUniform = 0x0;
     delete this->m_projectionUniform; this->m_projectionUniform = 0x0;
     delete this->m_positionVertexAttribute; this->m_positionVertexAttribute = 0x0;

@@ -63,8 +63,10 @@ namespace {
 class vesTextureApp : public vesKiwiBaseApp {
 public:
 
-  vesTextureApp()
+  vesTextureApp() : vesKiwiBaseApp()
   {
+    this->setBackgroundColor(63/255.0, 96/255.0, 144/255.0);
+
     this->Image = 0x0;
     this->Texture = 0x0;
     this->TextureShader = 0x0;
