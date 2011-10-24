@@ -14,11 +14,16 @@ public:
   vesBackground();
   virtual ~vesBackground();
 
+  virtual void setGradientColor(const vesVector4f &topColor,
+                                const vesVector4f &bottomColor);
   virtual vesMatrix4x4f modelViewMatrix();
   virtual vesMatrix4x4f projectionMatrix();
 
 protected:
   void createBackground();
+
+  vesVector4f m_topColor;
+  vesVector4f m_bottomColor;
 
   class vesInternal;
   vesInternal *m_internal;

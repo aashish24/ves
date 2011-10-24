@@ -32,7 +32,7 @@ void vesCullVisitor::addGeometryAndStates(vesMapper *mapper, vesMaterial *materi
   const vesMatrix4x4f &modelViewMatrix, const vesMatrix4x4f &projectionMatrix,
   float depth)
 {
-  this->m_renderStage->addRenderLeaf(
+  this->renderStage()->addRenderLeaf(
     vesRenderLeaf(depth, modelViewMatrix, projectionMatrix, material, mapper));
 }
 
@@ -81,10 +81,6 @@ void vesCullVisitor::visit(vesActor &actor)
 
 void vesCullVisitor::visit(vesCamera &camera)
 {
-  if (camera.viewport()) {
-    this->renderStage()->setViewport(camera.viewport());
-  }
-
   vesRenderStage *renderStage = camera.getOrCreateRenderStage();
   renderStage->clearAll();
   renderStage->setViewport(camera.viewport());
@@ -98,6 +94,7 @@ void vesCullVisitor::visit(vesCamera &camera)
   }
   else {
     this->pushProjectionMatrix(camera.projectionMatrix());
+    this->clearModelViewMatrixStack();
     this->pushModelViewMatrix(camera.modelViewMatrix());
   }
 
@@ -109,10 +106,14 @@ void vesCullVisitor::visit(vesCamera &camera)
 
   switch (camera.renderOrder()) {
   case vesCamera::PreRender:
+    std::cout << " Pre render " << std::endl;
     this->renderStage()->addPreRenderStage(renderStage, camera.renderOrderPriority());
     break;
   case vesCamera::PostRender:
-    this->renderStage()->addPostRenderStage(  renderStage, camera.renderOrderPriority());
+    this->renderStage()->addPostRenderStage(renderStage, camera.renderOrderPriority());
+    break;
+  default:
+    std::cout << " Nested render " << std::endl;
     break;
   };
 

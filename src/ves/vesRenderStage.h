@@ -81,18 +81,20 @@ public:
   {
     this->renderPreRenderStages(renderState, previous);
 
-    this->m_viewport->render(renderState);
+    if (this->m_viewport) {
+      this->m_viewport->render(renderState);
 
-    glClear(this->m_clearMask);
+      if (this->m_clearMask & GL_COLOR_BUFFER_BIT) {
+        glClearColor(this->m_clearColor[0], this->m_clearColor[1],
+          this->m_clearColor[2], this->m_clearColor[2]);
+      }
 
-    if (this->m_clearMask & GL_COLOR_BUFFER_BIT) {
-      glClearColor(this->m_clearColor[0], this->m_clearColor[1],
-        this->m_clearColor[2], this->m_clearColor[2]);
-    }
+      if (this->m_clearMask & GL_DEPTH_BUFFER_BIT) {
+        glClearDepthf(this->m_clearDepth);
+        glDepthMask( GL_TRUE );
+      }
 
-    if (this->m_clearMask & GL_DEPTH_BUFFER_BIT) {
-      glClearDepthf(this->m_clearDepth);
-      glDepthMask( GL_TRUE );
+      glClear(this->m_clearMask);
     }
 
     BinRenderLeavesMap::iterator itr = this->m_binRenderLeavesMap.begin();

@@ -19,6 +19,7 @@
  ========================================================================*/
 
 #include "vesActor.h"
+#include "vesBackground.h"
 #include "vesCamera.h"
 #include "vesCullVisitor.h"
 #include "vesFileReader.h"
@@ -29,7 +30,8 @@
 #include "vesShaderProgram.h"
 #include "vesVisitor.h"
 
-// C++ includes
+// C/C++ includes
+#include <cassert>
 #include <iostream>
 #include <string>
 
@@ -46,6 +48,8 @@ vesRenderer::vesRenderer()
   this->m_camera->addChild(this->m_sceneRoot);
 
   this->m_renderStage = new vesRenderStage();
+
+  this->m_background = 0x0;
 }
 
 
@@ -95,6 +99,8 @@ void vesRenderer::resize(int width, int height, float scale)
   this->m_height = (height > 0) ? height : 1;
 
   this->m_camera->viewport()->setViewport(0, 0, this->m_width, this->m_height);
+
+  this->updateBackgroundViewport();
 
   this->m_aspect[0] = this->m_camera->viewport()->inverseAspect();
   this->m_aspect[1] = this->m_camera->viewport()->aspect();
@@ -312,13 +318,23 @@ void vesRenderer::resetCameraClippingRange(float bounds[6])
 
 void vesRenderer::setBackgroundColor(float r, float g, float b, float a)
 {
+  if (this->m_background) {
+    this->m_background->setClearColor(vesVector4f(r, g, b, a));
+  }
   this->m_camera->setClearColor(vesVector4f(r, g, b, a));
 }
 
 
-void vesRenderer::setBackground(vesTexture* background)
+void vesRenderer::setBackground(vesBackground* background)
 {
-  // \todo: Implement this.
+  if (!background || background == this->m_background) {
+    return;
+  }
+
+  this->m_background = background;
+  this->updateBackgroundViewport();
+  this->m_camera->addChild(this->m_background);
+  this->m_camera->setClearMask(vesStateAttributeBits::DepthBufferBit);
 }
 
 
@@ -358,4 +374,15 @@ void vesRenderer::cullTraverseScene()
   cullVisitor.setRenderStage(this->m_renderStage);
 
   this->m_camera->accept(cullVisitor);
+}
+
+
+void vesRenderer::updateBackgroundViewport()
+{
+  assert(this->m_camera);
+  assert(this->m_background);
+
+  this->m_background->viewport()->setViewport(
+    this->m_camera->viewport()->x(), this->m_camera->viewport()->y(),
+    this->m_camera->viewport()->width(), this->m_camera->viewport()->height());
 }

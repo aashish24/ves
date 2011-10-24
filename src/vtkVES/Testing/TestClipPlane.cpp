@@ -37,9 +37,11 @@
 #undef Bool
 #endif
 
+#include <vesBackground.h>
 #include <vesKiwiBaseApp.h>
 #include <vesKiwiDataLoader.h>
 #include <vesKiwiPolyDataRepresentation.h>
+#include <vesRenderer.h>
 #include <vesShaderProgram.h>
 #include <vesUniform.h>
 
@@ -66,6 +68,9 @@ public:
     this->ClipUniform = 0;
     this->ClipShader = 0;
     this->DataRep = 0;
+    this->Background = new vesBackground();
+
+    this->renderer()->setBackground(this->Background);
   }
 
   ~vesClipApp()
@@ -118,6 +123,7 @@ public:
   vesUniform* ClipUniform;
   vesShaderProgram* ClipShader;
   vesKiwiPolyDataRepresentation* DataRep;
+  vesBackground *Background;
 };
 
 class vesTestHelper {

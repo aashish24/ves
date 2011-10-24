@@ -44,8 +44,8 @@ void vesRenderStage::renderPreRenderStages(vesRenderState &renderState, vesRende
     return;
   }
 
-  for (RenderStageList::iterator itr=this->m_preRenderList.begin();
-    itr!= this->m_preRenderList.end(); ++itr) {
+  for (RenderStageList::iterator itr = this->m_preRenderList.begin();
+    itr != this->m_preRenderList.end(); ++itr) {
       itr->second->render(renderState, previous);
   }
 }
@@ -57,7 +57,7 @@ void vesRenderStage::renderPostRenderStages(vesRenderState &renderState, vesRend
     return;
   }
 
-  for (RenderStageList::iterator itr=this->m_postRenderList.begin();
+  for (RenderStageList::iterator itr = this->m_postRenderList.begin();
       itr != this->m_postRenderList.end(); ++itr) {
     itr->second->render(renderState, previous);
   }

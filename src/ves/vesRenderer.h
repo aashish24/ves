@@ -30,6 +30,7 @@
 
 // Forward declarations
 class vesActor;
+class vesBackground;
 class vesCamera;
 class vesGroupNode;
 class vesRenderStage;
@@ -48,7 +49,7 @@ public:
   virtual void resize(int width,int height, float scale);
 
   virtual void setBackgroundColor(float r, float g, float b, float a=1.0f);
-  virtual void setBackground(vesTexture *background);
+  virtual void setBackground(vesBackground *background);
 
   virtual void addActor   (vesActor *actor);
   virtual void removeActor(vesActor *actor);
@@ -67,6 +68,7 @@ protected:
 
   virtual void updateTraverseScene();
   virtual void cullTraverseScene();
+  virtual void updateBackgroundViewport();
 
   void resetCameraClippingRange(float bounds[6]);
 
@@ -79,6 +81,7 @@ private:
   vesGroupNode *m_sceneRoot;
 
   vesRenderStage *m_renderStage;
+  vesBackground *m_background;
 };
 
 #endif

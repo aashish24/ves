@@ -4,6 +4,8 @@
 // VES includes.
 #include "vesGL.h"
 
+#include <iostream>
+
 vesDepth::vesDepth()
 {
   this->m_type = Depth;
@@ -22,15 +24,17 @@ void vesDepth::bind(const vesRenderState &renderState)
   this->m_wasEnabled = glIsEnabled(GL_DEPTH_TEST);
 
   // Save current depth mask for restoration later.
-  glGet(GL_DEPTH_WRITEMASK, &this->m_previousDepthWriteMask);
+//  glGet(GL_DEPTH_WRITEMASK, &this->m_previousDepthWriteMask);
 
   if (this->m_enable) {
     glEnable(GL_DEPTH_TEST);
-    glDepthMask((GLboolean) this->m_depthWriteMask);
   }
   else {
     glDisable(GL_DEPTH_TEST);
+
   }
+
+  glDepthMask((GLboolean) this->m_depthWriteMask);
 }
 
 
@@ -38,13 +42,14 @@ void vesDepth::unbind(const vesRenderState &renderState)
 {
   if (this->m_wasEnabled) {
       glEnable(GL_DEPTH_TEST);
+      glDepthMask(true);
   }
   else {
     glDisable(GL_DEPTH_TEST);
   }
 
   // Restore previous depth mask.
-  glDepthMask(this->m_previousDepthWriteMask);
+//  glDepthMask(this->m_previousDepthWriteMask);
 
   this->setDirtyStateOff();
 }

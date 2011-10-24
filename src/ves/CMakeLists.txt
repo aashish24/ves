@@ -8,6 +8,7 @@ set(sources
   vesCamera.cpp
   vesCameraSensor.cpp
   vesCullVisitor.cpp
+  vesDepth.cpp
   vesFBO.cpp
   vesFBORenderTarget.cpp
   vesFileReader.cpp

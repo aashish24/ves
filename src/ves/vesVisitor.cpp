@@ -92,6 +92,12 @@ void vesVisitor::popModelViewMatrix()
 }
 
 
+void vesVisitor::clearModelViewMatrixStack()
+{
+  this->m_internal->m_modelViewMatrixStack.clear();
+}
+
+
 void vesVisitor::pushProjectionMatrix(const vesMatrix4x4f &matrix)
 {
   this->m_internal->m_projectionMatrixStack.push_back(&matrix);

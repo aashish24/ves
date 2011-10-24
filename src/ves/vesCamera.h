@@ -46,7 +46,7 @@ public:
   {
     PreRender = 0,
     PostRender,
-    InOrder
+    NestedRender
   };
 
   vesSetGetMacro(UseHorizontalViewAngle,bool)

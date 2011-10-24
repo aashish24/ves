@@ -63,6 +63,7 @@ public:
 
   void pushModelViewMatrix(const vesMatrix4x4f& matrix);
   void popModelViewMatrix ();
+  void clearModelViewMatrixStack();
 
   void pushProjectionMatrix(const vesMatrix4x4f& matrix);
   void popProjectionMatrix ();

@@ -69,7 +69,7 @@ vesCamera::vesCamera() : vesTransformNode()
 
   this->m_renderStage = 0x0;
 
-  this->m_renderOrder = InOrder;
+  this->m_renderOrder = PostRender;
 
   this->m_renderOrderPriority = 0;
 
@@ -423,6 +423,7 @@ unsigned int vesCamera::clearMask() const
 void vesCamera::setClearColor(const vesVector4f &clearColor)
 {
   this->m_clearColor = clearColor;
+  std::cout << "Setting clear color " << m_clearColor[1] << std::endl;
 }
 
 
