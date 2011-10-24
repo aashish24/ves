@@ -49,7 +49,8 @@ vesRenderer::vesRenderer()
 
   this->m_renderStage = new vesRenderStage();
 
-  this->m_background = 0x0;
+  this->m_background = new vesBackground();
+  this->setupBackground();
 }
 
 
@@ -58,6 +59,7 @@ vesRenderer::~vesRenderer()
   delete this->m_camera; this->m_camera = 0x0;
   delete this->m_sceneRoot; this->m_sceneRoot = 0x0;
   delete this->m_renderStage; this->m_renderStage = 0x0;
+  delete this->m_background; this->m_background = 0x0;
 }
 
 
@@ -325,16 +327,15 @@ void vesRenderer::setBackgroundColor(float r, float g, float b, float a)
 }
 
 
-void vesRenderer::setBackground(vesBackground* background)
+vesBackground* vesRenderer::background()
 {
-  if (!background || background == this->m_background) {
-    return;
-  }
+  return this->m_background;
+}
 
-  this->m_background = background;
-  this->updateBackgroundViewport();
-  this->m_camera->addChild(this->m_background);
-  this->m_camera->setClearMask(vesStateAttributeBits::DepthBufferBit);
+
+const vesBackground* vesRenderer::background() const
+{
+  return this->m_background;
 }
 
 
@@ -374,6 +375,14 @@ void vesRenderer::cullTraverseScene()
   cullVisitor.setRenderStage(this->m_renderStage);
 
   this->m_camera->accept(cullVisitor);
+}
+
+
+void vesRenderer::setupBackground()
+{
+  this->updateBackgroundViewport();
+  this->m_camera->addChild(this->m_background);
+  this->m_camera->setClearMask(vesStateAttributeBits::DepthBufferBit);
 }
 
 

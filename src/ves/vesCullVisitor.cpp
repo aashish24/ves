@@ -106,7 +106,6 @@ void vesCullVisitor::visit(vesCamera &camera)
 
   switch (camera.renderOrder()) {
   case vesCamera::PreRender:
-    std::cout << " Pre render " << std::endl;
     this->renderStage()->addPreRenderStage(renderStage, camera.renderOrderPriority());
     break;
   case vesCamera::PostRender:
