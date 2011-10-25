@@ -81,40 +81,45 @@ void vesCullVisitor::visit(vesActor &actor)
 
 void vesCullVisitor::visit(vesCamera &camera)
 {
-  vesRenderStage *renderStage = camera.getOrCreateRenderStage();
-  renderStage->clearAll();
-  renderStage->setViewport(camera.viewport());
-  renderStage->setClearColor(camera.clearColor());
-  renderStage->setClearMask(camera.clearMask());
-  renderStage->setClearDepth(camera.clearDepth());
-
   if (camera.referenceFrame() == vesTransformNode::Relative) {
     this->pushProjectionMatrix(this->projectionMatrix() * camera.projectionMatrix());
     this->pushModelViewMatrix(this->modelViewMatrix() * camera.modelViewMatrix());
-  }
-  else {
+  } else {
     this->pushProjectionMatrix(camera.projectionMatrix());
     this->clearModelViewMatrixStack();
     this->pushModelViewMatrix(camera.modelViewMatrix());
   }
 
-  this->pushRenderStage(renderStage);
+  // If camera is set as a NestedRender, treat camera as
+  // a node that contains the subgraph in the current render stage.
+  if (camera.renderOrder() == vesCamera::NestedRender) {
+    this->invokeCallbacksAndTraverse(camera);
+  } else {
+    vesRenderStage *renderStage = camera.getOrCreateRenderStage();
+    renderStage->clearAll();
+    renderStage->setViewport(camera.viewport());
+    renderStage->setClearColor(camera.clearColor());
+    renderStage->setClearMask(camera.clearMask());
+    renderStage->setClearDepth(camera.clearDepth());
 
-  this->invokeCallbacksAndTraverse(camera);
+    this->pushRenderStage(renderStage);
 
-  this->popRenderStage();
+    this->invokeCallbacksAndTraverse(camera);
 
-  switch (camera.renderOrder()) {
-  case vesCamera::PreRender:
-    this->renderStage()->addPreRenderStage(renderStage, camera.renderOrderPriority());
-    break;
-  case vesCamera::PostRender:
-    this->renderStage()->addPostRenderStage(renderStage, camera.renderOrderPriority());
-    break;
-  case vesCamera::NestedRender:
-  default:
-    break;
-  };
+    this->popRenderStage();
+
+    switch (camera.renderOrder()) {
+    case vesCamera::PreRender:
+      this->renderStage()->addPreRenderStage(renderStage, camera.renderOrderPriority());
+      break;
+    case vesCamera::PostRender:
+      this->renderStage()->addPostRenderStage(renderStage, camera.renderOrderPriority());
+      break;
+    case vesCamera::NestedRender:
+    default:
+      break;
+    };
+  }
 
   this->popProjectionMatrix();
   this->popModelViewMatrix();
