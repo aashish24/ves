@@ -111,8 +111,8 @@ void vesCullVisitor::visit(vesCamera &camera)
   case vesCamera::PostRender:
     this->renderStage()->addPostRenderStage(renderStage, camera.renderOrderPriority());
     break;
+  case vesCamera::NestedRender:
   default:
-    std::cout << " Nested render " << std::endl;
     break;
   };
 
