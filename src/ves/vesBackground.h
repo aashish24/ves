@@ -14,8 +14,13 @@ public:
   vesBackground();
   virtual ~vesBackground();
 
+  /// Set single color for the background.
+  virtual void setColor(const vesVector4f &color);
+
+  /// Set two colors for the gradient background.
   virtual void setGradientColor(const vesVector4f &topColor,
                                 const vesVector4f &bottomColor);
+
   virtual vesMatrix4x4f modelViewMatrix();
   virtual vesMatrix4x4f projectionMatrix();
 

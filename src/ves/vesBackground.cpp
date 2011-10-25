@@ -93,8 +93,8 @@ public:
   }
 
   void deleteBackground();
-  void createBackground(vesBackground *background,
-    const vesVector4f &topColor, const vesVector4f &bottomColor);
+  void createBackground(vesBackground *background, const vesVector4f &topColor,
+                        const vesVector4f &bottomColor);
   void createBackground(const vesVector4f &topColor,
                         const vesVector4f &bottomColor);
   vesTriangleData* createBackgroundPlane(const vesVector4f &topColor,
@@ -134,13 +134,18 @@ void vesBackground::vesInternal::createBackground(const vesVector4f &topColor,
   this->m_backgroundActor = new vesActor();
   this->m_backgroundMapper = new vesMapper();
 
-  this->createBackgroundPlane(topColor, bottomColor);
+  this->m_backgroundPlaneData =
+    this->createBackgroundPlane(topColor, bottomColor);
 }
 
 
 void vesBackground::vesInternal::createBackground(vesBackground *background,
   const vesVector4f &topColor, const vesVector4f &bottomColor)
 {
+  if (this->m_backgroundActor) {
+    background->removeChild(this->m_backgroundActor);
+  }
+
   this->deleteBackground();
   this->createBackground(topColor, bottomColor);
 
@@ -157,7 +162,7 @@ void vesBackground::vesInternal::createBackground(vesBackground *background,
 vesTriangleData* vesBackground::vesInternal::createBackgroundPlane(
   const vesVector4f &topColor, const vesVector4f &bottomColor)
 {
-  this->m_backgroundPlaneData = new vesTriangleData();
+  vesTriangleData *backgroundPlaneData = new vesTriangleData();
 
   std::vector<vtkVertex3f> points;
 
@@ -180,7 +185,7 @@ vesTriangleData* vesBackground::vesInternal::createBackgroundPlane(
   points.push_back(point3);
   points.push_back(point4);
 
-  // Triangles indices.
+  // Triangle cells.
   std::vector<vesVector3us> indices;
   indices.push_back(vesVector3us(0, 3, 2));
   indices.push_back(vesVector3us(1, 0, 2));
@@ -191,13 +196,13 @@ vesTriangleData* vesBackground::vesInternal::createBackgroundPlane(
   vertexColors.push_back(vesVector3f(bottomColor[0], bottomColor[1], bottomColor[2]));
   vertexColors.push_back(vesVector3f(topColor[0], topColor[1], topColor[2]));
   vertexColors.push_back(vesVector3f(topColor[0], topColor[1], topColor[2]));
-  this->m_backgroundPlaneData->SetVertexColors(vertexColors);
 
-  this->m_backgroundPlaneData->SetPoints(points);
-  this->m_backgroundPlaneData->SetTriangles(indices);
-  this->m_backgroundPlaneData->SetHasNormals(true);
+  backgroundPlaneData->SetVertexColors(vertexColors);
+  backgroundPlaneData->SetPoints(points);
+  backgroundPlaneData->SetTriangles(indices);
+  backgroundPlaneData->SetHasNormals(true);
 
-  return this->m_backgroundPlaneData;
+  return backgroundPlaneData;
 }
 
 
@@ -216,6 +221,12 @@ vesBackground::vesBackground() : vesCamera()
 vesBackground::~vesBackground()
 {
   delete this->m_internal; this->m_internal = 0x0;
+}
+
+
+void vesBackground::setColor(const vesVector4f &color)
+{
+  this->setGradientColor(color, color);
 }
 
 

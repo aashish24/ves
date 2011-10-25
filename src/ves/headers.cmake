@@ -1,5 +1,6 @@
 set(headers
   vesActor.h
+  vesBackground.h
   vesBoundingObject.h
   vesByteSwap.h
   vesCamera.h
