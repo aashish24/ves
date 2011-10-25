@@ -41,7 +41,6 @@ public:
   typedef std::vector< vesRenderLeaf> RenderLeaves;
   typedef std::map<int, RenderLeaves> BinRenderLeavesMap;
 
-  // \todo: Use it later.
   enum SortMode
   {
     BackToFront = 0x0,
@@ -154,7 +153,7 @@ private:
   vesVector4f m_clearColor;
   double m_clearDepth;
 
-  // Not implemented.
+  /// Not implemented.
   vesRenderStage(const vesRenderStage&);
   void operator=(const vesRenderStage&);
 };
