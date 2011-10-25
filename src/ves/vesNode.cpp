@@ -30,6 +30,7 @@ vesNode::vesNode() : vesObject(),
   m_isOverlayNode(false)
 {
   this->m_parent = 0x0;
+  this->setDirtyStateOff();
 }
 
 
