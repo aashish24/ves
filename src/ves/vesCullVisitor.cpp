@@ -95,9 +95,13 @@ void vesCullVisitor::visit(vesCamera &camera)
   if (camera.renderOrder() == vesCamera::NestedRender) {
     this->invokeCallbacksAndTraverse(camera);
   } else {
+
+    vesRenderStage* previousRenderStage = this->renderStage();
+
     vesRenderStage *renderStage = camera.getOrCreateRenderStage();
     renderStage->clearAll();
-    renderStage->setViewport(camera.viewport());
+    renderStage->setViewport( (camera.viewport() != 0)
+      ? camera.viewport() : previousRenderStage->viewport() );
     renderStage->setClearColor(camera.clearColor());
     renderStage->setClearMask(camera.clearMask());
     renderStage->setClearDepth(camera.clearDepth());
