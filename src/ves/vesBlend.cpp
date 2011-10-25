@@ -46,14 +46,12 @@ void vesBlend::setBlendFunction(const vesBlendFunction &blendFunction)
 
 void vesBlend::bind(const vesRenderState &renderState)
 {
-  if (this->m_enable) {
-    //\todo: We don't have overriden flags. Someting we may need in future.
-    this->m_wasEnabled = glIsEnabled(GL_BLEND);
+  this->m_wasEnabled = glIsEnabled(GL_BLEND);
 
+  if (this->m_enable) {
     glEnable(GL_BLEND);
     this->m_blendFunction.apply(renderState);
-  }
-  else {
+  } else {
     glDisable(GL_BLEND);
   }
 }
@@ -63,8 +61,7 @@ void vesBlend::unbind(const vesRenderState &renderState)
 {
   if (this->m_wasEnabled) {
     glEnable(GL_BLEND);
-  }
-  else {
+  } else {
     glDisable(GL_BLEND);
   }
 
