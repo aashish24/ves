@@ -25,8 +25,8 @@
 #include "vesCamera.h"
 #include "vesGroupNode.h"
 #include "vesNode.h"
-#include "vesTransformNode.h"
 #include "vesRenderStage.h"
+#include "vesTransformNode.h"
 
 void vesCullVisitor::addGeometryAndStates(vesMapper *mapper, vesMaterial *material,
   const vesMatrix4x4f &modelViewMatrix, const vesMatrix4x4f &projectionMatrix,
