@@ -61,10 +61,10 @@
 namespace {
 
 
-class vesClipApp : public vesKiwiBaseApp {
+class vesGradientBackgroundApp : public vesKiwiBaseApp {
 public:
 
-  vesClipApp()
+  vesGradientBackgroundApp()
   {
     this->ClipUniform = 0;
     this->ClipShader = 0;
@@ -75,7 +75,7 @@ public:
       vesVector4f(55.0f/255.0f, 55.0f/255.0f, 113.0f/255.0f, 1.0));
   }
 
-  ~vesClipApp()
+  ~vesGradientBackgroundApp()
   {
     this->unloadData();
   }
@@ -121,7 +121,6 @@ public:
     this->DataRep = rep;
   }
 
-
   vesUniform* ClipUniform;
   vesShaderProgram* ClipShader;
   vesKiwiPolyDataRepresentation* DataRep;
@@ -138,7 +137,7 @@ public:
   {
   }
 
-  vesClipApp* app() {
+  vesGradientBackgroundApp* app() {
     return &this->App;
   }
 
@@ -168,7 +167,8 @@ public:
 
 private:
 
-  vesClipApp        App;
+  vesGradientBackgroundApp App;
+
   std::string       SourceDirectory;
   std::string       DataDirectory;
   bool              IsTesting;
@@ -240,7 +240,7 @@ bool DoTesting()
   bool allTestsPassed = true;
 
     testHelper->app()->render();
-    std::string testName = "Clipped Standford Bunny";
+    std::string testName = "Gradient Background";
 
     std::string inFile = testHelper->dataDirectory() + "/" + testName + ".png";
     std::string outFile = testName + ".png";
