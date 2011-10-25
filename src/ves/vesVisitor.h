@@ -84,8 +84,7 @@ public:
   {
     if (this->m_traversalMode == TraverseParents) {
       node.ascend(*this);
-    }
-    else {
+    } else {
       node.traverse(*this);
     }
   }
