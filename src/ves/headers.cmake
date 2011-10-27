@@ -1,27 +1,58 @@
 set(headers
   vesActor.h
   vesBackground.h
+  vesBlendFunction.h
+  vesBlend.h
+  vesBooleanUniform.h
   vesBoundingObject.h
   vesByteSwap.h
   vesCamera.h
   vesCameraSensor.h
   vesColorDataType.h
+  vesColorUniform.h
+  vesCullVisitor.h
+  vesDepth.h
+  vesEngineUniform.h
+  vesFBO.h
+  vesFBORenderTarget.h
   vesFileReader.h
+  vesGL.h
+  vesGLTypes.h
   vesGMTL.h
+  vesGroupNode.h
   vesImage.h
+  vesIntegerUniform.h
   vesLegacyReader.h
   vesMapper.h
+  vesMaterial.h
+  vesModelViewUniform.h
   vesMultitouchCamera.h
   vesMultitouchSensorNode.h
   vesMultitouchWidget.h
+  vesNode.h
+  vesNormalMatrixUniform.h
+  vesObject.h
+  vesProjectionUniform.h
+  vesRenderData.h
   vesRenderer.h
+  vesRenderLeaf.h
+  vesRenderStage.h
+  vesRenderState.h
+  vesRenderTarget.h
+  vesRenderToTexture.h
   vesSetGet.h
   vesShader.h
   vesShaderProgram.h
+  vesStateAttributeBits.h
   vesSTLReader.h
   vesTexture.h
+  vesTransformNode.h
   vesTriangleData.h
   vesUniform.h
+  vesVertexAttribute.h
+  vesVertexAttributeKeys.h
+  vesViewport.h
+  vesVisitor.h
 )
 
 set(header_dirs
