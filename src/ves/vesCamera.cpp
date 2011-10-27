@@ -114,7 +114,7 @@ vesMatrix4x4f vesCamera::computeProjectionTransform(float aspect,
   matrix[2][3] = (nearz*1 - farz*(-1))/(1 - (-1));
 
 
-  if ( this->m_parallelProjection)
+  if (this->m_parallelProjection)
   {
     // set up a rectangular parallelipiped
 
@@ -137,7 +137,7 @@ vesMatrix4x4f vesCamera::computeProjectionTransform(float aspect,
     double tmp = tan( deg2Rad( this->m_viewAngle ) / 2. );
     double width;
     double height;
-    if ( this->m_useHorizontalViewAngle )
+    if (this->m_useHorizontalViewAngle)
     {
       width = this->m_clippingRange[0] * tmp;
       height = this->m_clippingRange[0] * tmp / aspect;
