@@ -156,6 +156,7 @@ void vesVisitor::visit(vesActor &actor)
   this->visit(static_cast<vesTransformNode&>(actor));
 }
 
+
 void vesVisitor::visit(vesCamera &camera)
 {
   this->visit(static_cast<vesTransformNode&>(camera));
