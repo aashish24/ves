@@ -49,32 +49,58 @@ public:
     NestedRender
   };
 
-  vesSetGetMacro(UseHorizontalViewAngle,bool)
-  vesSetGetMacro(ViewPlaneNormal,vesVector3f)
-  vesSetGetMacro(ViewAngle, float)
-  void SetPosition(vesVector3f pos) { Position = pos; ComputeDistance(); }
-  vesVector3f GetPosition() { return Position; }
-  vesSetGetMacro(FocalPoint, vesVector3f)
-  vesSetGetMacro(ViewUp, vesVector3f)
-  vesSetGetMacro(ParallelScale, float)
-  vesSetGetMacro(ParallelProjection, bool)
+  inline void setUseHorizontalViewAngle(bool value)
+    { this->m_useHorizontalViewAngle = value; }
+  inline bool useHorizontalViewAngle() const
+    { return this->m_useHorizontalViewAngle; }
 
-  void Azimuth(double angle);
-  void Elevation(double angle);
-  void Dolly(double factor);
-  void Roll(double angle);
-  void OrthogonalizeViewUp();
+  inline void setViewPlaneNormal(const vesVector3f &viewPlaneNormal)
+    { this->m_viewPlaneNormal = viewPlaneNormal; }
+  inline vesVector3f viewPlaneNormal() { return this->m_viewPlaneNormal; }
+  inline const vesVector3f& viewPlaneNormal() const { return this->m_viewPlaneNormal; }
 
-  vesMatrix4x4f ComputeViewTransform();
-  vesMatrix4x4f ComputeProjectionTransform(float aspect, float near, float far);
-  void SetWindowCenter(double x, double y);
-  void SetClippingRange(float near, float far);
-  void Reset();
+  inline void setViewAngle(float viewAngle) { this->m_viewAngle = viewAngle; }
+  float viewAngle() const { return this->m_viewAngle; }
 
-  bool SetRenderTarget(vesRenderTarget *renderTarget);
-  vesRenderTarget* RenderTarget();
-  const vesRenderTarget* RenderTarget() const;
-  void ClearRenderTargets(vesRenderState &renderState);
+  inline void setPosition(const vesVector3f &m_position)
+    { this->m_position = m_position; this->computeDistance(); }
+  vesVector3f position() { return this->m_position; }
+  const vesVector3f& position() const { return this->m_position; }
+
+  inline void setFocalPoint(const vesVector3f &focalPoint)
+    { this->m_focalPoint = focalPoint; }
+  vesVector3f focalPoint() { return this->m_focalPoint; }
+  const vesVector3f& focalPoint() const { return this->m_focalPoint; }
+
+  inline void setViewUp(const vesVector3f &viewUp)
+    { this->m_viewUp = viewUp; }
+  vesVector3f viewUp() { return this->m_viewUp; }
+  const vesVector3f& viewUp() const { return this->m_viewUp; }
+
+  inline void setParallelScale(float parallelScale)
+    { this->m_parallelScale = parallelScale; }
+  float parallelScale() const { return this->m_parallelScale; }
+
+  inline void setParallelProjection(bool value)
+    { this->m_parallelProjection = value; }
+  bool parallelProjection() const { return this->m_parallelProjection; }
+
+  void azimuth(double angle);
+  void elevation(double angle);
+  void dolly(double factor);
+  void roll(double angle);
+  void orthogonalizeViewUp();
+
+  vesMatrix4x4f computeViewTransform();
+  vesMatrix4x4f computeProjectionTransform(float aspect, float near, float far);
+  void setWindowCenter(double x, double y);
+  void setClippingRange(float near, float far);
+  void reset();
+
+  bool setRenderTarget(vesRenderTarget *renderTarget);
+  vesRenderTarget* renderTarget();
+  const vesRenderTarget* renderTarget() const;
+  void clearRenderTargets(vesRenderState &renderState);
 
   const vesViewport* viewport() const;
   vesViewport* viewport();
@@ -102,21 +128,21 @@ public:
   virtual void accept(vesVisitor &visitor);
 
 protected:
-  void ComputeDistance();
-  void ComputeViewPlaneNormal();
+  void computeDistance();
+  void computeViewPlaneNormal();
 
   typedef std::vector<vesRenderTarget*> RenderTargetStack;
 
-  float         ViewAngle;
-  bool          UseHorizontalViewAngle;
-  vesVector3f   ViewPlaneNormal;
-  vesVector3f   Position, FocalPoint,ViewUp;
-  float         ParallelScale;
-  float         ClippingRange[2];
-  float         Distance;
-  vesVector3f   DirectionOfProjection;
-  double        WindowCenter[2];
-  bool          ParallelProjection;
+  float         m_viewAngle;
+  bool          m_useHorizontalViewAngle;
+  vesVector3f   m_viewPlaneNormal;
+  vesVector3f   m_position, m_focalPoint,m_viewUp;
+  float         m_parallelScale;
+  float         m_clippingRange[2];
+  float         m_distance;
+  vesVector3f   m_directionOfProjection;
+  double        m_windowCenter[2];
+  bool          m_parallelProjection;
 
   vesViewport *m_viewport;
   vesRenderStage *m_renderStage;

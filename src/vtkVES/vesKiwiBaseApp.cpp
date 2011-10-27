@@ -119,7 +119,7 @@ void vesKiwiBaseApp::resetView()
   // set direction to look from
   vesRenderer* renderer = this->Internal->Renderer;
 
-  renderer->camera()->SetViewPlaneNormal(vesVector3f(0.0, 0.0, 1.0));
+  renderer->camera()->setViewPlaneNormal(vesVector3f(0.0, 0.0, 1.0));
 
   // dolly so that scene fits window
   renderer->resetCamera();
@@ -127,11 +127,11 @@ void vesKiwiBaseApp::resetView()
   // The current ResetCamera() method pulls the camera back further than
   // required.  ResetCamera should be fixed.  Until then, perform a dolly
   // with a scale factor of 1.5 (a magic number).
-  renderer->camera()->Dolly(1.5);
+  renderer->camera()->dolly(1.5);
 
   // now set the view plane normal
-  renderer->camera()->SetViewUp(vesVector3f(0.0, 1.0, 0.0));
-  renderer->camera()->OrthogonalizeViewUp();
+  renderer->camera()->setViewUp(vesVector3f(0.0, 1.0, 0.0));
+  renderer->camera()->orthogonalizeViewUp();
 }
 
 //----------------------------------------------------------------------------
@@ -140,8 +140,8 @@ void vesKiwiBaseApp::handleTwoTouchPanGesture(double x0, double y0, double x1, d
   // calculate the focal depth so we'll know how far to move
   vesRenderer* ren = this->Internal->Renderer;
   vesCamera* camera = ren->camera();
-  vesVector3f viewFocus = camera->GetFocalPoint();
-  vesVector3f viewPoint = camera->GetPosition();
+  vesVector3f viewFocus = camera->focalPoint();
+  vesVector3f viewPoint = camera->position();
   vesVector3f viewFocusDisplay = ren->computeWorldToDisplay(viewFocus);
   float focalDepth = viewFocusDisplay[2];
 
@@ -152,8 +152,8 @@ void vesKiwiBaseApp::handleTwoTouchPanGesture(double x0, double y0, double x1, d
 
   vesVector3f newViewFocus = viewFocus + motionVector;
   vesVector3f newViewPoint = viewPoint + motionVector;
-  camera->SetFocalPoint(newViewFocus);
-  camera->SetPosition(newViewPoint);
+  camera->setFocalPoint(newViewFocus);
+  camera->setPosition(newViewPoint);
 }
 
 //----------------------------------------------------------------------------
@@ -174,9 +174,9 @@ void vesKiwiBaseApp::handleSingleTouchPanGesture(double deltaX, double deltaY)
   double rxf = deltaX * delta_azimuth * motionFactor;
   double ryf = deltaY * delta_elevation * motionFactor;
 
-  camera->Azimuth(rxf);
-  camera->Elevation(ryf);
-  camera->OrthogonalizeViewUp();
+  camera->azimuth(rxf);
+  camera->elevation(ryf);
+  camera->orthogonalizeViewUp();
 }
 
 
@@ -198,15 +198,15 @@ void vesKiwiBaseApp::handleSingleTouchDown(int displayX, int displayY)
 //----------------------------------------------------------------------------
 void vesKiwiBaseApp::handleTwoTouchPinchGesture(double scale)
 {
-  this->Internal->Renderer->camera()->Dolly(scale);
+  this->Internal->Renderer->camera()->dolly(scale);
 }
 
 //----------------------------------------------------------------------------
 void vesKiwiBaseApp::handleTwoTouchRotationGesture(double rotation)
 {
   vesCamera* camera = this->Internal->Renderer->camera();
-  camera->Roll(rotation * 180.0 / M_PI);
-  camera->OrthogonalizeViewUp();
+  camera->roll(rotation * 180.0 / M_PI);
+  camera->orthogonalizeViewUp();
 }
 
 //----------------------------------------------------------------------------
@@ -334,35 +334,35 @@ int vesKiwiBaseApp::viewHeight() const
 //----------------------------------------------------------------------------
 vesVector3f vesKiwiBaseApp::cameraPosition() const
 {
-  return this->renderer()->camera()->GetPosition();
+  return this->renderer()->camera()->position();
 }
 
 //----------------------------------------------------------------------------
 vesVector3f vesKiwiBaseApp::cameraFocalPoint() const
 {
-  return this->renderer()->camera()->GetFocalPoint();
+  return this->renderer()->camera()->focalPoint();
 }
 
 //----------------------------------------------------------------------------
 vesVector3f vesKiwiBaseApp::cameraViewUp() const
 {
-  return this->renderer()->camera()->GetViewUp();
+  return this->renderer()->camera()->viewUp();
 }
 
 //----------------------------------------------------------------------------
 void vesKiwiBaseApp::setCameraPosition(const vesVector3f& position)
 {
-  this->renderer()->camera()->SetPosition(position);
+  this->renderer()->camera()->setPosition(position);
 }
 
 //----------------------------------------------------------------------------
 void vesKiwiBaseApp::setCameraFocalPoint(const vesVector3f& focalPoint)
 {
-  this->renderer()->camera()->SetFocalPoint(focalPoint);
+  this->renderer()->camera()->setFocalPoint(focalPoint);
 }
 
 //----------------------------------------------------------------------------
 void vesKiwiBaseApp::setCameraViewUp(const vesVector3f& viewUp)
 {
-  this->renderer()->camera()->SetViewUp(viewUp);
+  this->renderer()->camera()->setViewUp(viewUp);
 }

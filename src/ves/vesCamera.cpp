@@ -37,33 +37,33 @@ vesCamera::vesCamera() : vesTransformNode()
 {
   this->setReferenceFrame(Absolute);
 
-  this->FocalPoint[0] = 0.0;
-  this->FocalPoint[1] = 0.0;
-  this->FocalPoint[2] = 0.0;
+  this->m_focalPoint[0] = 0.0;
+  this->m_focalPoint[1] = 0.0;
+  this->m_focalPoint[2] = 0.0;
 
-  this->Position[0] = 0.0;
-  this->Position[1] = 0.0;
-  this->Position[2] = 1.0;
+  this->m_position[0] = 0.0;
+  this->m_position[1] = 0.0;
+  this->m_position[2] = 1.0;
 
-  this->ViewUp[0] = 0.0;
-  this->ViewUp[1] = 1.0;
-  this->ViewUp[2] = 0.0;
+  this->m_viewUp[0] = 0.0;
+  this->m_viewUp[1] = 1.0;
+  this->m_viewUp[2] = 0.0;
 
-  this->DirectionOfProjection[0] = 0.0;
-  this->DirectionOfProjection[1] = 0.0;
-  this->DirectionOfProjection[2] = 0.0;
+  this->m_directionOfProjection[0] = 0.0;
+  this->m_directionOfProjection[1] = 0.0;
+  this->m_directionOfProjection[2] = 0.0;
 
-  this->ViewAngle = 30.0;
-  this->UseHorizontalViewAngle = 0;
+  this->m_viewAngle = 30.0;
+  this->m_useHorizontalViewAngle = 0;
 
-  this->ClippingRange[0] = 10.0f;
-  this->ClippingRange[1] = 1010.0f;
+  this->m_clippingRange[0] = 10.0f;
+  this->m_clippingRange[1] = 1010.0f;
 
-  this->ParallelProjection = false;
-  this->ParallelScale = 1.0;
+  this->m_parallelProjection = false;
+  this->m_parallelScale = 1.0;
 
-  this->WindowCenter[0] = 0.0;
-  this->WindowCenter[1] = 0.0;
+  this->m_windowCenter[0] = 0.0;
+  this->m_windowCenter[1] = 0.0;
 
   this->m_viewport = new vesViewport();
 
@@ -80,7 +80,7 @@ vesCamera::vesCamera() : vesTransformNode()
   this->m_clearColor = vesVector4f(1.0f, 1.0f, 1.0f, 1.0f);
   this->m_clearDepth = 1.0;
 
-  this->ComputeDistance();
+  this->computeDistance();
 }
 
 
@@ -95,15 +95,15 @@ vesCamera::~vesCamera()
 }
 
 
-vesMatrix4x4f vesCamera::ComputeViewTransform()
+vesMatrix4x4f vesCamera::computeViewTransform()
 {
-  return vesLookAt (this->Position,
-                    this->FocalPoint,
-                    this->ViewUp);
+  return vesLookAt (this->m_position,
+                    this->m_focalPoint,
+                    this->m_viewUp);
 }
 
 
-vesMatrix4x4f vesCamera::ComputeProjectionTransform(float aspect,
+vesMatrix4x4f vesCamera::computeProjectionTransform(float aspect,
                                                     float nearz,
                                                     float farz)
 {
@@ -114,48 +114,48 @@ vesMatrix4x4f vesCamera::ComputeProjectionTransform(float aspect,
   matrix[2][3] = (nearz*1 - farz*(-1))/(1 - (-1));
 
 
-  if ( this->ParallelProjection)
+  if (this->m_parallelProjection)
   {
     // set up a rectangular parallelipiped
 
-    double width = this->ParallelScale * aspect;
-    double height = this->ParallelScale;
+    double width = this->m_parallelScale * aspect;
+    double height = this->m_parallelScale;
 
-    double xmin = ( this->WindowCenter[0] - 1.0 ) * width;
-    double xmax = ( this->WindowCenter[0] + 1.0 ) * width;
-    double ymin = ( this->WindowCenter[1] - 1.0 ) * height;
-    double ymax = ( this->WindowCenter[1] + 1.0 ) * height;
+    double xmin = ( this->m_windowCenter[0] - 1.0 ) * width;
+    double xmax = ( this->m_windowCenter[0] + 1.0 ) * width;
+    double ymin = ( this->m_windowCenter[1] - 1.0 ) * height;
+    double ymax = ( this->m_windowCenter[1] + 1.0 ) * height;
 
     vesMatrix4x4f ortho = vesOrtho( xmin, xmax, ymin, ymax,
-                                    this->ClippingRange[0],
-                                    this->ClippingRange[1] );
+                                    this->m_clippingRange[0],
+                                    this->m_clippingRange[1] );
     return matrix * ortho;
   }
   else
   {
     // set up a perspective frustum
-    double tmp = tan( deg2Rad( this->ViewAngle ) / 2. );
+    double tmp = tan( deg2Rad( this->m_viewAngle ) / 2. );
     double width;
     double height;
-    if ( this->UseHorizontalViewAngle )
+    if (this->m_useHorizontalViewAngle)
     {
-      width = this->ClippingRange[0] * tmp;
-      height = this->ClippingRange[0] * tmp / aspect;
+      width = this->m_clippingRange[0] * tmp;
+      height = this->m_clippingRange[0] * tmp / aspect;
     }
     else
     {
-      width = this->ClippingRange[0] * tmp * aspect;
-      height = this->ClippingRange[0] * tmp;
+      width = this->m_clippingRange[0] * tmp * aspect;
+      height = this->m_clippingRange[0] * tmp;
     }
 
-    double xmin = ( this->WindowCenter[0] - 1.0 ) * width;
-    double xmax = ( this->WindowCenter[0] + 1.0 ) * width;
-    double ymin = ( this->WindowCenter[1] - 1.0 ) * height;
-    double ymax = ( this->WindowCenter[1] + 1.0 ) * height;
+    double xmin = ( this->m_windowCenter[0] - 1.0 ) * width;
+    double xmax = ( this->m_windowCenter[0] + 1.0 ) * width;
+    double ymin = ( this->m_windowCenter[1] - 1.0 ) * height;
+    double ymax = ( this->m_windowCenter[1] + 1.0 ) * height;
 
     vesMatrix4x4f frustum = vesFrustum( xmin, xmax, ymin, ymax,
-                                        this->ClippingRange[0],
-                                        this->ClippingRange[1] );
+                                        this->m_clippingRange[0],
+                                        this->m_clippingRange[1] );
 
     return matrix*frustum;
   }
@@ -163,142 +163,142 @@ vesMatrix4x4f vesCamera::ComputeProjectionTransform(float aspect,
 
 
 // Rotate the camera about the view up vector centered at the focal point.
-void vesCamera::Azimuth(double angle)
+void vesCamera::azimuth(double angle)
 {
-  vesVector3f fp = this->FocalPoint;
-  vesVector3f vu = this->ViewUp;
+  vesVector3f fp = this->m_focalPoint;
+  vesVector3f vu = this->m_viewUp;
   vesVector3f nfp(-fp[0], -fp[1], -fp[2]);
   vesMatrix4x4f t1 = makeTranslationMatrix4x4(fp);
   vesMatrix4x4f t2 = makeRotationMatrix4x4(deg2Rad(angle), vu[0], vu[1], vu[2]);
   vesMatrix4x4f t3 = makeTranslationMatrix4x4(nfp);
   vesMatrix4x4f t = t1 * t2 * t3;
 
-  vesVector4f oldPosition(this->Position[0], this->Position[1], this->Position[2], 1);
+  vesVector4f oldPosition(this->m_position[0], this->m_position[1], this->m_position[2], 1);
   vesVector4f newPosition;
   gmtl::xform(newPosition, t, oldPosition);
-  this->Position[0] = newPosition[0] / newPosition[3];
-  this->Position[1] = newPosition[1] / newPosition[3];
-  this->Position[2] = newPosition[2] / newPosition[3];
-  this->ComputeDistance();
+  this->m_position[0] = newPosition[0] / newPosition[3];
+  this->m_position[1] = newPosition[1] / newPosition[3];
+  this->m_position[2] = newPosition[2] / newPosition[3];
+  this->computeDistance();
 }
 
 
 // Rotate the camera about the cross product of the negative of the
 // direction of projection and the view up vector centered on the focal point.
-void vesCamera::Elevation(double angle)
+void vesCamera::elevation(double angle)
 {
-  vesMatrix4x4f view = this->ComputeViewTransform();
+  vesMatrix4x4f view = this->computeViewTransform();
   vesVector3f axis;
   axis[0] = -view[0][0];
   axis[1] = -view[0][1];
   axis[2] = -view[0][2];
-  vesVector3f fp = this->FocalPoint;
+  vesVector3f fp = this->m_focalPoint;
   vesVector3f nfp(-fp[0], -fp[1], -fp[2]);
   vesMatrix4x4f t1 = makeTranslationMatrix4x4(fp);
   vesMatrix4x4f t2 = makeRotationMatrix4x4(-deg2Rad(angle), axis[0], axis[1], axis[2]);
   vesMatrix4x4f t3 = makeTranslationMatrix4x4(nfp);
   vesMatrix4x4f t = t1 * t2 * t3;
 
-  vesVector4f oldPosition(this->Position[0], this->Position[1], this->Position[2], 1);
+  vesVector4f oldPosition(this->m_position[0], this->m_position[1], this->m_position[2], 1);
   vesVector4f newPosition;
   gmtl::xform(newPosition, t, oldPosition);
-  this->Position[0] = newPosition[0] / newPosition[3];
-  this->Position[1] = newPosition[1] / newPosition[3];
-  this->Position[2] = newPosition[2] / newPosition[3];
-  this->ComputeDistance();
+  this->m_position[0] = newPosition[0] / newPosition[3];
+  this->m_position[1] = newPosition[1] / newPosition[3];
+  this->m_position[2] = newPosition[2] / newPosition[3];
+  this->computeDistance();
 }
 
 
-void vesCamera::Dolly(double factor)
+void vesCamera::dolly(double factor)
 {
   if (factor <= 0.0) {
     return;
   }
 
   // dolly moves the camera towards the focus
-  double d = this->Distance/factor;
+  double d = this->m_distance/factor;
 
-  this->Position[0] = this->FocalPoint[0] - d*this->DirectionOfProjection[0];
-  this->Position[1] = this->FocalPoint[1] - d*this->DirectionOfProjection[1];
-  this->Position[2] = this->FocalPoint[2] - d*this->DirectionOfProjection[2];
-  this->ComputeDistance();
+  this->m_position[0] = this->m_focalPoint[0] - d*this->m_directionOfProjection[0];
+  this->m_position[1] = this->m_focalPoint[1] - d*this->m_directionOfProjection[1];
+  this->m_position[2] = this->m_focalPoint[2] - d*this->m_directionOfProjection[2];
+  this->computeDistance();
 }
 
 
-void vesCamera::Roll(double angle)
+void vesCamera::roll(double angle)
 {
-  // rotate ViewUp about the Direction of Projection
+  // rotate m_viewUp about the Direction of Projection
   vesMatrix4x4f t = makeRotationMatrix4x4(-deg2Rad(angle),
-                                          this->DirectionOfProjection[0],
-                                          this->DirectionOfProjection[1],
-                                          this->DirectionOfProjection[2]);
+                                          this->m_directionOfProjection[0],
+                                          this->m_directionOfProjection[1],
+                                          this->m_directionOfProjection[2]);
   vesVector3f newViewUp;
-  gmtl::xform(newViewUp, t, this->ViewUp);
-  this->SetViewUp(newViewUp);
+  gmtl::xform(newViewUp, t, this->m_viewUp);
+  this->setViewUp(newViewUp);
 }
 
 
-void vesCamera::SetWindowCenter(double x, double y)
+void vesCamera::setWindowCenter(double x, double y)
 {
-  this->WindowCenter[0] = x;
-  this->WindowCenter[1] = y;
+  this->m_windowCenter[0] = x;
+  this->m_windowCenter[1] = y;
 }
 
 
-void vesCamera::SetClippingRange(float near, float far)
+void vesCamera::setClippingRange(float near, float far)
 {
-  this->ClippingRange[0] = near;
-  this->ClippingRange[1] = far;
+  this->m_clippingRange[0] = near;
+  this->m_clippingRange[1] = far;
 }
 
 
-void vesCamera::OrthogonalizeViewUp()
+void vesCamera::orthogonalizeViewUp()
 {
-  // the orthogonalized ViewUp is just the second row of the view matrix
-  vesMatrix4x4f view = this->ComputeViewTransform();
-  this->ViewUp[0] = view[1][0];
-  this->ViewUp[1] = view[1][1];
-  this->ViewUp[2] = view[1][2];
+  // the orthogonalized m_viewUp is just the second row of the view matrix
+  vesMatrix4x4f view = this->computeViewTransform();
+  this->m_viewUp[0] = view[1][0];
+  this->m_viewUp[1] = view[1][1];
+  this->m_viewUp[2] = view[1][2];
 }
 
 
-// This method must be called when the focal point or camera position changes
-void vesCamera::ComputeDistance()
+// This method must be called when the focal point or camera m_position changes
+void vesCamera::computeDistance()
 {
-  double dx = this->FocalPoint[0] - this->Position[0];
-  double dy = this->FocalPoint[1] - this->Position[1];
-  double dz = this->FocalPoint[2] - this->Position[2];
+  double dx = this->m_focalPoint[0] - this->m_position[0];
+  double dy = this->m_focalPoint[1] - this->m_position[1];
+  double dz = this->m_focalPoint[2] - this->m_position[2];
 
-  this->Distance = sqrt(dx*dx + dy*dy + dz*dz);
+  this->m_distance = sqrt(dx*dx + dy*dy + dz*dz);
 
-  if (this->Distance < 1e-20)
+  if (this->m_distance < 1e-20)
   {
-    this->Distance = 1e-20;
-    vesVector3f vec = this->DirectionOfProjection;
+    this->m_distance = 1e-20;
+    vesVector3f vec = this->m_directionOfProjection;
 
-    // recalculate FocalPoint
-    this->FocalPoint[0] = this->Position[0] + vec[0]*this->Distance;
-    this->FocalPoint[1] = this->Position[1] + vec[1]*this->Distance;
-    this->FocalPoint[2] = this->Position[2] + vec[2]*this->Distance;
+    // recalculate m_focalPoint
+    this->m_focalPoint[0] = this->m_position[0] + vec[0]*this->m_distance;
+    this->m_focalPoint[1] = this->m_position[1] + vec[1]*this->m_distance;
+    this->m_focalPoint[2] = this->m_position[2] + vec[2]*this->m_distance;
   }
 
-  this->DirectionOfProjection[0] = dx/this->Distance;
-  this->DirectionOfProjection[1] = dy/this->Distance;
-  this->DirectionOfProjection[2] = dz/this->Distance;
+  this->m_directionOfProjection[0] = dx/this->m_distance;
+  this->m_directionOfProjection[1] = dy/this->m_distance;
+  this->m_directionOfProjection[2] = dz/this->m_distance;
 
-  this->ComputeViewPlaneNormal();
+  this->computeViewPlaneNormal();
 }
 
 
-void vesCamera::ComputeViewPlaneNormal()
+void vesCamera::computeViewPlaneNormal()
 {
-  this->ViewPlaneNormal[0] = -this->DirectionOfProjection[0];
-  this->ViewPlaneNormal[1] = -this->DirectionOfProjection[1];
-  this->ViewPlaneNormal[2] = -this->DirectionOfProjection[2];
+  this->m_viewPlaneNormal[0] = -this->m_directionOfProjection[0];
+  this->m_viewPlaneNormal[1] = -this->m_directionOfProjection[1];
+  this->m_viewPlaneNormal[2] = -this->m_directionOfProjection[2];
 }
 
 
-bool vesCamera::SetRenderTarget(vesRenderTarget *renderTarget)
+bool vesCamera::setRenderTarget(vesRenderTarget *renderTarget)
 {
   // If none is given, use the default.
   if (!renderTarget && this->m_renderTargetStack.size() > 1) {
@@ -326,19 +326,19 @@ bool vesCamera::SetRenderTarget(vesRenderTarget *renderTarget)
 }
 
 
-vesRenderTarget* vesCamera::RenderTarget()
+vesRenderTarget* vesCamera::renderTarget()
 {
   return this->m_renderTargetStack.back();
 }
 
 
-const vesRenderTarget* vesCamera::RenderTarget() const
+const vesRenderTarget* vesCamera::renderTarget() const
 {
   return this->m_renderTargetStack.back();
 }
 
 
-void vesCamera::ClearRenderTargets(vesRenderState &renderState)
+void vesCamera::clearRenderTargets(vesRenderState &renderState)
 {
   for (size_t i = 0; i < this->m_removedRenderTargetStack.size(); ++i)  {
     this->m_removedRenderTargetStack.back()->remove(renderState);
@@ -377,14 +377,14 @@ vesRenderStage* vesCamera::getOrCreateRenderStage()
 
 vesMatrix4x4f vesCamera::modelViewMatrix()
 {
-  return this->ComputeViewTransform();
+  return this->computeViewTransform();
 }
 
 
 vesMatrix4x4f vesCamera::projectionMatrix()
 {
   // Hard code -1, 1 for now.
-  return this->ComputeProjectionTransform(
+  return this->computeProjectionTransform(
     this->m_viewport->aspect(), -1, 1);
 }
 

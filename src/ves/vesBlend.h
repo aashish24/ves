@@ -23,6 +23,7 @@
 
 #include "vesMaterial.h"
 
+// VES includes.
 #include "vesBlendFunction.h"
 
 class vesBlend : public vesMaterialAttribute
