@@ -39,9 +39,21 @@ class vesTriangleData
 {
 public:
   vesTriangleData();
+  void SetPoints(const std::vector<vtkVertex3f> &points)
+  {
+    this->Points = points;
+  }
   std::vector<vtkVertex3f>& GetPoints() { return this->Points; }
+  void SetTriangles(const std::vector<vesVector3us>& triangles)
+  {
+    this->Triangles = triangles;
+  }
   std::vector<vesVector3us>& GetTriangles() { return this->Triangles; }
   std::vector<vesVector2us>& GetLines() { return this->Lines; }
+  void SetVertexColors(const std::vector<vesVector3f> &vertexColors)
+  {
+    this->VertexColors = vertexColors;
+  }
   std::vector<vesVector3f>& GetVertexColors() { return this->VertexColors; }
   std::vector<vesVector2f>& GetTextureCoordinates() { return this->TextureCoordinates; }
   vesVector3f GetMin();

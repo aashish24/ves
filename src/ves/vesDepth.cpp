@@ -1,3 +1,5 @@
+
+#include "vesDepth.h"
 /*========================================================================
   VES --- VTK OpenGL ES Rendering Toolkit
 
@@ -18,54 +20,52 @@
   limitations under the License.
  ========================================================================*/
 
-#include "vesBlend.h"
+// VES includes.
+#include "vesGL.h"
 
-// C/C++ includes
+// C/C++ includes.
 #include <iostream>
 
-vesBlend::vesBlend() : vesMaterialAttribute(),
-  m_wasEnabled(false),
-  m_blendFunction(vesBlendFunction::SrcAlpha, vesBlendFunction::OneMinusSrcAlpha)
+vesDepth::vesDepth()
 {
-  this->m_type = Blend;
+  this->m_type = Depth;
   this->m_binding = BindMinimal;
 }
 
 
-vesBlend::~vesBlend()
+vesDepth::~vesDepth()
 {
 }
 
 
-void vesBlend::setBlendFunction(const vesBlendFunction &blendFunction)
+void vesDepth::bind(const vesRenderState &renderState)
 {
-  this->m_blendFunction = blendFunction;
-  this->setDirtyStateOn();
-}
+  // Save current state.
+  this->m_wasEnabled = glIsEnabled(GL_DEPTH_TEST);
 
-
-void vesBlend::bind(const vesRenderState &renderState)
-{
-  this->m_wasEnabled = glIsEnabled(GL_BLEND);
+  // Save current depth mask for restoration later.
+//  glGet(GL_DEPTH_WRITEMASK, &this->m_previousDepthWriteMask);
 
   if (this->m_enable) {
-    glEnable(GL_BLEND);
-    this->m_blendFunction.apply(renderState);
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask((GLboolean) this->m_depthWriteMask);
   } else {
-    glDisable(GL_BLEND);
+    glDisable(GL_DEPTH_TEST);
   }
 }
 
 
-void vesBlend::unbind(const vesRenderState &renderState)
+void vesDepth::unbind(const vesRenderState &renderState)
 {
   if (this->m_wasEnabled) {
-    glEnable(GL_BLEND);
+      glEnable(GL_DEPTH_TEST);
+      glDepthMask(true);
   } else {
-    glDisable(GL_BLEND);
+    glDisable(GL_DEPTH_TEST);
   }
+
+  // Restore previous depth mask.
+//  glDepthMask(this->m_previousDepthWriteMask);
 
   this->setDirtyStateOff();
 }
-
-

@@ -18,28 +18,48 @@
   limitations under the License.
  ========================================================================*/
 
-#ifndef VESOBJECT_H
-#define VESOBJECT_H
+#include  "vesNode.h"
 
-class vesObject
+// VES includes.
+#include  "vesGroupNode.h"
+#include "vesVisitor.h"
+
+vesNode::vesNode() : vesObject(),
+  m_visible (true),
+  m_material(0x0),
+  m_isOverlayNode(false)
 {
-public:
-  vesObject() :
-    m_dirtyState(true)
-  {
+  this->m_parent = 0x0;
+  this->setDirtyStateOff();
+}
+
+
+vesNode::~vesNode()
+{
+}
+
+
+void vesNode::accept(vesVisitor &visitor)
+{
+  visitor.visit(*this);
+}
+
+
+bool vesNode::setParent(vesGroupNode *parent)
+{
+  if (this->m_parent) {
+    this->m_parent->removeChild(this);
   }
 
-  virtual ~vesObject() {}
+  this->m_parent = parent;
 
-  void setDirty(const bool &value) { this->m_dirtyState = value; }
-  void setDirtyStateOn() { this->setDirty(true); }
-  void setDirtyStateOff() { this->setDirty(false); }
-  bool dirtyState() { return this->m_dirtyState; }
-  const bool& dirtyState() const { return this->m_dirtyState; }
-
-protected:
-  bool m_dirtyState;
-};
+  return true;
+}
 
 
-#endif // VESOBJECT_H
+void vesNode::computeBounds()
+{
+  if (this->boundsDirty()) {
+    this->resetBounds();
+  }
+}

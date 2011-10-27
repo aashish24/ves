@@ -61,8 +61,10 @@ namespace {
 class vesClipApp : public vesKiwiBaseApp {
 public:
 
-  vesClipApp()
+  vesClipApp() : vesKiwiBaseApp()
   {
+    this->setBackgroundColor(63/255.0, 96/255.0, 144/255.0);
+
     this->ClipUniform = 0;
     this->ClipShader = 0;
     this->DataRep = 0;

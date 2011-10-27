@@ -37,12 +37,13 @@
 #undef Bool
 #endif
 
-#include <vesImage.h>
+// VES includes.
+#include <vesBackground.h>
 #include <vesKiwiBaseApp.h>
 #include <vesKiwiDataLoader.h>
 #include <vesKiwiPolyDataRepresentation.h>
+#include <vesRenderer.h>
 #include <vesShaderProgram.h>
-#include <vesTexture.h>
 #include <vesUniform.h>
 
 #include <vtkPolyData.h>
@@ -50,7 +51,6 @@
 #include <vtkImageData.h>
 #include <vtkImageDifference.h>
 #include <vtkImageShiftScale.h>
-#include <vtkLookupTable.h>
 #include <vtkNew.h>
 #include <vtkPNGReader.h>
 #include <vtkPNGWriter.h>
@@ -60,48 +60,41 @@
 //----------------------------------------------------------------------------
 namespace {
 
-class vesTextureApp : public vesKiwiBaseApp {
+
+class vesGradientBackgroundApp : public vesKiwiBaseApp {
 public:
 
-  vesTextureApp() : vesKiwiBaseApp()
+  vesGradientBackgroundApp()
   {
-    this->setBackgroundColor(63/255.0, 96/255.0, 144/255.0);
+    this->ClipUniform = 0;
+    this->ClipShader = 0;
+    this->DataRep = 0;
 
-    this->Image = 0x0;
-    this->Texture = 0x0;
-    this->TextureShader = 0x0;
-    this->DataRep = 0x0;
+    this->renderer()->background()->setGradientColor(
+      vesVector4f(0.0f/255.0f, 0.0f/255.0f, 2.0f/255.0f, 1.0),
+      vesVector4f(55.0f/255.0f, 55.0f/255.0f, 113.0f/255.0f, 1.0));
   }
 
-  ~vesTextureApp()
+  ~vesGradientBackgroundApp()
   {
     this->unloadData();
   }
 
-  void initTextureShader(const std::string& vertexSource, const std::string fragmentSource)
+  void initClipShader(const std::string& vertexSource, const std::string fragmentSource)
   {
     vesShaderProgram* shaderProgram = this->addShaderProgram(vertexSource, fragmentSource);
     this->addModelViewMatrixUniform(shaderProgram);
     this->addProjectionMatrixUniform(shaderProgram);
+    this->addNormalMatrixUniform(shaderProgram);
     this->addVertexPositionAttribute(shaderProgram);
+    this->addVertexNormalAttribute(shaderProgram);
+    this->addVertexColorAttribute(shaderProgram);
     this->addVertexTextureCoordinateAttribute(shaderProgram);
-    this->TextureShader = shaderProgram;
-  }
+    this->ClipShader = shaderProgram;
 
-  void create1DTexture()
-  {
-    this->Image = new vesImage();
-    this->LookupTable = vtkSmartPointer<vtkLookupTable>::New();
-    this->LookupTable->Build();
-    this->Image->m_data = this->LookupTable->GetPointer(0);
-    this->Image->m_width = this->LookupTable->GetNumberOfTableValues();
-    this->Image->m_height = 1;
-    this->Image->m_pixelDataType = vesColorDataType::UnsignedByte;
-    this->Image->m_pixelFormat = vesColorDataType::RGBA;
-
-    this->Texture = new vesTexture();
-    this->Texture->setImage(*this->Image);
-    this->DataRep->setTexture(this->Texture);
+    this->ClipUniform = new vesUniform("clipPlaneEquation", vesVector4f(-1.0f, 0.0f, 0.0f, 0.0f));
+    this->ClipShader->addUniform(this->ClipUniform);
+    this->storeUniformForDeletion(this->ClipUniform);
   }
 
   void unloadData()
@@ -111,8 +104,6 @@ public:
       delete this->DataRep;
       this->DataRep = 0;
     }
-
-    delete this->Image; this->Image = 0x0;
   }
 
   void loadData(const std::string& filename)
@@ -120,31 +111,25 @@ public:
     this->unloadData();
 
     vesKiwiDataLoader loader;
-    vtkSmartPointer<vtkPolyData> polyData =
-      vtkPolyData::SafeDownCast(loader.loadDataset(filename));
+    vtkSmartPointer<vtkPolyData> polyData = vtkPolyData::SafeDownCast(loader.loadDataset(filename));
     assert(polyData.GetPointer());
 
     vesKiwiPolyDataRepresentation* rep = new vesKiwiPolyDataRepresentation();
-    rep->initializeWithShader(this->TextureShader);
+    rep->initializeWithShader(this->ClipShader);
     rep->setPolyData(polyData);
     rep->addSelfToRenderer(this->renderer());
     this->DataRep = rep;
-
-    this->create1DTexture();
   }
 
-  vesImage *Image;
-  vesTexture *Texture;
-  vtkSmartPointer<vtkLookupTable> LookupTable;
-  vesShaderProgram* TextureShader;
+  vesUniform* ClipUniform;
+  vesShaderProgram* ClipShader;
   vesKiwiPolyDataRepresentation* DataRep;
 };
 
 class vesTestHelper {
 public:
 
-  vesTestHelper() :
-    IsTesting(false)
+  vesTestHelper()
   {
   }
 
@@ -152,7 +137,7 @@ public:
   {
   }
 
-  vesTextureApp* app() {
+  vesGradientBackgroundApp* app() {
     return &this->App;
   }
 
@@ -182,7 +167,8 @@ public:
 
 private:
 
-  vesTextureApp     App;
+  vesGradientBackgroundApp App;
+
   std::string       SourceDirectory;
   std::string       DataDirectory;
   bool              IsTesting;
@@ -195,7 +181,7 @@ vesTestHelper* testHelper;
 void LoadData()
 {
   std::string filename = testHelper->sourceDirectory() +
-    std::string("/Apps/iOS/Kiwi/Kiwi/Data/plane.vtp");
+    std::string("/Apps/iOS/Kiwi/Kiwi/Data/bunny.vtp");
 
   testHelper->app()->loadData(filename);
   testHelper->app()->resetView();
@@ -254,7 +240,7 @@ bool DoTesting()
   bool allTestsPassed = true;
 
     testHelper->app()->render();
-    std::string testName = "Textured Plane";
+    std::string testName = "Gradient Background";
 
     std::string inFile = testHelper->dataDirectory() + "/" + testName + ".png";
     std::string outFile = testName + ".png";
@@ -313,10 +299,9 @@ std::string GetFileContents(const std::string& filename)
 //----------------------------------------------------------------------------
 void InitRendering()
 {
-  std::cout << "Init rendering " << std::endl;
-  testHelper->app()->initTextureShader(
-    GetFileContents(testHelper->sourceDirectory() + "/src/shaders/TestTexture.vsh"),
-    GetFileContents(testHelper->sourceDirectory() + "/src/shaders/TestTexture.fsh"));
+  testHelper->app()->initClipShader(
+    GetFileContents(testHelper->sourceDirectory() + "/src/shaders/ClipPlane.vsh"),
+    GetFileContents(testHelper->sourceDirectory() + "/src/shaders/ClipPlane.fsh"));
 }
 
 //----------------------------------------------------------------------------

@@ -18,28 +18,40 @@
   limitations under the License.
  ========================================================================*/
 
-#ifndef VESOBJECT_H
-#define VESOBJECT_H
+#ifndef VESBACKGROUND_H
+#define VESBACKGROUND_H
 
-class vesObject
+#include "vesCamera.h"
+
+// Forward declarations.
+class vesActor;
+class vesDepth;
+class vesMapper;
+
+class vesBackground : public vesCamera
 {
 public:
-  vesObject() :
-    m_dirtyState(true)
-  {
-  }
+  vesBackground();
+  virtual ~vesBackground();
 
-  virtual ~vesObject() {}
+  /// Set single color for the background.
+  virtual void setColor(const vesVector4f &color);
 
-  void setDirty(const bool &value) { this->m_dirtyState = value; }
-  void setDirtyStateOn() { this->setDirty(true); }
-  void setDirtyStateOff() { this->setDirty(false); }
-  bool dirtyState() { return this->m_dirtyState; }
-  const bool& dirtyState() const { return this->m_dirtyState; }
+  /// Set two colors for the gradient background.
+  virtual void setGradientColor(const vesVector4f &topColor,
+                                const vesVector4f &bottomColor);
+
+  virtual vesMatrix4x4f modelViewMatrix();
+  virtual vesMatrix4x4f projectionMatrix();
 
 protected:
-  bool m_dirtyState;
+  void createBackground();
+
+  vesVector4f m_topColor;
+  vesVector4f m_bottomColor;
+
+  class vesInternal;
+  vesInternal *m_internal;
 };
 
-
-#endif // VESOBJECT_H
+#endif // VESBACKGROUND_H

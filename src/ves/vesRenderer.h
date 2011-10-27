@@ -21,9 +21,8 @@
 #ifndef VESRENDERER_H
 #define VESRENDERER_H
 
-#include "vesGL.h"
-
 // VES includes
+#include "vesGL.h"
 #include "vesGMTL.h"
 
 // C++ includes
@@ -31,7 +30,9 @@
 
 // Forward declarations
 class vesActor;
+class vesBackground;
 class vesCamera;
+class vesGroupNode;
 class vesRenderStage;
 class vesTexture;
 
@@ -48,12 +49,13 @@ public:
   virtual void resize(int width,int height, float scale);
 
   virtual void setBackgroundColor(float r, float g, float b, float a=1.0f);
-  virtual void setBackground(vesTexture *background);
+  vesBackground* background();
+  const vesBackground *background() const;
 
   virtual void addActor   (vesActor *actor);
   virtual void removeActor(vesActor *actor);
 
-  void setSceneRoot(vesActor *root);
+  const vesGroupNode* sceneRoot() const { return this->m_sceneRoot; }
 
   inline vesCamera* camera(){ return this->m_camera; }
 
@@ -63,25 +65,25 @@ public:
   vesVector3f computeWorldToDisplay(vesVector3f world);
   vesVector3f computeDisplayToWorld(vesVector3f display);
 
-
 protected:
 
   virtual void updateTraverseScene();
   virtual void cullTraverseScene();
+  virtual void setupBackground();
+  virtual void updateBackgroundViewport();
 
   void resetCameraClippingRange(float bounds[6]);
 
-
 private:
-  double     m_aspect[2];
-  int        m_width;
-  int        m_height;
-  float      m_backgroundColor[4];
+  double m_aspect[2];
+  int m_width;
+  int m_height;
 
   vesCamera *m_camera;
-  vesActor  *m_sceneRoot;
+  vesGroupNode *m_sceneRoot;
 
   vesRenderStage *m_renderStage;
+  vesBackground *m_background;
 };
 
 #endif

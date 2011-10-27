@@ -18,28 +18,20 @@
   limitations under the License.
  ========================================================================*/
 
-#ifndef VESOBJECT_H
-#define VESOBJECT_H
+#ifndef VESSTATEATTRIBUTEBITS_H
+#define VESSTATEATTRIBUTEBITS_H
 
-class vesObject
+// VES includes.
+#include "vesGL.h"
+
+class vesStateAttributeBits
 {
 public:
-  vesObject() :
-    m_dirtyState(true)
+  enum ClearMask
   {
-  }
-
-  virtual ~vesObject() {}
-
-  void setDirty(const bool &value) { this->m_dirtyState = value; }
-  void setDirtyStateOn() { this->setDirty(true); }
-  void setDirtyStateOff() { this->setDirty(false); }
-  bool dirtyState() { return this->m_dirtyState; }
-  const bool& dirtyState() const { return this->m_dirtyState; }
-
-protected:
-  bool m_dirtyState;
+    ColorBufferBit = GL_COLOR_BUFFER_BIT,
+    DepthBufferBit = GL_DEPTH_BUFFER_BIT
+  };
 };
 
-
-#endif // VESOBJECT_H
+#endif // VESSTATEATTRIBUTEBITS_H

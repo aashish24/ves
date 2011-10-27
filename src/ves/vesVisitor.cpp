@@ -20,8 +20,13 @@
 
 #include "vesVisitor.h"
 
+#include "vesActor.h"
+#include "vesCamera.h"
 #include "vesGMTL.h"
+#include "vesGroupNode.h"
 #include "vesMapper.h"
+#include "vesNode.h"
+#include "vesTransformNode.h"
 
 // C++ includes
 #include <deque>
@@ -87,6 +92,12 @@ void vesVisitor::popModelViewMatrix()
 }
 
 
+void vesVisitor::clearModelViewMatrixStack()
+{
+  this->m_internal->m_modelViewMatrixStack.clear();
+}
+
+
 void vesVisitor::pushProjectionMatrix(const vesMatrix4x4f &matrix)
 {
   this->m_internal->m_projectionMatrixStack.push_back(&matrix);
@@ -114,16 +125,39 @@ vesMatrix4x4f vesVisitor::modelViewMatrix()
 vesMatrix4x4f vesVisitor::projectionMatrix()
 {
   vesMatrix4x4f matrix;
-  size_t count = this->m_internal->m_projectionMatrixStack.size();
-  for (size_t i = 0; i < count; ++i) {
-    matrix *= *this->m_internal->m_projectionMatrixStack [i];
+  if (!this->m_internal->m_projectionMatrixStack.empty()) {
+    matrix = *this->m_internal->m_projectionMatrixStack.back();
   }
 
   return matrix;
 }
 
 
+void vesVisitor::visit(vesNode &node)
+{
+  this->traverse(node);
+}
+
+
+void vesVisitor::visit(vesGroupNode &groupNode)
+{
+  this->visit(static_cast<vesNode&>(groupNode));
+}
+
+
+void vesVisitor::visit(vesTransformNode &transformNode)
+{
+  this->visit(static_cast<vesGroupNode&>(transformNode));
+}
+
+
 void vesVisitor::visit(vesActor &actor)
 {
-  actor.accept(*this);
+  this->visit(static_cast<vesTransformNode&>(actor));
+}
+
+
+void vesVisitor::visit(vesCamera &camera)
+{
+  this->visit(static_cast<vesTransformNode&>(camera));
 }

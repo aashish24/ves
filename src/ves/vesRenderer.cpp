@@ -18,19 +18,22 @@
   limitations under the License.
  ========================================================================*/
 
+#include "vesActor.h"
+#include "vesBackground.h"
 #include "vesCamera.h"
 #include "vesCullVisitor.h"
 #include "vesFileReader.h"
 #include "vesGMTL.h"
+#include "vesGroupNode.h"
 #include "vesRenderer.h"
 #include "vesRenderStage.h"
 #include "vesShaderProgram.h"
 #include "vesVisitor.h"
 
-// C++ includes
+// C/C++ includes
+#include <cassert>
 #include <iostream>
 #include <string>
-
 
 vesRenderer::vesRenderer()
 {
@@ -39,15 +42,15 @@ vesRenderer::vesRenderer()
 
   this->m_aspect[0] = this->m_aspect[1] = 1.0;
 
-  this->m_backgroundColor[0] = 0.5f;
-  this->m_backgroundColor[1] = 0.5f;
-  this->m_backgroundColor[2] = 0.5f;
-  this->m_backgroundColor[3] = 1.0f;
-
   this->m_camera    = new vesCamera();
-  this->m_sceneRoot = new vesActor();
+  this->m_sceneRoot = new vesGroupNode();
+
+  this->m_camera->addChild(this->m_sceneRoot);
 
   this->m_renderStage = new vesRenderStage();
+
+  this->m_background = new vesBackground();
+  this->setupBackground();
 }
 
 
@@ -56,23 +59,13 @@ vesRenderer::~vesRenderer()
   delete this->m_camera; this->m_camera = 0x0;
   delete this->m_sceneRoot; this->m_sceneRoot = 0x0;
   delete this->m_renderStage; this->m_renderStage = 0x0;
-}
-
-
-void vesRenderer::setSceneRoot(vesActor *root)
-{
-  // \todo: Release graphics resources for the last scene root.
-  this->m_sceneRoot = root;
+  delete this->m_background; this->m_background = 0x0;
 }
 
 
 void vesRenderer::render()
 {
-  // Clear the buffers
-  glClearColor(this->m_backgroundColor[0], this->m_backgroundColor[1],
-               this->m_backgroundColor[2], this->m_backgroundColor[3]);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+  // By default enable depth test.
   glEnable(GL_DEPTH_TEST);
 
   if (this->m_sceneRoot) {
@@ -107,8 +100,12 @@ void vesRenderer::resize(int width, int height, float scale)
   this->m_width  = (width  > 0) ? width  : 1;
   this->m_height = (height > 0) ? height : 1;
 
-  this->m_aspect[0] = static_cast<double>(this->m_height)/this->m_width;
-  this->m_aspect[1] = static_cast<double>(this->m_width) /this->m_height;
+  this->m_camera->viewport()->setViewport(0, 0, this->m_width, this->m_height);
+
+  this->updateBackgroundViewport();
+
+  this->m_aspect[0] = this->m_camera->viewport()->inverseAspect();
+  this->m_aspect[1] = this->m_camera->viewport()->aspect();
 }
 
 
@@ -323,16 +320,22 @@ void vesRenderer::resetCameraClippingRange(float bounds[6])
 
 void vesRenderer::setBackgroundColor(float r, float g, float b, float a)
 {
-  this->m_backgroundColor[0] = r;
-  this->m_backgroundColor[1] = g;
-  this->m_backgroundColor[2] = b;
-  this->m_backgroundColor[3] = a;
+  if (this->m_background) {
+    this->m_background->setColor(vesVector4f(r, g, b, a));
+  }
+  this->m_camera->setClearColor(vesVector4f(r, g, b, a));
 }
 
 
-void vesRenderer::setBackground(vesTexture* background)
+vesBackground* vesRenderer::background()
 {
-  // \todo: Implement this.
+  return this->m_background;
+}
+
+
+const vesBackground* vesRenderer::background() const
+{
+  return this->m_background;
 }
 
 
@@ -355,9 +358,10 @@ void vesRenderer::removeActor(vesActor *actor)
 void vesRenderer::updateTraverseScene()
 {
   // Update traversal.
-  vesVisitor     updateVisitor(vesVisitor::UpdateVisitor,
-                               vesVisitor::TraverseAllChildren);
-  updateVisitor.visit(*this->m_sceneRoot);
+  vesVisitor updateVisitor(vesVisitor::UpdateVisitor,
+                           vesVisitor::TraverseAllChildren);
+
+  this->m_camera->accept(updateVisitor);
 }
 
 
@@ -365,20 +369,29 @@ void vesRenderer::cullTraverseScene()
 {
   vesCullVisitor cullVisitor;
 
-  vesMatrix4x4f projectionMatrix =
-    this->m_camera->ComputeProjectionTransform(this->m_aspect[1], -1, 1);
-
-  vesMatrix4x4f viewMatrix =
-    this->m_camera->ComputeViewTransform();
-
   vesMatrix4x4f projection2DMatrix = vesOrtho(0, this->width(), 0, this->height(), -1, 1);
   cullVisitor.setProjection2DMatrix(projection2DMatrix);
 
-  cullVisitor.pushProjectionMatrix(projectionMatrix);
-  cullVisitor.pushModelViewMatrix(viewMatrix);
   cullVisitor.setRenderStage(this->m_renderStage);
-  cullVisitor.visit(*this->m_sceneRoot);
-  cullVisitor.popModelViewMatrix();
-  cullVisitor.popProjectionMatrix();
+
+  this->m_camera->accept(cullVisitor);
 }
 
+
+void vesRenderer::setupBackground()
+{
+  this->updateBackgroundViewport();
+  this->m_camera->addChild(this->m_background);
+  this->m_camera->setClearMask(vesStateAttributeBits::DepthBufferBit);
+}
+
+
+void vesRenderer::updateBackgroundViewport()
+{
+  assert(this->m_camera);
+  assert(this->m_background);
+
+  this->m_background->viewport()->setViewport(
+    this->m_camera->viewport()->x(), this->m_camera->viewport()->y(),
+    this->m_camera->viewport()->width(), this->m_camera->viewport()->height());
+}

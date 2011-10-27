@@ -21,16 +21,22 @@
 #include "vesCamera.h"
 
 // VES includes
+#include "vesStateAttributeBits.h"
 #include "vesGMTL.h"
+#include "vesRenderStage.h"
 #include "vesRenderState.h"
+#include "vesViewport.h"
+#include "vesVisitor.h"
 
 // C/C++ includes
 #include <algorithm>
 #include <cassert>
 #include <iostream>
 
-vesCamera::vesCamera()
+vesCamera::vesCamera() : vesTransformNode()
 {
+  this->setReferenceFrame(Absolute);
+
   this->FocalPoint[0] = 0.0;
   this->FocalPoint[1] = 0.0;
   this->FocalPoint[2] = 0.0;
@@ -50,8 +56,8 @@ vesCamera::vesCamera()
   this->ViewAngle = 30.0;
   this->UseHorizontalViewAngle = 0;
 
-  this->ClippingRange[0] = 10.0;
-  this->ClippingRange[1] = 1010.0;
+  this->ClippingRange[0] = 10.0f;
+  this->ClippingRange[1] = 1010.0f;
 
   this->ParallelProjection = false;
   this->ParallelScale = 1.0;
@@ -59,7 +65,20 @@ vesCamera::vesCamera()
   this->WindowCenter[0] = 0.0;
   this->WindowCenter[1] = 0.0;
 
+  this->m_viewport = new vesViewport();
+
+  this->m_renderStage = 0x0;
+
+  this->m_renderOrder = PostRender;
+
+  this->m_renderOrderPriority = 0;
+
   this->m_renderTargetStack.push_back(new vesRenderTarget());
+
+  this->m_clearMask = vesStateAttributeBits::ColorBufferBit
+    | vesStateAttributeBits::DepthBufferBit;
+  this->m_clearColor = vesVector4f(1.0f, 1.0f, 1.0f, 1.0f);
+  this->m_clearDepth = 1.0;
 
   this->ComputeDistance();
 }
@@ -71,6 +90,8 @@ vesCamera::~vesCamera()
   assert(!this->m_renderTargetStack.empty());
 
   delete this->m_renderTargetStack[0];
+
+  delete this->m_renderStage;
 }
 
 
@@ -327,4 +348,108 @@ void vesCamera::ClearRenderTargets(vesRenderState &renderState)
 }
 
 
+const vesViewport* vesCamera::viewport() const
+{
+  return this->m_viewport;
+}
 
+
+vesViewport* vesCamera::viewport()
+{
+  return this->m_viewport;
+}
+
+
+const vesRenderStage* vesCamera::renderStage() const
+{
+  return this->m_renderStage;
+}
+
+
+vesRenderStage* vesCamera::getOrCreateRenderStage()
+{
+  if (!this->m_renderStage) {
+    this->m_renderStage = new vesRenderStage();
+  }
+  return this->m_renderStage;
+}
+
+
+vesMatrix4x4f vesCamera::modelViewMatrix()
+{
+  return this->ComputeViewTransform();
+}
+
+
+vesMatrix4x4f vesCamera::projectionMatrix()
+{
+  // Hard code -1, 1 for now.
+  return this->ComputeProjectionTransform(
+    this->m_viewport->aspect(), -1, 1);
+}
+
+
+void vesCamera::setRenderOrder(RenderOrder renderOrder, int renderOrderPriority)
+{
+  this->m_renderOrder = renderOrder;
+  this->m_renderOrderPriority = renderOrderPriority;
+}
+
+
+vesCamera::RenderOrder vesCamera::renderOrder() const
+{
+  return this->m_renderOrder;
+}
+
+
+int vesCamera::renderOrderPriority() const
+{
+  return this->m_renderOrderPriority;
+}
+
+
+void vesCamera::setClearMask(unsigned int clearMask)
+{
+  this->m_clearMask = clearMask;
+}
+
+
+unsigned int vesCamera::clearMask() const
+{
+  return this->m_clearMask;
+}
+
+
+void vesCamera::setClearColor(const vesVector4f &clearColor)
+{
+  this->m_clearColor = clearColor;
+}
+
+
+vesVector4f vesCamera::clearColor()
+{
+  return this->m_clearColor;
+}
+
+
+const vesVector4f& vesCamera::clearColor() const
+{
+  return this->m_clearColor;
+}
+
+void vesCamera::setClearDepth(double depth)
+{
+  this->m_clearDepth = depth;
+}
+
+
+double vesCamera::clearDepth() const
+{
+  return this->m_clearDepth;
+}
+
+
+void vesCamera::accept(vesVisitor &visitor)
+{
+  visitor.visit(*this);
+}

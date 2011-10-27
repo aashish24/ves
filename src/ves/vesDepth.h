@@ -18,28 +18,27 @@
   limitations under the License.
  ========================================================================*/
 
-#ifndef VESOBJECT_H
-#define VESOBJECT_H
+#ifndef VESDEPTH_H
+#define VESDEPTH_H
 
-class vesObject
+#include "vesMaterial.h"
+
+class vesDepth : public vesMaterialAttribute
 {
 public:
-  vesObject() :
-    m_dirtyState(true)
-  {
-  }
+  vesDepth();
+  virtual ~vesDepth();
 
-  virtual ~vesObject() {}
+  inline void setWriteMask(bool mask) { this->m_depthWriteMask = mask; }
+  inline bool writeMask() const { return this->m_depthWriteMask; }
 
-  void setDirty(const bool &value) { this->m_dirtyState = value; }
-  void setDirtyStateOn() { this->setDirty(true); }
-  void setDirtyStateOff() { this->setDirty(false); }
-  bool dirtyState() { return this->m_dirtyState; }
-  const bool& dirtyState() const { return this->m_dirtyState; }
+  virtual void bind (const vesRenderState &renderState);
+  virtual void unbind (const vesRenderState &renderState);
 
 protected:
-  bool m_dirtyState;
+  bool m_wasEnabled;
+  bool m_previousDepthWriteMask;
+  bool m_depthWriteMask;
 };
 
-
-#endif // VESOBJECT_H
+#endif // VESDEPTH_H

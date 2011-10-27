@@ -76,7 +76,7 @@ public:
 
 
 
-vesMapper::vesMapper() : vsgBoundedObject(),
+vesMapper::vesMapper() : vesBoundingObject(),
   m_initialized(false),
   m_data       (0x0),
   m_maximumTrianglesPerDraw

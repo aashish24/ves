@@ -21,10 +21,13 @@
 #ifndef VESCULLVISITOR_H
 #define VESCULLVISITOR_H
 
-// Base class
 #include "vesVisitor.h"
 
+// C/C++ includes.
+#include <vector>
+
 // Forward declarations
+class vesCamera;
 class vesRenderStage;
 
 class vesCullVisitor : public vesVisitor
@@ -40,24 +43,46 @@ public:
   {
   }
 
-  void setRenderStage(vesRenderStage *renderStage)
+  bool setRenderStage(vesRenderStage *renderStage)
   {
+    bool success = true;
+
     if (renderStage && this->m_renderStage != renderStage) {
       this->m_renderStage = renderStage;
+      this->m_renderStageStack.push_back(this->m_renderStage);
+
+      return success;
     }
+
+    return !success;
   }
 
   vesRenderStage* renderStage()
   {
-    return this->m_renderStage;
+    return this->m_renderStageStack.back();
   }
 
   const vesRenderStage* renderStage() const
   {
-    return this->m_renderStage;
+    return this->m_renderStageStack.back();
   }
 
-  virtual void visit(vesActor  &actor);
+  void pushRenderStage(vesRenderStage *renderStage)
+  {
+    // No check is applied here.
+    this->m_renderStageStack.push_back(renderStage);
+  }
+
+  void popRenderStage()
+  {
+    this->m_renderStageStack.pop_back();
+  }
+
+  virtual void visit(vesNode &node);
+  virtual void visit(vesGroupNode &groupNode);
+  virtual void visit(vesTransformNode &transformNode);
+  virtual void visit(vesActor &actor);
+  virtual void visit(vesCamera &camera);
 
 protected:
   void addGeometryAndStates(vesMapper *mapper, vesMaterial *material,
@@ -65,6 +90,14 @@ protected:
                             const vesMatrix4x4f& projectionMatrix,
                             float depth);
 
+  inline void invokeCallbacksAndTraverse(vesNode &node)
+  {
+    this->traverse(node);
+  }
+
+  typedef std::vector<vesRenderStage*> RenderStageStack;
+
+  RenderStageStack m_renderStageStack;
   vesRenderStage *m_renderStage;
 };
 

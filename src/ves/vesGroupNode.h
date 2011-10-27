@@ -18,28 +18,38 @@
   limitations under the License.
  ========================================================================*/
 
-#ifndef VESOBJECT_H
-#define VESOBJECT_H
+#ifndef __VESGROUPNODE_H
+#define __VESGROUPNODE_H
 
-class vesObject
+#include "vesNode.h"
+
+// C/C++ includes
+#include <list>
+
+class vesGroupNode: public vesNode
 {
 public:
-  vesObject() :
-    m_dirtyState(true)
-  {
-  }
+  vesGroupNode();
+  virtual ~vesGroupNode();
 
-  virtual ~vesObject() {}
+  typedef std::list<vesNode*> Children;
 
-  void setDirty(const bool &value) { this->m_dirtyState = value; }
-  void setDirtyStateOn() { this->setDirty(true); }
-  void setDirtyStateOff() { this->setDirty(false); }
-  bool dirtyState() { return this->m_dirtyState; }
-  const bool& dirtyState() const { return this->m_dirtyState; }
+  bool addChild   (vesNode *child);
+  bool removeChild(vesNode *child);
+
+  Children&       children()       { return this->m_children; }
+  const Children& children() const { return this->m_children; }
+
+  virtual void accept(vesVisitor &visitor);
+  virtual void traverse(vesVisitor &visitor);
 
 protected:
-  bool m_dirtyState;
+  void traverseChildrenAndUpdateBounds(vesVisitor &visitor);
+  void traverseChildren(vesVisitor &visitor);
+
+  virtual void updateBounds(vesNode &child);
+
+  Children m_children;
 };
 
-
-#endif // VESOBJECT_H
+#endif // __VESGROUPNODE_H

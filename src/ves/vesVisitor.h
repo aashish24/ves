@@ -21,11 +21,18 @@
 #ifndef VESVISITOR_H
 #define VESVISITOR_H
 
-#include "vesActor.h"
+// VES includes.
+#include "vesGMTL.h"
+#include "vesNode.h"
 
 // Forward declarations
+class vesActor;
+class vesCamera;
+class vesGroupNode;
 class vesMapper;
 class vesMaterial;
+class vesNode;
+class vesTransformNode;
 
 class vesVisitor
 {
@@ -56,6 +63,7 @@ public:
 
   void pushModelViewMatrix(const vesMatrix4x4f& matrix);
   void popModelViewMatrix ();
+  void clearModelViewMatrixStack();
 
   void pushProjectionMatrix(const vesMatrix4x4f& matrix);
   void popProjectionMatrix ();
@@ -66,7 +74,20 @@ public:
   vesMatrix4x4f projection2DMatrix() { return this->m_projection2DMatrix; }
   void setProjection2DMatrix(const vesMatrix4x4f& matrix) { this->m_projection2DMatrix = matrix; }
 
-  virtual void visit(vesActor  &actor);
+  virtual void visit(vesNode &node);
+  virtual void visit(vesGroupNode &groupNode);
+  virtual void visit(vesTransformNode &transformNode);
+  virtual void visit(vesActor &actor);
+  virtual void visit(vesCamera &camera);
+
+  inline void traverse(vesNode &node)
+  {
+    if (this->m_traversalMode == TraverseParents) {
+      node.ascend(*this);
+    } else {
+      node.traverse(*this);
+    }
+  }
 
   VisitorType type(){ return this->m_visitorType; }
 

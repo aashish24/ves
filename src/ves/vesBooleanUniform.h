@@ -64,9 +64,7 @@ public:
   {
     if (!renderState.m_mapper->data()->GetVertexColors().empty()) {
       this->set(true);
-    }
-    else
-    {
+    } else {
       this->set(false);
     }
   }

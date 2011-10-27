@@ -20,23 +20,34 @@
 #ifndef __vesCamera_h
 #define __vesCamera_h
 
-#include "vsg/Grouping/Transform.h"
+#include "vesTransformNode.h"
 
 // VES includes
 #include "vesGMTL.h"
 #include "vesRenderTarget.h"
 #include "vesSetGet.h"
 
-// Forward declarations
-class vesRenderState;
+// C/C++ includes
+#include <vector>
 
-class vesCamera: public vsg::Transform
+// Forward declarations
+class vesRenderStage;
+class vesRenderState;
+class vesViewport;
+class vesVisitor;
+
+class vesCamera: public vesTransformNode
 {
 public:
-           vesCamera();
+  vesCamera();
   virtual  ~vesCamera();
 
-  virtual void computeBounds(){}
+  enum RenderOrder
+  {
+    PreRender = 0,
+    PostRender,
+    NestedRender
+  };
 
   vesSetGetMacro(UseHorizontalViewAngle,bool)
   vesSetGetMacro(ViewPlaneNormal,vesVector3f)
@@ -65,11 +76,37 @@ public:
   const vesRenderTarget* RenderTarget() const;
   void ClearRenderTargets(vesRenderState &renderState);
 
-private:
+  const vesViewport* viewport() const;
+  vesViewport* viewport();
+
+  const vesRenderStage* renderStage() const;
+  vesRenderStage* getOrCreateRenderStage();
+
+  void setRenderOrder(RenderOrder renderOrder, int renderOrderPriority=0);
+  RenderOrder renderOrder() const;
+  int renderOrderPriority() const;
+
+  void setClearMask(unsigned int clearMask);
+  unsigned int clearMask() const;
+
+  void setClearColor(const vesVector4f &clearColor);
+  vesVector4f clearColor();
+  const vesVector4f& clearColor() const;
+
+  void setClearDepth(double depth);
+  double clearDepth() const;
+
+  virtual vesMatrix4x4f modelViewMatrix();
+  virtual vesMatrix4x4f projectionMatrix();
+
+  virtual void accept(vesVisitor &visitor);
+
+protected:
   void ComputeDistance();
   void ComputeViewPlaneNormal();
 
-  // \todo: Move all this to internal.
+  typedef std::vector<vesRenderTarget*> RenderTargetStack;
+
   float         ViewAngle;
   bool          UseHorizontalViewAngle;
   vesVector3f   ViewPlaneNormal;
@@ -81,9 +118,17 @@ private:
   double        WindowCenter[2];
   bool          ParallelProjection;
 
-  typedef std::vector<vesRenderTarget*> RenderTargetStack;
+  vesViewport *m_viewport;
+  vesRenderStage *m_renderStage;
+
+  RenderOrder m_renderOrder;
+  int         m_renderOrderPriority;
 
   RenderTargetStack m_renderTargetStack;
   RenderTargetStack m_removedRenderTargetStack;
+
+  unsigned int m_clearMask;
+  vesVector4f m_clearColor;
+  double m_clearDepth;
 };
 #endif //__vesCamera_h

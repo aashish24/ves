@@ -1,79 +1,60 @@
 set(headers
-  vsg/Shader/Matrix3VertexAttribute.h
-  vsg/Shader/Matrix4VertexAttribute.h
-  vsg/Shader/ShaderPart.h
-  vsg/Shader/vsgProgrammableShaderObject.h
-  vsg/Shader/vsgShaderNode.h
-  vsg/Shader/vsgVertexAttributeNode.h
-  vsg/Shape/Shape.h
-  vsg/Shape/vsgAppearanceChildNode.h
-  vsg/Shape/vsgAppearanceNode.h
-  vsg/Shape/vsgMaterialNode.h
-  vsg/Shape/vsgShapeNode.h
-  vsg/Texture/PixelTexture.h
-  vsg/Texture/vsgTexture2DNode.h
-  vsg/Texture/vsgTextureCoordinateNode.h
-  vsg/Texture/vsgTextureNode.h
-  vsg/Utility/vsgMacro.h
-  vsg/Utility/vsgTypes.h
-  vsg/vsgVisitor.h
   vesActor.h
+  vesBackground.h
+  vesBlendFunction.h
+  vesBlend.h
+  vesBooleanUniform.h
+  vesBoundingObject.h
   vesByteSwap.h
   vesCamera.h
   vesCameraSensor.h
   vesColorDataType.h
+  vesColorUniform.h
+  vesCullVisitor.h
+  vesDepth.h
+  vesEngineUniform.h
+  vesFBO.h
+  vesFBORenderTarget.h
   vesFileReader.h
+  vesGL.h
+  vesGLTypes.h
   vesGMTL.h
+  vesGroupNode.h
   vesImage.h
+  vesIntegerUniform.h
   vesLegacyReader.h
   vesMapper.h
+  vesMaterial.h
+  vesModelViewUniform.h
   vesMultitouchCamera.h
   vesMultitouchSensorNode.h
   vesMultitouchWidget.h
+  vesNode.h
+  vesNormalMatrixUniform.h
+  vesObject.h
+  vesProjectionUniform.h
+  vesRenderData.h
   vesRenderer.h
+  vesRenderLeaf.h
+  vesRenderStage.h
+  vesRenderState.h
+  vesRenderTarget.h
+  vesRenderToTexture.h
   vesSetGet.h
   vesShader.h
   vesShaderProgram.h
+  vesStateAttributeBits.h
   vesSTLReader.h
   vesTexture.h
+  vesTransformNode.h
   vesTriangleData.h
   vesUniform.h
-  vsg/Core/vsgBindableNode.h
-  vsg/Core/vsgChildNode.h
-  vsg/Core/vsgNode.h
-  vsg/Core/vsgSensorNode.h
-  vsg/EnvEffects/TextureBackground.h
-  vsg/EnvEffects/vsgBackgroundNode.h
-  vsg/Grouping/Transform.h
-  vsg/Grouping/vsgBoundedObject.h
-  vsg/Grouping/vsgGroupingNode.h
-  vsg/Navigation/Viewpoint.h
-  vsg/Navigation/vsgViewpointNode.h
-  vsg/Rendering/ClipPlane.h
-  vsg/Rendering/Color.h
-  vsg/Rendering/ColorRGBA.h
-  vsg/Rendering/Coordinate.h
-  vsg/Rendering/IndexedTriangleSet.h
-  vsg/Rendering/Normal.h
-  vsg/Rendering/vsgColorNode.h
-  vsg/Rendering/vsgComposedGeometryNode.h
-  vsg/Rendering/vsgCoordinateNode.h
-  vsg/Rendering/vsgGeometricPropertyNode.h
-  vsg/Rendering/vsgGeometryNode.h
-  vsg/Rendering/vsgNormalNode.h
-  vsg/Shader/ComposedShader.h
-  vsg/Shader/FloatVertexAttribute.h
+  vesVertexAttribute.h
+  vesVertexAttributeKeys.h
+  vesViewport.h
+  vesVisitor.h
 )
 
 set(header_dirs
   .
-  vsg
-  vsg/Core
-  vsg/Grouping
-  vsg/Navigation
-  vsg/Rendering
-  vsg/Shader
-  vsg/Shape
-  vsg/EnvEffects
-  vsg/Utility
 )

@@ -21,13 +21,17 @@
 #ifndef VESRENDERSTAGE_H
 #define VESRENDERSTAGE_H
 
-// VES includes
+// VES includes.
+#include "vesGL.h"
 #include "vesGMTL.h"
 #include "vesMapper.h"
 #include "vesMaterial.h"
 #include "vesRenderLeaf.h"
+#include "vesStateAttributeBits.h"
+#include "vesViewport.h"
 
 // C++ includes
+#include <list>
 #include <map>
 #include <vector>
 
@@ -37,7 +41,6 @@ public:
   typedef std::vector< vesRenderLeaf> RenderLeaves;
   typedef std::map<int, RenderLeaves> BinRenderLeavesMap;
 
-  // \todo: Use it later.
   enum SortMode
   {
     BackToFront = 0x0,
@@ -45,9 +48,13 @@ public:
     SortByState
   };
 
-  vesRenderStage()
+  vesRenderStage() :
+    m_viewport(0x0)
   {
-    // Do nothing as of now.
+    this->m_clearMask = vesStateAttributeBits::ColorBufferBit
+      | vesStateAttributeBits::DepthBufferBit;
+    this->m_clearColor = vesVector4f(1.0f, 1.0f, 1.0f, 1.0f);
+    this->m_clearDepth = 1.0;
   }
 
  ~vesRenderStage()
@@ -60,6 +67,10 @@ public:
     this->m_binRenderLeavesMap[renderLeaf.m_bin].push_back(renderLeaf);
   }
 
+  void setViewport(vesViewport *viewport) { this->m_viewport = viewport; }
+  const vesViewport* viewport() const { return this->m_viewport; }
+  vesViewport* viewport() { return this->m_viewport; }
+
   void sort(SortMode mode)
   {
     // \todo: Implement this.
@@ -67,6 +78,24 @@ public:
 
   void render(vesRenderState &renderState, vesRenderLeaf *previous)
   {
+    this->renderPreRenderStages(renderState, previous);
+
+    if (this->m_viewport) {
+      this->m_viewport->render(renderState);
+
+      if (this->m_clearMask & GL_COLOR_BUFFER_BIT) {
+        glClearColor(this->m_clearColor[0], this->m_clearColor[1],
+          this->m_clearColor[2], this->m_clearColor[2]);
+      }
+
+      if (this->m_clearMask & GL_DEPTH_BUFFER_BIT) {
+        glClearDepthf(this->m_clearDepth);
+        glDepthMask( GL_TRUE );
+      }
+
+      glClear(this->m_clearMask);
+    }
+
     BinRenderLeavesMap::iterator itr = this->m_binRenderLeavesMap.begin();
     RenderLeaves::iterator rlsItr;
 
@@ -82,17 +111,49 @@ public:
         (*(--rlsItr)).finalize(renderState);
       }
     }
+
+    this->renderPostRenderStages(renderState, previous);
   }
 
   void clearAll()
   {
     this->m_binRenderLeavesMap.clear();
+    this->m_preRenderList.clear();
+    this->m_postRenderList.clear();
   }
 
+  void addPreRenderStage(vesRenderStage *renderStage, int priority);
+  void addPostRenderStage(vesRenderStage *renderStage, int priority);
+
+  void renderPreRenderStages(vesRenderState &renderState, vesRenderLeaf *previous);
+  void renderPostRenderStages(vesRenderState &renderState, vesRenderLeaf *previous);
+
+  void setClearMask(unsigned int mask);
+  unsigned int clearMask() const;
+
+  void setClearColor(const vesVector4f &clearColor);
+  vesVector4f clearColor();
+  const vesVector4f& clearColor() const;
+
+  void setClearDepth(double depth);
+  double clearDepth() const;
+
 private:
+  vesViewport *m_viewport;
+
+  typedef std::pair< int, vesRenderStage* > RenderStageOrderPair;
+  typedef std::list< RenderStageOrderPair > RenderStageList;
+
   BinRenderLeavesMap  m_binRenderLeavesMap;
 
-  // Not implemented.
+  RenderStageList m_preRenderList;
+  RenderStageList m_postRenderList;
+
+  unsigned int m_clearMask;
+  vesVector4f m_clearColor;
+  double m_clearDepth;
+
+  /// Not implemented.
   vesRenderStage(const vesRenderStage&);
   void operator=(const vesRenderStage&);
 };
