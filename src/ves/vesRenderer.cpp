@@ -79,11 +79,11 @@ void vesRenderer::render()
     vesRenderState renderState;
 
     // Clear all the previous render targets.
-    this->m_camera->ClearRenderTargets(renderState);
+    this->m_camera->clearRenderTargets(renderState);
 
     // For now, lets not push camera to the stage, just call
     // render on render target of the current camera.
-    this->m_camera->RenderTarget()->render(renderState);
+    this->m_camera->renderTarget()->render(renderState);
 
     this->m_renderStage->render(renderState, 0);
 
@@ -112,9 +112,9 @@ void vesRenderer::resize(int width, int height, float scale)
 vesVector3f vesRenderer::computeWorldToDisplay(vesVector3f world)
 {
   // WorldToView
-  vesMatrix4x4f proj_mat = this->m_camera->ComputeProjectionTransform(this->m_aspect[1],
+  vesMatrix4x4f proj_mat = this->m_camera->computeProjectionTransform(this->m_aspect[1],
                                                                     0, 1);
-  vesMatrix4x4f view_mat = this->m_camera->ComputeViewTransform();
+  vesMatrix4x4f view_mat = this->m_camera->computeViewTransform();
   vesMatrix4x4f mat = proj_mat*view_mat;
   vesVector4f world4(world[0], world[1], world[2], 1);
   vesVector4f view;
@@ -142,9 +142,9 @@ vesVector3f vesRenderer::computeDisplayToWorld(vesVector3f display)
   view[3] = 1;
 
   // ViewToWorld
-  vesMatrix4x4f proj_mat = this->m_camera->ComputeProjectionTransform(this->m_aspect[1],
+  vesMatrix4x4f proj_mat = this->m_camera->computeProjectionTransform(this->m_aspect[1],
                                                                     0, 1);
-  vesMatrix4x4f view_mat = this->m_camera->ComputeViewTransform();
+  vesMatrix4x4f view_mat = this->m_camera->computeViewTransform();
   vesMatrix4x4f mat = proj_mat*view_mat;
   vesMatrix4x4f inv;
   gmtl::invertFull(inv, mat);
@@ -175,7 +175,7 @@ void vesRenderer::resetCamera()
   vesVector3f vn, vup;
 
   if ( this->m_camera != NULL ) {
-    vn = this->m_camera->GetViewPlaneNormal();
+    vn = this->m_camera->viewPlaneNormal();
   }
   else
   {
@@ -187,18 +187,18 @@ void vesRenderer::resetCamera()
 
   radius = (radius==0)? (.5) : (radius);
 
-  double angle = deg2Rad(this->m_camera->GetViewAngle());
+  double angle = deg2Rad(this->m_camera->viewAngle());
   double parallelScale = radius;
 
   // Horizontal window, deal with vertical angle|scale
   if (this->m_aspect[0]>=1.0) {
-    if (this->m_camera->GetUseHorizontalViewAngle()) {
+    if (this->m_camera->useHorizontalViewAngle()) {
       angle=2.0*atan(tan(angle*0.5)/this->m_aspect[0]);
     }
   }
   // Vertical window, deal with horizontal angle|scale
   else {
-    if (!this->m_camera->GetUseHorizontalViewAngle() ) {
+    if (!this->m_camera->useHorizontalViewAngle() ) {
       angle=2.0*atan(tan(angle*0.5)*this->m_aspect[0]);
     }
     parallelScale=parallelScale/this->m_aspect[0];
@@ -207,27 +207,27 @@ void vesRenderer::resetCamera()
   distance =radius/sin(angle*0.5);
 
   // Check view-up vector against view plane normal
-  vup = this->m_camera->GetViewUp();
+  vup = this->m_camera->viewUp();
   if ( fabs(gmtl::dot(vup,vn)) > 0.999 ) {
     // vtkWarningMacro(<<"Resetting view-up since view plane normal is parallel");
     vesVector3f temp;
     temp[0] = -vup[2];
     temp[1] = vup[0];
     temp[2] = vup[1];
-    this->m_camera->SetViewUp(temp);
+    this->m_camera->setViewUp(temp);
   }
 
   // Update the camera
-  this->m_camera->SetFocalPoint(center);
+  this->m_camera->setFocalPoint(center);
   vesVector3f temp = vn;
   temp*= distance;
   temp+= center;
-  this->m_camera->SetPosition(temp);
+  this->m_camera->setPosition(temp);
 
   this->resetCameraClippingRange();
 
   // Setup default parallel scale
-  this->m_camera->SetParallelScale(parallelScale);
+  this->m_camera->setParallelScale(parallelScale);
 }
 
 
@@ -267,8 +267,8 @@ void vesRenderer::resetCameraClippingRange(float bounds[6])
   int    i, j, k;
 
   // Find the plane equation for the camera view plane
-  vn = this->m_camera->GetViewPlaneNormal();
-  position = this->m_camera->GetPosition();
+  vn = this->m_camera->viewPlaneNormal();
+  position = this->m_camera->position();
 
   a = -vn[0];
   b = -vn[1];
@@ -314,7 +314,7 @@ void vesRenderer::resetCameraClippingRange(float bounds[6])
   if (range[0] < NearClippingPlaneTolerance*range[1]) {
     range[0] = NearClippingPlaneTolerance*range[1];
   }
-  this->m_camera->SetClippingRange( range[0],range[1] );
+  this->m_camera->setClippingRange( range[0],range[1] );
 }
 
 

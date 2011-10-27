@@ -196,8 +196,8 @@ void vesKiwiImageWidgetRepresentation::scrollImageSlice(double deltaX, double de
 
   vesRenderer* ren = this->renderer();
   vesCamera* camera = ren->camera();
-  vesVector3f viewFocus = camera->GetFocalPoint();
-  vesVector3f viewPoint = camera->GetPosition();
+  vesVector3f viewFocus = camera->focalPoint();
+  vesVector3f viewPoint = camera->position();
   vesVector3f viewFocusDisplay = ren->computeWorldToDisplay(viewFocus);
   float focalDepth = viewFocusDisplay[2];
 
@@ -284,8 +284,8 @@ bool vesKiwiImageWidgetRepresentation::handleSingleTouchDown(int displayX, int d
   displayY = ren->height() - displayY;
 
   vesCamera* camera = ren->camera();
-  vesVector3f cameraFocalPoint = camera->GetFocalPoint();
-  vesVector3f cameraPosition = camera->GetPosition();
+  vesVector3f cameraFocalPoint = camera->focalPoint();
+  vesVector3f cameraPosition = camera->position();
   vesVector3f displayFocus = ren->computeWorldToDisplay(cameraFocalPoint);
   float focalDepth = displayFocus[2];
 
