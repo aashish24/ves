@@ -71,6 +71,7 @@ vesTransformNode::vesTransformNode() : vesGroupNode()
   this->m_scale = vesVector3f(1,1,1);
   this->m_scaleOrientation = vesVector4f(0,0,1,0);
   this->m_translation = vesVector3f(0,0,0);
+  this->m_referenceFrame = Relative;
 }
 
 
