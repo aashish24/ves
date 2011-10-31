@@ -13,7 +13,21 @@ set(CMAKE_OSX_ARCHITECTURES armv7)
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fobjc-abi-version=2 -fobjc-legacy-dispatch")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__IPHONE_OS_VERSION_MIN_REQUIRED=40300")
 #set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS}")
-set(CMAKE_OSX_SYSROOT /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk)
+
+
+# Set the CMAKE_OSX_SYSROOT to the latest SDK found
+set(CMAKE_OSX_SYSROOT)
+set(sdk_root /Developer/Platforms/iPhoneOS.platform/Developer/SDKs)
+foreach(sdk iPhoneOS4.3.sdk iPhoneOS5.0.sdk)
+  if (EXISTS ${sdk_root}/${sdk} AND IS_DIRECTORY ${sdk_root}/${sdk})
+    set(CMAKE_OSX_SYSROOT ${sdk_root}/${sdk})
+  endif()
+endforeach()
+if (NOT CMAKE_OSX_SYSROOT)
+  message(FATAL_ERROR "Could not find a usable iOS SDK in ${sdk_root}")
+endif()
+message(STATUS "-- Using iOS SDK: ${CMAKE_OSX_SYSROOT}")
+
 
 set(CMAKE_OSX_ARCHITECTURES "${CMAKE_OSX_ARCHITECTURES}" CACHE STRING "osx architectures")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}" CACHE STRING "c++ flags")
@@ -22,9 +36,7 @@ set(CMAKE_OSX_SYSROOT "${CMAKE_OSX_SYSROOT}" CACHE PATH "osx sysroot")
 set(MACOSX_BUNDLE_GUI_IDENTIFIER CACHE STRING "com.kitware.\${PRODUCT_NAME:identifier}")
 
 
-#-isysroot /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk
-
-set(CMAKE_FIND_ROOT_PATH /Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS4.3.sdk)
+set(CMAKE_FIND_ROOT_PATH ${CMAKE_OSX_SYSROOT})
 set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
