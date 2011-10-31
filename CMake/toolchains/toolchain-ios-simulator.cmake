@@ -18,7 +18,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__IPHONE_OS_VERSION_MIN_REQUIRED=40300
 # Set the CMAKE_OSX_SYSROOT to the latest SDK found
 set(CMAKE_OSX_SYSROOT)
 set(sdk_root /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs)
-foreach(sdk iPhoneOS4.3.sdk iPhoneOS5.0.sdk)
+foreach(sdk iPhoneSimulator4.3.sdk iPhoneSimulator5.0.sdk)
   if (EXISTS ${sdk_root}/${sdk} AND IS_DIRECTORY ${sdk_root}/${sdk})
     set(CMAKE_OSX_SYSROOT ${sdk_root}/${sdk})
   endif()
