@@ -34,8 +34,6 @@ class vesRenderState
 public:
   vesRenderState()
   {
-    this->m_material = 0x0;
-    this->m_mapper   = 0x0;
     this->m_identity = new vesMatrix4x4f();
 
     this->m_modelViewMatrix   = this->m_identity;
@@ -49,7 +47,7 @@ public:
   }
 
 
-  void applyMaterial(vesMaterial *&material)
+  void applyMaterial(const vesSharedPtr<vesMaterial> &material)
   {
     if (material && material != this->m_material) {
       this->m_material = material;
@@ -57,7 +55,7 @@ public:
   }
 
 
-  void removeMaterial(vesMaterial *&material)
+  void removeMaterial(const vesSharedPtr<vesMaterial> &material)
   {
     if (material && material == this->m_material) {
       this->m_material->remove(*this);
@@ -65,7 +63,7 @@ public:
   }
 
 
-  void applyMapper(vesMapper *&mapper)
+  void applyMapper(const vesSharedPtr<vesMapper> &mapper)
   {
     if (mapper && mapper != this->m_mapper) {
       this->m_mapper = mapper;
@@ -88,8 +86,9 @@ public:
     }
   }
 
-  vesMaterial *m_material;
-  vesMapper *m_mapper;
+  vesSharedPtr<vesMaterial> m_material;
+  vesSharedPtr<vesMapper> m_mapper;
+
   vesMatrix4x4f *m_identity;
   vesMatrix4x4f *m_projectionMatrix;
   vesMatrix4x4f *m_modelViewMatrix;

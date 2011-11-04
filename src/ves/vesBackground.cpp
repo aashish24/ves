@@ -37,22 +37,21 @@
 class vesBackground::vesInternal
 {
 public:
-  vesInternal()
+  vesInternal() :
+    m_backgroundActor(new vesActor()),
+    m_backgroundMapper(new vesMapper()),
+    m_backgroundMaterial(new vesMaterial()),
+    m_shaderProgram(new vesShaderProgram()),
+    m_vertexShader(new vesShader(vesShader::Vertex)),
+    m_fragmentShader(new vesShader(vesShader::Fragment)),
+    m_modelViewUniform(new vesModelViewUniform()),
+    m_projectionUniform(new vesProjectionUniform()),
+    m_positionVertexAttribute(new vesPositionVertexAttribute()),
+    m_normalVertexAttribute(new vesNormalVertexAttribute()),
+    m_colorVertexAttribute(new vesColorVertexAttribute()),
+    m_textureCoodinateAttribute(new vesTextureCoordinateVertexAttribute()),
+    m_depth(new vesDepth())
   {
-    this->m_backgroundActor = new vesActor();
-    this->m_backgroundMapper = new vesMapper();
-    this->m_backgroundMaterial = new vesMaterial();
-    this->m_shaderProgram = new vesShaderProgram();
-    this->m_vertexShader = new vesShader(vesShader::Vertex);
-    this->m_fragmentShader = new vesShader(vesShader::Fragment);
-    this->m_modelViewUniform = new vesModelViewUniform();
-    this->m_projectionUniform = new vesProjectionUniform();
-    this->m_positionVertexAttribute = new vesPositionVertexAttribute();
-    this->m_normalVertexAttribute = new vesNormalVertexAttribute();
-    this->m_colorVertexAttribute = new vesColorVertexAttribute();
-    this->m_textureCoodinateAttribute = new vesTextureCoordinateVertexAttribute();
-    this->m_backgroundPlaneData = 0x0;
-    this->m_depth = new vesDepth();
     this->m_depth->disable();
 
     const std::string vertexShaderSource =
@@ -97,18 +96,6 @@ public:
 
   ~vesInternal()
   {
-    delete this->m_backgroundActor; this->m_backgroundActor = 0x0;
-    delete this->m_backgroundMapper; this->m_backgroundMapper = 0x0;
-    delete this->m_backgroundMaterial; this->m_backgroundMaterial = 0x0;
-    delete this->m_shaderProgram; this->m_shaderProgram = 0x0;
-    delete this->m_modelViewUniform; this->m_modelViewUniform = 0x0;
-    delete this->m_projectionUniform; this->m_projectionUniform = 0x0;
-    delete this->m_positionVertexAttribute; this->m_positionVertexAttribute = 0x0;
-    delete this->m_normalVertexAttribute; this->m_normalVertexAttribute = 0x0;
-    delete this->m_colorVertexAttribute; this->m_colorVertexAttribute = 0x0;
-    delete this->m_textureCoodinateAttribute; this->m_textureCoodinateAttribute = 0x0;
-    delete this->m_backgroundPlaneData; this->m_backgroundPlaneData = 0x0;
-    delete this->m_depth; this->m_depth = 0x0;
   }
 
   void deleteBackground();
@@ -116,23 +103,23 @@ public:
                         const vesVector4f &bottomColor);
   void createBackground(const vesVector4f &topColor,
                         const vesVector4f &bottomColor);
-  vesTriangleData* createBackgroundPlane(const vesVector4f &topColor,
-                                         const vesVector4f &bottomColor);
+  vesSharedPtr<vesTriangleData> createBackgroundPlane(
+    const vesVector4f &topColor, const vesVector4f &bottomColor);
 
-  vesActor *m_backgroundActor;
-  vesMapper *m_backgroundMapper;
-  vesMaterial *m_backgroundMaterial;
-  vesShaderProgram *m_shaderProgram;
-  vesShader* m_vertexShader;
-  vesShader* m_fragmentShader;
-  vesModelViewUniform *m_modelViewUniform;
-  vesProjectionUniform *m_projectionUniform;
-  vesPositionVertexAttribute *m_positionVertexAttribute;
-  vesNormalVertexAttribute *m_normalVertexAttribute;
-  vesColorVertexAttribute *m_colorVertexAttribute;
-  vesTextureCoordinateVertexAttribute *m_textureCoodinateAttribute;
-  vesTriangleData *m_backgroundPlaneData;
-  vesDepth *m_depth;
+  vesSharedPtr<vesActor> m_backgroundActor;
+  vesSharedPtr<vesMapper> m_backgroundMapper;
+  vesSharedPtr<vesMaterial> m_backgroundMaterial;
+  vesSharedPtr<vesShaderProgram> m_shaderProgram;
+  vesSharedPtr<vesShader> m_vertexShader;
+  vesSharedPtr<vesShader> m_fragmentShader;
+  vesSharedPtr<vesModelViewUniform> m_modelViewUniform;
+  vesSharedPtr<vesProjectionUniform> m_projectionUniform;
+  vesSharedPtr<vesPositionVertexAttribute> m_positionVertexAttribute;
+  vesSharedPtr<vesNormalVertexAttribute> m_normalVertexAttribute;
+  vesSharedPtr<vesColorVertexAttribute> m_colorVertexAttribute;
+  vesSharedPtr<vesTextureCoordinateVertexAttribute> m_textureCoodinateAttribute;
+  vesSharedPtr<vesTriangleData> m_backgroundPlaneData;
+  vesSharedPtr<vesDepth> m_depth;
 
   vesVector4f m_topColor;
   vesVector4f m_bottomColor;
@@ -141,17 +128,14 @@ public:
 
 void vesBackground::vesInternal::deleteBackground()
 {
-  delete this->m_backgroundActor; this->m_backgroundActor = 0x0;
-  delete this->m_backgroundMapper; this->m_backgroundMapper = 0x0;
-  delete this->m_backgroundPlaneData; this->m_backgroundPlaneData = 0x0;
 }
 
 
 void vesBackground::vesInternal::createBackground(const vesVector4f &topColor,
   const vesVector4f &bottomColor)
 {
-  this->m_backgroundActor = new vesActor();
-  this->m_backgroundMapper = new vesMapper();
+  this->m_backgroundActor = vesSharedPtr<vesActor>(new vesActor());
+  this->m_backgroundMapper = vesSharedPtr<vesMapper>(new vesMapper());
 
   this->m_backgroundPlaneData =
     this->createBackgroundPlane(topColor, bottomColor);
@@ -178,10 +162,11 @@ void vesBackground::vesInternal::createBackground(vesBackground *background,
 }
 
 
-vesTriangleData* vesBackground::vesInternal::createBackgroundPlane(
+vesSharedPtr<vesTriangleData> vesBackground::vesInternal::createBackgroundPlane(
   const vesVector4f &topColor, const vesVector4f &bottomColor)
 {
-  vesTriangleData *backgroundPlaneData = new vesTriangleData();
+  vesSharedPtr<vesTriangleData> backgroundPlaneData =
+    vesSharedPtr<vesTriangleData>(new vesTriangleData());
 
   std::vector<vtkVertex3f> points;
 

@@ -26,7 +26,10 @@
 // C/C++ includes.
 #include <iostream>
 
-vesDepth::vesDepth()
+vesDepth::vesDepth() : vesMaterialAttribute(),
+  m_wasEnabled(false),
+  m_previousDepthWriteMask(true),
+  m_depthWriteMask(true)
 {
   this->m_type = Depth;
   this->m_binding = BindMinimal;
@@ -59,7 +62,7 @@ void vesDepth::unbind(const vesRenderState &renderState)
 {
   if (this->m_wasEnabled) {
       glEnable(GL_DEPTH_TEST);
-      glDepthMask(true);
+      glDepthMask((GLboolean) this->m_depthWriteMask);
   } else {
     glDisable(GL_DEPTH_TEST);
   }

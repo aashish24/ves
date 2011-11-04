@@ -64,9 +64,6 @@ public:
   vesClipApp() : vesKiwiBaseApp()
   {
     this->setBackgroundColor(63/255.0, 96/255.0, 144/255.0);
-
-    this->ClipUniform = 0;
-    this->ClipShader = 0;
     this->DataRep = 0;
   }
 
@@ -77,7 +74,8 @@ public:
 
   void initClipShader(const std::string& vertexSource, const std::string fragmentSource)
   {
-    vesShaderProgram* shaderProgram = this->addShaderProgram(vertexSource, fragmentSource);
+    vesSharedPtr<vesShaderProgram> shaderProgram
+      = this->addShaderProgram(vertexSource, fragmentSource);
     this->addModelViewMatrixUniform(shaderProgram);
     this->addProjectionMatrixUniform(shaderProgram);
     this->addNormalMatrixUniform(shaderProgram);
@@ -87,9 +85,9 @@ public:
     this->addVertexTextureCoordinateAttribute(shaderProgram);
     this->ClipShader = shaderProgram;
 
-    this->ClipUniform = new vesUniform("clipPlaneEquation", vesVector4f(-1.0f, 0.0f, 0.0f, 0.0f));
+    this->ClipUniform = vesSharedPtr<vesUniform>(
+      new vesUniform("clipPlaneEquation", vesVector4f(-1.0f, 0.0f, 0.0f, 0.0f)));
     this->ClipShader->addUniform(this->ClipUniform);
-    this->storeUniformForDeletion(this->ClipUniform);
   }
 
   void unloadData()
@@ -106,7 +104,8 @@ public:
     this->unloadData();
 
     vesKiwiDataLoader loader;
-    vtkSmartPointer<vtkPolyData> polyData = vtkPolyData::SafeDownCast(loader.loadDataset(filename));
+    vtkSmartPointer<vtkPolyData> polyData
+      = vtkPolyData::SafeDownCast(loader.loadDataset(filename));
     assert(polyData.GetPointer());
 
     vesKiwiPolyDataRepresentation* rep = new vesKiwiPolyDataRepresentation();
@@ -117,8 +116,8 @@ public:
   }
 
 
-  vesUniform* ClipUniform;
-  vesShaderProgram* ClipShader;
+  vesSharedPtr<vesUniform> ClipUniform;
+  vesSharedPtr<vesShaderProgram> ClipShader;
   vesKiwiPolyDataRepresentation* DataRep;
 };
 

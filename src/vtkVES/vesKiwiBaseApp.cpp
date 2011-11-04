@@ -42,33 +42,25 @@ public:
 
   vesInternal()
   {
-    this->Renderer = 0;
   }
 
   ~vesInternal()
   {
-    #define _delete_items(ivar) for (size_t i = 0; i < ivar.size(); ++i) delete ivar[i];
-    _delete_items(this->VertexAttributes);
-    _delete_items(this->Uniforms);
-    //_delete_items(this->Shaders);
-    _delete_items(this->ShaderPrograms);
-
-    delete this->Renderer;
   }
 
-  vesRenderer* Renderer;
+  vesSharedPtr<vesRenderer> Renderer;
 
-  std::vector<vesShaderProgram*> ShaderPrograms;
-  std::vector<vesShader*> Shaders;
-  std::vector<vesUniform*> Uniforms;
-  std::vector<vesVertexAttribute*> VertexAttributes;
+  std::vector< vesSharedPtr<vesShaderProgram> > ShaderPrograms;
+  std::vector< vesSharedPtr<vesShader> > Shaders;
+  std::vector< vesSharedPtr<vesUniform> > Uniforms;
+  std::vector< vesSharedPtr<vesVertexAttribute> > VertexAttributes;
 };
 
 //----------------------------------------------------------------------------
 vesKiwiBaseApp::vesKiwiBaseApp()
 {
   this->Internal = new vesInternal();
-  this->Internal->Renderer = new vesRenderer();
+  this->Internal->Renderer = vesSharedPtr<vesRenderer>(new vesRenderer());
 }
 
 //----------------------------------------------------------------------------
@@ -78,14 +70,14 @@ vesKiwiBaseApp::~vesKiwiBaseApp()
 }
 
 //----------------------------------------------------------------------------
-vesCamera* vesKiwiBaseApp::camera() const
+std::tr1::shared_ptr<vesCamera> vesKiwiBaseApp::camera() const
 {
   assert(this->Internal->Renderer);
   return this->Internal->Renderer->camera();
 }
 
 //----------------------------------------------------------------------------
-vesRenderer* vesKiwiBaseApp::renderer() const
+vesSharedPtr<vesRenderer> vesKiwiBaseApp::renderer() const
 {
   return this->Internal->Renderer;
 }
@@ -117,7 +109,7 @@ void vesKiwiBaseApp::resetView()
 
   //
   // set direction to look from
-  vesRenderer* renderer = this->Internal->Renderer;
+  vesSharedPtr<vesRenderer> renderer = this->Internal->Renderer;
 
   renderer->camera()->setViewPlaneNormal(vesVector3f(0.0, 0.0, 1.0));
 
@@ -138,8 +130,8 @@ void vesKiwiBaseApp::resetView()
 void vesKiwiBaseApp::handleTwoTouchPanGesture(double x0, double y0, double x1, double y1)
 {
   // calculate the focal depth so we'll know how far to move
-  vesRenderer* ren = this->Internal->Renderer;
-  vesCamera* camera = ren->camera();
+  vesSharedPtr<vesRenderer> ren = this->Internal->Renderer;
+  std::tr1::shared_ptr<vesCamera> camera = ren->camera();
   vesVector3f viewFocus = camera->focalPoint();
   vesVector3f viewPoint = camera->position();
   vesVector3f viewFocusDisplay = ren->computeWorldToDisplay(viewFocus);
@@ -163,8 +155,8 @@ void vesKiwiBaseApp::handleSingleTouchPanGesture(double deltaX, double deltaY)
   // Rotate camera
   // Based on vtkInteractionStyleTrackballCamera::Rotate().
   //
-  vesRenderer* ren = this->Internal->Renderer;
-  vesCamera *camera = ren->camera();
+  vesSharedPtr<vesRenderer> ren = this->Internal->Renderer;
+  std::tr1::shared_ptr<vesCamera> camera = ren->camera();
 
   double delta_elevation = -20.0 / ren->height();
   double delta_azimuth   = -20.0 / ren->width();
@@ -204,18 +196,18 @@ void vesKiwiBaseApp::handleTwoTouchPinchGesture(double scale)
 //----------------------------------------------------------------------------
 void vesKiwiBaseApp::handleTwoTouchRotationGesture(double rotation)
 {
-  vesCamera* camera = this->Internal->Renderer->camera();
+  std::tr1::shared_ptr<vesCamera> camera = this->Internal->Renderer->camera();
   camera->roll(rotation * 180.0 / M_PI);
   camera->orthogonalizeViewUp();
 }
 
 //----------------------------------------------------------------------------
-vesShaderProgram* vesKiwiBaseApp::addShaderProgram(const std::string& vertexShaderSource,
-                                                   const std::string& fragmentShaderSource)
+vesSharedPtr<vesShaderProgram> vesKiwiBaseApp::addShaderProgram(
+  const std::string& vertexShaderSource, const std::string& fragmentShaderSource)
 {
-  vesShaderProgram* shaderProgram = new vesShaderProgram();
-  vesShader* vertexShader = new vesShader(vesShader::Vertex, vertexShaderSource);
-  vesShader* fragmentShader = new vesShader(vesShader::Fragment, fragmentShaderSource);
+  vesSharedPtr<vesShaderProgram> shaderProgram (new vesShaderProgram());
+  vesSharedPtr<vesShader> vertexShader(new vesShader(vesShader::Vertex, vertexShaderSource));
+  vesSharedPtr<vesShader> fragmentShader(new vesShader(vesShader::Fragment, fragmentShaderSource));
 
   shaderProgram->addShader(vertexShader);
   shaderProgram->addShader(fragmentShader);
@@ -227,7 +219,7 @@ vesShaderProgram* vesKiwiBaseApp::addShaderProgram(const std::string& vertexShad
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiBaseApp::deleteShaderProgram(vesShaderProgram *shaderProgram)
+void vesKiwiBaseApp::deleteShaderProgram(vesSharedPtr<vesShaderProgram> shaderProgram)
 {
   if (!shaderProgram) {
     // Nothing to remove.
@@ -235,82 +227,98 @@ void vesKiwiBaseApp::deleteShaderProgram(vesShaderProgram *shaderProgram)
   }
 
   // Remove only one.
-  std::vector<vesShaderProgram*>::iterator itr =
+  std::vector< vesSharedPtr<vesShaderProgram> >::iterator itr =
     std::find(this->Internal->ShaderPrograms.begin(),
               this->Internal->ShaderPrograms.end(), shaderProgram);
 
   if (itr != this->Internal->ShaderPrograms.end()) {
     this->Internal->ShaderPrograms.erase(itr);
-    delete shaderProgram;
   }
 }
 
 //----------------------------------------------------------------------------
-vesUniform* vesKiwiBaseApp::addModelViewMatrixUniform(vesShaderProgram* program, const std::string& name)
+vesSharedPtr<vesUniform> vesKiwiBaseApp::addModelViewMatrixUniform(
+  vesSharedPtr<vesShaderProgram> program, const std::string& name)
 {
   this->Internal->Uniforms.push_back(
-    name.empty() ? new vesModelViewUniform() : new vesModelViewUniform(name));
+    name.empty() ? vesSharedPtr<vesUniform>(new vesModelViewUniform())
+    : vesSharedPtr<vesUniform>(new vesModelViewUniform(name)));
   program->addUniform(this->Internal->Uniforms.back());
+
+  return this->Internal->Uniforms.back();
 }
 
 //----------------------------------------------------------------------------
-vesUniform* vesKiwiBaseApp::addProjectionMatrixUniform(vesShaderProgram* program, const std::string& name)
+vesSharedPtr<vesUniform> vesKiwiBaseApp::addProjectionMatrixUniform(
+  vesSharedPtr<vesShaderProgram> program, const std::string& name)
 {
   this->Internal->Uniforms.push_back(
-    name.empty() ? new vesProjectionUniform() : new vesProjectionUniform(name));
+    name.empty() ? vesSharedPtr<vesUniform>(new vesProjectionUniform()) :
+    vesSharedPtr<vesUniform>(new vesProjectionUniform(name)));
+
   program->addUniform(this->Internal->Uniforms.back());
+
+  return this->Internal->Uniforms.back();
 }
 
 //----------------------------------------------------------------------------
-vesUniform* vesKiwiBaseApp::addNormalMatrixUniform(vesShaderProgram* program, const std::string& name)
+vesSharedPtr<vesUniform> vesKiwiBaseApp::addNormalMatrixUniform(
+  vesSharedPtr<vesShaderProgram> program, const std::string& name)
 {
   this->Internal->Uniforms.push_back(
-    name.empty() ? new vesNormalMatrixUniform() : new vesNormalMatrixUniform(name));
+    name.empty() ? vesSharedPtr<vesUniform>(new vesNormalMatrixUniform())
+    : vesSharedPtr<vesUniform>(new vesNormalMatrixUniform(name)));
   program->addUniform(this->Internal->Uniforms.back());
+
+  return this->Internal->Uniforms.back();
 }
 
 //----------------------------------------------------------------------------
-vesVertexAttribute* vesKiwiBaseApp::addVertexPositionAttribute(vesShaderProgram* program, const std::string& name)
+vesSharedPtr<vesVertexAttribute> vesKiwiBaseApp::addVertexPositionAttribute(
+  vesSharedPtr<vesShaderProgram> program, const std::string& name)
 {
   this->Internal->VertexAttributes.push_back(
-    name.empty() ? new vesPositionVertexAttribute() : new vesPositionVertexAttribute(name));
+    name.empty() ? vesSharedPtr<vesVertexAttribute>(new vesPositionVertexAttribute())
+    : vesSharedPtr<vesVertexAttribute>(new vesPositionVertexAttribute(name)));
   program->addVertexAttribute(this->Internal->VertexAttributes.back(), vesVertexAttributeKeys::Position);
+
+  return this->Internal->VertexAttributes.back();
 }
 
 //----------------------------------------------------------------------------
-vesVertexAttribute* vesKiwiBaseApp::addVertexNormalAttribute(vesShaderProgram* program, const std::string& name)
+vesSharedPtr<vesVertexAttribute> vesKiwiBaseApp::addVertexNormalAttribute(
+  vesSharedPtr<vesShaderProgram> program, const std::string& name)
 {
   this->Internal->VertexAttributes.push_back(
-    name.empty() ? new vesNormalVertexAttribute(): new vesNormalVertexAttribute(name));
+    name.empty() ? vesSharedPtr<vesVertexAttribute>(new vesNormalVertexAttribute()):
+    vesSharedPtr<vesVertexAttribute>(new vesNormalVertexAttribute(name)));
   program->addVertexAttribute(this->Internal->VertexAttributes.back(), vesVertexAttributeKeys::Normal);
+
+  return this->Internal->VertexAttributes.back();
 }
 
 //----------------------------------------------------------------------------
-vesVertexAttribute* vesKiwiBaseApp::addVertexColorAttribute(vesShaderProgram* program, const std::string& name)
+vesSharedPtr<vesVertexAttribute> vesKiwiBaseApp::addVertexColorAttribute(
+  vesSharedPtr<vesShaderProgram> program, const std::string& name)
 {
   this->Internal->VertexAttributes.push_back(
-    name.empty() ? new vesColorVertexAttribute() : new vesColorVertexAttribute(name));
+    name.empty() ? vesSharedPtr<vesVertexAttribute>(new vesColorVertexAttribute())
+    : vesSharedPtr<vesVertexAttribute>(new vesColorVertexAttribute(name)));
   program->addVertexAttribute(this->Internal->VertexAttributes.back(), vesVertexAttributeKeys::Color);
+
+  return this->Internal->VertexAttributes.back();
 }
 
 //----------------------------------------------------------------------------
-vesVertexAttribute* vesKiwiBaseApp::addVertexTextureCoordinateAttribute(vesShaderProgram* program, const std::string& name)
+vesSharedPtr<vesVertexAttribute> vesKiwiBaseApp::addVertexTextureCoordinateAttribute(
+  vesSharedPtr<vesShaderProgram> program, const std::string& name)
 {
   this->Internal->VertexAttributes.push_back(
-    name.empty() ? new vesTextureCoordinateVertexAttribute(): new vesTextureCoordinateVertexAttribute(name));
+    name.empty() ? vesSharedPtr<vesVertexAttribute>(new vesTextureCoordinateVertexAttribute())
+    : vesSharedPtr<vesVertexAttribute>(new vesTextureCoordinateVertexAttribute(name)));
   program->addVertexAttribute(this->Internal->VertexAttributes.back(), vesVertexAttributeKeys::TextureCoordinate);
-}
 
-//----------------------------------------------------------------------------
-void vesKiwiBaseApp::storeUniformForDeletion(vesUniform* uniform)
-{
-  this->Internal->Uniforms.push_back(uniform);
-}
-
-//----------------------------------------------------------------------------
-void vesKiwiBaseApp::storeVertexAttributeForDeletion(vesVertexAttribute* attribute)
-{
-  this->Internal->VertexAttributes.push_back(attribute);
+  return this->Internal->VertexAttributes.back();
 }
 
 //----------------------------------------------------------------------------

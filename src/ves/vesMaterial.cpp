@@ -22,6 +22,7 @@
 
 // VES includes
 #include "vesRenderData.h"
+#include "vesSharedPtr.h"
 #include "vesShaderProgram.h"
 #include "vesTexture.h"
 
@@ -32,16 +33,16 @@
 class vesMaterial::vesInternal
 {
 public:
-
   typedef std::map<vesMaterialAttribute::AttributeType,
-    vesMaterialAttribute*> Attributes;
+    vesSharedPtr<vesMaterialAttribute> > Attributes;
 
-  typedef std::map<unsigned int, vesTexture*> TextureAttributes;
+  typedef std::map<unsigned int, vesSharedPtr<vesTexture> > TextureAttributes;
 
-  const vesMaterialAttribute*
+  vesSharedPtr<vesMaterialAttribute>
     findAttribute(vesMaterialAttribute::AttributeType type) const;
 
-  bool addAttribute(Attributes& attributes, vesMaterialAttribute *attribute);
+  bool addAttribute(Attributes& attributes,
+                    vesSharedPtr<vesMaterialAttribute> attribute);
 
   Attributes        m_attributes;
   Attributes        m_minimalAttributes;
@@ -49,7 +50,7 @@ public:
 };
 
 
-const vesMaterialAttribute* vesMaterial::vesInternal::findAttribute(
+vesSharedPtr<vesMaterialAttribute> vesMaterial::vesInternal::findAttribute(
   vesMaterialAttribute::AttributeType type) const
 {
   if (type == vesMaterialAttribute::Texture) {
@@ -60,7 +61,7 @@ const vesMaterialAttribute* vesMaterial::vesInternal::findAttribute(
       return (constItr->second);
     }
     else {
-      return 0x0;
+      return vesSharedPtr<vesMaterialAttribute>();
     }
   }
   else {
@@ -70,13 +71,14 @@ const vesMaterialAttribute* vesMaterial::vesInternal::findAttribute(
       return (constItr->second);
     }
 
-    return 0x0;
+    return vesSharedPtr<vesMaterialAttribute>();
   }
 }
 
 
-bool vesMaterial::vesInternal::addAttribute(Attributes &attributes,
-                                            vesMaterialAttribute *attribute)
+bool vesMaterial::vesInternal::addAttribute(
+  Attributes &attributes,
+  vesSharedPtr<vesMaterialAttribute> attribute)
 {
   if (!attribute) {
     return false;
@@ -97,8 +99,7 @@ bool vesMaterial::vesInternal::addAttribute(Attributes &attributes,
 
 
 vesMaterial::vesMaterial() :
-  m_binNumber     (Default),
-  m_shaderProgram (0x0)
+  m_binNumber     (Default)
 {
   this->m_internal = new vesInternal;
 }
@@ -110,7 +111,7 @@ vesMaterial::~vesMaterial()
 }
 
 
-bool vesMaterial::addAttribute(vesMaterialAttribute *attribute)
+bool vesMaterial::addAttribute(vesSharedPtr<vesMaterialAttribute> attribute)
 {
   if (!attribute) {
     return false;
@@ -121,7 +122,7 @@ bool vesMaterial::addAttribute(vesMaterialAttribute *attribute)
 
     // Shader is a special attribute.
     if (attribute->type() == vesMaterialAttribute::Shader) {
-      return this->setShaderProgram(static_cast<vesShaderProgram*>(attribute));
+      return this->setShaderProgram(std::tr1::static_pointer_cast<vesShaderProgram>(attribute));
     }
 
     // Everything else.
@@ -129,7 +130,7 @@ bool vesMaterial::addAttribute(vesMaterialAttribute *attribute)
       this->m_internal->m_attributes, attribute);
   }
   else  if(attribute->type() == vesMaterialAttribute::Texture) {
-    vesTexture *texture = static_cast<vesTexture*>(attribute);
+    vesSharedPtr<vesTexture> texture = std::tr1::static_pointer_cast<vesTexture>(attribute);
 
     // Cache last texture so that we can release graphics resources on it.
     this->m_internal->m_textureAttributes[texture->textureUnit()] = texture;
@@ -146,7 +147,7 @@ bool vesMaterial::addAttribute(vesMaterialAttribute *attribute)
 }
 
 
-bool vesMaterial::setShaderProgram(vesShaderProgram *shaderProgram)
+bool vesMaterial::setShaderProgram(vesSharedPtr<vesShaderProgram> shaderProgram)
 {
   if (!shaderProgram || shaderProgram == this->m_shaderProgram) {
     return false;
@@ -160,19 +161,18 @@ bool vesMaterial::setShaderProgram(vesShaderProgram *shaderProgram)
 }
 
 
-vesMaterialAttribute* vesMaterial::attribute(
-  vesMaterialAttribute::AttributeType type)
-{
-  return const_cast<vesMaterialAttribute*>(this->m_internal->findAttribute(type));
-}
-
-
-const vesMaterialAttribute*
-  vesMaterial::attribute(vesMaterialAttribute::AttributeType type) const
+vesSharedPtr<vesMaterialAttribute>
+  vesMaterial::attribute(vesMaterialAttribute::AttributeType type)
 {
   return (this->m_internal->findAttribute(type));
 }
 
+
+const vesSharedPtr<vesMaterialAttribute>
+  vesMaterial::attribute(vesMaterialAttribute::AttributeType type) const
+{
+  return (this->m_internal->findAttribute(type));
+}
 
 
 void vesMaterial::render(const vesRenderState &renderState)

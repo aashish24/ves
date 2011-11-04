@@ -122,8 +122,8 @@ public:
     this->m_postRenderList.clear();
   }
 
-  void addPreRenderStage(vesRenderStage *renderStage, int priority);
-  void addPostRenderStage(vesRenderStage *renderStage, int priority);
+  void addPreRenderStage(vesSharedPtr<vesRenderStage> renderStage, int priority);
+  void addPostRenderStage(vesSharedPtr<vesRenderStage>, int priority);
 
   void renderPreRenderStages(vesRenderState &renderState, vesRenderLeaf *previous);
   void renderPostRenderStages(vesRenderState &renderState, vesRenderLeaf *previous);
@@ -141,7 +141,7 @@ public:
 private:
   vesViewport *m_viewport;
 
-  typedef std::pair< int, vesRenderStage* > RenderStageOrderPair;
+  typedef std::pair< int, vesSharedPtr<vesRenderStage> > RenderStageOrderPair;
   typedef std::list< RenderStageOrderPair > RenderStageList;
 
   BinRenderLeavesMap  m_binRenderLeavesMap;

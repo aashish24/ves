@@ -28,8 +28,11 @@
 #include "vesRenderStage.h"
 #include "vesTransformNode.h"
 
-void vesCullVisitor::addGeometryAndStates(vesMapper *mapper, vesMaterial *material,
-  const vesMatrix4x4f &modelViewMatrix, const vesMatrix4x4f &projectionMatrix,
+void vesCullVisitor::addGeometryAndStates(
+  const vesSharedPtr<vesMapper> &mapper,
+  const vesSharedPtr<vesMaterial> &material,
+  const vesMatrix4x4f &modelViewMatrix,
+  const vesMatrix4x4f &projectionMatrix,
   float depth)
 {
   this->renderStage()->addRenderLeaf(
@@ -96,9 +99,10 @@ void vesCullVisitor::visit(vesCamera &camera)
     this->invokeCallbacksAndTraverse(camera);
   } else {
 
-    vesRenderStage* previousRenderStage = this->renderStage();
+    vesSharedPtr<vesRenderStage> previousRenderStage = this->renderStage();
 
-    vesRenderStage *renderStage = camera.getOrCreateRenderStage();
+    vesSharedPtr<vesRenderStage> renderStage =
+      camera.getOrCreateRenderStage();
     renderStage->clearAll();
     renderStage->setViewport( (camera.viewport() != 0)
       ? camera.viewport() : previousRenderStage->viewport() );

@@ -42,6 +42,8 @@ public:
   vesCamera();
   virtual  ~vesCamera();
 
+  typedef vesSharedPtr<vesCamera> Ptr;
+
   enum RenderOrder
   {
     PreRender = 0,
@@ -105,8 +107,9 @@ public:
   const vesViewport* viewport() const;
   vesViewport* viewport();
 
-  const vesRenderStage* renderStage() const;
-  vesRenderStage* getOrCreateRenderStage();
+  vesSharedPtr<vesRenderStage> renderStage();
+  const vesSharedPtr<vesRenderStage> renderStage() const;
+  vesSharedPtr<vesRenderStage> getOrCreateRenderStage();
 
   void setRenderOrder(RenderOrder renderOrder, int renderOrderPriority=0);
   RenderOrder renderOrder() const;
@@ -145,7 +148,7 @@ protected:
   bool          m_parallelProjection;
 
   vesViewport *m_viewport;
-  vesRenderStage *m_renderStage;
+  vesSharedPtr<vesRenderStage> m_renderStage;
 
   RenderOrder m_renderOrder;
   int         m_renderOrderPriority;

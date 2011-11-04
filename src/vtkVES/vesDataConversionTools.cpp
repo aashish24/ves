@@ -84,7 +84,8 @@ vtkSmartPointer<vtkDiscretizableColorTransferFunction> GetBlackBodyRadiationColo
   double length = scalarRange[1] - scalarRange[0];
   double points[4] = {0.0, 0.4, 0.75, 1.0};
 
-  vtkSmartPointer<vtkDiscretizableColorTransferFunction> function = vtkSmartPointer<vtkDiscretizableColorTransferFunction>::New();
+  vtkSmartPointer<vtkDiscretizableColorTransferFunction> function
+    = vtkSmartPointer<vtkDiscretizableColorTransferFunction>::New();
   function->DiscretizeOn();
   function->SetColorSpaceToRGB();
   function->SetNumberOfValues(256);
@@ -119,7 +120,8 @@ vtkSmartPointer<vtkLookupTable> vesDataConversionTools::GetGrayscaleLookupTable(
 }
 
 //----------------------------------------------------------------------------
-void vesDataConversionTools::SetVertexColors(vtkUnsignedCharArray* colors, vesTriangleData* triangleData)
+void vesDataConversionTools::SetVertexColors(
+  vtkUnsignedCharArray* colors, vesSharedPtr<vesTriangleData> triangleData)
 {
   assert(triangleData);
   assert(colors);
@@ -138,7 +140,8 @@ void vesDataConversionTools::SetVertexColors(vtkUnsignedCharArray* colors, vesTr
 }
 
 //----------------------------------------------------------------------------
-void vesDataConversionTools::SetVertexColors(vtkDataArray* scalars, vtkScalarsToColors* scalarsToColors, vesTriangleData* triangleData)
+void vesDataConversionTools::SetVertexColors(vtkDataArray* scalars,
+  vtkScalarsToColors* scalarsToColors, vesSharedPtr<vesTriangleData> triangleData)
 {
   assert(scalars);
   assert(scalars->GetNumberOfComponents() == 1);
@@ -157,7 +160,8 @@ void vesDataConversionTools::SetVertexColors(vtkDataArray* scalars, vtkScalarsTo
 }
 
 //----------------------------------------------------------------------------
-void vesDataConversionTools::SetTextureCoordinates(vtkDataArray* tcoords, vesTriangleData* triangleData)
+void vesDataConversionTools::SetTextureCoordinates(vtkDataArray* tcoords,
+  vesSharedPtr<vesTriangleData> triangleData)
 {
   assert(tcoords);
   assert(tcoords->GetNumberOfComponents() == 2);
@@ -175,7 +179,8 @@ void vesDataConversionTools::SetTextureCoordinates(vtkDataArray* tcoords, vesTri
 }
 
 //----------------------------------------------------------------------------
-vtkSmartPointer<vtkUnsignedCharArray> vesDataConversionTools::MapScalars(vtkDataArray* scalars, vtkScalarsToColors* scalarsToColors)
+vtkSmartPointer<vtkUnsignedCharArray> vesDataConversionTools::MapScalars(
+vtkDataArray* scalars, vtkScalarsToColors* scalarsToColors)
 {
   assert(scalars->GetNumberOfComponents() == 1);
 
@@ -194,7 +199,8 @@ vtkSmartPointer<vtkUnsignedCharArray> vesDataConversionTools::MapScalars(vtkData
 }
 
 //----------------------------------------------------------------------------
-void vesDataConversionTools::SetTextureData(vtkUnsignedCharArray* pixels, vesTexture* texture, int width, int height)
+void vesDataConversionTools::SetTextureData(vtkUnsignedCharArray* pixels,
+  vesSharedPtr<vesTexture> texture, int width, int height)
 {
   assert(pixels);
   assert(pixels->GetNumberOfComponents() == 4);
@@ -212,7 +218,8 @@ void vesDataConversionTools::SetTextureData(vtkUnsignedCharArray* pixels, vesTex
 
 
 //----------------------------------------------------------------------------
-void vesDataConversionTools::ConvertTriangles(vtkPolyData* input, vesTriangleData* output)
+void vesDataConversionTools::ConvertTriangles(
+  vtkPolyData* input, vesSharedPtr<vesTriangleData> output)
 {
   if (!input || !output)
   {
@@ -265,10 +272,11 @@ void vesDataConversionTools::ConvertTriangles(vtkPolyData* input, vesTriangleDat
   output->ComputeBounds();
 }
 
-vesTriangleData* vesDataConversionTools::Convert(vtkPolyData* input)
+vesSharedPtr<vesTriangleData> vesDataConversionTools::Convert(vtkPolyData* input)
 {
   //cerr << "starting conversion" << endl;
-  vesTriangleData* output = new vesTriangleData();
+  vesSharedPtr<vesTriangleData> output =
+    vesSharedPtr<vesTriangleData>(new vesTriangleData());
   output->GetPoints().resize(input->GetNumberOfPoints());
   vtkVertex3f* v = &output->GetPoints()[0];
   for (int i = 0; i < input->GetNumberOfPoints(); ++i, ++v){

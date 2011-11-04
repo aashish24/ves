@@ -23,6 +23,9 @@
 
 #include "vesNode.h"
 
+// VES includes
+#include "vesSharedPtr.h"
+
 // C/C++ includes
 #include <list>
 
@@ -32,10 +35,10 @@ public:
   vesGroupNode();
   virtual ~vesGroupNode();
 
-  typedef std::list<vesNode*> Children;
+  typedef std::list< vesSharedPtr<vesNode> > Children;
 
-  bool addChild   (vesNode *child);
-  bool removeChild(vesNode *child);
+  bool addChild   (vesSharedPtr<vesNode> child);
+  bool removeChild(vesSharedPtr<vesNode> child);
 
   Children&       children()       { return this->m_children; }
   const Children& children() const { return this->m_children; }

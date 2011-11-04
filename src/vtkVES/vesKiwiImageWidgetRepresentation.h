@@ -38,10 +38,11 @@ public:
   ~vesKiwiImageWidgetRepresentation();
 
   void setImageData(vtkImageData* imageData);
-  void initializeWithShader(vesShaderProgram* geometryShader, vesShaderProgram* textureShader);
+  void initializeWithShader(vesSharedPtr<vesShaderProgram> geometryShader,
+                            vesSharedPtr<vesShaderProgram> textureShader);
 
-  virtual void addSelfToRenderer(vesRenderer* renderer);
-  virtual void removeSelfFromRenderer(vesRenderer* renderer);
+  virtual void addSelfToRenderer(vesSharedPtr<vesRenderer> renderer);
+  virtual void removeSelfFromRenderer(vesSharedPtr<vesRenderer> renderer);
 
   virtual int numberOfFacets();
   virtual int numberOfVertices();
@@ -54,13 +55,13 @@ public:
 
   bool scrollSliceModeActive() const;
 
-  virtual void setShaderProgram(vesShaderProgram *shaderProgram);
-  virtual vesShaderProgram* shaderProgram() const;
+  virtual void setShaderProgram(vesSharedPtr<vesShaderProgram> shaderProgram);
+  virtual vesSharedPtr<vesShaderProgram> shaderProgram() const;
 
   // HACK
   // A renderer should be passed into all the methods that require a renderer.  This class should
   // not store a single renderer, it should work with multiple renderers.
-  vesRenderer* renderer();
+  vesSharedPtr<vesRenderer> renderer();
 
 protected:
 

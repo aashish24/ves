@@ -26,10 +26,8 @@
 
 vesNode::vesNode() : vesObject(),
   m_visible (true),
-  m_material(0x0),
   m_isOverlayNode(false)
 {
-  this->m_parent = 0x0;
   this->setDirtyStateOff();
 }
 
@@ -45,10 +43,18 @@ void vesNode::accept(vesVisitor &visitor)
 }
 
 
+void vesNode::setMaterial(vesSharedPtr<vesMaterial> material)
+{
+  if (material) {
+    this->m_material = material;
+  }
+}
+
+
 bool vesNode::setParent(vesGroupNode *parent)
 {
   if (this->m_parent) {
-    this->m_parent->removeChild(this);
+//    this->m_parent->removeChild(this);
   }
 
   this->m_parent = parent;

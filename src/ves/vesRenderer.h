@@ -24,6 +24,7 @@
 // VES includes
 #include "vesGL.h"
 #include "vesGMTL.h"
+#include "vesSharedPtr.h"
 
 // C++ includes
 #include <string>
@@ -49,15 +50,15 @@ public:
   virtual void resize(int width,int height, float scale);
 
   virtual void setBackgroundColor(float r, float g, float b, float a=1.0f);
-  vesBackground* background();
-  const vesBackground *background() const;
+  vesSharedPtr<vesBackground> background();
+  const vesSharedPtr<vesBackground>& background() const;
 
-  virtual void addActor   (vesActor *actor);
-  virtual void removeActor(vesActor *actor);
+  virtual void addActor   (vesSharedPtr<vesActor> actor);
+  virtual void removeActor(vesSharedPtr<vesActor> actor);
 
-  const vesGroupNode* sceneRoot() const { return this->m_sceneRoot; }
+  const  vesSharedPtr<vesGroupNode> sceneRoot() const { return this->m_sceneRoot; }
 
-  inline vesCamera* camera(){ return this->m_camera; }
+  inline vesSharedPtr<vesCamera> camera(){ return this->m_camera; }
 
   inline int width()   { return this->m_width;  }
   inline int height()  { return this->m_height; }
@@ -79,11 +80,11 @@ private:
   int m_width;
   int m_height;
 
-  vesCamera *m_camera;
-  vesGroupNode *m_sceneRoot;
+  vesSharedPtr<vesCamera> m_camera;
+  vesSharedPtr<vesGroupNode> m_sceneRoot;
 
-  vesRenderStage *m_renderStage;
-  vesBackground *m_background;
+  vesSharedPtr<vesRenderStage> m_renderStage;
+  vesSharedPtr<vesBackground> m_background;
 };
 
 #endif

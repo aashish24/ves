@@ -23,6 +23,9 @@
 
 #include "vesKiwiDataRepresentation.h"
 
+// VES includes
+#include <vesSharedPtr.h>
+
 class vesTriangleData;
 class vesActor;
 class vesMapper;
@@ -39,25 +42,25 @@ public:
   vesKiwiPolyDataRepresentation();
   ~vesKiwiPolyDataRepresentation();
 
-  void initializeWithShader(vesShaderProgram* shaderProgram);
+  void initializeWithShader(vesSharedPtr<vesShaderProgram> shaderProgram);
 
   void setPolyData(vtkPolyData* polyData);
-  vesTriangleData* triangleData() const;
+  vesSharedPtr<vesTriangleData> triangleData() const;
 
-  virtual void addSelfToRenderer(vesRenderer* renderer);
-  virtual void removeSelfFromRenderer(vesRenderer* renderer);
+  virtual void addSelfToRenderer(vesSharedPtr<vesRenderer> renderer);
+  virtual void removeSelfFromRenderer(vesSharedPtr<vesRenderer>);
 
   void setColor(double r, double g, double b, double a);
 
-  void setTexture(vesTexture* texture);
-  vesTexture* texture() const;
+  void setTexture(vesSharedPtr<vesTexture> texture);
+  vesSharedPtr<vesTexture> texture() const;
 
   void setBinNumber(int binNumber);
 
   virtual void setTranslation(const vesVector3f& translation);
 
-  virtual void setShaderProgram(vesShaderProgram *shaderProgram);
-  virtual vesShaderProgram* shaderProgram() const;
+  virtual void setShaderProgram(vesSharedPtr<vesShaderProgram> shaderProgram);
+  virtual vesSharedPtr<vesShaderProgram> shaderProgram() const;
 
   virtual int numberOfFacets();
   virtual int numberOfVertices();
@@ -67,8 +70,8 @@ public:
   // move these back to protected.  This class should provide public api so that
   // the vesActor and vesMapper can remain implementation details that callers do
   // not have to access.
-  vesMapper* mapper() const;
-  vesActor* actor() const;
+  vesSharedPtr<vesMapper> mapper() const;
+  vesSharedPtr<vesActor> actor() const;
 
 protected:
 

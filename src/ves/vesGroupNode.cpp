@@ -21,6 +21,7 @@
 #include "vesGroupNode.h"
 
 // VES includes.
+#include "vesSharedPtr.h"
 #include "vesVisitor.h"
 
 vesGroupNode::vesGroupNode() : vesNode()
@@ -33,7 +34,7 @@ vesGroupNode::~vesGroupNode()
 }
 
 
-bool vesGroupNode::addChild(vesNode *child)
+bool vesGroupNode::addChild(vesSharedPtr<vesNode> child)
 {
   if (!child) {
     return false;
@@ -47,7 +48,7 @@ bool vesGroupNode::addChild(vesNode *child)
     }
   }
 
-  child->setParent(this);
+ child->setParent(this);
 
   this->m_children.push_back(child);
 
@@ -57,7 +58,7 @@ bool vesGroupNode::addChild(vesNode *child)
 }
 
 
-bool vesGroupNode::removeChild(vesNode *child)
+bool vesGroupNode::removeChild(vesSharedPtr<vesNode> child)
 {
   if (!child) {
     return false;

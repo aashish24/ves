@@ -68,8 +68,6 @@ public:
     this->setBackgroundColor(63/255.0, 96/255.0, 144/255.0);
 
     this->Image = 0x0;
-    this->Texture = 0x0;
-    this->TextureShader = 0x0;
     this->DataRep = 0x0;
   }
 
@@ -80,7 +78,8 @@ public:
 
   void initTextureShader(const std::string& vertexSource, const std::string fragmentSource)
   {
-    vesShaderProgram* shaderProgram = this->addShaderProgram(vertexSource, fragmentSource);
+    vesSharedPtr<vesShaderProgram> shaderProgram
+      = this->addShaderProgram(vertexSource, fragmentSource);
     this->addModelViewMatrixUniform(shaderProgram);
     this->addProjectionMatrixUniform(shaderProgram);
     this->addVertexPositionAttribute(shaderProgram);
@@ -99,7 +98,7 @@ public:
     this->Image->m_pixelDataType = vesColorDataType::UnsignedByte;
     this->Image->m_pixelFormat = vesColorDataType::RGBA;
 
-    this->Texture = new vesTexture();
+    this->Texture = vesSharedPtr<vesTexture>(new vesTexture());
     this->Texture->setImage(*this->Image);
     this->DataRep->setTexture(this->Texture);
   }
@@ -134,9 +133,9 @@ public:
   }
 
   vesImage *Image;
-  vesTexture *Texture;
+  vesSharedPtr<vesTexture> Texture;
   vtkSmartPointer<vtkLookupTable> LookupTable;
-  vesShaderProgram* TextureShader;
+  vesSharedPtr<vesShaderProgram> TextureShader;
   vesKiwiPolyDataRepresentation* DataRep;
 };
 
