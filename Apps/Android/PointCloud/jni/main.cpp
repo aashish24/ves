@@ -35,13 +35,19 @@
 #include <vtkNew.h>
 #include <vtkLookupTable.h>
 
-#include <vtkPolyDataToTriangleData.h>
+#include <vesDataConversionTools.h>
 
 #include <vesTriangleData.h>
-#include <vesMultitouchCamera.h>
+#include <vesCamera.h>
 #include <vesRenderer.h>
 #include <vesShader.h>
 #include <vesShaderProgram.h>
+#include <vesVertexAttribute.h>
+#include <vesVertexAttributeKeys.h>
+#include <vesModelViewUniform.h>
+#include <vesProjectionUniform.h>
+#include <vesMapper.h>
+#include <vesActor.h>
 
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "PointCloud", __VA_ARGS__))
 #define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "PointCloud", __VA_ARGS__))
@@ -240,7 +246,7 @@ static int engine_init_display(struct engine* engine) {
     engine->state.x1 = 0;
     engine->state.y1 = 0;
     engine->state.isTwoTouches = false;
-    engine->renderer->Resize(w, h, 1.0f);
+    engine->renderer->resize(w, h, 1.0f);
 
     // Initialize GL state.
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -272,7 +278,7 @@ static int engine_init_display(struct engine* engine) {
     read->Update ();
     vtkPolyData *data = read->GetOutput ();
     LOGI("a: number of points is %d", data->GetNumberOfPoints());
-    vesTriangleData* triangle_data = vtkPolyDataToTriangleData::Convert (data);
+    vesTriangleData* triangle_data = vesDataConversionTools::Convert(data);
     LOGI("b: number of points is %d\n**\n", triangle_data->GetPoints().size());
     vesVector2f range = triangle_data->GetPointScalarRange();
     LOGI("scalar range: %f, %f\n", range[0], range[1]);
@@ -287,7 +293,7 @@ static int engine_init_display(struct engine* engine) {
 
     createProgram(vertex_source.c_str(), fragment_source.c_str());
 
-    vesShaderProgram* shader_program = new vesShaderProgram(
+/*    vesShaderProgram* shader_program = new vesShaderProgram(
                                    const_cast<char*>(vertex_source.c_str()),
                                    const_cast<char*>(fragment_source.c_str()),
                                    (_uni("modelViewProjectionMatrix"),
@@ -304,6 +310,19 @@ static int engine_init_display(struct engine* engine) {
     vesMapper* mapper = new vesMapper();
     mapper->setTriangleData(triangle_data);
     mapper->setDrawPoints(true);
+*/
+
+    vesShader* vertex = new vesShader(vesShader::Vertex, vertex_source.c_str());
+    vesShader* frag = new vesShader(vesShader::Fragment, fragment_source.c_str());
+    vesShaderProgram* program = new vesShaderProgram;
+    program->addShader(vertex);
+    program->addShader(frag);
+    program->addUniform(new vesModelViewUniform);
+    program->addUniform(new vesProjectionUniform);
+    program->addVertexAttribute(new vesPositionVertexAttribute,
+                                vesVertexAttributeKeys::Position);
+    vesMaterial* material = new vesMaterial;
+    vesMapper* mapper = new vesMapper;
 
     vtkNew<vtkLookupTable> lookupTable;
     lookupTable->Build();
@@ -329,10 +348,12 @@ static int engine_init_display(struct engine* engine) {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, lookupTableID);
 
-    vesActor* actor = new vesActor(shader, mapper);
-    engine->renderer->AddActor(actor);
-    engine->renderer->ResetCamera();
-    engine->renderer->ResetCameraClippingRange();
+    vesActor* actor = new vesActor;
+    actor->setMapper(mapper);
+    actor->setMaterial(material);
+    engine->renderer->addActor(actor);
+    engine->renderer->resetCamera();
+    engine->renderer->resetCameraClippingRange();
 
     AAsset_close(asset);
 
@@ -343,8 +364,8 @@ static int engine_init_display(struct engine* engine) {
  * Just the current frame in the display.
  */
 static void engine_draw_frame(struct engine* engine) {
-    engine->renderer->ResetCameraClippingRange();
-    engine->renderer->Render();
+    engine->renderer->resetCameraClippingRange();
+    engine->renderer->render();
 
     eglSwapBuffers(engine->display, engine->surface);
 }
@@ -421,22 +442,22 @@ static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) 
         }
 
         vesRenderer* ren = engine->renderer;
-        vesCamera *camera = ren->GetCamera();
+        vesCamera *camera = ren->camera();
 
         if (AMotionEvent_getPointerCount(event) == 1) {
             float dx0 = x0 - px0;
             float dy0 = y0 - py0;
 
-            double delta_elevation = -20.0 / ren->GetHeight();
-            double delta_azimuth = -20.0 / ren->GetWidth();
+            double delta_elevation = -20.0 / ren->height();
+            double delta_azimuth = -20.0 / ren->width();
             double motionFactor = 10.0;
 
             double rxf = dx0 * delta_azimuth * motionFactor;
             double ryf = dy0 * delta_elevation * motionFactor;
 
-            camera->Azimuth(rxf);
-            camera->Elevation(ryf);
-            camera->OrthogonalizeViewUp();
+            camera->azimuth(rxf);
+            camera->elevation(ryf);
+            camera->orthogonalizeViewUp();
         } else {
           //
           // Pan camera.
@@ -446,32 +467,32 @@ static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) 
           // Average positions of current and previous two touches.
           // Invert y since vesCamera expects y to go in opposite direction.
           float pcx = (px0 + px1)/2.0;
-          float pcy = ren->GetHeight() - (py0 + py1)/2.0;
+          float pcy = ren->height() - (py0 + py1)/2.0;
           float cx = (x0 + x1)/2.0;
-          float cy = ren->GetHeight() - (y0 + y1)/2.0;
+          float cy = ren->height() - (y0 + y1)/2.0;
 
           // Calculate the focal depth since we'll be using it a lot
-          vesVector3f viewFocus = camera->GetFocalPoint();
-          vesVector3f viewFocusDisplay = ren->ComputeWorldToDisplay(viewFocus);
+          vesVector3f viewFocus = camera->focalPoint();
+          vesVector3f viewFocusDisplay = ren->computeWorldToDisplay(viewFocus);
           float focalDepth = viewFocusDisplay[2];
 
           vesVector3f newPos(cx,
                              cy,
                              focalDepth);
-          vesVector3f newPickPoint = ren->ComputeDisplayToWorld(newPos);
+          vesVector3f newPickPoint = ren->computeDisplayToWorld(newPos);
 
           vesVector3f oldPos(pcx,
                              pcy,
                              focalDepth);
-          vesVector3f oldPickPoint = ren->ComputeDisplayToWorld(oldPos);
+          vesVector3f oldPickPoint = ren->computeDisplayToWorld(oldPos);
 
           vesVector3f motionVector = oldPickPoint - newPickPoint;
 
-          vesVector3f viewPoint = camera->GetPosition();
+          vesVector3f viewPoint = camera->position();
           vesVector3f newViewFocus = motionVector + viewFocus;
           vesVector3f newViewPoint = motionVector + viewPoint;
-          camera->SetFocalPoint(newViewFocus);
-          camera->SetPosition(newViewPoint);
+          camera->setFocalPoint(newViewFocus);
+          camera->setPosition(newViewPoint);
 
           //
           // Zoom camera.
@@ -487,9 +508,9 @@ static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) 
                                     (y0 - y1) *
                                     (y0 - y1));
           double dy = currentDist - previousDist;
-          double dyf = 10.0 * dy / (ren->GetHeight()/2.0);
+          double dyf = 10.0 * dy / (ren->height()/2.0);
           double factor = pow(1.1, dyf);
-          camera->Dolly(factor);
+          camera->dolly(factor);
 
           //
           // Roll camera.
@@ -505,8 +526,8 @@ static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) 
                                   px0 - px1);
           oldAngle *= 180.0/pi;
 
-          camera->Roll(newAngle - oldAngle);
-          camera->OrthogonalizeViewUp();
+          camera->roll(newAngle - oldAngle);
+          camera->orthogonalizeViewUp();
         }
 
         engine->state.x0 = x0;
