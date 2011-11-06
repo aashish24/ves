@@ -39,6 +39,7 @@ public:
 
   bool addChild   (vesSharedPtr<vesNode> child);
   bool removeChild(vesSharedPtr<vesNode> child);
+  bool removeChild(vesNode *child);
 
   Children&       children()       { return this->m_children; }
   const Children& children() const { return this->m_children; }

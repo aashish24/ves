@@ -78,8 +78,9 @@ protected:
   bool m_visible;
   bool m_isOverlayNode;
 
-  vesSharedPtr<vesMaterial> m_material;
   vesGroupNode* m_parent;
+
+  vesSharedPtr<vesMaterial> m_material;
 };
 
 #endif // __VESNODE_H

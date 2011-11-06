@@ -48,7 +48,7 @@ bool vesGroupNode::addChild(vesSharedPtr<vesNode> child)
     }
   }
 
- child->setParent(this);
+  child->setParent(this);
 
   this->m_children.push_back(child);
 
@@ -69,7 +69,40 @@ bool vesGroupNode::removeChild(vesSharedPtr<vesNode> child)
 
   // \note: Ensure that parent of this node is "this" group node.
   if (child->parent() == this) {
+
     this->m_children.remove(child);
+
+    this->setBoundsDirty(true);
+
+    return true;
+  }
+
+  return false;
+}
+
+
+bool vesGroupNode::removeChild(vesNode *child)
+{
+  if (!child) {
+    return false;
+  }
+
+  // \note:No check if the child really existed. This is for performance
+  // reasons.
+
+  // \note: Ensure that parent of this node is "this" group node.
+  if (child->parent() == this) {
+
+    // Remove the first matching node only.
+    Children::const_iterator constItr = this->m_children.begin();
+    for(; constItr != this->m_children.end(); ++constItr)
+    {
+      if((*constItr).get() == child)
+      {
+        this->m_children.remove(*constItr);
+        break;
+      }
+    }
 
     this->setBoundsDirty(true);
 
