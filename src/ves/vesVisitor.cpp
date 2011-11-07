@@ -36,7 +36,7 @@ class vesVisitor::vesInternal
 {
 public:
 
-  std::deque <const vesActor*>      m_actorStack;
+  std::deque < vesSharedPtr<vesActor> > m_actorStack;
   std::vector<const vesMatrix4x4f*> m_modelViewMatrixStack;
   std::vector<const vesMatrix4x4f*> m_projectionMatrixStack;
 };
@@ -56,9 +56,9 @@ vesVisitor::~vesVisitor()
 }
 
 
-void vesVisitor::pushActor(const vesActor& actor)
+void vesVisitor::pushActor(const vesSharedPtr<vesActor> &actor)
 {
-  this->m_internal->m_actorStack.push_back(&actor);
+  this->m_internal->m_actorStack.push_back(actor);
 }
 
 
@@ -68,13 +68,7 @@ void vesVisitor::popActor()
 }
 
 
-vesActor* vesVisitor::actor()
-{
-  return const_cast<vesActor*>(this->actor());
-}
-
-
-const vesActor* vesVisitor::actor() const
+vesSharedPtr<vesActor> vesVisitor::actor() const
 {
   return this->m_internal->m_actorStack.back();
 }

@@ -59,10 +59,9 @@ public:
   vesVisitor(VisitorType type, TraversalMode=TraverseNone);
   virtual ~vesVisitor();
 
-  void pushActor(const vesActor& actor);
+  void pushActor(const vesSharedPtr<vesActor> &actor);
   void popActor();
-  vesActor* actor();
-  const vesActor* actor() const;
+  vesSharedPtr<vesActor> actor() const;
 
   void pushModelViewMatrix(const vesMatrix4x4f& matrix);
   void popModelViewMatrix ();
