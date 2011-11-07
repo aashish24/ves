@@ -33,11 +33,16 @@
 
 #include "vesFileReader.h"
 
+// VES includes
+#include "vesSetGet.h"
+
 #include <string>
 
 class vesSTLReader : public vesFileReader
 {
 public:
+  vesTypeMacro(vesSTLReader);
+
   vesSTLReader(std::string& filename) : vesFileReader(filename) {};
   ~vesSTLReader() {};
 

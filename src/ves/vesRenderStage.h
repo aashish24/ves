@@ -27,6 +27,7 @@
 #include "vesMapper.h"
 #include "vesMaterial.h"
 #include "vesRenderLeaf.h"
+#include "vesSetGet.h"
 #include "vesStateAttributeBits.h"
 #include "vesViewport.h"
 
@@ -38,6 +39,8 @@
 class vesRenderStage
 {
 public:
+  vesTypeMacro(vesRenderStage);
+
   typedef std::vector< vesRenderLeaf> RenderLeaves;
   typedef std::map<int, RenderLeaves> BinRenderLeavesMap;
 

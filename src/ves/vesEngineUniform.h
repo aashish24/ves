@@ -21,13 +21,17 @@
 #ifndef VESENGINEUNIFORM_H
 #define VESENGINEUNIFORM_H
 
+// VES includes
 #include "vesBooleanUniform.h"
 #include "vesIntegerUniform.h"
 #include "vesRenderData.h"
+#include "vesSetGet.h"
 
 class vesEngineUniform
 {
 public:
+  vesTypeMacro(vesEngineUniform);
+
   vesEngineUniform()
   {
   }

@@ -23,6 +23,9 @@
 
 #include "vesVisitor.h"
 
+// VES includes
+#include "vesSetGet.h"
+
 // C/C++ includes.
 #include <vector>
 
@@ -33,6 +36,8 @@ class vesRenderStage;
 class vesCullVisitor : public vesVisitor
 {
 public:
+  vesTypeMacro(vesCullVisitor);
+
   vesCullVisitor(TraversalMode mode=TraverseAllChildren) :
     vesVisitor    (CullVisitor, mode)
   {

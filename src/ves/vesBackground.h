@@ -23,6 +23,9 @@
 
 #include "vesCamera.h"
 
+// VES includes
+#include "vesSetGet.h"
+
 // Forward declarations.
 class vesActor;
 class vesDepth;
@@ -31,6 +34,8 @@ class vesMapper;
 class vesBackground : public vesCamera
 {
 public:
+  vesTypeMacro(vesBackground);
+
   vesBackground();
   virtual ~vesBackground();
 

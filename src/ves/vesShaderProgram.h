@@ -24,6 +24,7 @@
 // VES includes
 #include "vesGMTL.h"
 #include "vesMaterial.h"
+#include "vesSetGet.h"
 #include "vesSharedPtr.h"
 
 // C++ includes
@@ -38,6 +39,8 @@ class vesVertexAttribute;
 class vesShaderProgram : public vesMaterialAttribute
 {
 public:
+  vesTypeMacro(vesShaderProgram);
+
   vesShaderProgram();
   virtual ~vesShaderProgram();
 

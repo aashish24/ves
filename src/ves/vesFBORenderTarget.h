@@ -25,6 +25,7 @@
 
 // VES includes
 #include "vesFBO.h"
+#include "vesSetGet.h"
 
 // Forward declarations
 class vesTexture;
@@ -32,6 +33,8 @@ class vesTexture;
 class vesFBORenderTarget : public vesRenderTarget
 {
 public:
+  vesTypeMacro(vesFBORenderTarget);
+
   vesFBORenderTarget();
   virtual ~vesFBORenderTarget();
 

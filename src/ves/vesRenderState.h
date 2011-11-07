@@ -24,6 +24,7 @@
 // VES includes
 #include "vesGMTL.h"
 #include "vesMaterial.h"
+#include "vesSetGet.h"
 
 // Forward declarations
 class vesMapper;
@@ -32,6 +33,8 @@ class vesMapper;
 class vesRenderState
 {
 public:
+  vesTypeMacro(vesRenderState);
+
   vesRenderState()
   {
     this->m_identity = new vesMatrix4x4f();

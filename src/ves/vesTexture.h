@@ -26,10 +26,13 @@
 // VES includes.
 #include "vesColorDataType.h"
 #include "vesImage.h"
+#include "vesSetGet.h"
 
 class vesTexture : public vesMaterialAttribute
 {
 public:
+  vesTypeMacro(vesTexture);
+
   enum InternalFormat
   {
     Alpha           = GL_ALPHA,

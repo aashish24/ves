@@ -24,9 +24,9 @@
 #include "vesBoundingObject.h"
 
 // VES includes
-#include <vesSharedPtr.h>
-
 #include "vesGMTL.h" // Needed for vesMatrix4x4f return.
+#include "vesSetGet.h"
+#include "vesSharedPtr.h"
 
 // Forward declarations
 class vesVisitor;
@@ -36,6 +36,8 @@ class vesRenderState;
 class vesMapper : public vesBoundingObject
 {
 public:
+  vesTypeMacro(vesMapper);
+
   vesMapper();
   virtual ~vesMapper();
 

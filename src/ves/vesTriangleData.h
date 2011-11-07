@@ -23,6 +23,7 @@
 
 // VES includes
 #include "vesGMTL.h"
+#include "vesSetGet.h"
 
 // C++ includes
 #include <vector>
@@ -38,6 +39,8 @@ struct vtkVertex3f
 class vesTriangleData
 {
 public:
+  vesTypeMacro(vesTriangleData);
+
   vesTriangleData();
   void SetPoints(const std::vector<vtkVertex3f> &points)
   {

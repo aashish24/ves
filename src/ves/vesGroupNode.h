@@ -24,6 +24,7 @@
 #include "vesNode.h"
 
 // VES includes
+#include "vesSetGet.h"
 #include "vesSharedPtr.h"
 
 // C/C++ includes
@@ -32,6 +33,8 @@
 class vesGroupNode: public vesNode
 {
 public:
+  vesTypeMacro(vesGroupNode);
+
   vesGroupNode();
   virtual ~vesGroupNode();
 

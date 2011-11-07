@@ -25,6 +25,7 @@
 
 // VES includes
 #include "vesGL.h"
+#include "vesSetGet.h"
 
 // Forward declarations
 class vesRenderState;
@@ -33,6 +34,8 @@ class vesTexture;
 class vesFBO : public vesObject
 {
 public:
+  vesTypeMacro(vesFBO);
+
   enum AttachmentType
   {
     ColorAttachment0  = GL_COLOR_ATTACHMENT0,

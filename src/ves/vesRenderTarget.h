@@ -25,6 +25,7 @@
 
 // VES includes
 #include "vesGL.h"
+#include "vesSetGet.h"
 
 // Forward declarations
 class vesRenderState;
@@ -32,6 +33,8 @@ class vesRenderState;
 class vesRenderTarget : public vesObject
 {
 public:
+  vesTypeMacro(vesRenderTarget);
+
   enum ImplementationType
   {
     // Default

@@ -25,6 +25,7 @@
 #include "vesObject.h"
 
 // VES includes
+#include "vesSetGet.h"
 #include "vesSharedPtr.h"
 
 // Forward declarations.
@@ -38,6 +39,8 @@ class vesVisitor;
 class vesNode : public vesObject, public vesBoundingObject
 {
 public:
+  vesTypeMacro(vesNode);
+
   vesNode();
   virtual ~vesNode();
 

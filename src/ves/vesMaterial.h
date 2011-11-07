@@ -24,6 +24,7 @@
 #include "vesObject.h"
 
 // VES includes
+#include "vesSetGet.h"
 #include "vesSharedPtr.h"
 
 // Forward declarations

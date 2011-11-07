@@ -21,13 +21,14 @@
 #ifndef VESRENDERTOTEXTURE_H
 #define VESRENDERTOTEXTURE_H
 
-
+// VES includes
 #include "vesFBORenderTarget.h"
-
+#include "vesSetGet.h"
 
 class vesRenderToTexture : public vesFBORenderTarget
 {
 public:
+  vesTypeMacro(vesRenderToTexture);
   vesRenderToTexture();
   virtual ~vesRenderToTexture();
 

@@ -21,6 +21,7 @@
 #ifndef VESCOLORDATATYPE_H
 #define VESCOLORDATATYPE_H
 
+// VES includes
 #include "vesGL.h"
 
 struct vesColorDataType

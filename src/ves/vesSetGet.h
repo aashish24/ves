@@ -27,6 +27,6 @@
 
 #define vesTypeMacro(className) \
   typedef vesSharedPtr<className> Ptr; \
-  typedef vesSharedPtr<className> const ConstPtr;
+  typedef const vesSharedPtr<className> ConstPtr;
 
 #endif

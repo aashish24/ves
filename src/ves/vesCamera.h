@@ -17,6 +17,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
+
 #ifndef __vesCamera_h
 #define __vesCamera_h
 
@@ -39,10 +40,10 @@ class vesVisitor;
 class vesCamera: public vesTransformNode
 {
 public:
+  vesTypeMacro(vesCamera);
+
   vesCamera();
   virtual  ~vesCamera();
-
-  typedef vesSharedPtr<vesCamera> Ptr;
 
   enum RenderOrder
   {

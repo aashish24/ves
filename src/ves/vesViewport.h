@@ -23,12 +23,17 @@
 
 #include "vesObject.h"
 
+// VES includes
+#include "vesSetGet.h"
+
 // Forward declarations
 class vesRenderState;
 
 class vesViewport : vesObject
 {
 public:
+  vesTypeMacro(vesViewport);
+
   vesViewport();
   vesViewport(int x, int y, int width, int height);
 

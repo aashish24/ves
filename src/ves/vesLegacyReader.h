@@ -23,6 +23,9 @@
 
 #include "vesFileReader.h"
 
+// VES includes
+#include "vesSetGet.h"
+
 // Small struct packing a point and normal together in a vertex
 // Memory layout is 3 floats for a point followed by 3 floats for a normal
 struct Vertex3f
@@ -37,6 +40,8 @@ struct Vertex3f
 class vesLegacyReader : public vesFileReader
 {
 public:
+  vesTypeMacro(vesLegacyReader);
+
   vesLegacyReader(std::string filename) : vesFileReader(filename) {}
   ~vesLegacyReader() {}
 

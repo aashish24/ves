@@ -25,6 +25,7 @@
 
 // VES includes
 #include "vesGMTL.h"
+#include "vesSetGet.h"
 
 // Forward declarations
 class vesMapper;
@@ -37,7 +38,9 @@ class vesVisitor;
 class vesActor : public vesTransformNode
 {
 public:
-   vesActor();
+  vesTypeMacro(vesActor);
+
+  vesActor();
   ~vesActor();
 
   /// Evaluate the transform associated with the vtkActor.

@@ -24,7 +24,9 @@
 #include "vesMaterial.h"
 
 // VES includes
+#include "vesGL.h"
 #include "vesRenderState.h"
+#include "vesSetGet.h"
 #include "vesShaderProgram.h"
 #include "vesTriangleData.h"
 
@@ -32,11 +34,11 @@
 #include <cassert>
 #include <string>
 
-#include "vesGL.h"
-
 class vesVertexAttribute
 {
 public:
+  vesTypeMacro(vesVertexAttribute);
+
   vesVertexAttribute(const std::string &name) :
     m_name(name)
   {

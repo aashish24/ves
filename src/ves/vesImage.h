@@ -21,10 +21,14 @@
 #ifndef VESIMAGE_H
 #define VESIMAGE_H
 
+// VES includes
 #include "vesColorDataType.h"
+#include "vesSetGet.h"
 
 struct vesImage
 {
+  vesTypeMacro(vesImage);
+
   vesImage() :
     m_width(0),
     m_height(0),

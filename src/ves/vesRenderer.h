@@ -24,6 +24,7 @@
 // VES includes
 #include "vesGL.h"
 #include "vesGMTL.h"
+#include "vesSetGet.h"
 #include "vesSharedPtr.h"
 
 // C++ includes
@@ -40,7 +41,9 @@ class vesTexture;
 class vesRenderer
 {
 public:
-           vesRenderer();
+  vesTypeMacro(vesRenderer);
+
+  vesRenderer();
   virtual ~vesRenderer();
 
   virtual void render();
