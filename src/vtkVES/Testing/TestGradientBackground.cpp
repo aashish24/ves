@@ -165,7 +165,6 @@ public:
   }
 
 private:
-
   vesGradientBackgroundApp App;
 
   std::string       SourceDirectory;

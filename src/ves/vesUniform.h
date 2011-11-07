@@ -64,6 +64,8 @@ public:
 class vesUniform
 {
 public:
+  vesTypeMacro(vesUniform);
+
   typedef vesUniformDataArray<GLint>   IntArray;
   typedef vesUniformDataArray<GLfloat> FloatArray;
 
@@ -98,26 +100,26 @@ public:
   vesUniform();
   virtual ~vesUniform();
 
-  /*! Set the type of glUniform, ensuring it is only set once.*/
+  /// Set the type of glUniform, ensuring it is only set once.
   bool setType(Type t);
 
-  /*! Get the type of glUniform as enum. */
+  /// Get the type of glUniform as enum.
   Type getType() const { return m_type; }
 
-  /*! Set the name of the uniform, ensuring it is only set once.*/
+  /// Set the name of the uniform, ensuring it is only set once.
   virtual void setName(const std::string& name);
 
-  /*! Get the name of the uniform.*/
+  /// Get the name of the uniform.
   virtual const std::string& name() const
   {
     return this->m_name;
   }
 
-  /*! Update */
+  /// Update.
   virtual void update(const vesRenderState   &renderState,
                       const vesShaderProgram &program);
 
-  /*! convenient scalar (non-array) constructors w/ assignment */
+  /// Convenient scalar constructors w/ assignment.
   explicit vesUniform(const std::string &name, float value);
   explicit vesUniform(const std::string &name, int value);
   explicit vesUniform(const std::string &name, bool value);
@@ -128,7 +130,7 @@ public:
   vesUniform(const std::string &name, const vesMatrix3x3f &matrix);
   vesUniform(const std::string &name, const vesMatrix4x4f &matrix);
 
-  /*! convenient scalar (non-array) value assignment */
+  /// Convenient scalar value assignment.
   bool set(float value);
   bool set(int value);
   bool set(bool value);
@@ -138,7 +140,7 @@ public:
   bool set(const vesMatrix3x3f &matrix);
   bool set(const vesMatrix4x4f &matrix);
 
-  /*! convenient scalar (non-array) value query */
+  /// Convenient scalar value query.
   bool get(float &value) const;
   bool get(int &value) const;
   bool get(bool &value) const;
