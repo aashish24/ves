@@ -22,7 +22,6 @@
 
 // VES includes
 #include "vesRenderData.h"
-#include "vesSharedPtr.h"
 #include "vesShaderProgram.h"
 #include "vesTexture.h"
 
@@ -61,7 +60,7 @@ vesSharedPtr<vesMaterialAttribute> vesMaterial::vesInternal::findAttribute(
       return (constItr->second);
     }
     else {
-      return vesSharedPtr<vesMaterialAttribute>();
+      return vesMaterialAttribute::Ptr();
     }
   }
   else {
@@ -71,7 +70,7 @@ vesSharedPtr<vesMaterialAttribute> vesMaterial::vesInternal::findAttribute(
       return (constItr->second);
     }
 
-    return vesSharedPtr<vesMaterialAttribute>();
+    return vesMaterialAttribute::Ptr();
   }
 }
 

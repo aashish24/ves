@@ -25,7 +25,6 @@
 
 // VES includes
 #include "vesSetGet.h"
-#include "vesSharedPtr.h"
 
 // Forward declarations
 class vesRenderData;
@@ -35,6 +34,8 @@ class vesShaderProgram;
 class vesMaterialAttribute : public vesObject
 {
 public:
+  vesTypeMacro(vesMaterialAttribute);
+
   enum AttributeType
   {
     Undefined = 0x0,

@@ -65,7 +65,7 @@ vesCamera::vesCamera() : vesTransformNode()
   this->m_windowCenter[0] = 0.0;
   this->m_windowCenter[1] = 0.0;
 
-  this->m_viewport = vesSharedPtr<vesViewport>(new vesViewport());
+  this->m_viewport = vesViewport::Ptr(new vesViewport());
 
   this->m_renderOrder = PostRender;
 
@@ -371,7 +371,7 @@ const vesSharedPtr<vesRenderStage> vesCamera::renderStage() const
 vesSharedPtr<vesRenderStage> vesCamera::getOrCreateRenderStage()
 {
   if (!this->m_renderStage) {
-    this->m_renderStage = vesSharedPtr<vesRenderStage>(new vesRenderStage());
+    this->m_renderStage = vesRenderStage::Ptr(new vesRenderStage());
   }
   return this->m_renderStage;
 }

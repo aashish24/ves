@@ -134,8 +134,8 @@ void vesBackground::vesInternal::deleteBackground()
 void vesBackground::vesInternal::createBackground(const vesVector4f &topColor,
   const vesVector4f &bottomColor)
 {
-  this->m_backgroundActor = vesSharedPtr<vesActor>(new vesActor());
-  this->m_backgroundMapper = vesSharedPtr<vesMapper>(new vesMapper());
+  this->m_backgroundActor = vesActor::Ptr(new vesActor());
+  this->m_backgroundMapper = vesMapper::Ptr(new vesMapper());
 
   this->m_backgroundPlaneData =
     this->createBackgroundPlane(topColor, bottomColor);
@@ -165,8 +165,8 @@ void vesBackground::vesInternal::createBackground(vesBackground *background,
 vesSharedPtr<vesTriangleData> vesBackground::vesInternal::createBackgroundPlane(
   const vesVector4f &topColor, const vesVector4f &bottomColor)
 {
-  vesSharedPtr<vesTriangleData> backgroundPlaneData =
-    vesSharedPtr<vesTriangleData>(new vesTriangleData());
+  vesSharedPtr<vesTriangleData> backgroundPlaneData
+    = vesTriangleData::Ptr(new vesTriangleData());
 
   std::vector<vtkVertex3f> points;
 

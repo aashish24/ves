@@ -56,8 +56,7 @@ class vesHasVertexColors : public vesEngineUniform
 public:
   vesHasVertexColors() : vesEngineUniform()
   {
-    this->m_uniform
-      = vesSharedPtr<vesUniform>(new vesHasVertexColorsUniform());
+    this->m_uniform = vesUniform::Ptr(new vesHasVertexColorsUniform());
   }
 };
 
@@ -67,8 +66,7 @@ class vesPrimitiveType : public vesEngineUniform
 public:
   vesPrimitiveType() : vesEngineUniform()
   {
-    this->m_uniform
-      = vesSharedPtr<vesUniform>(new vesIntegerUniform("primitiveType"));
+    this->m_uniform = vesUniform::Ptr(new vesIntegerUniform("primitiveType"));
   }
 
   virtual void bindRenderData(const vesRenderState &renderState,
