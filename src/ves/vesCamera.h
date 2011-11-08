@@ -105,8 +105,8 @@ public:
   const vesRenderTarget* renderTarget() const;
   void clearRenderTargets(vesRenderState &renderState);
 
-  const vesViewport* viewport() const;
-  vesViewport* viewport();
+  const vesSharedPtr<vesViewport> viewport() const;
+  vesSharedPtr<vesViewport> viewport();
 
   vesSharedPtr<vesRenderStage> renderStage();
   const vesSharedPtr<vesRenderStage> renderStage() const;
@@ -148,7 +148,7 @@ protected:
   double        m_windowCenter[2];
   bool          m_parallelProjection;
 
-  vesViewport *m_viewport;
+  vesSharedPtr<vesViewport> m_viewport;
   vesSharedPtr<vesRenderStage> m_renderStage;
 
   RenderOrder m_renderOrder;

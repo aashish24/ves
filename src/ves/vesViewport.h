@@ -36,6 +36,7 @@ public:
 
   vesViewport();
   vesViewport(int x, int y, int width, int height);
+  virtual ~vesViewport();
 
   inline void setViewport(int x, int y, int width, int height)
   {
@@ -56,7 +57,6 @@ public:
   virtual void render(vesRenderState &renderState);
 
 protected:
-  virtual ~vesViewport();
 
   int m_x;
   int m_y;

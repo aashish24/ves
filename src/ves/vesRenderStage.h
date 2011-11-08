@@ -28,6 +28,7 @@
 #include "vesMaterial.h"
 #include "vesRenderLeaf.h"
 #include "vesSetGet.h"
+#include "vesSharedPtr.h"
 #include "vesStateAttributeBits.h"
 #include "vesViewport.h"
 
@@ -51,8 +52,7 @@ public:
     SortByState
   };
 
-  vesRenderStage() :
-    m_viewport(0x0)
+  vesRenderStage()
   {
     this->m_clearMask = vesStateAttributeBits::ColorBufferBit
       | vesStateAttributeBits::DepthBufferBit;
@@ -70,9 +70,9 @@ public:
     this->m_binRenderLeavesMap[renderLeaf.m_bin].push_back(renderLeaf);
   }
 
-  void setViewport(vesViewport *viewport) { this->m_viewport = viewport; }
-  const vesViewport* viewport() const { return this->m_viewport; }
-  vesViewport* viewport() { return this->m_viewport; }
+  void setViewport(vesSharedPtr<vesViewport> viewport) { this->m_viewport = viewport; }
+  const vesSharedPtr<vesViewport> viewport() const { return this->m_viewport; }
+  vesSharedPtr<vesViewport> viewport() { return this->m_viewport; }
 
   void sort(SortMode mode)
   {
@@ -142,7 +142,7 @@ public:
   double clearDepth() const;
 
 private:
-  vesViewport *m_viewport;
+  vesSharedPtr<vesViewport> m_viewport;
 
   typedef std::pair< int, vesSharedPtr<vesRenderStage> > RenderStageOrderPair;
   typedef std::list< RenderStageOrderPair > RenderStageList;

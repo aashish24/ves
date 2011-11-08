@@ -65,7 +65,7 @@ vesCamera::vesCamera() : vesTransformNode()
   this->m_windowCenter[0] = 0.0;
   this->m_windowCenter[1] = 0.0;
 
-  this->m_viewport = new vesViewport();
+  this->m_viewport = vesSharedPtr<vesViewport>(new vesViewport());
 
   this->m_renderOrder = PostRender;
 
@@ -344,13 +344,13 @@ void vesCamera::clearRenderTargets(vesRenderState &renderState)
 }
 
 
-const vesViewport* vesCamera::viewport() const
+const vesSharedPtr<vesViewport> vesCamera::viewport() const
 {
   return this->m_viewport;
 }
 
 
-vesViewport* vesCamera::viewport()
+vesSharedPtr<vesViewport> vesCamera::viewport()
 {
   return this->m_viewport;
 }
