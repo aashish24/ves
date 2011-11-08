@@ -25,7 +25,6 @@
 #include "vesGMTL.h"
 #include "vesRenderState.h"
 #include "vesSetGet.h"
-#include "vesSharedPtr.h"
 
 // Forward declarations
 class vesMapper;

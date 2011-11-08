@@ -21,7 +21,6 @@
 #include "vesGroupNode.h"
 
 // VES includes.
-#include "vesSharedPtr.h"
 #include "vesVisitor.h"
 
 vesGroupNode::vesGroupNode() : vesNode()

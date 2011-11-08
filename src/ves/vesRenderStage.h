@@ -28,7 +28,6 @@
 #include "vesMaterial.h"
 #include "vesRenderLeaf.h"
 #include "vesSetGet.h"
-#include "vesSharedPtr.h"
 #include "vesStateAttributeBits.h"
 #include "vesViewport.h"
 

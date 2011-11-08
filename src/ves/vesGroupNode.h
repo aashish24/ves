@@ -25,7 +25,6 @@
 
 // VES includes
 #include "vesSetGet.h"
-#include "vesSharedPtr.h"
 
 // C/C++ includes
 #include <list>

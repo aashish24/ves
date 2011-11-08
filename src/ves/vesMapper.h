@@ -26,7 +26,6 @@
 // VES includes
 #include "vesGMTL.h" // Needed for vesMatrix4x4f return.
 #include "vesSetGet.h"
-#include "vesSharedPtr.h"
 
 // Forward declarations
 class vesVisitor;

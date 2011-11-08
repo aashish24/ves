@@ -26,7 +26,6 @@
 
 // VES includes
 #include "vesSetGet.h"
-#include "vesSharedPtr.h"
 
 // Forward declarations.
 class vesActor;
