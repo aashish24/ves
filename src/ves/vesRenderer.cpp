@@ -326,7 +326,7 @@ vesSharedPtr<vesBackground> vesRenderer::background()
 }
 
 
-const vesSharedPtr<vesBackground>& vesRenderer::background() const
+const vesSharedPtr<vesBackground> vesRenderer::background() const
 {
   return this->m_background;
 }

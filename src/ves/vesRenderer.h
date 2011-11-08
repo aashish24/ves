@@ -54,7 +54,7 @@ public:
 
   virtual void setBackgroundColor(float r, float g, float b, float a=1.0f);
   vesSharedPtr<vesBackground> background();
-  const vesSharedPtr<vesBackground>& background() const;
+  const vesSharedPtr<vesBackground> background() const;
 
   virtual void addActor   (vesSharedPtr<vesActor> actor);
   virtual void removeActor(vesSharedPtr<vesActor> actor);

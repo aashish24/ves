@@ -56,15 +56,15 @@ public:
   bool isSensor() const { return m_sensor; }
 
   void setWidget(vesSharedPtr<vesMultitouchWidget> widget);
-  vesSharedPtr<vesMultitouchWidget>& widget() { return this->m_widget; }
-  const vesSharedPtr<vesMultitouchWidget>& widget() const { return this->m_widget; }
+  vesSharedPtr<vesMultitouchWidget> widget() { return this->m_widget; }
+  const vesSharedPtr<vesMultitouchWidget> widget() const { return this->m_widget; }
 
   void setVisible(bool value);
   bool isVisible() const { return m_visible; }
 
   void setMapper(vesSharedPtr<vesMapper> mapper);
-  vesSharedPtr<vesMapper>& mapper() { return this->m_mapper; }
-  const vesSharedPtr<vesMapper>& mapper() const { return this->m_mapper; }
+  vesSharedPtr<vesMapper> mapper() { return this->m_mapper; }
+  const vesSharedPtr<vesMapper> mapper() const { return this->m_mapper; }
 
 
   virtual void accept(vesVisitor &visitor);

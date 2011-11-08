@@ -47,8 +47,8 @@ public:
   virtual void accept(vesVisitor &visitor);
 
   void setMaterial(vesSharedPtr<vesMaterial> material);
-  vesSharedPtr<vesMaterial>& material() { return this->m_material; }
-  const vesSharedPtr<vesMaterial>& material() const { return this->m_material; }
+  vesSharedPtr<vesMaterial> material() { return this->m_material; }
+  const vesSharedPtr<vesMaterial> material() const { return this->m_material; }
 
   vesGroupNode* parent(){ return this->m_parent; }
   bool setParent(vesGroupNode *parent);
