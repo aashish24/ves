@@ -43,6 +43,7 @@ set(headers
   vesSetGet.h
   vesShader.h
   vesShaderProgram.h
+  vesSharedPtr.h
   vesStateAttributeBits.h
   vesSTLReader.h
   vesTexture.h

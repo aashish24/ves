@@ -25,10 +25,13 @@
 
 // VES includes.
 #include "vesBlendFunction.h"
+#include "vesSetGet.h"
 
 class vesBlend : public vesMaterialAttribute
 {
 public:
+  vesTypeMacro(vesBlend);
+
   vesBlend();
   virtual ~vesBlend();
 

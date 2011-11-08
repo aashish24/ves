@@ -17,6 +17,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
+
 #ifndef __vesCamera_h
 #define __vesCamera_h
 
@@ -39,6 +40,8 @@ class vesVisitor;
 class vesCamera: public vesTransformNode
 {
 public:
+  vesTypeMacro(vesCamera);
+
   vesCamera();
   virtual  ~vesCamera();
 
@@ -102,11 +105,12 @@ public:
   const vesRenderTarget* renderTarget() const;
   void clearRenderTargets(vesRenderState &renderState);
 
-  const vesViewport* viewport() const;
-  vesViewport* viewport();
+  const vesSharedPtr<vesViewport> viewport() const;
+  vesSharedPtr<vesViewport> viewport();
 
-  const vesRenderStage* renderStage() const;
-  vesRenderStage* getOrCreateRenderStage();
+  vesSharedPtr<vesRenderStage> renderStage();
+  const vesSharedPtr<vesRenderStage> renderStage() const;
+  vesSharedPtr<vesRenderStage> getOrCreateRenderStage();
 
   void setRenderOrder(RenderOrder renderOrder, int renderOrderPriority=0);
   RenderOrder renderOrder() const;
@@ -144,8 +148,8 @@ protected:
   double        m_windowCenter[2];
   bool          m_parallelProjection;
 
-  vesViewport *m_viewport;
-  vesRenderStage *m_renderStage;
+  vesSharedPtr<vesViewport> m_viewport;
+  vesSharedPtr<vesRenderStage> m_renderStage;
 
   RenderOrder m_renderOrder;
   int         m_renderOrderPriority;

@@ -23,6 +23,7 @@
 
 // VES includes
 #include "vesGL.h"
+#include "vesSetGet.h"
 
 // Forward declarations
 class vesRenderState;
@@ -30,6 +31,8 @@ class vesRenderState;
 class vesBlendFunction
 {
 public:
+  vesTypeMacro(vesBlendFunction);
+
   enum Parameter {
     DstAlpha                = GL_DST_ALPHA,
     DstColor                = GL_DST_COLOR,

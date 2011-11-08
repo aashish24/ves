@@ -27,6 +27,7 @@
 #include "vesMapper.h"
 #include "vesMaterial.h"
 #include "vesRenderLeaf.h"
+#include "vesSetGet.h"
 #include "vesStateAttributeBits.h"
 #include "vesViewport.h"
 
@@ -38,6 +39,8 @@
 class vesRenderStage
 {
 public:
+  vesTypeMacro(vesRenderStage);
+
   typedef std::vector< vesRenderLeaf> RenderLeaves;
   typedef std::map<int, RenderLeaves> BinRenderLeavesMap;
 
@@ -48,8 +51,7 @@ public:
     SortByState
   };
 
-  vesRenderStage() :
-    m_viewport(0x0)
+  vesRenderStage()
   {
     this->m_clearMask = vesStateAttributeBits::ColorBufferBit
       | vesStateAttributeBits::DepthBufferBit;
@@ -67,9 +69,9 @@ public:
     this->m_binRenderLeavesMap[renderLeaf.m_bin].push_back(renderLeaf);
   }
 
-  void setViewport(vesViewport *viewport) { this->m_viewport = viewport; }
-  const vesViewport* viewport() const { return this->m_viewport; }
-  vesViewport* viewport() { return this->m_viewport; }
+  void setViewport(vesSharedPtr<vesViewport> viewport) { this->m_viewport = viewport; }
+  const vesSharedPtr<vesViewport> viewport() const { return this->m_viewport; }
+  vesSharedPtr<vesViewport> viewport() { return this->m_viewport; }
 
   void sort(SortMode mode)
   {
@@ -122,8 +124,8 @@ public:
     this->m_postRenderList.clear();
   }
 
-  void addPreRenderStage(vesRenderStage *renderStage, int priority);
-  void addPostRenderStage(vesRenderStage *renderStage, int priority);
+  void addPreRenderStage(vesSharedPtr<vesRenderStage> renderStage, int priority);
+  void addPostRenderStage(vesSharedPtr<vesRenderStage>, int priority);
 
   void renderPreRenderStages(vesRenderState &renderState, vesRenderLeaf *previous);
   void renderPostRenderStages(vesRenderState &renderState, vesRenderLeaf *previous);
@@ -139,9 +141,9 @@ public:
   double clearDepth() const;
 
 private:
-  vesViewport *m_viewport;
+  vesSharedPtr<vesViewport> m_viewport;
 
-  typedef std::pair< int, vesRenderStage* > RenderStageOrderPair;
+  typedef std::pair< int, vesSharedPtr<vesRenderStage> > RenderStageOrderPair;
   typedef std::list< RenderStageOrderPair > RenderStageList;
 
   BinRenderLeavesMap  m_binRenderLeavesMap;

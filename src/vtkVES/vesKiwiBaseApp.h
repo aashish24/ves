@@ -22,7 +22,11 @@
 #define __vesKiwiBaseApp_h
 
 #include <vesGMTL.h>
+#include <vesSharedPtr.h>
+
+// C/C++
 #include <string>
+#include<tr1/memory>
 
 class vesCamera;
 class vesRenderer;
@@ -71,30 +75,33 @@ protected:
   virtual void willRender() {}
   virtual void didRender() {}
 
-  vesShaderProgram* addShaderProgram(const std::string& vertexShaderSource,
-                                     const std::string& fragmentShaderSource);
-  void deleteShaderProgram(vesShaderProgram *shaderProgram);
+  vesSharedPtr<vesShaderProgram> addShaderProgram(
+    const std::string& vertexShaderSource, const std::string& fragmentShaderSource);
+  void deleteShaderProgram(vesSharedPtr<vesShaderProgram> shaderProgram);
 
 
-  vesUniform* addModelViewMatrixUniform(vesShaderProgram* program, const std::string& name=std::string());
-  vesUniform* addProjectionMatrixUniform(vesShaderProgram* program, const std::string& name=std::string());
-  vesUniform* addNormalMatrixUniform(vesShaderProgram* program, const std::string& name=std::string());
+  vesSharedPtr<vesUniform> addModelViewMatrixUniform(
+    vesSharedPtr<vesShaderProgram> program, const std::string& name=std::string());
+  vesSharedPtr<vesUniform> addProjectionMatrixUniform(
+    vesSharedPtr<vesShaderProgram> program, const std::string& name=std::string());
+  vesSharedPtr<vesUniform> addNormalMatrixUniform(
+    vesSharedPtr<vesShaderProgram> program, const std::string& name=std::string());
 
-  vesVertexAttribute* addVertexPositionAttribute(vesShaderProgram* program, const std::string& name=std::string());
-  vesVertexAttribute* addVertexNormalAttribute(vesShaderProgram* program, const std::string& name=std::string());
-  vesVertexAttribute* addVertexColorAttribute(vesShaderProgram* program, const std::string& name=std::string());
-  vesVertexAttribute* addVertexTextureCoordinateAttribute(vesShaderProgram* program, const std::string& name=std::string());
-
-
-  void storeUniformForDeletion(vesUniform* uniform);
-  void storeVertexAttributeForDeletion(vesVertexAttribute* uniform);
+  vesSharedPtr<vesVertexAttribute> addVertexPositionAttribute(
+    vesSharedPtr<vesShaderProgram> program, const std::string& name=std::string());
+  vesSharedPtr<vesVertexAttribute> addVertexNormalAttribute(
+    vesSharedPtr<vesShaderProgram> program, const std::string& name=std::string());
+  vesSharedPtr<vesVertexAttribute> addVertexColorAttribute(
+    vesSharedPtr<vesShaderProgram> program, const std::string& name=std::string());
+  vesSharedPtr<vesVertexAttribute> addVertexTextureCoordinateAttribute(
+    vesSharedPtr<vesShaderProgram> program, const std::string& name=std::string());
 
   // These accessors are protected so that apps cannot use the APIs of
   // these objects.  Instead, this class should provide public methods to
   // wrap the APIs.  The goal is to allow the ves APIs to be refactored
   // without breaking the Android and iOS KiwiViewer apps.
-  vesCamera* camera() const;
-  vesRenderer* renderer() const;
+  vesSharedPtr<vesCamera> camera() const;
+  vesSharedPtr<vesRenderer> renderer() const;
 
 private:
 

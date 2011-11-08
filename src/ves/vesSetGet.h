@@ -21,6 +21,12 @@
 #ifndef __vesSetGet_h
 #define __vesSetGet_h
 
+#include "vesSharedPtr.h"
+
 #define vesNotUsed(x)
+
+#define vesTypeMacro(className) \
+  typedef vesSharedPtr<className> Ptr; \
+  typedef const vesSharedPtr<className> ConstPtr;
 
 #endif

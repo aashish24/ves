@@ -35,31 +35,24 @@
 #include <iostream>
 #include <string>
 
-vesRenderer::vesRenderer()
+vesRenderer::vesRenderer():
+  m_width(100),
+  m_height(100),
+  m_camera(new vesCamera()),
+  m_sceneRoot(new vesGroupNode()),
+  m_renderStage(new vesRenderStage()),
+  m_background (new vesBackground())
 {
-  this->m_width  = 100;
-  this->m_height = 100;
-
   this->m_aspect[0] = this->m_aspect[1] = 1.0;
-
-  this->m_camera    = new vesCamera();
-  this->m_sceneRoot = new vesGroupNode();
 
   this->m_camera->addChild(this->m_sceneRoot);
 
-  this->m_renderStage = new vesRenderStage();
-
-  this->m_background = new vesBackground();
   this->setupBackground();
 }
 
 
 vesRenderer::~vesRenderer()
 {
-  delete this->m_camera; this->m_camera = 0x0;
-  delete this->m_sceneRoot; this->m_sceneRoot = 0x0;
-  delete this->m_renderStage; this->m_renderStage = 0x0;
-  delete this->m_background; this->m_background = 0x0;
 }
 
 
@@ -327,19 +320,19 @@ void vesRenderer::setBackgroundColor(float r, float g, float b, float a)
 }
 
 
-vesBackground* vesRenderer::background()
+vesSharedPtr<vesBackground> vesRenderer::background()
 {
   return this->m_background;
 }
 
 
-const vesBackground* vesRenderer::background() const
+const vesSharedPtr<vesBackground> vesRenderer::background() const
 {
   return this->m_background;
 }
 
 
-void vesRenderer::addActor(vesActor *actor)
+void vesRenderer::addActor(vesSharedPtr<vesActor> actor)
 {
   if (actor) {
     this->m_sceneRoot->addChild(actor);
@@ -347,7 +340,7 @@ void vesRenderer::addActor(vesActor *actor)
 }
 
 
-void vesRenderer::removeActor(vesActor *actor)
+void vesRenderer::removeActor(vesSharedPtr<vesActor> actor)
 {
   if (actor) {
     this->m_sceneRoot->removeChild(actor);

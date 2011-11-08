@@ -24,6 +24,7 @@
 // VES includes
 #include "vesGMTL.h"
 #include "vesMaterial.h"
+#include "vesSetGet.h"
 
 // C++ includes
 #include <string>
@@ -37,20 +38,22 @@ class vesVertexAttribute;
 class vesShaderProgram : public vesMaterialAttribute
 {
 public:
+  vesTypeMacro(vesShaderProgram);
+
   vesShaderProgram();
   virtual ~vesShaderProgram();
 
-  bool addShader(vesShader *shader);
-
-  bool addUniform(vesUniform *uniform);
-  bool addVertexAttribute(vesVertexAttribute *attribute, int key);
+  bool addShader(vesSharedPtr<vesShader> shader);
+  bool addUniform(vesSharedPtr<vesUniform> uniform);
+  bool addVertexAttribute(vesSharedPtr<vesVertexAttribute> attribute, int key);
 
   bool addBindAttributeLocation(const std::string &name, int location);
 
-  int uniformLocation (const std::string &name) const;
+  int uniformLocation(const std::string &name) const;
   int attributeLocation(const std::string &name) const;
 
-  vesUniform* uniform (const std::string &name);
+  vesSharedPtr<vesUniform> uniform(const std::string &name);
+
   bool uniformExist(const std::string &name);
 
   virtual void updateUniforms();

@@ -23,6 +23,9 @@
 
 #include "vesVisitor.h"
 
+// VES includes
+#include "vesSetGet.h"
+
 // C/C++ includes.
 #include <vector>
 
@@ -33,9 +36,10 @@ class vesRenderStage;
 class vesCullVisitor : public vesVisitor
 {
 public:
+  vesTypeMacro(vesCullVisitor);
+
   vesCullVisitor(TraversalMode mode=TraverseAllChildren) :
-    vesVisitor    (CullVisitor, mode),
-    m_renderStage (0x0)
+    vesVisitor    (CullVisitor, mode)
   {
   }
 
@@ -43,7 +47,7 @@ public:
   {
   }
 
-  bool setRenderStage(vesRenderStage *renderStage)
+  bool setRenderStage(vesSharedPtr<vesRenderStage> renderStage)
   {
     bool success = true;
 
@@ -57,17 +61,12 @@ public:
     return !success;
   }
 
-  vesRenderStage* renderStage()
+  vesSharedPtr<vesRenderStage> renderStage() const
   {
     return this->m_renderStageStack.back();
   }
 
-  const vesRenderStage* renderStage() const
-  {
-    return this->m_renderStageStack.back();
-  }
-
-  void pushRenderStage(vesRenderStage *renderStage)
+  void pushRenderStage(vesSharedPtr<vesRenderStage> renderStage)
   {
     // No check is applied here.
     this->m_renderStageStack.push_back(renderStage);
@@ -85,9 +84,10 @@ public:
   virtual void visit(vesCamera &camera);
 
 protected:
-  void addGeometryAndStates(vesMapper *mapper, vesMaterial *material,
+  void addGeometryAndStates(const vesSharedPtr<vesMapper> &mapper,
+                            const vesSharedPtr<vesMaterial> &material,
                             const vesMatrix4x4f &modelViewMatrix,
-                            const vesMatrix4x4f& projectionMatrix,
+                            const vesMatrix4x4f &projectionMatrix,
                             float depth);
 
   inline void invokeCallbacksAndTraverse(vesNode &node)
@@ -95,10 +95,10 @@ protected:
     this->traverse(node);
   }
 
-  typedef std::vector<vesRenderStage*> RenderStageStack;
+  typedef std::vector< vesSharedPtr<vesRenderStage> > RenderStageStack;
 
   RenderStageStack m_renderStageStack;
-  vesRenderStage *m_renderStage;
+  vesSharedPtr<vesRenderStage> m_renderStage;
 };
 
 #endif // VESCULLVISITOR_H

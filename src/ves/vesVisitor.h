@@ -24,6 +24,7 @@
 // VES includes.
 #include "vesGMTL.h"
 #include "vesNode.h"
+#include "vesSetGet.h"
 
 // Forward declarations
 class vesActor;
@@ -37,6 +38,8 @@ class vesTransformNode;
 class vesVisitor
 {
 public:
+  vesTypeMacro(vesVisitor);
+
   enum TraversalMode
   {
     TraverseNone           = 0x1,
@@ -56,10 +59,9 @@ public:
   vesVisitor(VisitorType type, TraversalMode=TraverseNone);
   virtual ~vesVisitor();
 
-  void pushActor(const vesActor& actor);
+  void pushActor(const vesSharedPtr<vesActor> &actor);
   void popActor();
-  vesActor* actor();
-  const vesActor* actor() const;
+  vesSharedPtr<vesActor> actor() const;
 
   void pushModelViewMatrix(const vesMatrix4x4f& matrix);
   void popModelViewMatrix ();

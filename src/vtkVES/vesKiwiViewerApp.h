@@ -23,6 +23,9 @@
 
 #include "vesKiwiBaseApp.h"
 
+// VES includes
+#include <vesSharedPtr.h>
+
 // C++ includes
 #include <string>
 
@@ -80,8 +83,8 @@ public:
   int numberOfModelVertices() const;
   int numberOfModelLines() const;
 
-  const vesShaderProgram* shaderProgram() const;
-  vesShaderProgram* shaderProgram();
+  const vesSharedPtr<vesShaderProgram> shaderProgram() const;
+  vesSharedPtr<vesShaderProgram> shaderProgram();
 
 
 protected:
@@ -89,11 +92,13 @@ protected:
   virtual void willRender();
 
   void addBuiltinDataset(const std::string& name, const std::string& filename);
-  void addBuiltinShadingModel(const std::string& name, vesShaderProgram *shaderProgram);
+  void addBuiltinShadingModel(
+    const std::string& name, vesSharedPtr<vesShaderProgram> shaderProgram);
 
   void removeAllDataRepresentations();
   void addRepresentationsForDataSet(vtkDataSet* dataSet);
-  vesKiwiPolyDataRepresentation* addPolyDataRepresentation(vtkPolyData* polyData, vesShaderProgram* program);
+  vesKiwiPolyDataRepresentation* addPolyDataRepresentation(
+    vtkPolyData* polyData, vesSharedPtr<vesShaderProgram> program);
   vesKiwiImagePlaneDataRepresentation* addTextRepresentation(const std::string& text);
   void updateTextAnnotations();
 

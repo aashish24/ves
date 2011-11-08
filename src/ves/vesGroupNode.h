@@ -23,18 +23,24 @@
 
 #include "vesNode.h"
 
+// VES includes
+#include "vesSetGet.h"
+
 // C/C++ includes
 #include <list>
 
 class vesGroupNode: public vesNode
 {
 public:
+  vesTypeMacro(vesGroupNode);
+
   vesGroupNode();
   virtual ~vesGroupNode();
 
-  typedef std::list<vesNode*> Children;
+  typedef std::list< vesSharedPtr<vesNode> > Children;
 
-  bool addChild   (vesNode *child);
+  bool addChild   (vesSharedPtr<vesNode> child);
+  bool removeChild(vesSharedPtr<vesNode> child);
   bool removeChild(vesNode *child);
 
   Children&       children()       { return this->m_children; }

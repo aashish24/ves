@@ -65,9 +65,7 @@ vesCamera::vesCamera() : vesTransformNode()
   this->m_windowCenter[0] = 0.0;
   this->m_windowCenter[1] = 0.0;
 
-  this->m_viewport = new vesViewport();
-
-  this->m_renderStage = 0x0;
+  this->m_viewport = vesViewport::Ptr(new vesViewport());
 
   this->m_renderOrder = PostRender;
 
@@ -90,8 +88,6 @@ vesCamera::~vesCamera()
   assert(!this->m_renderTargetStack.empty());
 
   delete this->m_renderTargetStack[0];
-
-  delete this->m_renderStage;
 }
 
 
@@ -348,28 +344,34 @@ void vesCamera::clearRenderTargets(vesRenderState &renderState)
 }
 
 
-const vesViewport* vesCamera::viewport() const
+const vesSharedPtr<vesViewport> vesCamera::viewport() const
 {
   return this->m_viewport;
 }
 
 
-vesViewport* vesCamera::viewport()
+vesSharedPtr<vesViewport> vesCamera::viewport()
 {
   return this->m_viewport;
 }
 
 
-const vesRenderStage* vesCamera::renderStage() const
+vesSharedPtr<vesRenderStage> vesCamera::renderStage()
 {
   return this->m_renderStage;
 }
 
 
-vesRenderStage* vesCamera::getOrCreateRenderStage()
+const vesSharedPtr<vesRenderStage> vesCamera::renderStage() const
+{
+  return this->m_renderStage;
+}
+
+
+vesSharedPtr<vesRenderStage> vesCamera::getOrCreateRenderStage()
 {
   if (!this->m_renderStage) {
-    this->m_renderStage = new vesRenderStage();
+    this->m_renderStage = vesRenderStage::Ptr(new vesRenderStage());
   }
   return this->m_renderStage;
 }

@@ -27,9 +27,7 @@
 
 
 vesActor::vesActor() : vesTransformNode(),
-  m_sensor  (false),
-  m_mapper  (0x0),
-  m_widget  (0x0)
+  m_sensor  (false)
 {
   // \todo: Create a default apperance.
 }
@@ -52,7 +50,7 @@ void vesActor::setVisible(bool value)
 }
 
 
-void vesActor::setWidget(vesMultitouchWidget *widget)
+void vesActor::setWidget(vesSharedPtr<vesMultitouchWidget> widget)
 {
   if (widget) {
     this->m_widget = widget;
@@ -60,19 +58,11 @@ void vesActor::setWidget(vesMultitouchWidget *widget)
 }
 
 
-void vesActor::setMapper(vesMapper *mapper)
+void vesActor::setMapper(vesSharedPtr<vesMapper> mapper)
 {
   if (mapper) {
     this->m_mapper = mapper;
     this->setBoundsDirty(true);
-  }
-}
-
-
-void vesActor::setMaterial(vesMaterial *material)
-{
-  if (material) {
-    this->m_material = material;
   }
 }
 

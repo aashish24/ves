@@ -29,13 +29,15 @@ class vtkScalarsToColors;
 class vesTriangleData;
 class vesTexture;
 
+#include <vesSharedPtr.h>
+
 #include <vtkSmartPointer.h>
 
 class vesDataConversionTools
 {
 public:
-  static vesTriangleData* Convert(vtkPolyData* input);
-  static void Convert(vtkPolyData* input, vesTriangleData* output);
+  static vesSharedPtr<vesTriangleData> Convert(vtkPolyData* input);
+  static void Convert(vtkPolyData* input, vesSharedPtr<vesTriangleData> output);
 
   // This function is designed to be as fast as possible at the expense of
   // generality.  It only converts triangle data.  It takes about 0.2 of the time
@@ -43,7 +45,8 @@ public:
   //
   // Note: many of the optimizations here could be added to the Convert function
   //       this would be wortwhile future work.
-  static void ConvertTriangles(vtkPolyData* input, vesTriangleData* output);
+  static void ConvertTriangles(vtkPolyData* input,
+    vesSharedPtr<vesTriangleData> output);
 
 
   static vtkUnsignedCharArray* FindRGBColorsArray(vtkDataSet* dataSet);
@@ -53,11 +56,15 @@ public:
   static vtkSmartPointer<vtkDiscretizableColorTransferFunction> GetBlackBodyRadiationColorMap(double scalarRange[2]);
   static vtkSmartPointer<vtkLookupTable> GetRedToBlueLookupTable(double scalarRange[2]);
   static vtkSmartPointer<vtkLookupTable> GetGrayscaleLookupTable(double scalarRange[2]);
-  static void SetVertexColors(vtkUnsignedCharArray* colors, vesTriangleData* triangleData);
-  static void SetVertexColors(vtkDataArray* scalars, vtkScalarsToColors* scalarsToColors, vesTriangleData* triangleData);
-  static void SetTextureCoordinates(vtkDataArray* tcoords, vesTriangleData* triangleData);
+  static void SetVertexColors(vtkUnsignedCharArray* colors,
+    vesSharedPtr<vesTriangleData> triangleData);
+  static void SetVertexColors(vtkDataArray* scalars, vtkScalarsToColors* scalarsToColors,
+    vesSharedPtr<vesTriangleData> triangleData);
+  static void SetTextureCoordinates(
+    vtkDataArray* tcoords, vesSharedPtr<vesTriangleData> triangleData);
 
   static vtkSmartPointer<vtkUnsignedCharArray> MapScalars(vtkDataArray* scalars, vtkScalarsToColors* scalarsToColors);
-  static void SetTextureData(vtkUnsignedCharArray* pixels, vesTexture* texture, int width, int height);
+  static void SetTextureData(vtkUnsignedCharArray* pixels,
+    vesSharedPtr<vesTexture> texture, int width, int height);
 
 };

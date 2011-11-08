@@ -66,8 +66,6 @@ public:
 
   vesGradientBackgroundApp()
   {
-    this->ClipUniform = 0;
-    this->ClipShader = 0;
     this->DataRep = 0;
 
     this->renderer()->background()->setGradientColor(
@@ -82,7 +80,8 @@ public:
 
   void initClipShader(const std::string& vertexSource, const std::string fragmentSource)
   {
-    vesShaderProgram* shaderProgram = this->addShaderProgram(vertexSource, fragmentSource);
+    vesSharedPtr<vesShaderProgram> shaderProgram
+      = this->addShaderProgram(vertexSource, fragmentSource);
     this->addModelViewMatrixUniform(shaderProgram);
     this->addProjectionMatrixUniform(shaderProgram);
     this->addNormalMatrixUniform(shaderProgram);
@@ -92,9 +91,9 @@ public:
     this->addVertexTextureCoordinateAttribute(shaderProgram);
     this->ClipShader = shaderProgram;
 
-    this->ClipUniform = new vesUniform("clipPlaneEquation", vesVector4f(-1.0f, 0.0f, 0.0f, 0.0f));
+    this->ClipUniform = vesSharedPtr<vesUniform>(
+      new vesUniform("clipPlaneEquation", vesVector4f(-1.0f, 0.0f, 0.0f, 0.0f)));
     this->ClipShader->addUniform(this->ClipUniform);
-    this->storeUniformForDeletion(this->ClipUniform);
   }
 
   void unloadData()
@@ -121,15 +120,15 @@ public:
     this->DataRep = rep;
   }
 
-  vesUniform* ClipUniform;
-  vesShaderProgram* ClipShader;
+  vesSharedPtr<vesUniform> ClipUniform;
+  vesSharedPtr<vesShaderProgram> ClipShader;
   vesKiwiPolyDataRepresentation* DataRep;
 };
 
 class vesTestHelper {
 public:
-
-  vesTestHelper()
+  vesTestHelper() :
+    IsTesting(true)
   {
   }
 
@@ -166,7 +165,6 @@ public:
   }
 
 private:
-
   vesGradientBackgroundApp App;
 
   std::string       SourceDirectory;

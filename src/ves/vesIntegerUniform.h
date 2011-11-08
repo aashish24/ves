@@ -25,6 +25,7 @@
 
 // VES includes
 #include "vesRenderState.h"
+#include "vesSetGet.h"
 
 // C++ includes
 #include <string>
@@ -32,6 +33,7 @@
 class vesIntegerUniform : public vesUniform
 {
 public:
+  vesTypeMacro(vesIntegerUniform);
 
   vesIntegerUniform(const std::string &name="integerUniform") :
     vesUniform(name, 1)

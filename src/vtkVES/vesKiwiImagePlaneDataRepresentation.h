@@ -23,6 +23,8 @@
 
 #include "vesKiwiPolyDataRepresentation.h"
 
+#include <vesSharedPtr.h>
+
 #include <vtkSmartPointer.h>
 
 class vtkImageData;
@@ -45,7 +47,7 @@ public:
 
   void setGrayscaleColorMap(double scalarRange[2]);
 
-  virtual void setShaderProgram(vesShaderProgram *shaderProgram);
+  virtual void setShaderProgram(vesSharedPtr<vesShaderProgram> shaderProgram);
 
   static vtkSmartPointer<vtkPolyData> polyDataForImagePlane(vtkImageData* image);
   static int imageFlatDimension(vtkImageData* image);
@@ -53,8 +55,8 @@ public:
 protected:
 
 
-  vesTexture* newTextureFromImage(vtkImageData* image);
-  void setTextureFromImage(vesTexture* texture, vtkImageData* image);
+  vesSharedPtr<vesTexture> newTextureFromImage(vtkImageData* image);
+  void setTextureFromImage(vesSharedPtr<vesTexture> texture, vtkImageData* image);
 
 private:
 

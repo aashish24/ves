@@ -57,7 +57,6 @@ public:
 
     this->ContourRep = 0;
     this->OutlineRep = 0;
-    this->Renderer = 0;
   }
 
   ~vesInternal()
@@ -67,7 +66,7 @@ public:
     }
   }
 
-  vesRenderer* Renderer;
+  vesSharedPtr<vesRenderer> Renderer;
 
   int SelectedImageDimension;
   int CurrentSliceIndices[3];
@@ -140,7 +139,9 @@ void vesKiwiImageWidgetRepresentation::setImageData(vtkImageData* image)
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiImageWidgetRepresentation::initializeWithShader(vesShaderProgram* geometryShader, vesShaderProgram* textureShader)
+void vesKiwiImageWidgetRepresentation::initializeWithShader(
+  vesSharedPtr<vesShaderProgram> geometryShader,
+  vesSharedPtr<vesShaderProgram> textureShader)
 {
 
   this->Internal->AppendFilter = vtkSmartPointer<vtkAppendPolyData>::New();
@@ -172,7 +173,8 @@ bool vesKiwiImageWidgetRepresentation::scrollSliceModeActive() const
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiImageWidgetRepresentation::setShaderProgram(vesShaderProgram *shaderProgram)
+void vesKiwiImageWidgetRepresentation::setShaderProgram(
+  vesSharedPtr<vesShaderProgram> shaderProgram)
 {
   if (!shaderProgram) {
     return;
@@ -184,7 +186,7 @@ void vesKiwiImageWidgetRepresentation::setShaderProgram(vesShaderProgram *shader
 }
 
 //----------------------------------------------------------------------------
-vesShaderProgram* vesKiwiImageWidgetRepresentation::shaderProgram() const
+vesSharedPtr<vesShaderProgram> vesKiwiImageWidgetRepresentation::shaderProgram() const
 {
   return this->Internal->ContourRep->shaderProgram();
 }
@@ -194,8 +196,8 @@ void vesKiwiImageWidgetRepresentation::scrollImageSlice(double deltaX, double de
 {
   deltaY *= -1;
 
-  vesRenderer* ren = this->renderer();
-  vesCamera* camera = ren->camera();
+  vesSharedPtr<vesRenderer> ren = this->renderer();
+  vesSharedPtr<vesCamera> camera = ren->camera();
   vesVector3f viewFocus = camera->focalPoint();
   vesVector3f viewPoint = camera->position();
   vesVector3f viewFocusDisplay = ren->computeWorldToDisplay(viewFocus);
@@ -278,12 +280,12 @@ bool vesKiwiImageWidgetRepresentation::handleSingleTouchPanGesture(double deltaX
 bool vesKiwiImageWidgetRepresentation::handleSingleTouchDown(int displayX, int displayY)
 {
   // calculate the focal depth so we'll know how far to move
-  vesRenderer* ren = this->renderer();
+  vesSharedPtr<vesRenderer> ren = this->renderer();
 
   // flip Y coordinate
   displayY = ren->height() - displayY;
 
-  vesCamera* camera = ren->camera();
+  std::tr1::shared_ptr<vesCamera> camera = ren->camera();
   vesVector3f cameraFocalPoint = camera->focalPoint();
   vesVector3f cameraPosition = camera->position();
   vesVector3f displayFocus = ren->computeWorldToDisplay(cameraFocalPoint);
@@ -352,13 +354,14 @@ bool vesKiwiImageWidgetRepresentation::handleSingleTouchUp()
 }
 
 //----------------------------------------------------------------------------
-vesRenderer* vesKiwiImageWidgetRepresentation::renderer()
+vesSharedPtr<vesRenderer> vesKiwiImageWidgetRepresentation::renderer()
 {
   return this->Internal->Renderer;
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiImageWidgetRepresentation::addSelfToRenderer(vesRenderer* renderer)
+void vesKiwiImageWidgetRepresentation::addSelfToRenderer(
+  vesSharedPtr<vesRenderer> renderer)
 {
   this->Internal->Renderer = renderer;
   for (size_t i = 0; i < this->Internal->AllReps.size(); ++i)
@@ -366,9 +369,10 @@ void vesKiwiImageWidgetRepresentation::addSelfToRenderer(vesRenderer* renderer)
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiImageWidgetRepresentation::removeSelfFromRenderer(vesRenderer* renderer)
+void vesKiwiImageWidgetRepresentation::removeSelfFromRenderer(
+  vesSharedPtr<vesRenderer> renderer)
 {
-  this->Internal->Renderer = 0;
+  this->Internal->Renderer.reset();
   for (size_t i = 0; i < this->Internal->AllReps.size(); ++i)
     this->Internal->AllReps[i]->removeSelfFromRenderer(renderer);
 }

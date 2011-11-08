@@ -23,9 +23,14 @@
 
 #include "vesGroupNode.h"
 
+// VES includes
+#include "vesSetGet.h"
+
 class vesTransformNode : public vesGroupNode
 {
 public:
+  vesTypeMacro(vesTransformNode);
+
   enum ReferenceFrame
   {
     Relative = 0,

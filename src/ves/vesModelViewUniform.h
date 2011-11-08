@@ -26,6 +26,7 @@
 // VES includes
 #include "vesGMTL.h"
 #include "vesRenderStage.h"
+#include "vesSetGet.h"
 
 // C++ includes
 #include <string>
@@ -33,6 +34,8 @@
 class vesModelViewUniform : public vesUniform
 {
 public:
+  vesTypeMacro(vesModelViewUniform);
+
   vesModelViewUniform(const std::string &name="modelViewMatrix") :
     vesUniform(name, vesMatrix4x4f())
   {

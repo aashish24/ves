@@ -26,10 +26,13 @@
 // VES includes
 #include "vesGMTL.h"
 #include "vesRenderStage.h"
+#include "vesSetGet.h"
 
 class vesNormalMatrixUniform : public vesUniform
 {
 public:
+  vesTypeMacro(vesNormalMatrixUniform);
+
   vesNormalMatrixUniform(const std::string &name="normalMatrix") :
     vesUniform(name, vesMatrix3x3f())
   {

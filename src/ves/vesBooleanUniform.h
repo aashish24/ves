@@ -26,6 +26,7 @@
 // VES includes
 #include "vesMapper.h"
 #include "vesRenderState.h"
+#include "vesSetGet.h"
 #include "vesTriangleData.h"
 
 // C++ includes
@@ -34,6 +35,7 @@
 class vesBooleanUniform : public vesUniform
 {
 public:
+  vesTypeMacro(vesBooleanUniform);
 
   vesBooleanUniform(const std::string &name="booleanUniform") :
     vesUniform(name, false)
@@ -52,6 +54,7 @@ public:
 class vesHasVertexColorsUniform : public vesBooleanUniform
 {
 public:
+  vesTypeMacro(vesHasVertexColorsUniform);
 
   vesHasVertexColorsUniform(const std::string &name="hasVertexColors") :
     vesBooleanUniform(name)

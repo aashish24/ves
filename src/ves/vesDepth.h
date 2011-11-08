@@ -23,9 +23,14 @@
 
 #include "vesMaterial.h"
 
+// VES includes
+#include "vesSetGet.h"
+
 class vesDepth : public vesMaterialAttribute
 {
 public:
+  vesTypeMacro(vesDepth);
+
   vesDepth();
   virtual ~vesDepth();
 

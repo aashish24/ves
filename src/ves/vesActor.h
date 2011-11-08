@@ -25,6 +25,7 @@
 
 // VES includes
 #include "vesGMTL.h"
+#include "vesSetGet.h"
 
 // Forward declarations
 class vesMapper;
@@ -37,7 +38,9 @@ class vesVisitor;
 class vesActor : public vesTransformNode
 {
 public:
-   vesActor();
+  vesTypeMacro(vesActor);
+
+  vesActor();
   ~vesActor();
 
   /// Evaluate the transform associated with the vtkActor.
@@ -52,20 +55,17 @@ public:
   /// \return true if the actor is a sensor.
   bool isSensor() const { return m_sensor; }
 
-  void setWidget(vesMultitouchWidget *widget);
-  vesMultitouchWidget* widget() { return this->m_widget; }
-  const vesMultitouchWidget* widget() const { return this->m_widget; }
+  void setWidget(vesSharedPtr<vesMultitouchWidget> widget);
+  vesSharedPtr<vesMultitouchWidget> widget() { return this->m_widget; }
+  const vesSharedPtr<vesMultitouchWidget> widget() const { return this->m_widget; }
 
   void setVisible(bool value);
   bool isVisible() const { return m_visible; }
 
-  void setMapper(vesMapper *mapper);
-  vesMapper* mapper() { return this->m_mapper; }
-  const vesMapper* mapper() const { return this->m_mapper; }
+  void setMapper(vesSharedPtr<vesMapper> mapper);
+  vesSharedPtr<vesMapper> mapper() { return this->m_mapper; }
+  const vesSharedPtr<vesMapper> mapper() const { return this->m_mapper; }
 
-  void setMaterial(vesMaterial *material);
-  vesMaterial* material() { return this->m_material; }
-  const vesMaterial* material() const { return this->m_material; }
 
   virtual void accept(vesVisitor &visitor);
   virtual void ascend(vesVisitor &visitor);
@@ -76,8 +76,8 @@ protected:
   bool m_sensor;
 
 
-  vesMapper *m_mapper;
-  vesMultitouchWidget *m_widget;
+  vesSharedPtr<vesMapper> m_mapper;
+  vesSharedPtr<vesMultitouchWidget> m_widget;
 
 private:
 };

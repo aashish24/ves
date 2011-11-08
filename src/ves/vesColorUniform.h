@@ -6,6 +6,7 @@
 // VES includes
 #include "vesGMTL.h"
 #include "vesRenderState.h"
+#include "vesSetGet.h"
 
 // C++ includes
 #include <string>

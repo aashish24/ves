@@ -25,10 +25,13 @@
 
 // VES includes
 #include "vesRenderStage.h"
+#include "vesSetGet.h"
 
 class vesProjectionUniform : public vesUniform
 {
 public:
+  vesTypeMacro(vesProjectionUniform);
+
   vesProjectionUniform(const std::string &name="projectionMatrix") :
     vesUniform(name, vesMatrix4x4f())
   {

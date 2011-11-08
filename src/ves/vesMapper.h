@@ -23,7 +23,9 @@
 
 #include "vesBoundingObject.h"
 
+// VES includes
 #include "vesGMTL.h" // Needed for vesMatrix4x4f return.
+#include "vesSetGet.h"
 
 // Forward declarations
 class vesVisitor;
@@ -33,14 +35,16 @@ class vesRenderState;
 class vesMapper : public vesBoundingObject
 {
 public:
+  vesTypeMacro(vesMapper);
+
   vesMapper();
   virtual ~vesMapper();
 
   virtual void computeBounds();
 
-  void setData(vesTriangleData *data);
-  vesTriangleData* data() { return this->m_data; }
-  const vesTriangleData* data() const { return this->m_data; }
+  void setData(vesSharedPtr<vesTriangleData> data);
+  vesSharedPtr<vesTriangleData> data() { return this->m_data; }
+  const vesSharedPtr<vesTriangleData> data() const { return this->m_data; }
 
   void setColor(float r, float g, float b, float a);
   float* color();
@@ -63,7 +67,7 @@ protected:
 
   const int m_maximumTrianglesPerDraw;
 
-  vesTriangleData *m_data;
+  vesSharedPtr<vesTriangleData> m_data;
 
   class vesInternal;
   vesInternal *m_internal;

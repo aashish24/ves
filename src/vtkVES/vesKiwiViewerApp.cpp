@@ -65,9 +65,6 @@ public:
 
   vesInternal()
   {
-    this->ShaderProgram = 0;
-    this->TextureShader = 0;
-
     this->TextToImage = vtkSmartPointer<vtkFreeTypeStringToImage>::New();
     this->TextRepresentation = 0;
     this->ImageWidget = 0;
@@ -83,20 +80,21 @@ public:
 
   struct vesShaderProgramData
   {
-    vesShaderProgramData(const std::string &name,
-                         vesShaderProgram *shaderProgram) :
+    vesShaderProgramData(
+      const std::string &name, vesSharedPtr<vesShaderProgram> shaderProgram) :
       Name(name), ShaderProgram(shaderProgram)
     {
     }
 
     std::string Name;
-    vesShaderProgram *ShaderProgram;
+    vesSharedPtr<vesShaderProgram> ShaderProgram;
   };
 
-  bool setShaderProgramOnRepresentations(vesShaderProgram *shaderProgram);
+  bool setShaderProgramOnRepresentations(
+    vesSharedPtr<vesShaderProgram> shaderProgram);
 
-  vesShaderProgram* ShaderProgram;
-  vesShaderProgram* TextureShader;
+  vesSharedPtr<vesShaderProgram> ShaderProgram;
+  vesSharedPtr<vesShaderProgram> TextureShader;
 
   std::vector<vesKiwiDataRepresentation*> DataRepresentations;
 
@@ -116,7 +114,7 @@ public:
 
 //----------------------------------------------------------------------------
 bool vesKiwiViewerApp::vesInternal::setShaderProgramOnRepresentations(
-  vesShaderProgram *shaderProgram)
+  vesSharedPtr<vesShaderProgram> shaderProgram)
 {
   bool success = false;
 
@@ -168,13 +166,13 @@ vesKiwiViewerApp::~vesKiwiViewerApp()
 }
 
 //----------------------------------------------------------------------------
-const vesShaderProgram* vesKiwiViewerApp::shaderProgram() const
+const vesSharedPtr<vesShaderProgram> vesKiwiViewerApp::shaderProgram() const
 {
   return this->Internal->ShaderProgram;
 }
 
 //----------------------------------------------------------------------------
-vesShaderProgram* vesKiwiViewerApp::shaderProgram()
+vesSharedPtr<vesShaderProgram> vesKiwiViewerApp::shaderProgram()
 {
   return this->Internal->ShaderProgram;
 }
@@ -213,8 +211,8 @@ void vesKiwiViewerApp::addBuiltinDataset(const std::string& name, const std::str
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiViewerApp::addBuiltinShadingModel(const std::string &name,
-                                              vesShaderProgram *shaderProgram)
+void vesKiwiViewerApp::addBuiltinShadingModel(
+  const std::string &name, vesSharedPtr<vesShaderProgram> shaderProgram)
 {
   assert(shaderProgram);
 
@@ -335,7 +333,8 @@ bool vesKiwiViewerApp::setShadingModel(const std::string& name)
 //----------------------------------------------------------------------------
 bool vesKiwiViewerApp::initGouraudShader(const std::string& vertexSource, const std::string& fragmentSource)
 {
-  vesShaderProgram* shaderProgram = this->addShaderProgram(vertexSource, fragmentSource);
+  vesSharedPtr<vesShaderProgram> shaderProgram
+    = this->addShaderProgram(vertexSource, fragmentSource);
   this->addModelViewMatrixUniform(shaderProgram);
   this->addProjectionMatrixUniform(shaderProgram);
   this->addNormalMatrixUniform(shaderProgram);
@@ -350,9 +349,11 @@ bool vesKiwiViewerApp::initGouraudShader(const std::string& vertexSource, const 
 }
 
 //----------------------------------------------------------------------------
-bool vesKiwiViewerApp::initBlinnPhongShader(const std::string& vertexSource, const std::string& fragmentSource)
+bool vesKiwiViewerApp::initBlinnPhongShader(const std::string& vertexSource,
+                                            const std::string& fragmentSource)
 {
-  vesShaderProgram* shaderProgram = this->addShaderProgram(vertexSource, fragmentSource);
+  vesSharedPtr<vesShaderProgram> shaderProgram
+    = this->addShaderProgram(vertexSource, fragmentSource);
   this->addModelViewMatrixUniform(shaderProgram);
   this->addProjectionMatrixUniform(shaderProgram);
   this->addNormalMatrixUniform(shaderProgram);
@@ -367,9 +368,11 @@ bool vesKiwiViewerApp::initBlinnPhongShader(const std::string& vertexSource, con
 }
 
 //----------------------------------------------------------------------------
-bool vesKiwiViewerApp::initToonShader(const std::string& vertexSource, const std::string& fragmentSource)
+bool vesKiwiViewerApp::initToonShader(const std::string& vertexSource,
+                                      const std::string& fragmentSource)
 {
-  vesShaderProgram* shaderProgram = this->addShaderProgram(vertexSource, fragmentSource);
+  vesSharedPtr<vesShaderProgram> shaderProgram
+    = this->addShaderProgram(vertexSource, fragmentSource);
   this->addModelViewMatrixUniform(shaderProgram);
   this->addProjectionMatrixUniform(shaderProgram);
   this->addNormalMatrixUniform(shaderProgram);
@@ -384,9 +387,11 @@ bool vesKiwiViewerApp::initToonShader(const std::string& vertexSource, const std
 }
 
 //----------------------------------------------------------------------------
-bool vesKiwiViewerApp::initTextureShader(const std::string& vertexSource, const std::string& fragmentSource)
+bool vesKiwiViewerApp::initTextureShader(const std::string& vertexSource,
+                                         const std::string& fragmentSource)
 {
-  vesShaderProgram* shaderProgram = this->addShaderProgram(vertexSource, fragmentSource);
+  vesSharedPtr<vesShaderProgram> shaderProgram
+    = this->addShaderProgram(vertexSource, fragmentSource);
   this->addModelViewMatrixUniform(shaderProgram);
   this->addProjectionMatrixUniform(shaderProgram);
   this->addVertexPositionAttribute(shaderProgram);
@@ -444,7 +449,8 @@ void vesKiwiViewerApp::addRepresentationsForDataSet(vtkDataSet* dataSet)
 }
 
 //----------------------------------------------------------------------------
-vesKiwiPolyDataRepresentation* vesKiwiViewerApp::addPolyDataRepresentation(vtkPolyData* polyData, vesShaderProgram* program)
+vesKiwiPolyDataRepresentation* vesKiwiViewerApp::addPolyDataRepresentation(
+  vtkPolyData* polyData, vesSharedPtr<vesShaderProgram> program)
 {
   vesKiwiPolyDataRepresentation* rep = new vesKiwiPolyDataRepresentation();
   rep->initializeWithShader(program);

@@ -78,7 +78,6 @@ public:
 
 vesMapper::vesMapper() : vesBoundingObject(),
   m_initialized(false),
-  m_data       (0x0),
   m_maximumTrianglesPerDraw
                (65536 / 3),
   m_internal   (0x0)
@@ -112,7 +111,7 @@ void vesMapper::computeBounds()
 }
 
 
-void vesMapper::setData(vesTriangleData *data)
+void vesMapper::setData(vesSharedPtr<vesTriangleData> data)
 {
   if (data) {
     this->m_data = data;

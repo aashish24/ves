@@ -22,6 +22,7 @@
 
 #include "vesActor.h"
 #include "vesBlend.h"
+#include "vesDepth.h"
 #include "vesMapper.h"
 #include "vesMaterial.h"
 #include "vesRenderer.h"
@@ -40,7 +41,7 @@
 //----------------------------------------------------------------------------
 namespace {
 
-void ConvertVertexArrays(vtkDataSet* dataSet, vesTriangleData* triangleData)
+void ConvertVertexArrays(vtkDataSet* dataSet, vesSharedPtr<vesTriangleData> triangleData)
 {
   vtkUnsignedCharArray* colors = vesDataConversionTools::FindRGBColorsArray(dataSet);
   vtkDataArray* scalars = vesDataConversionTools::FindScalarsArray(dataSet);
@@ -60,7 +61,7 @@ void ConvertVertexArrays(vtkDataSet* dataSet, vesTriangleData* triangleData)
     }
 }
 
-vesTriangleData* TriangleDataFromPolyData(vtkPolyData* polyData)
+vesSharedPtr<vesTriangleData> TriangleDataFromPolyData(vtkPolyData* polyData)
 {
   // Use triangle filter for now to ensure that models containing
   // polygons other than tris and quads will be rendered correctly.
@@ -70,7 +71,8 @@ vesTriangleData* TriangleDataFromPolyData(vtkPolyData* polyData)
   triangleFilter->SetInput(polyData);
   triangleFilter->Update();
   polyData = triangleFilter->GetOutput();
-  vesTriangleData* triangleData = vesDataConversionTools::Convert(polyData);
+  vesSharedPtr<vesTriangleData> triangleData =
+    vesDataConversionTools::Convert(polyData);
   ConvertVertexArrays(polyData, triangleData);
   return triangleData;
 }
@@ -83,28 +85,18 @@ public:
 
   vesInternal()
   {
-    this->Actor = 0;
-    this->Mapper = 0;
-    this->Material = 0;
-    this->Texture = 0;
-    this->Blend = 0;
   }
 
   ~vesInternal()
   {
-    delete this->Actor;
-    delete this->Mapper->data();
-    delete this->Mapper;
-    delete this->Material;
-    delete this->Texture;
-    delete this->Blend;
   }
 
-  vesActor*     Actor;
-  vesMapper*    Mapper;
-  vesMaterial*  Material;
-  vesTexture*   Texture;
-  vesBlend*     Blend;
+  vesSharedPtr<vesActor>     Actor;
+  vesSharedPtr<vesMapper>    Mapper;
+  vesSharedPtr<vesMaterial>  Material;
+  vesSharedPtr<vesTexture>   Texture;
+  vesSharedPtr<vesBlend>     Blend;
+  vesSharedPtr<vesDepth>     Depth;
 };
 
 //----------------------------------------------------------------------------
@@ -125,18 +117,17 @@ void vesKiwiPolyDataRepresentation::setPolyData(vtkPolyData* polyData)
   assert(polyData);
   assert(this->Internal->Mapper);
 
-  vesTriangleData* triangleData = TriangleDataFromPolyData(polyData);
-  delete this->Internal->Mapper->data();
+  vesSharedPtr<vesTriangleData> triangleData = TriangleDataFromPolyData(polyData);
   this->Internal->Mapper->setData(triangleData);
 }
 
 //----------------------------------------------------------------------------
-vesTriangleData* vesKiwiPolyDataRepresentation::triangleData() const
+vesSharedPtr<vesTriangleData> vesKiwiPolyDataRepresentation::triangleData() const
 {
   if (this->Internal->Mapper) {
     return this->Internal->Mapper->data();
   }
-  return 0;
+  return vesSharedPtr<vesTriangleData>();
 }
 
 //----------------------------------------------------------------------------
@@ -147,7 +138,8 @@ void vesKiwiPolyDataRepresentation::setTranslation(const vesVector3f& translatio
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiPolyDataRepresentation::setShaderProgram(vesShaderProgram *shaderProgram)
+void vesKiwiPolyDataRepresentation::setShaderProgram(
+  vesSharedPtr<vesShaderProgram> shaderProgram)
 {
   if (!shaderProgram) {
     return;
@@ -157,30 +149,33 @@ void vesKiwiPolyDataRepresentation::setShaderProgram(vesShaderProgram *shaderPro
 }
 
 //----------------------------------------------------------------------------
-vesShaderProgram* vesKiwiPolyDataRepresentation::shaderProgram() const
+vesSharedPtr<vesShaderProgram> vesKiwiPolyDataRepresentation::shaderProgram() const
 {
   return this->Internal->Actor->material()->shaderProgram();
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiPolyDataRepresentation::initializeWithShader(vesShaderProgram* shaderProgram)
+void vesKiwiPolyDataRepresentation::initializeWithShader(
+  vesSharedPtr<vesShaderProgram> shaderProgram)
 {
   assert(shaderProgram);
   assert(!this->Internal->Mapper && !this->Internal->Actor);
 
-  this->Internal->Mapper = new vesMapper();
-  this->Internal->Mapper->setData(new vesTriangleData);
+  this->Internal->Mapper = vesSharedPtr<vesMapper>(new vesMapper());
+  this->Internal->Mapper->setData(vesSharedPtr<vesTriangleData>(new vesTriangleData));
 
-  this->Internal->Actor = new vesActor();
+  this->Internal->Actor = vesSharedPtr<vesActor>(new vesActor());
   this->Internal->Actor->setMapper(this->Internal->Mapper);
 
-  this->Internal->Material = new vesMaterial();
+  this->Internal->Material = vesSharedPtr<vesMaterial>(new vesMaterial());
   this->Internal->Actor->setMaterial(this->Internal->Material);
 
-  this->Internal->Blend = new vesBlend();
+  this->Internal->Blend = vesSharedPtr<vesBlend>(new vesBlend());
+  this->Internal->Depth = vesSharedPtr<vesDepth>(new vesDepth());
 
   this->Internal->Actor->material()->addAttribute(shaderProgram);
   this->Internal->Actor->material()->addAttribute(this->Internal->Blend);
+  this->Internal->Actor->material()->addAttribute(this->Internal->Depth);
 
   this->Internal->Actor->mapper()->setColor(0.9, 0.9, 0.9, 1.0);
 }
@@ -193,7 +188,7 @@ void vesKiwiPolyDataRepresentation::setBinNumber(int binNumber)
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiPolyDataRepresentation::setTexture(vesTexture* texture)
+void vesKiwiPolyDataRepresentation::setTexture(vesSharedPtr<vesTexture> texture)
 {
   assert(this->Internal->Actor);
   this->Internal->Texture = texture;
@@ -201,7 +196,7 @@ void vesKiwiPolyDataRepresentation::setTexture(vesTexture* texture)
 }
 
 //----------------------------------------------------------------------------
-vesTexture* vesKiwiPolyDataRepresentation::texture() const
+vesSharedPtr<vesTexture> vesKiwiPolyDataRepresentation::texture() const
 {
   return this->Internal->Texture;
 }
@@ -214,27 +209,29 @@ void vesKiwiPolyDataRepresentation::setColor(double r, double g, double b, doubl
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiPolyDataRepresentation::addSelfToRenderer(vesRenderer* renderer)
+void vesKiwiPolyDataRepresentation::addSelfToRenderer(
+  vesSharedPtr<vesRenderer> renderer)
 {
   assert(renderer);
   renderer->addActor(this->Internal->Actor);
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiPolyDataRepresentation::removeSelfFromRenderer(vesRenderer* renderer)
+void vesKiwiPolyDataRepresentation::removeSelfFromRenderer(
+  vesSharedPtr<vesRenderer> renderer)
 {
   assert(renderer);
   renderer->removeActor(this->Internal->Actor);
 }
 
 //----------------------------------------------------------------------------
-vesActor* vesKiwiPolyDataRepresentation::actor() const
+vesSharedPtr<vesActor> vesKiwiPolyDataRepresentation::actor() const
 {
   return this->Internal->Actor;
 }
 
 //----------------------------------------------------------------------------
-vesMapper* vesKiwiPolyDataRepresentation::mapper() const
+vesSharedPtr<vesMapper> vesKiwiPolyDataRepresentation::mapper() const
 {
   return this->Internal->Mapper;
 }

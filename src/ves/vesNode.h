@@ -24,6 +24,9 @@
 #include "vesBoundingObject.h"
 #include "vesObject.h"
 
+// VES includes
+#include "vesSetGet.h"
+
 // Forward declarations.
 class vesActor;
 class vesCamera;
@@ -35,13 +38,18 @@ class vesVisitor;
 class vesNode : public vesObject, public vesBoundingObject
 {
 public:
+  vesTypeMacro(vesNode);
+
   vesNode();
   virtual ~vesNode();
 
   virtual void accept(vesVisitor &visitor);
 
-  inline vesGroupNode* parent(){ return this->m_parent; }
+  void setMaterial(vesSharedPtr<vesMaterial> material);
+  vesSharedPtr<vesMaterial> material() { return this->m_material; }
+  const vesSharedPtr<vesMaterial> material() const { return this->m_material; }
 
+  vesGroupNode* parent(){ return this->m_parent; }
   bool setParent(vesGroupNode *parent);
 
   inline void setIsOverlayNode(bool value) { this->m_isOverlayNode = value; }
@@ -69,12 +77,12 @@ protected:
   virtual void computeBounds();
   virtual void updateBounds(vesNode &child){}
 
-  bool m_isOverlayNode;
   bool m_visible;
-  bool m_boundsDirty;
+  bool m_isOverlayNode;
 
-  vesMaterial *m_material;
-  vesGroupNode *m_parent;
+  vesGroupNode* m_parent;
+
+  vesSharedPtr<vesMaterial> m_material;
 };
 
 #endif // __VESNODE_H

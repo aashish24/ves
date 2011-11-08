@@ -18,33 +18,13 @@
   limitations under the License.
  ========================================================================*/
 
-#ifndef VESRENDERTOTEXTURE_H
-#define VESRENDERTOTEXTURE_H
+#ifndef VESSHAREDPTR_H
+#define VESSHAREDPTR_H
 
-// VES includes
-#include "vesFBORenderTarget.h"
-#include "vesSetGet.h"
+// C/C++ includes
+#include <tr1/memory>
 
-class vesRenderToTexture : public vesFBORenderTarget
-{
-public:
-  vesTypeMacro(vesRenderToTexture);
-  vesRenderToTexture();
-  virtual ~vesRenderToTexture();
+#define vesSharedPtr std::tr1::shared_ptr
+#define vesWeakPtr std::tr1::weak_ptr
 
-  bool setColorTexture(vesTexture *texture);
-  vesTexture* colorTexture();
-  const vesTexture* colorTexture() const;
-
-  bool setDepthTexture(vesTexture *texture);
-  vesTexture* depthTexture();
-  const vesTexture* depthTexture() const;
-
-protected:
-  void setup (vesRenderState &renderState);
-  void render(vesRenderState &renderState);
-  void remove(vesRenderState &renderState);
-};
-
-
-#endif // VESRENDERTOTEXTURE_H
+#endif // VESSHAREDPTR_H

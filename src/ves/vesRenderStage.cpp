@@ -20,7 +20,8 @@
 
 #include "vesRenderStage.h"
 
-void vesRenderStage::addPreRenderStage(vesRenderStage* renderStage, int priority)
+void vesRenderStage::addPreRenderStage(vesSharedPtr<vesRenderStage> renderStage,
+                                       int priority)
 {
   if (renderStage) {
     RenderStageList::iterator itr;
@@ -39,7 +40,8 @@ void vesRenderStage::addPreRenderStage(vesRenderStage* renderStage, int priority
 }
 
 
-void vesRenderStage::addPostRenderStage(vesRenderStage* renderStage, int priority)
+void vesRenderStage::addPostRenderStage(vesSharedPtr<vesRenderStage> renderStage,
+                                        int priority)
 {
   if (renderStage) {
     RenderStageList::iterator itr;
@@ -57,7 +59,8 @@ void vesRenderStage::addPostRenderStage(vesRenderStage* renderStage, int priorit
 }
 
 
-void vesRenderStage::renderPreRenderStages(vesRenderState &renderState, vesRenderLeaf *previous)
+void vesRenderStage::renderPreRenderStages(vesRenderState &renderState,
+                                           vesRenderLeaf *previous)
 {
   if (this->m_preRenderList.empty()) {
     return;

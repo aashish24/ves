@@ -24,6 +24,7 @@
 // VES includes
 #include "vesGMTL.h"
 #include "vesRenderState.h"
+#include "vesSetGet.h"
 
 // Forward declarations
 class vesMapper;
@@ -32,9 +33,13 @@ class vesMaterial;
 class vesRenderLeaf
 {
 public:
-  vesRenderLeaf(int depth, const vesMatrix4x4f &modelViewMatrix,
-                const vesMatrix4x4f &projectionMatrix,
-                vesMaterial *material, vesMapper *mapper)
+  vesTypeMacro(vesRenderLeaf);
+
+  vesRenderLeaf(
+    int depth, const vesMatrix4x4f &modelViewMatrix,
+    const vesMatrix4x4f &projectionMatrix,
+    const vesSharedPtr<vesMaterial> &material,
+    const vesSharedPtr<vesMapper> &mapper)
   {
     this->m_depth = depth;
     this->m_modelViewMatrix = modelViewMatrix;
@@ -52,11 +57,9 @@ public:
     this->m_mapper = mapper;
   }
 
-
   ~vesRenderLeaf()
   {
   }
-
 
   void render(vesRenderState &renderState, vesRenderLeaf *previous)
   {
@@ -79,7 +82,6 @@ public:
     }
   }
 
-
   void finalize(vesRenderState &renderState)
   {
     if (this->m_material) {
@@ -87,15 +89,14 @@ public:
     }
   }
 
-
   int m_depth;
   int m_bin;
 
   vesMatrix4x4f m_projectionMatrix;
   vesMatrix4x4f m_modelViewMatrix;
 
-  vesMaterial *m_material;
-  vesMapper *m_mapper;
+  vesSharedPtr<vesMaterial> m_material;
+  vesSharedPtr<vesMapper> m_mapper;
 };
 
 #endif // VESRENDERLEAF_H

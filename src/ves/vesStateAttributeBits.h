@@ -24,7 +24,7 @@
 // VES includes.
 #include "vesGL.h"
 
-class vesStateAttributeBits
+struct vesStateAttributeBits
 {
 public:
   enum ClearMask

@@ -21,10 +21,14 @@
 #ifndef VESRENDERDATA_H
 #define VESRENDERDATA_H
 
+// VES includes
 #include "vesGLTypes.h"
+#include "vesSetGet.h"
 
 struct vesRenderData
 {
+  vesTypeMacro(vesRenderData);
+
   vesRenderData(int primitiveType) :
     m_pritimiveType(primitiveType)
   {

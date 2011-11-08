@@ -23,6 +23,9 @@
 
 #include "vesGMTL.h"
 
+// VES includes
+#include <vesSharedPtr.h>
+
 class vesRenderer;
 
 class vesKiwiDataRepresentation
@@ -32,8 +35,8 @@ public:
   vesKiwiDataRepresentation() {}
   virtual ~vesKiwiDataRepresentation() {}
 
-  virtual void addSelfToRenderer(vesRenderer* renderer) = 0;
-  virtual void removeSelfFromRenderer(vesRenderer* renderer) = 0;
+  virtual void addSelfToRenderer(vesSharedPtr<vesRenderer> renderer) = 0;
+  virtual void removeSelfFromRenderer(vesSharedPtr<vesRenderer> renderer) = 0;
 
   virtual int numberOfFacets() = 0;
   virtual int numberOfVertices() = 0;

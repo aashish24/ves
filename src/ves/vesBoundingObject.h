@@ -26,11 +26,15 @@
 #ifndef __vesBoundingObject_h
 #define __vesBoundingObject_h
 
+// VES includes
 #include "vesGMTL.h"
+#include "vesSetGet.h"
 
 class vesBoundingObject
 {
 public:
+  vesTypeMacro(vesBoundingObject);
+
   vesBoundingObject();
   virtual ~vesBoundingObject();
 

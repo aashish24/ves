@@ -71,9 +71,9 @@ void vesKiwiImagePlaneDataRepresentation::setImageData(vtkImageData* imageData)
   this->setPolyData(imagePlane);
   this->Internal->ImagePlane = imagePlane;
 
-  vesTexture* texture = this->texture();
+  vesSharedPtr<vesTexture> texture = this->texture();
   if (!texture) {
-    this->setTexture(new vesTexture());
+    this->setTexture(vesSharedPtr<vesTexture>(new vesTexture()));
   }
 
   this->setTextureFromImage(this->texture(), imageData);
@@ -104,21 +104,24 @@ void vesKiwiImagePlaneDataRepresentation::setGrayscaleColorMap(double scalarRang
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiImagePlaneDataRepresentation::setShaderProgram(vesShaderProgram *shaderProgram)
+void vesKiwiImagePlaneDataRepresentation::setShaderProgram(
+  vesSharedPtr<vesShaderProgram> shaderProgram)
 {
   // Do nothing.
 }
 
 //----------------------------------------------------------------------------
-vesTexture* vesKiwiImagePlaneDataRepresentation::newTextureFromImage(vtkImageData* image)
+vesSharedPtr<vesTexture>
+vesKiwiImagePlaneDataRepresentation::newTextureFromImage(vtkImageData* image)
 {
-  vesTexture* texture = new vesTexture();
+  vesSharedPtr<vesTexture> texture (new vesTexture());
   this->setTextureFromImage(texture, image);
   return texture;
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiImagePlaneDataRepresentation::setTextureFromImage(vesTexture* texture, vtkImageData* image)
+void vesKiwiImagePlaneDataRepresentation::setTextureFromImage(
+  vesSharedPtr<vesTexture> texture, vtkImageData* image)
 {
   assert(image);
   assert(image->GetDataDimension() == 2);

@@ -21,9 +21,14 @@
 #ifndef VESOBJECT_H
 #define VESOBJECT_H
 
+// VES includes
+#include "vesSetGet.h"
+
 class vesObject
 {
 public:
+  vesTypeMacro(vesObject);
+
   vesObject() :
     m_dirtyState(true)
   {

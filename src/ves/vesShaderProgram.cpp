@@ -48,10 +48,7 @@ public:
       this->m_vertexAttributes.clear();
       this->m_uniformNameToLocation.clear();
       this->m_vertexAttributeNameToLocation.clear();
-
-      for (size_t i=0; i < this->m_engineUniforms.size(); ++i) {
-        delete this->m_engineUniforms[i];
-      }
+      this->m_engineUniforms.clear();
     }
 
   typedef std::map<std::string, int>          UniformNameToLocation;
@@ -60,14 +57,14 @@ public:
 
   unsigned int m_programHandle;
 
-  std::vector<vesShader*>             m_shaders;
-  std::vector<vesUniform*>            m_uniforms;
-  std::map<int, vesVertexAttribute*>  m_vertexAttributes;
+  std::vector< vesSharedPtr<vesShader> > m_shaders;
+  std::vector< vesSharedPtr<vesUniform> > m_uniforms;
+  std::map<int, vesSharedPtr<vesVertexAttribute> >  m_vertexAttributes;
 
-  UniformNameToLocation               m_uniformNameToLocation;
-  VertexAttributeNameToLocation       m_vertexAttributeNameToLocation;
+  UniformNameToLocation m_uniformNameToLocation;
+  VertexAttributeNameToLocation m_vertexAttributeNameToLocation;
 
-  std::vector<vesEngineUniform*>      m_engineUniforms;
+  std::vector< vesSharedPtr<vesEngineUniform> > m_engineUniforms;
 };
 
 
@@ -78,8 +75,11 @@ vesShaderProgram::vesShaderProgram() : vesMaterialAttribute()
   this->m_type    = vesMaterialAttribute::Shader;
   this->m_binding = vesMaterialAttribute::BindAll;
 
-  this->m_internal->m_engineUniforms.push_back(new vesHasVertexColors());
-  this->m_internal->m_engineUniforms.push_back(new vesPrimitiveType());
+  vesSharedPtr<vesEngineUniform> vertexHasColors (new vesHasVertexColors());
+  vesSharedPtr<vesEngineUniform> primitiveType (new vesPrimitiveType());
+
+  this->m_internal->m_engineUniforms.push_back(vertexHasColors);
+  this->m_internal->m_engineUniforms.push_back(primitiveType);
 
   for (size_t i=0; i < this->m_internal->m_engineUniforms.size(); ++i) {
     this->addUniform(this->m_internal->m_engineUniforms[i]->uniform());
@@ -93,20 +93,22 @@ vesShaderProgram::~vesShaderProgram()
 }
 
 
-bool vesShaderProgram::addShader(vesShader *shader)
+bool vesShaderProgram::addShader(vesSharedPtr<vesShader> shader)
 {
   if (!shader)
     return false;
 
-  // \todo: Memory management.
-  for (std::vector<vesShader*>::iterator it=this->m_internal->m_shaders.begin();
-       it!=this->m_internal->m_shaders.end(); ++it) {
+  std::vector< vesSharedPtr<vesShader> >::iterator itr
+    = this->m_internal->m_shaders.begin();
 
-    if (shader == *it)
+  // \todo: Memory management.
+  for (; itr != this->m_internal->m_shaders.end(); ++itr) {
+
+    if (shader == *itr)
       return false;
 
-    if ((*it)->shaderType() == shader->shaderType()) {
-      this->m_internal->m_shaders.erase(it);
+    if ((*itr)->shaderType() == shader->shaderType()) {
+      this->m_internal->m_shaders.erase(itr);
       break;
     }
   }
@@ -121,13 +123,13 @@ bool vesShaderProgram::addShader(vesShader *shader)
 }
 
 
-bool vesShaderProgram::addUniform(vesUniform *uniform)
+bool vesShaderProgram::addUniform(vesSharedPtr<vesUniform> uniform)
 {
   if (!uniform) {
     return false;
   }
 
-  std::vector<vesUniform*>::const_iterator constItr =
+  std::vector< vesSharedPtr<vesUniform> >::const_iterator constItr =
     this->m_internal->m_uniforms.begin();
 
   for (; constItr != this->m_internal->m_uniforms.end(); ++constItr) {
@@ -143,7 +145,8 @@ bool vesShaderProgram::addUniform(vesUniform *uniform)
 }
 
 
-bool vesShaderProgram::addVertexAttribute(vesVertexAttribute *attribute, int key)
+bool vesShaderProgram::addVertexAttribute(
+  vesSharedPtr<vesVertexAttribute> attribute, int key)
 {
   if (!attribute)
   {
@@ -270,7 +273,7 @@ bool vesShaderProgram::validate()
 
 void vesShaderProgram::bindAttributes()
 {
-  std::map<int, vesVertexAttribute*>::const_iterator constItr =
+  std::map<int, vesSharedPtr<vesVertexAttribute> >::const_iterator constItr =
     this->m_internal->m_vertexAttributes.begin();
 
   for (;constItr != this->m_internal->m_vertexAttributes.end(); ++constItr) {
@@ -283,7 +286,7 @@ void vesShaderProgram::bindAttributes()
 
 void vesShaderProgram::bindUniforms()
 {
-  std::vector<vesUniform*>::const_iterator constItr =
+  std::vector< vesSharedPtr<vesUniform> >::const_iterator constItr =
     this->m_internal->m_uniforms.begin();
 
   for (;constItr != this->m_internal->m_uniforms.end(); ++constItr) {
@@ -306,10 +309,10 @@ void vesShaderProgram::cleanUp()
 void vesShaderProgram::deleteVertexAndFragment()
 {
   // Delete a shader object.
-  for (std::vector<vesShader*>::iterator it=this->m_internal->m_shaders.begin();
-       it!=this->m_internal->m_shaders.end(); ++it) {
-    glDeleteShader((*it)->shaderHandle());
-    delete (*it);
+  std::vector< vesSharedPtr<vesShader> >::iterator itr
+    = this->m_internal->m_shaders.begin();
+  for (; itr != this->m_internal->m_shaders.end(); ++itr) {
+    glDeleteShader((*itr)->shaderHandle());
   }
 }
 
@@ -327,9 +330,9 @@ const unsigned int& vesShaderProgram::programHandle() const
 
 
 
-vesUniform* vesShaderProgram::uniform(const std::string &name)
+vesSharedPtr<vesUniform> vesShaderProgram::uniform(const std::string &name)
 {
-  std::vector<vesUniform*>::iterator itr =
+  std::vector< vesSharedPtr<vesUniform> >::iterator itr =
     this->m_internal->m_uniforms.begin();
 
   for (; itr != this->m_internal->m_uniforms.end(); ++itr)
@@ -340,13 +343,13 @@ vesUniform* vesShaderProgram::uniform(const std::string &name)
     }
   }
 
-  return 0;
+  return vesSharedPtr<vesUniform>();
 }
 
 
 bool vesShaderProgram::uniformExist(const std::string &name)
 {
-  std::vector<vesUniform*>::const_iterator constItr =
+  std::vector< vesSharedPtr<vesUniform> >::const_iterator constItr =
     this->m_internal->m_uniforms.begin();
 
   for (; constItr != this->m_internal->m_uniforms.end(); ++constItr) {
@@ -361,7 +364,7 @@ bool vesShaderProgram::uniformExist(const std::string &name)
 
 void vesShaderProgram::updateUniforms()
 {
-  std::vector<vesUniform*>::const_iterator constItr =
+  std::vector< vesSharedPtr<vesUniform> >::const_iterator constItr =
     this->m_internal->m_uniforms.begin();
 
   for (; constItr != this->m_internal->m_uniforms.end(); ++constItr) {
@@ -388,13 +391,14 @@ void vesShaderProgram::bind(const vesRenderState &renderState)
     }
 
     // Compile shaders.
-    for (std::vector<vesShader*>::iterator it = this->m_internal->m_shaders.begin();
-         it!=this->m_internal->m_shaders.end(); ++it) {
+    std::vector< vesSharedPtr<vesShader> >::iterator itr
+      = this->m_internal->m_shaders.begin();
+    for (; itr != this->m_internal->m_shaders.end(); ++itr) {
       std::cerr << "INFO: Compiling shaders: " << std::endl;
 
-      (*it)->compileShader();
+      (*itr)->compileShader();
 
-      (*it)->attachShader(this->m_internal->m_programHandle);
+      (*itr)->attachShader(this->m_internal->m_programHandle);
     }
 
     this->bindAttributes();
@@ -417,7 +421,7 @@ void vesShaderProgram::bind(const vesRenderState &renderState)
   }
 
   // Call update callback.
-  std::vector<vesUniform*>::const_iterator constItr =
+  std::vector< vesSharedPtr<vesUniform> >::const_iterator constItr =
     this->m_internal->m_uniforms.begin();
 
   for (; constItr != this->m_internal->m_uniforms.end(); ++constItr) {
@@ -438,7 +442,7 @@ void vesShaderProgram::unbind(const vesRenderState &renderState)
 
 void vesShaderProgram::setupVertexData(const vesRenderState &renderState, int key)
 {
-  std::map<int, vesVertexAttribute*>::const_iterator constItr =
+  std::map<int, vesSharedPtr<vesVertexAttribute> >::const_iterator constItr =
     this->m_internal->m_vertexAttributes.find(key);
 
   if (constItr != this->m_internal->m_vertexAttributes.end()) {
@@ -449,7 +453,7 @@ void vesShaderProgram::setupVertexData(const vesRenderState &renderState, int ke
 
 void vesShaderProgram::bindVertexData(const vesRenderState &renderState, int key)
 {
-  std::map<int, vesVertexAttribute*>::const_iterator constItr =
+  std::map<int, vesSharedPtr<vesVertexAttribute> >::const_iterator constItr =
     this->m_internal->m_vertexAttributes.find(key);
 
   if (constItr != this->m_internal->m_vertexAttributes.end()) {
@@ -460,7 +464,7 @@ void vesShaderProgram::bindVertexData(const vesRenderState &renderState, int key
 
 void vesShaderProgram::unbindVertexData(const vesRenderState &renderState, int key)
 {
-  std::map<int, vesVertexAttribute*>::const_iterator constItr =
+  std::map<int, vesSharedPtr<vesVertexAttribute> >::const_iterator constItr =
     this->m_internal->m_vertexAttributes.find(key);
 
   if (constItr != this->m_internal->m_vertexAttributes.end()) {

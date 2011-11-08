@@ -23,6 +23,9 @@
 
 #include "vesObject.h"
 
+// VES includes
+#include "vesSetGet.h"
+
 // Forward declarations
 class vesRenderData;
 class vesRenderState;
@@ -31,6 +34,8 @@ class vesShaderProgram;
 class vesMaterialAttribute : public vesObject
 {
 public:
+  vesTypeMacro(vesMaterialAttribute);
+
   enum AttributeType
   {
     Undefined = 0x0,
@@ -121,14 +126,18 @@ public:
   int binNumber() { return this->m_binNumber; }
   const int& binNumber() const { return this->m_binNumber; }
 
-  bool addAttribute(vesMaterialAttribute *attribute);
-  vesMaterialAttribute* attribute(vesMaterialAttribute::AttributeType type);
-  const vesMaterialAttribute* attribute(vesMaterialAttribute::AttributeType type) const;
+  bool addAttribute(vesSharedPtr<vesMaterialAttribute> attribute);
+  vesSharedPtr<vesMaterialAttribute> attribute(
+    vesMaterialAttribute::AttributeType type);
+  const vesSharedPtr<vesMaterialAttribute> attribute(
+    vesMaterialAttribute::AttributeType type) const;
 
   /*! Provide quick acces to shader program */
-  bool setShaderProgram(vesShaderProgram *shaderProgram);
-  vesShaderProgram* shaderProgram(){ return this->m_shaderProgram; }
-  const vesShaderProgram* shaderProgram() const { return this->m_shaderProgram; }
+  bool setShaderProgram(vesSharedPtr<vesShaderProgram> shaderProgram);
+  vesSharedPtr<vesShaderProgram> shaderProgram()
+    { return this->m_shaderProgram; }
+  const vesSharedPtr<vesShaderProgram> shaderProgram() const
+    { return this->m_shaderProgram; }
 
   virtual void render(const vesRenderState &renderState);
   virtual void remove(const vesRenderState &renderState);
@@ -148,7 +157,7 @@ protected:
 
   int m_binNumber;
 
-  vesShaderProgram *m_shaderProgram;
+  vesSharedPtr<vesShaderProgram> m_shaderProgram;
 
   class vesInternal;
   vesInternal *m_internal;
