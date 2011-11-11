@@ -44,7 +44,8 @@ vesUniform::~vesUniform()
 void vesUniform::update(const vesRenderState   &renderState,
                         const vesShaderProgram &program)
 {
-  // \note: Do nothing by default.
+  vesNotUsed(renderState);
+  vesNotUsed(program);
 }
 
 
@@ -488,8 +489,6 @@ bool vesUniform::getElement(unsigned int index, vesMatrix3x3f &value) const
   if (index >= this->m_numberElements || !isCompatibleType(Float))
     return false;
 
-  unsigned int j = index * getTypeNumberOfComponents(this->m_type);
-
   value.set(&this->m_floatArray->front());
 
   return true;
@@ -500,8 +499,6 @@ bool vesUniform::getElement(unsigned int index, vesMatrix4x4f &value) const
 {
   if (index >= this->m_numberElements || !isCompatibleType(Float))
     return false;
-
-  unsigned int j = index * getTypeNumberOfComponents(this->m_type);
 
   value.set(&this->m_floatArray->front());
 

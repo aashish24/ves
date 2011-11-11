@@ -41,7 +41,8 @@ public:
   }
 
   virtual void bindRenderData(const vesRenderState &renderState,
-                              const vesRenderData  &renderData){}
+                              const vesRenderData  &renderData)
+    { vesNotUsed(renderState); vesNotUsed(renderData); }
 
   vesSharedPtr<vesUniform> uniform() { return this->m_uniform; }
   const vesSharedPtr<vesUniform> uniform() const { return this->m_uniform; }

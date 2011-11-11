@@ -96,8 +96,9 @@ public:
   TraversalMode mode(){ return this->m_traversalMode; }
 
 protected:
-  TraversalMode m_traversalMode;
   VisitorType m_visitorType;
+
+  TraversalMode m_traversalMode;
 
   vesMatrix4x4f m_projection2DMatrix;
 

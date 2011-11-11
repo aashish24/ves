@@ -68,14 +68,17 @@ public:
   virtual const vesActor* asActor() const { return 0x0; }
 
   /// Traverse upwards.
-  virtual void ascend(vesVisitor &visitor){}
+  virtual void ascend(vesVisitor &visitor)
+    { vesNotUsed(visitor); }
 
   /// Traverse downwards.
-  virtual void traverse(vesVisitor &visitor){}
+  virtual void traverse(vesVisitor &visitor)
+    { vesNotUsed(visitor); }
 
 protected:
   virtual void computeBounds();
-  virtual void updateBounds(vesNode &child){}
+  virtual void updateBounds(vesNode &child)
+    { vesNotUsed(child); }
 
   bool m_visible;
   bool m_isOverlayNode;

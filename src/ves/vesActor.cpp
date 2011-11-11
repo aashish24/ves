@@ -76,6 +76,7 @@ void vesActor::accept(vesVisitor &visitor)
 void vesActor::ascend(vesVisitor &visitor)
 {
   // \todo: Implement this.
+  vesNotUsed(visitor);
 }
 
 

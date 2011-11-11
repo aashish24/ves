@@ -46,9 +46,14 @@ public:
   vesRenderTarget() : m_implementation(FrameBuffer) {}
   virtual ~vesRenderTarget(){}
 
-  virtual void setup (vesRenderState &renderState){}
-  virtual void render(vesRenderState &renderState){}
-  virtual void remove(vesRenderState &renderState){}
+  virtual void setup(vesRenderState &renderState)
+    { vesNotUsed(renderState); }
+
+  virtual void render(vesRenderState &renderState)
+    { vesNotUsed(renderState); }
+
+  virtual void remove(vesRenderState &renderState)
+    { vesNotUsed(renderState); }
 
  protected:
    ImplementationType m_implementation;

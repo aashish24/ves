@@ -375,6 +375,7 @@ void vesShaderProgram::updateUniforms()
 
 void vesShaderProgram::setup(const vesRenderState &renderState)
 {
+  vesNotUsed(renderState);
 }
 
 
@@ -437,6 +438,7 @@ void vesShaderProgram::bind(const vesRenderState &renderState)
 void vesShaderProgram::unbind(const vesRenderState &renderState)
 {
   // \todo: Implement this.
+  vesNotUsed(renderState);
 }
 
 

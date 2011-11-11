@@ -59,6 +59,8 @@ void vesBlend::bind(const vesRenderState &renderState)
 
 void vesBlend::unbind(const vesRenderState &renderState)
 {
+  vesNotUsed(renderState);
+
   if (this->m_wasEnabled) {
     glEnable(GL_BLEND);
   } else {

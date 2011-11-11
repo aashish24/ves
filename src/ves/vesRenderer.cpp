@@ -90,6 +90,8 @@ void vesRenderer::render()
 
 void vesRenderer::resize(int width, int height, float scale)
 {
+  vesNotUsed(scale);
+
   this->m_width  = (width  > 0) ? width  : 1;
   this->m_height = (height > 0) ? height : 1;
 

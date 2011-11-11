@@ -37,6 +37,8 @@ vesBlendFunction::~vesBlendFunction()
 
 void vesBlendFunction::apply(const vesRenderState &renderState)
 {
+  vesNotUsed(renderState);
+
   glBlendFunc(m_source, m_destination);
 }
 

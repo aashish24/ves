@@ -222,6 +222,8 @@ void vesFBO::render(vesRenderState &renderState)
 
 void vesFBO::remove(vesRenderState &renderState)
 {
+  vesNotUsed(renderState);
+
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 

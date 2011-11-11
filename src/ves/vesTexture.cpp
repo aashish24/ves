@@ -54,6 +54,8 @@ vesTexture::~vesTexture()
 
 void vesTexture::bind(const vesRenderState &renderState)
 {
+  vesNotUsed(renderState);
+
   glActiveTexture(GL_TEXTURE0 + this->m_textureUnit);
   glBindTexture(GL_TEXTURE_2D, this->m_textureHandle);
 }
@@ -61,6 +63,8 @@ void vesTexture::bind(const vesRenderState &renderState)
 
 void vesTexture::unbind(const vesRenderState &renderState)
 {
+  vesNotUsed(renderState);
+
   glBindTexture(GL_TEXTURE_2D, 0);
 }
 
@@ -109,7 +113,7 @@ bool vesTexture::setWidth(int width)
 
 int vesTexture::width() const
 {
-  this->m_width;
+  return this->m_width;
 }
 
 
@@ -225,6 +229,8 @@ vesColorDataType::PixelDataType vesTexture::pixelDataType() const
 
 void vesTexture::setup(const vesRenderState &renderState)
 {
+  vesNotUsed(renderState);
+
   if (this->dirtyState()) {
     glGenTextures(1, &this->m_textureHandle);
     glBindTexture(GL_TEXTURE_2D, this->m_textureHandle);

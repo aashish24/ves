@@ -226,6 +226,8 @@ void vesMapper::render(const vesRenderState &renderState)
 
 void vesMapper::setupDrawObjects(const vesRenderState &renderState)
 {
+  vesNotUsed(renderState);
+
   // Delete buffer objects from past if any.
   this->deleteVertexBufferObjects();
 

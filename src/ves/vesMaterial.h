@@ -82,16 +82,22 @@ public:
   AttributeBinding binding() const { return this->m_binding; }
 
   //  \note: Fix (unused parameter warning)
-  virtual void bind(const vesRenderState &renderState){}
-  virtual void unbind(const vesRenderState &renderState){}
-  virtual void setup(const vesRenderState &renderState){}
-
-  virtual void bindVertexData(const vesRenderState &renderState, int key){}
-  virtual void unbindVertexData(const vesRenderState &renderState, int key){}
-  virtual void setupVertexData(const vesRenderState &renderState, int key){}
+  virtual void bind(const vesRenderState &renderState)
+    { vesNotUsed(renderState); }
+  virtual void unbind(const vesRenderState &renderState)
+    { vesNotUsed(renderState); }
+  virtual void setup(const vesRenderState &renderState)
+    { vesNotUsed(renderState); }
+  virtual void bindVertexData(const vesRenderState &renderState, int key)
+    { vesNotUsed(renderState); vesNotUsed(key); }
+  virtual void unbindVertexData(const vesRenderState &renderState, int key)
+    { vesNotUsed(renderState); vesNotUsed(key); }
+  virtual void setupVertexData(const vesRenderState &renderState, int key)
+    { vesNotUsed(renderState); vesNotUsed(key); }
 
   virtual void bindRenderData(const vesRenderState &renderState,
-                              const vesRenderData  &renderData){}
+                              const vesRenderData  &renderData)
+    { vesNotUsed(renderState); vesNotUsed(renderData); }
 
 protected:
   bool m_enable;

@@ -23,7 +23,8 @@ public:
   virtual void update(const vesRenderState   &renderState,
                       const vesShaderProgram &program)
   {
-    // \note: Do nothing.
+    vesNotUsed(renderState);
+    vesNotUsed(program);
   }
 };
 
