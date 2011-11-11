@@ -20,6 +20,7 @@
 
 #include "vesKiwiImagePlaneDataRepresentation.h"
 #include "vesDataConversionTools.h"
+#include "vesSetGet.h"
 #include "vesTexture.h"
 
 #include <vtkScalarsToColors.h>
@@ -108,6 +109,7 @@ void vesKiwiImagePlaneDataRepresentation::setShaderProgram(
   vesSharedPtr<vesShaderProgram> shaderProgram)
 {
   // Do nothing.
+  vesNotUsed(shaderProgram);
 }
 
 //----------------------------------------------------------------------------

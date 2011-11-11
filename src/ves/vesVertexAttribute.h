@@ -50,16 +50,23 @@ public:
 
   const std::string& name() const { return this->m_name; }
 
-  virtual void bind         (const vesRenderState &renderState){}
-  virtual void unbind       (const vesRenderState &renderState){}
-  virtual void setup        (const vesRenderState &renderState){}
+  virtual void bind(const vesRenderState &renderState)
+    { vesNotUsed(renderState); }
+  virtual void unbind(const vesRenderState &renderState)
+    { vesNotUsed(renderState); }
+  virtual void setup(const vesRenderState &renderState)
+    { vesNotUsed(renderState); }
 
-  virtual void bindVertexData   (const vesRenderState &renderState, int key){}
-  virtual void unbindVertexData (const vesRenderState &renderState, int key){}
-  virtual void setupVertexData  (const vesRenderState &renderState, int key){}
+  virtual void bindVertexData(const vesRenderState &renderState, int key)
+    { vesNotUsed(renderState); vesNotUsed(key); }
+  virtual void unbindVertexData(const vesRenderState &renderState, int key)
+    { vesNotUsed(renderState); vesNotUsed(key); }
+  virtual void setupVertexData(const vesRenderState &renderState, int key)
+    { vesNotUsed(renderState); vesNotUsed(key); }
 
   virtual void update(const vesRenderState &renderState,
-                      const vesShaderProgram &shaderProgram, int key){;}
+                      const vesShaderProgram &shaderProgram, int key)
+    { vesNotUsed(renderState); vesNotUsed(shaderProgram); vesNotUsed(key); }
 
 protected:
   std::string m_name;
@@ -76,6 +83,7 @@ public:
 
   virtual void bindVertexData(const vesRenderState &renderState, int key)
   {
+    vesNotUsed(key);
     assert(renderState.m_material && renderState.m_material->shaderProgram());
 
     glVertexAttribPointer(renderState.m_material->shaderProgram()->
@@ -87,6 +95,7 @@ public:
 
   virtual void unbindVertexData(const vesRenderState &renderState, int key)
   {
+    vesNotUsed(key);
     assert(renderState.m_material && renderState.m_material->shaderProgram());
 
     glDisableVertexAttribArray(renderState.m_material->shaderProgram()->
@@ -105,6 +114,7 @@ public:
 
   virtual void bindVertexData(const vesRenderState &renderState, int key)
   {
+    vesNotUsed(key);
     assert(renderState.m_material && renderState.m_material->shaderProgram());
 
     glVertexAttribPointer(renderState.m_material->shaderProgram()->
@@ -116,6 +126,7 @@ public:
 
   virtual void unbindVertexData(const vesRenderState &renderState, int key)
   {
+    vesNotUsed(key);
     assert(renderState.m_material && renderState.m_material->shaderProgram());
 
     glDisableVertexAttribArray(renderState.m_material->shaderProgram()->
@@ -134,6 +145,7 @@ public:
 
   virtual void bindVertexData(const vesRenderState &renderState, int key)
   {
+    vesNotUsed(key);
     assert(renderState.m_material && renderState.m_material->shaderProgram());
 
     glVertexAttribPointer(renderState.m_material->shaderProgram()->
@@ -146,6 +158,7 @@ public:
 
   virtual void unbindVertexData(const vesRenderState &renderState, int key)
   {
+    vesNotUsed(key);
     assert(renderState.m_material && renderState.m_material->shaderProgram());
 
     glDisableVertexAttribArray(renderState.m_material->shaderProgram()->
@@ -165,6 +178,7 @@ public:
 
   virtual void bindVertexData(const vesRenderState &renderState, int key)
   {
+    vesNotUsed(key);
     assert(renderState.m_material && renderState.m_material->shaderProgram());
 
     glVertexAttribPointer(renderState.m_material->shaderProgram()->
@@ -177,6 +191,7 @@ public:
 
   virtual void unbindVertexData(const vesRenderState &renderState, int key)
   {
+    vesNotUsed(key);
     assert(renderState.m_material && renderState.m_material->shaderProgram());
 
     glDisableVertexAttribArray(renderState.m_material->shaderProgram()->

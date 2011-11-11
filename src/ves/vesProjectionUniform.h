@@ -40,6 +40,7 @@ public:
   virtual void update(const vesRenderState &renderState,
                       const vesShaderProgram &program)
   {
+    vesNotUsed(program);
     this->set(*renderState.m_projectionMatrix);
   }
 };

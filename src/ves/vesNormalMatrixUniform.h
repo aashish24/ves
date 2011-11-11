@@ -41,6 +41,7 @@ public:
   virtual void update(const vesRenderState &renderState,
                       const vesShaderProgram &program)
   {
+    vesNotUsed(program);
     vesMatrix3x3f normalMatrix =
       makeNormalMatrix3x3f(makeTransposeMatrix4x4(makeInverseMatrix4x4
       (*(renderState.m_modelViewMatrix))));

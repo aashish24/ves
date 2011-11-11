@@ -22,6 +22,7 @@
 #include "vesCamera.h"
 #include "vesGMTL.h"
 #include "vesRenderer.h"
+#include "vesSetGet.h"
 #include "vesUniform.h"
 #include "vesVertexAttribute.h"
 #include "vesShader.h"
@@ -185,6 +186,8 @@ void vesKiwiBaseApp::handleSingleTouchUp()
 //----------------------------------------------------------------------------
 void vesKiwiBaseApp::handleSingleTouchDown(int displayX, int displayY)
 {
+  vesNotUsed(displayX);
+  vesNotUsed(displayY);
 }
 
 //----------------------------------------------------------------------------

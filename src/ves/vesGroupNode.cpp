@@ -41,7 +41,7 @@ bool vesGroupNode::addChild(vesSharedPtr<vesNode> child)
 
   Children::iterator itr = this->m_children.begin();
 
-  for (itr; itr != this->m_children.end(); ++itr) {
+  for (; itr != this->m_children.end(); ++itr) {
     if ( (*itr) == child ) {
       return false;
     }

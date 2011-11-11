@@ -41,6 +41,8 @@ double vesViewport::inverseAspect() const
 
 void vesViewport::render(vesRenderState &renderState)
 {
+  vesNotUsed(renderState);
+
   glViewport(static_cast<GLint>(this->m_x), static_cast<GLint>(this->m_y),
              static_cast<GLsizei>(this->m_width), static_cast<GLsizei>(this->m_height));
 }

@@ -76,6 +76,7 @@ public:
   void sort(SortMode mode)
   {
     // \todo: Implement this.
+    vesNotUsed(mode);
   }
 
   void render(vesRenderState &renderState, vesRenderLeaf *previous)

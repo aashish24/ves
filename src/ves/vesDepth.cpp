@@ -43,6 +43,8 @@ vesDepth::~vesDepth()
 
 void vesDepth::bind(const vesRenderState &renderState)
 {
+  vesNotUsed(renderState);
+
   // Save current state.
   this->m_wasEnabled = glIsEnabled(GL_DEPTH_TEST);
 
@@ -60,6 +62,8 @@ void vesDepth::bind(const vesRenderState &renderState)
 
 void vesDepth::unbind(const vesRenderState &renderState)
 {
+  vesNotUsed(renderState);
+
   if (this->m_wasEnabled) {
       glEnable(GL_DEPTH_TEST);
       glDepthMask((GLboolean) this->m_depthWriteMask);
