@@ -202,7 +202,6 @@ vesMatrix4x4f vesLookAt( vesVector3f position,
 // ----------------------------------------------------------------------public
 vesMatrix4x4f vesPerspective(float fovY,float aspect, float zNear,float zFar)
 {
-  const float pi = 3.14195926535897932384626433832795;
   float width,height;
   height = tan( deg2Rad(fovY)/2 ) * zNear;
   width = height * aspect;
