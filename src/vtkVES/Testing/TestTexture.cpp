@@ -41,6 +41,7 @@
 #include <vesKiwiBaseApp.h>
 #include <vesKiwiDataLoader.h>
 #include <vesKiwiPolyDataRepresentation.h>
+#include <vesSetGet.h>
 #include <vesShaderProgram.h>
 #include <vesTexture.h>
 #include <vesUniform.h>
@@ -482,6 +483,8 @@ static void
 event_loop(Display *dpy, Window win,
            EGLDisplay egl_dpy, EGLSurface egl_surf)
 {
+  vesNotUsed(win);
+
    while (1) {
       int redraw = 0;
       XEvent event;
@@ -577,7 +580,6 @@ main(int argc, char *argv[])
   char *dpyName = NULL;
   GLboolean printInfo = GL_FALSE;
   EGLint egl_major, egl_minor;
-  int i;
   const char *s;
 
 

@@ -485,12 +485,10 @@ vesKiwiImagePlaneDataRepresentation* vesKiwiViewerApp::addTextRepresentation(con
   imageTexture->GetBounds(bounds);
   //printf("bounds: %f %f %f %f %f %f\n", bounds[0],bounds[1],bounds[2],bounds[3],bounds[4],bounds[5]);
 
-  double screenWidth = this->viewWidth();
   double screenHeight = this->viewHeight();
   double xmargin = 5;
   double ymargin = 5;
 
-  double width = bounds[1] - bounds[0];
   double height = bounds[3] - bounds[2];
   double x = 0 + xmargin;
   double y = screenHeight - (height + ymargin);
@@ -504,7 +502,9 @@ vesKiwiImagePlaneDataRepresentation* vesKiwiViewerApp::addTextRepresentation(con
 //----------------------------------------------------------------------------
 void vesKiwiViewerApp::setBackgroundTexture(const std::string& filename)
 {
-  //vtkSmartPointer<vtkImageData> image = vtkImageData::SafeDownCast(this->Internal->DataLoader.loadDataset(filename));
+  vesNotUsed(filename);
+  //vtkSmartPointer<vtkImageData> image =
+  // vtkImageData::SafeDownCast(this->Internal->DataLoader.loadDataset(filename));
   //vesTexture* backgroundTexture = this->newTextureFromImage(image);
   //this->renderer()->SetBackground(backgroundTexture);
 }
