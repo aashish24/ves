@@ -97,18 +97,6 @@ static void checkGlError(const char* op) {
     }
 }
 
-static const char gVertexShader[] =
-    "attribute vec4 vPosition;\n"
-    "void main() {\n"
-    "  gl_Position = vPosition;\n"
-    "}\n";
-
-static const char gFragmentShader[] =
-    "precision mediump float;\n"
-    "void main() {\n"
-    "  gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);\n"
-    "}\n";
-
 GLuint loadShader(GLenum shaderType, const char* pSource) {
     GLuint shader = glCreateShader(shaderType);
     if (shader) {
@@ -172,8 +160,6 @@ GLuint createProgram(const char* pVertexSource, const char* pFragmentSource) {
     }
     return program;
 }
-
-
 
 /**
  * Initialize an EGL context for the current display.
@@ -272,7 +258,7 @@ static int engine_init_display(struct engine* engine) {
     const char* input_string = static_cast<const char*>(AAsset_getBuffer(asset));
     LOGI("\n**\nlength is %d", AAsset_getLength(asset));
 
-    vtkSmartPointer<vtkPolyDataReader> read = vtkSmartPointer<vtkPolyDataReader>::New ();
+    vtkSmartPointer<vtkPolyDataReader> read = vtkSmartPointer<vtkPolyDataReader>::New();
     read->SetInputString (input_string, len);
     read->ReadFromInputStringOn ();
     read->Update ();
@@ -282,16 +268,21 @@ static int engine_init_display(struct engine* engine) {
     LOGI("b: number of points is %d\n**\n", triangle_data->GetPoints().size());
     vesVector2f range = triangle_data->GetPointScalarRange();
     LOGI("scalar range: %f, %f\n", range[0], range[1]);
+    LOGI("scalar size: %d\n", triangle_data->GetPointScalars().size());
+    LOGI("Get the min of the data: %f, %f, %f\n", triangle_data->GetMin()[0],
+         triangle_data->GetMin()[1], triangle_data->GetMin()[2]);
+    LOGI("Get the max of the data: %f, %f, %f\n", triangle_data->GetMax()[0],
+         triangle_data->GetMax()[1], triangle_data->GetMax()[2]);
 
     AAsset* vertex_asset = AAssetManager_open(assetManager, "Shader.vsh", AASSET_MODE_UNKNOWN);
     AAsset* fragment_asset = AAssetManager_open(assetManager, "Shader.fsh", AASSET_MODE_UNKNOWN);
 
     std::string vertex_source = std::string(static_cast<const char*>(AAsset_getBuffer(vertex_asset)), AAsset_getLength(vertex_asset));
     std::string fragment_source = std::string(static_cast<const char*>(AAsset_getBuffer(fragment_asset)), AAsset_getLength(fragment_asset));
-    LOGI("vertex_source: %s\n", vertex_source.c_str());
-    LOGI("fragment_source: %s\n", fragment_source.c_str());
+    //LOGI("vertex_source: %s\n", vertex_source.c_str());
+    //LOGI("fragment_source: %s\n", fragment_source.c_str());
 
-    createProgram(vertex_source.c_str(), fragment_source.c_str());
+    //createProgram(vertex_source.c_str(), fragment_source.c_str());
 
 /*    vesShaderProgram* shader_program = new vesShaderProgram(
                                    const_cast<char*>(vertex_source.c_str()),
