@@ -39,7 +39,6 @@ typedef gmtl::Vec<unsigned short, 2> vesVector2us;
 vesMatrix4x4f makeScaleMatrix4x4(float x, float y, float z);
 vesMatrix4x4f makeRotationMatrix4x4(float angle, float x, float y, float z);
 vesMatrix4x4f makeTranslationMatrix4x4(vesVector3f trans);
-vesVector3f makeTranslationVector3f(vesMatrix4x4f matrix);
 vesMatrix4x4f makeTransposeMatrix4x4(vesMatrix4x4f matrix);
 vesMatrix4x4f makeInverseMatrix4x4(vesMatrix4x4f matrix);
 
