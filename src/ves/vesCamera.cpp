@@ -106,8 +106,8 @@ vesMatrix4x4f vesCamera::computeProjectionTransform(float aspect,
   vesMatrix4x4f matrix;
 
   // adjust Z-buffer range
-  matrix[2][2] = (farz - nearz)/(1 - (-1));
-  matrix[2][3] = (nearz*1 - farz*(-1))/(1 - (-1));
+  matrix(2, 2) = (farz - nearz) / (1 - (-1));
+  matrix(2, 3) = (nearz*1 - farz*(-1)) / (1 - (-1));
 
 
   if (this->m_parallelProjection)
@@ -167,11 +167,10 @@ void vesCamera::azimuth(double angle)
   vesMatrix4x4f t1 = makeTranslationMatrix4x4(fp);
   vesMatrix4x4f t2 = makeRotationMatrix4x4(deg2Rad(angle), vu[0], vu[1], vu[2]);
   vesMatrix4x4f t3 = makeTranslationMatrix4x4(nfp);
-  vesMatrix4x4f t = t1 * t2 * t3;
+  vesAffine3f t(t1 * t2 * t3);
 
   vesVector4f oldPosition(this->m_position[0], this->m_position[1], this->m_position[2], 1);
-  vesVector4f newPosition;
-  gmtl::xform(newPosition, t, oldPosition);
+  vesVector4f newPosition = t * oldPosition;
   this->m_position[0] = newPosition[0] / newPosition[3];
   this->m_position[1] = newPosition[1] / newPosition[3];
   this->m_position[2] = newPosition[2] / newPosition[3];
@@ -185,19 +184,18 @@ void vesCamera::elevation(double angle)
 {
   vesMatrix4x4f view = this->computeViewTransform();
   vesVector3f axis;
-  axis[0] = -view[0][0];
-  axis[1] = -view[0][1];
-  axis[2] = -view[0][2];
+  axis[0] = -view(0, 0);
+  axis[1] = -view(0, 1);
+  axis[2] = -view(0, 2);
   vesVector3f fp = this->m_focalPoint;
   vesVector3f nfp(-fp[0], -fp[1], -fp[2]);
   vesMatrix4x4f t1 = makeTranslationMatrix4x4(fp);
   vesMatrix4x4f t2 = makeRotationMatrix4x4(-deg2Rad(angle), axis[0], axis[1], axis[2]);
   vesMatrix4x4f t3 = makeTranslationMatrix4x4(nfp);
-  vesMatrix4x4f t = t1 * t2 * t3;
+  vesAffine3f t(t1 * t2 * t3);
 
   vesVector4f oldPosition(this->m_position[0], this->m_position[1], this->m_position[2], 1);
-  vesVector4f newPosition;
-  gmtl::xform(newPosition, t, oldPosition);
+  vesVector4f newPosition = t * oldPosition;
   this->m_position[0] = newPosition[0] / newPosition[3];
   this->m_position[1] = newPosition[1] / newPosition[3];
   this->m_position[2] = newPosition[2] / newPosition[3];
@@ -224,12 +222,12 @@ void vesCamera::dolly(double factor)
 void vesCamera::roll(double angle)
 {
   // rotate m_viewUp about the Direction of Projection
-  vesMatrix4x4f t = makeRotationMatrix4x4(-deg2Rad(angle),
+  vesMatrix4x4f m = makeRotationMatrix4x4(-deg2Rad(angle),
                                           this->m_directionOfProjection[0],
                                           this->m_directionOfProjection[1],
                                           this->m_directionOfProjection[2]);
-  vesVector3f newViewUp;
-  gmtl::xform(newViewUp, t, this->m_viewUp);
+  vesAffine3f t(m);
+  vesVector3f newViewUp = t * this->m_viewUp;
   this->setViewUp(newViewUp);
 }
 
@@ -252,9 +250,9 @@ void vesCamera::orthogonalizeViewUp()
 {
   // the orthogonalized m_viewUp is just the second row of the view matrix
   vesMatrix4x4f view = this->computeViewTransform();
-  this->m_viewUp[0] = view[1][0];
-  this->m_viewUp[1] = view[1][1];
-  this->m_viewUp[2] = view[1][2];
+  this->m_viewUp[0] = view(1, 0);
+  this->m_viewUp[1] = view(1, 1);
+  this->m_viewUp[2] = view(1, 2);
 }
 
 

@@ -12,7 +12,8 @@ set(sources
   vesFBO.cpp
   vesFBORenderTarget.cpp
   vesFileReader.cpp
-  vesGMTL.cpp
+  #vesGMTL.cpp
+  vesEigen.cpp
   vesGroupNode.cpp
   vesLegacyReader.cpp
   vesMapper.cpp
