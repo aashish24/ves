@@ -23,10 +23,10 @@
 #include "vesActor.h"
 #include "vesBlend.h"
 #include "vesDepth.h"
+#include "vesGeometryData.h"
 #include "vesMapper.h"
 #include "vesMaterial.h"
 #include "vesRenderer.h"
-#include "vesTriangleData.h"
 #include "vesShaderProgram.h"
 #include "vesTexture.h"
 
@@ -40,28 +40,27 @@
 
 //----------------------------------------------------------------------------
 namespace {
-
-void ConvertVertexArrays(vtkDataSet* dataSet, vesSharedPtr<vesTriangleData> triangleData)
+void ConvertVertexArrays(vtkDataSet* dataSet, vesSharedPtr<vesGeometryData> geometryData)
 {
   vtkUnsignedCharArray* colors = vesDataConversionTools::FindRGBColorsArray(dataSet);
   vtkDataArray* scalars = vesDataConversionTools::FindScalarsArray(dataSet);
   vtkDataArray* tcoords = vesDataConversionTools::FindTextureCoordinatesArray(dataSet);
   if (colors)
     {
-    vesDataConversionTools::SetVertexColors(colors, triangleData);
+    vesDataConversionTools::SetVertexColors(colors, geometryData);
     }
   else if (scalars)
     {
     vtkSmartPointer<vtkLookupTable> lut = vesDataConversionTools::GetRedToBlueLookupTable(scalars->GetRange());
-    vesDataConversionTools::SetVertexColors(scalars, lut, triangleData);
+    vesDataConversionTools::SetVertexColors(scalars, lut, geometryData);
     }
   else if (tcoords)
     {
-    vesDataConversionTools::SetTextureCoordinates(tcoords, triangleData);
+    vesDataConversionTools::SetTextureCoordinates(tcoords, geometryData);
     }
 }
 
-vesSharedPtr<vesTriangleData> TriangleDataFromPolyData(vtkPolyData* polyData)
+vesSharedPtr<vesGeometryData> GeometryDataFromPolyData(vtkPolyData* polyData)
 {
   // Use triangle filter for now to ensure that models containing
   // polygons other than tris and quads will be rendered correctly.
@@ -71,12 +70,12 @@ vesSharedPtr<vesTriangleData> TriangleDataFromPolyData(vtkPolyData* polyData)
   triangleFilter->SetInput(polyData);
   triangleFilter->Update();
   polyData = triangleFilter->GetOutput();
-  vesSharedPtr<vesTriangleData> triangleData =
+  vesSharedPtr<vesGeometryData> geometryData =
     vesDataConversionTools::Convert(polyData);
-  ConvertVertexArrays(polyData, triangleData);
-  return triangleData;
+  ConvertVertexArrays(polyData, geometryData);
+  return geometryData;
 }
-};
+}
 
 //----------------------------------------------------------------------------
 class vesKiwiPolyDataRepresentation::vesInternal
@@ -117,17 +116,17 @@ void vesKiwiPolyDataRepresentation::setPolyData(vtkPolyData* polyData)
   assert(polyData);
   assert(this->Internal->Mapper);
 
-  vesSharedPtr<vesTriangleData> triangleData = TriangleDataFromPolyData(polyData);
-  this->Internal->Mapper->setData(triangleData);
+  vesSharedPtr<vesGeometryData> geometryData = GeometryDataFromPolyData(polyData);
+  this->Internal->Mapper->setGeometryData(geometryData);
 }
 
 //----------------------------------------------------------------------------
-vesSharedPtr<vesTriangleData> vesKiwiPolyDataRepresentation::triangleData() const
+vesSharedPtr<vesGeometryData> vesKiwiPolyDataRepresentation::geometryData() const
 {
   if (this->Internal->Mapper) {
-    return this->Internal->Mapper->data();
+    return this->Internal->Mapper->geometryData();
   }
-  return vesSharedPtr<vesTriangleData>();
+  return vesSharedPtr<vesGeometryData>();
 }
 
 //----------------------------------------------------------------------------
@@ -162,7 +161,9 @@ void vesKiwiPolyDataRepresentation::initializeWithShader(
   assert(!this->Internal->Mapper && !this->Internal->Actor);
 
   this->Internal->Mapper = vesSharedPtr<vesMapper>(new vesMapper());
+#if 0
   this->Internal->Mapper->setData(vesSharedPtr<vesTriangleData>(new vesTriangleData));
+#endif
 
   this->Internal->Actor = vesSharedPtr<vesActor>(new vesActor());
   this->Internal->Actor->setMapper(this->Internal->Mapper);
@@ -239,17 +240,29 @@ vesSharedPtr<vesMapper> vesKiwiPolyDataRepresentation::mapper() const
 //----------------------------------------------------------------------------
 int vesKiwiPolyDataRepresentation::numberOfFacets()
 {
-  return static_cast<int>(this->triangleData()->GetTriangles().size());
+#if 0
+  return static_cast<int>(this->geometryData()->GetTriangles().size());
+#endif
+
+  return 0;
 }
 
 //----------------------------------------------------------------------------
 int vesKiwiPolyDataRepresentation::numberOfVertices()
 {
-  return static_cast<int>(this->triangleData()->GetPoints().size());
+#if 0
+  return static_cast<int>(this->geometryData()->GetPoints().size());
+#endif
+
+  return 0;
 }
 
 //----------------------------------------------------------------------------
 int vesKiwiPolyDataRepresentation::numberOfLines()
 {
-  return static_cast<int>(this->triangleData()->GetLines().size());
+#if 0
+  return static_cast<int>(this->geometryData()->GetLines().size());
+#endif
+
+  return 0;
 }

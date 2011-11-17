@@ -128,7 +128,7 @@ public:
 class vesTestHelper {
 public:
   vesTestHelper() :
-    IsTesting(true)
+    IsTesting(false)
   {
   }
 

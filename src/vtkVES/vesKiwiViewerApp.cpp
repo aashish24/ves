@@ -37,7 +37,6 @@
 #include "vesShader.h"
 #include "vesShaderProgram.h"
 #include "vesTexture.h"
-#include "vesTriangleData.h"
 #include "vesUniform.h"
 #include "vesVertexAttribute.h"
 #include "vesVertexAttributeKeys.h"

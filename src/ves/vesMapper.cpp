@@ -22,11 +22,11 @@
 
 // VES includes
 #include "vesMaterial.h"
+#include "vesGeometryData.h"
 #include "vesGLTypes.h"
 #include "vesRenderData.h"
 #include "vesRenderStage.h"
 #include "vesShaderProgram.h"
-#include "vesTriangleData.h"
 #include "vesVertexAttributeKeys.h"
 
 #include "vesGL.h"
@@ -78,8 +78,8 @@ public:
 
 vesMapper::vesMapper() : vesBoundingObject(),
   m_initialized(false),
-  m_maximumTrianglesPerDraw
-               (65536 / 3),
+  m_maximumIndicesPerDraw
+               (65535),
   m_internal   (0x0)
 {
   this->m_internal = new vesInternal();
@@ -102,23 +102,13 @@ vesMapper::~vesMapper()
 
 void vesMapper::computeBounds()
 {
-  vesVector3f min = this->m_data->GetMin();
-  vesVector3f max = this->m_data->GetMax();
+  vesVector3f min = this->m_geometryData->boundsMin();
+  vesVector3f max = this->m_geometryData->boundsMax();
 
   this->setBounds(min, max);
 
   this->setBoundsDirty(false);
 }
-
-
-void vesMapper::setData(vesSharedPtr<vesTriangleData> data)
-{
-  if (data) {
-    this->m_data = data;
-    this->m_initialized = false;
-  }
-}
-
 
 void vesMapper::normalize()
 {
@@ -130,6 +120,36 @@ void vesMapper::normalize()
 
   this->setBoundsCenter(transformPoint3f(this->m_normalizedMatrix, this->boundsCenter()));
   this->setBoundsSize(transformPoint3f(this->m_normalizedMatrix, this->boundsSize()));
+}
+
+
+bool vesMapper::setGeometryData(vesSharedPtr<vesGeometryData> geometryData)
+{
+  bool success = true;
+
+  if (geometryData && this->m_geometryData != geometryData)
+  {
+    this->m_geometryData = geometryData;
+    this->m_initialized = false;
+  }
+  else
+  {
+    success = false;
+  }
+
+  return success;
+}
+
+
+vesSharedPtr<vesGeometryData> vesMapper::geometryData()
+{
+  return this->m_geometryData;
+}
+
+
+const vesSharedPtr<vesGeometryData> vesMapper::geometryData() const
+{
+  return this->m_geometryData;
 }
 
 
@@ -177,6 +197,49 @@ void vesMapper::render(const vesRenderState &renderState)
     ++bufferIndex;
   }
 
+
+  unsigned int numberOfPrimitiveTypes = this->m_geometryData->numberOfPrimitiveTypes();
+  for(unsigned int i = 0; i < numberOfPrimitiveTypes; ++i)
+  {
+    const unsigned int numberOfIndices
+      = this->m_geometryData->m_primitives[i]->numberOfIndices();
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_internal->m_buffers[bufferIndex++]);
+    if (numberOfIndices <=0) {
+      continue;
+    }
+
+    unsigned int drawnIndices = 0;
+
+//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_internal->m_buffers[bufferIndex++]);
+//    glDrawElements(this->m_geometryData->m_primitives[i]->primitiveType(),
+//                   this->m_geometryData->m_primitives[i]->numberOfIndices(),
+//                   GL_UNSIGNED_SHORT,
+//                   (void*)0);
+//      renderState.m_material->bindRenderData(
+//        renderState, vesRenderData(vesGLTypes::Triangles));
+
+    while (drawnIndices < numberOfIndices) {
+      int numberOfIndicesToDraw = numberOfIndices - drawnIndices;
+
+      if (numberOfIndicesToDraw > this->m_maximumIndicesPerDraw) {
+        numberOfIndicesToDraw = this->m_maximumIndicesPerDraw;
+      }
+
+      unsigned int offset
+        = this->m_geometryData->m_primitives[i]->sizeOfDataType()
+          * drawnIndices;
+
+      glDrawElements(this->m_geometryData->m_primitives[i]->primitiveType(),
+                     numberOfIndicesToDraw,
+                     GL_UNSIGNED_SHORT,
+                     (void*)offset);
+
+      drawnIndices += numberOfIndicesToDraw;
+    }
+  }
+
+#if 0
   const int numberOfTriangles = this->m_data->GetTriangles().size();
   if (numberOfTriangles > 0) {
     int drawnTriangles = 0;
@@ -202,7 +265,7 @@ void vesMapper::render(const vesRenderState &renderState)
     glDrawElements(GL_LINES, this->m_data->GetLines().size() * 2,
                    GL_UNSIGNED_SHORT, (void*)0);
     }
-
+#endif
 
   // Unbind.
   bufferIndex = 0;
@@ -240,70 +303,73 @@ void vesMapper::setupDrawObjects(const vesRenderState &renderState)
   this->m_initialized = true;
 }
 
+struct vtkVertex3f
+{
+  vesVector3f point;
+  vesVector3f normal;
+  vesVector3f color;
+};
 
 void vesMapper::createVertexBufferObjects()
 {
-  const int numberOfFloats = 6;
-  size_t sizeOfData =
-    this->m_data->GetPoints().size() * numberOfFloats * sizeof(float);
-
   unsigned int bufferId;
 
-  if (!this->m_data->GetPoints().empty()) {
+  size_t numberOfSources = this->m_geometryData->m_sources.size();
+  for(size_t i = 0; i < numberOfSources; ++i)
+  {
     glGenBuffers(1, &bufferId);
     this->m_internal->m_buffers.push_back(bufferId);
     glBindBuffer(GL_ARRAY_BUFFER, this->m_internal->m_buffers.back());
-    glBufferData(GL_ARRAY_BUFFER, sizeOfData,
-                 &this->m_data->GetPoints()[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, this->m_geometryData->m_sources[i]->sizeInBytes(),
+      this->m_geometryData->m_sources[i]->data(), GL_STATIC_DRAW);
 
-    this->m_internal->m_bufferVertexAttributeMap[
-        this->m_internal->m_buffers.back()].push_back(vesVertexAttributeKeys::Position);
-
-    if (this->m_data->GetHasNormals()) {
+    std::vector<int> keys = this->m_geometryData->m_sources[i]->keys();
+    for(size_t j = 0; j < keys.size(); ++j) {
       this->m_internal->m_bufferVertexAttributeMap[
-        this->m_internal->m_buffers.back()].push_back(vesVertexAttributeKeys::Normal);
-      }
+      this->m_internal->m_buffers.back()].push_back(keys[j]);
     }
+  }
 
-  if (!this->m_data->GetVertexColors().empty()) {
-    glGenBuffers(1, &bufferId);
-    this->m_internal->m_buffers.push_back(bufferId);
-    glBindBuffer(GL_ARRAY_BUFFER, this->m_internal->m_buffers.back());
-    glBufferData(GL_ARRAY_BUFFER, this->m_data->GetVertexColors().size() * sizeof(float) * 3,
-                 &this->m_data->GetVertexColors()[0], GL_STATIC_DRAW);
+  size_t numberOfPrimitiveTypes = this->m_geometryData->numberOfPrimitiveTypes();
+  for(size_t i = 0; i < 1; ++i)
+  {
+//    size_t sizeOfBuffer = this->m_geometryData->m_primitives[i]->m_indices. size()
+//      * this->m_geometryData->m_primitives[i]->m_dataTypeSize;
 
-    this->m_internal->m_bufferVertexAttributeMap[
-      this->m_internal->m_buffers.back()].push_back(vesVertexAttributeKeys::Color);
-    }
+//    std::cout << "this->m_geometryData->m_primitives[i]->m_indices->size() " << this->m_geometryData->m_primitives[i]->m_indices.size() << std::endl;
+//    std::cout << "this->m_geometryData->m_primitives[i]->m_indexCount " << this->m_geometryData->m_primitives[i]->m_indexCount << std::endl;
+//    std::cout << "this->m_geometryData->m_primitives[i]->m_dataTypeSize" << this->m_geometryData->m_primitives[i]->m_dataTypeSize << std::endl;
+//    std::cout << "sizeOfBuffer " << sizeOfBuffer << std::endl;
+//    std::cout << "this->m_geometryData->m_primitives[i]->sizeInBytes() " << this->m_geometryData->m_primitives[i]->sizeInBytes() << std::endl;
 
-  if (!this->m_data->GetTextureCoordinates().empty()) {
-    glGenBuffers(1, &bufferId);
-    this->m_internal->m_buffers.push_back(bufferId);
-    glBindBuffer(GL_ARRAY_BUFFER, this->m_internal->m_buffers.back());
-    glBufferData(GL_ARRAY_BUFFER, this->m_data->GetTextureCoordinates().size() * sizeof(float) * 2,
-                 &this->m_data->GetTextureCoordinates()[0], GL_STATIC_DRAW);
-
-    this->m_internal->m_bufferVertexAttributeMap[
-      this->m_internal->m_buffers.back()].push_back(vesVertexAttributeKeys::TextureCoordinate);
-    }
-
-  if (!this->m_data->GetTriangles().empty()) {
     glGenBuffers(1, &bufferId);
     this->m_internal->m_buffers.push_back(bufferId);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_internal->m_buffers.back());
     glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                 this->m_data->GetTriangles().size() *sizeof(unsigned short) * 3,
-                 &this->m_data->GetTriangles()[0], GL_STATIC_DRAW);
-    }
+      this->m_geometryData->m_primitives[i]->sizeInBytes(),
+      this->m_geometryData->m_primitives[i]->data(),
+      GL_STATIC_DRAW);
+  }
 
-  if (!this->m_data->GetLines().empty()) {
-    glGenBuffers(1, &bufferId);
-    this->m_internal->m_buffers.push_back(bufferId);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_internal->m_buffers.back());
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                 this->m_data->GetLines().size() *sizeof(unsigned short) * 2,
-                 &this->m_data->GetLines()[0], GL_STATIC_DRAW);
-    }
+  this->m_initialized = true;
+
+//  if (!this->m_data->GetTriangles().empty()) {
+//    glGenBuffers(1, &bufferId);
+//    this->m_internal->m_buffers.push_back(bufferId);
+//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_internal->m_buffers.back());
+//    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+//                 this->m_data->GetTriangles().size() *sizeof(unsigned short) * 3,
+//                 &this->m_data->GetTriangles()[0], GL_STATIC_DRAW);
+//    }
+
+//  if (!this->m_data->GetLines().empty()) {
+//    glGenBuffers(1, &bufferId);
+//    this->m_internal->m_buffers.push_back(bufferId);
+//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_internal->m_buffers.back());
+//    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
+//                 this->m_data->GetLines().size() *sizeof(unsigned short) * 2,
+//                 &this->m_data->GetLines()[0], GL_STATIC_DRAW);
+//    }
 }
 
 

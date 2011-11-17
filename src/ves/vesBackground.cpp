@@ -23,13 +23,14 @@
 // VES includes.
 #include "vesActor.h"
 #include "vesDepth.h"
+#include "vesGeometryData.h"
 #include "vesMapper.h"
 #include "vesMaterial.h"
 #include "vesModelViewUniform.h"
 #include "vesProjectionUniform.h"
 #include "vesShader.h"
 #include "vesShaderProgram.h"
-#include "vesTriangleData.h"
+#include "vesUniform.h"
 #include "vesVertexAttribute.h"
 #include "vesVertexAttributeKeys.h"
 #include "vesViewport.h"
@@ -103,7 +104,7 @@ public:
                         const vesVector4f &bottomColor);
   void createBackground(const vesVector4f &topColor,
                         const vesVector4f &bottomColor);
-  vesSharedPtr<vesTriangleData> createBackgroundPlane(
+  vesSharedPtr<vesGeometryData> createBackgroundPlane(
     const vesVector4f &topColor, const vesVector4f &bottomColor);
 
   vesSharedPtr<vesActor> m_backgroundActor;
@@ -118,7 +119,7 @@ public:
   vesSharedPtr<vesNormalVertexAttribute> m_normalVertexAttribute;
   vesSharedPtr<vesColorVertexAttribute> m_colorVertexAttribute;
   vesSharedPtr<vesTextureCoordinateVertexAttribute> m_textureCoodinateAttribute;
-  vesSharedPtr<vesTriangleData> m_backgroundPlaneData;
+  vesSharedPtr<vesGeometryData> m_backgroundPlaneData;
   vesSharedPtr<vesDepth> m_depth;
 
   vesVector4f m_topColor;
@@ -153,7 +154,7 @@ void vesBackground::vesInternal::createBackground(vesBackground *background,
   this->createBackground(topColor, bottomColor);
 
   this->m_backgroundActor->setMapper(this->m_backgroundMapper);
-  this->m_backgroundMapper->setData(this->createBackgroundPlane(topColor, bottomColor));
+  this->m_backgroundMapper->setGeometryData(this->m_backgroundPlaneData);
   this->m_backgroundActor->setMaterial(this->m_backgroundMaterial);
   this->m_backgroundMaterial->addAttribute(this->m_shaderProgram);
   this->m_backgroundMaterial->addAttribute(this->m_depth);
@@ -162,51 +163,49 @@ void vesBackground::vesInternal::createBackground(vesBackground *background,
 }
 
 
-vesSharedPtr<vesTriangleData> vesBackground::vesInternal::createBackgroundPlane(
+vesSharedPtr<vesGeometryData> vesBackground::vesInternal::createBackgroundPlane(
   const vesVector4f &topColor, const vesVector4f &bottomColor)
 {
-  vesSharedPtr<vesTriangleData> backgroundPlaneData
-    = vesTriangleData::Ptr(new vesTriangleData());
-
-  std::vector<vtkVertex3f> points;
+  vesGeometryData::Ptr backgroundGeometryData (new vesGeometryData());
+  vesSourceDataP3N3C3f::Ptr sourceData(new vesSourceDataP3N3C3f());
 
   // Points.
-  vtkVertex3f point1;
-  point1.point = vesVector3f(-1.0f, -1.0f, 0.0f);
-  point1.normal = vesVector3f(0.0f, 0.0f, 1.0f);
-  vtkVertex3f point2;
-  point2.point = vesVector3f(1.0f, -1.0f, 0.0f);
-  point2.normal = vesVector3f(0.0f, 0.0f, 1.0f);
-  vtkVertex3f point3;
-  point3.point = vesVector3f(1.0f, 1.0f, 0.0f);
-  point3.normal = vesVector3f(0.0f, 0.0f, 1.0f);
-  vtkVertex3f point4;
-  point4.point = vesVector3f(-1.0f, 1.0f, 0.0f);
-  point4.normal = vesVector3f(0.0f, 0.0f, 1.0f);
+  vesVertexDataP3N3C3f v1;
+  v1.m_position = vesVector3f(-1.0f, -1.0f, 0.0f);
+  v1.m_normal = vesVector3f(0.0f, 0.0f, 1.0f);
+  v1.m_color = vesVector3f(bottomColor[0], bottomColor[1], bottomColor[2]);
 
-  points.push_back(point1);
-  points.push_back(point2);
-  points.push_back(point3);
-  points.push_back(point4);
+  vesVertexDataP3N3C3f v2;
+  v2.m_position = vesVector3f(1.0f, -1.0f, 0.0f);
+  v2.m_normal = vesVector3f(0.0f, 0.0f, 1.0f);
+  v2.m_color = vesVector3f(bottomColor[0], bottomColor[1], bottomColor[2]);
+
+  vesVertexDataP3N3C3f v3;
+  v3.m_position = vesVector3f(1.0f, 1.0f, 0.0f);
+  v3.m_normal = vesVector3f(0.0f, 0.0f, 1.0f);
+  v3.m_color = vesVector3f(topColor[0], topColor[1], topColor[2]);
+
+  vesVertexDataP3N3C3f v4;
+  v4.m_position = vesVector3f(-1.0f, 1.0f, 0.0f);
+  v4.m_normal = vesVector3f(0.0f, 0.0f, 1.0f);
+  v4.m_color = vesVector3f(topColor[0], topColor[1], topColor[2]);
+
+  sourceData->m_data.push_back(v1);
+  sourceData->m_data.push_back(v2);
+  sourceData->m_data.push_back(v3);
+  sourceData->m_data.push_back(v4);
 
   // Triangle cells.
-  std::vector<vesVector3us> indices;
-  indices.push_back(vesVector3us(0, 3, 2));
-  indices.push_back(vesVector3us(1, 0, 2));
+  vesPrimitive::Ptr triangles (new vesPrimitive());
+  triangles->pushBackIndices(0, 3, 2);
+  triangles->pushBackIndices(1, 0, 2);
+  triangles->m_primitiveType = GL_TRIANGLES;
+  triangles->m_indexCount = 3;
 
-  // Colors
-  std::vector<vesVector3f> vertexColors;
-  vertexColors.push_back(vesVector3f(bottomColor[0], bottomColor[1], bottomColor[2]));
-  vertexColors.push_back(vesVector3f(bottomColor[0], bottomColor[1], bottomColor[2]));
-  vertexColors.push_back(vesVector3f(topColor[0], topColor[1], topColor[2]));
-  vertexColors.push_back(vesVector3f(topColor[0], topColor[1], topColor[2]));
-
-  backgroundPlaneData->SetVertexColors(vertexColors);
-  backgroundPlaneData->SetPoints(points);
-  backgroundPlaneData->SetTriangles(indices);
-  backgroundPlaneData->SetHasNormals(true);
-
-  return backgroundPlaneData;
+  backgroundGeometryData->m_name = "BackgroundData";
+  backgroundGeometryData->m_sources.push_back(sourceData);
+  backgroundGeometryData->m_primitives.push_back(triangles);
+  return backgroundGeometryData;
 }
 
 

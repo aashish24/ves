@@ -12,8 +12,8 @@ set(sources
   vesFBO.cpp
   vesFBORenderTarget.cpp
   vesFileReader.cpp
-  #vesGMTL.cpp
   vesEigen.cpp
+  vesGeometryData.cpp
   vesGroupNode.cpp
   vesLegacyReader.cpp
   vesMapper.cpp
@@ -27,7 +27,6 @@ set(sources
   vesTransformNode.cpp
   vesShaderProgram.cpp
   vesSTLReader.cpp
-  vesTriangleData.cpp
   vesUniform.cpp
   vesViewport.cpp
   vesVisitor.cpp

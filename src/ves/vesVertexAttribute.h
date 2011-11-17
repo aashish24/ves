@@ -24,11 +24,12 @@
 #include "vesMaterial.h"
 
 // VES includes
+#include "vesGeometryData.h"
 #include "vesGL.h"
+#include "vesMapper.h"
 #include "vesRenderState.h"
 #include "vesSetGet.h"
 #include "vesShaderProgram.h"
-#include "vesTriangleData.h"
 
 // C++ includes
 #include <cassert>
@@ -86,9 +87,20 @@ public:
     vesNotUsed(key);
     assert(renderState.m_material && renderState.m_material->shaderProgram());
 
+    vesGeometryData::Ptr geometryData = renderState.m_mapper->geometryData();
+    assert(geometryData);
+
+    vesSourceData::Ptr sourceData = geometryData->sourceData(key);
+    assert(sourceData);
+
     glVertexAttribPointer(renderState.m_material->shaderProgram()->
-                          attributeLocation(this->m_name), 3, GL_FLOAT,
-                          GL_FALSE, 6 * sizeof(float), (void*)0);
+                          attributeLocation(this->m_name),
+                          sourceData->numberOfComponents(key),
+                          sourceData->attributeDataType(key),
+                          sourceData->isAttributeNormalized(key),
+                          sourceData->attributeStride(key),
+                          (void*)sourceData->attributeOffset(key));
+
     glEnableVertexAttribArray(renderState.m_material->shaderProgram()->
                               attributeLocation(this->m_name));
   }
@@ -117,9 +129,20 @@ public:
     vesNotUsed(key);
     assert(renderState.m_material && renderState.m_material->shaderProgram());
 
+    vesGeometryData::Ptr geometryData = renderState.m_mapper->geometryData();
+    assert(geometryData);
+
+    vesSourceData::Ptr sourceData = geometryData->sourceData(key);
+    assert(sourceData);
+
     glVertexAttribPointer(renderState.m_material->shaderProgram()->
-                          attributeLocation(this->m_name), 3,
-                          GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)12);
+                          attributeLocation(this->m_name),
+                          sourceData->numberOfComponents(key),
+                          sourceData->attributeDataType(key),
+                          sourceData->isAttributeNormalized(key),
+                          sourceData->attributeStride(key),
+                          (void*)sourceData->attributeOffset(key));
+
     glEnableVertexAttribArray(renderState.m_material->shaderProgram()->
                               attributeLocation(this->m_name));
   }
@@ -148,9 +171,19 @@ public:
     vesNotUsed(key);
     assert(renderState.m_material && renderState.m_material->shaderProgram());
 
+    vesGeometryData::Ptr geometryData = renderState.m_mapper->geometryData();
+    assert(geometryData);
+
+    vesSourceData::Ptr sourceData = geometryData->sourceData(key);
+    assert(sourceData);
+
     glVertexAttribPointer(renderState.m_material->shaderProgram()->
-                          attributeLocation(this->m_name), 3, GL_FLOAT, GL_FALSE,
-                          3 * sizeof(float), (void*) 0);
+                          attributeLocation(this->m_name),
+                          sourceData->numberOfComponents(key),
+                          sourceData->attributeDataType(key),
+                          sourceData->isAttributeNormalized(key),
+                          sourceData->attributeStride(key),
+                          (void*)sourceData->attributeOffset(key));
 
     glEnableVertexAttribArray(renderState.m_material->shaderProgram()->
                               attributeLocation(this->m_name));
@@ -181,9 +214,19 @@ public:
     vesNotUsed(key);
     assert(renderState.m_material && renderState.m_material->shaderProgram());
 
+    vesGeometryData::Ptr geometryData = renderState.m_mapper->geometryData();
+    assert(geometryData);
+
+    vesSourceData::Ptr sourceData = geometryData->sourceData(key);
+    assert(sourceData);
+
     glVertexAttribPointer(renderState.m_material->shaderProgram()->
-                          attributeLocation(this->m_name), 2, GL_FLOAT, GL_FALSE,
-                          2 * sizeof(float), (void*) 0);
+                          attributeLocation(this->m_name),
+                          sourceData->numberOfComponents(key),
+                          sourceData->attributeDataType(key),
+                          sourceData->isAttributeNormalized(key),
+                          sourceData->attributeStride(key),
+                          (void*)sourceData->attributeOffset(key));
 
     glEnableVertexAttribArray(renderState.m_material->shaderProgram()->
                               attributeLocation(this->m_name));
