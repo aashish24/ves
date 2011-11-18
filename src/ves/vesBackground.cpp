@@ -246,7 +246,7 @@ void vesBackground::setGradientColor(const vesVector4f &topColor,
 
 vesMatrix4x4f vesBackground::modelViewMatrix()
 {
-  return vesMatrix4x4f();
+  return vesMatrix4x4f::Identity();
 }
 
 

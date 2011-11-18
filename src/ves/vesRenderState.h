@@ -37,7 +37,8 @@ public:
 
   vesRenderState()
   {
-    this->m_identity = new vesMatrix4x4f();
+    this->m_identity = new vesMatrix4x4f;
+    m_identity->setIdentity();
 
     this->m_modelViewMatrix   = this->m_identity;
     this->m_projectionMatrix  = this->m_identity;

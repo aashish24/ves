@@ -110,7 +110,7 @@ vesVector3f vesRenderer::computeWorldToDisplay(vesVector3f world)
   vesMatrix4x4f proj_mat = this->m_camera->computeProjectionTransform(this->m_aspect[1],
                                                                     0, 1);
   vesMatrix4x4f view_mat = this->m_camera->computeViewTransform();
-  vesAffine3f t(proj_mat * view_mat);
+  vesMatrix4x4f t(proj_mat * view_mat);
   vesVector4f world4(world[0], world[1], world[2], 1);
   vesVector4f view = t * world4;
   view[0] /= view[3];

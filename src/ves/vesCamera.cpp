@@ -104,11 +104,11 @@ vesMatrix4x4f vesCamera::computeProjectionTransform(float aspect,
                                                     float farz)
 {
   vesMatrix4x4f matrix;
+  matrix.setIdentity();
 
   // adjust Z-buffer range
   matrix(2, 2) = (farz - nearz) / (1 - (-1));
   matrix(2, 3) = (nearz*1 - farz*(-1)) / (1 - (-1));
-
 
   if (this->m_parallelProjection)
   {
@@ -152,8 +152,7 @@ vesMatrix4x4f vesCamera::computeProjectionTransform(float aspect,
     vesMatrix4x4f frustum = vesFrustum( xmin, xmax, ymin, ymax,
                                         this->m_clippingRange[0],
                                         this->m_clippingRange[1] );
-
-    return matrix*frustum;
+    return matrix * frustum;
   }
 }
 

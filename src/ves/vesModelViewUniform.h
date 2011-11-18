@@ -37,7 +37,7 @@ public:
   vesTypeMacro(vesModelViewUniform);
 
   vesModelViewUniform(const std::string &name="modelViewMatrix") :
-    vesUniform(name, vesMatrix4x4f())
+    vesUniform(name, vesMatrix4x4f(vesMatrix4x4f::Identity()))
   {
   }
 

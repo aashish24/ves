@@ -107,6 +107,7 @@ void vesVisitor::popProjectionMatrix()
 vesMatrix4x4f vesVisitor::modelViewMatrix()
 {
   vesMatrix4x4f matrix;
+  matrix.setIdentity();
   size_t count = this->m_internal->m_modelViewMatrixStack.size();
   for (size_t i = 0; i < count ; ++i) {
     matrix *= *this->m_internal->m_modelViewMatrixStack[i];
@@ -119,6 +120,7 @@ vesMatrix4x4f vesVisitor::modelViewMatrix()
 vesMatrix4x4f vesVisitor::projectionMatrix()
 {
   vesMatrix4x4f matrix;
+  matrix.setIdentity();
   if (!this->m_internal->m_projectionMatrixStack.empty()) {
     matrix = *this->m_internal->m_projectionMatrixStack.back();
   }

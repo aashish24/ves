@@ -61,6 +61,7 @@ float deg2Rad(float degree);
 vesMatrix4x4f vesLookAt( vesVector3f position,
                          vesVector3f focalPoint,
                          vesVector3f viewUp);
-vesMatrix4x4f vesPerspective(float fov,float aspectRatio, float near,float far);
+vesMatrix4x4f vesPerspective(float fov, float aspectRatio, float near,
+                             float far);
 
 #endif
