@@ -24,6 +24,7 @@
 #include "vesUniform.h"
 
 // VES includes
+#include "vesGeometryData.h"
 #include "vesMapper.h"
 #include "vesRenderState.h"
 #include "vesSetGet.h"
@@ -66,14 +67,14 @@ public:
   virtual void update(const vesRenderState &renderState,
                       const vesShaderProgram &program)
   {
-#if 0
+
     vesNotUsed(program);
-    if (!renderState.m_mapper->geometry()->GetVertexColors().empty()) {
+    if (!renderState.m_mapper->geometryData()->sourceData(
+      vesVertexAttributeKeys::Color)) {
       this->set(true);
     } else {
       this->set(false);
     }
-#endif
   }
 
   virtual vesUniform* asUniform()

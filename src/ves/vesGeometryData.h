@@ -514,6 +514,11 @@ public:
     this->m_indices.push_back(i3);
   }
 
+  inline unsigned int size() const
+  {
+    return this->numberOfIndices();
+  }
+
   inline unsigned int sizeInBytes() const
   {
     return this->m_dataTypeSize * this->m_indices.size();
@@ -539,9 +544,25 @@ public:
     return this->m_dataTypeSize;
   }
 
-  inline short unsigned int* data()
+  /// Use this method with caution
+  inline unsigned short* data()
   {
     return &this->m_indices.front();
+  }
+
+  inline const unsigned short* data() const
+  {
+    return &this->m_indices.front();
+  }
+
+  inline unsigned short at(unsigned int index)
+  {
+    return this->m_indices[index];
+  }
+
+  inline const unsigned short& at(unsigned int index) const
+  {
+    return this->m_indices[index];
   }
 
   // Size of indices data type
@@ -569,7 +590,8 @@ public:
   vesTypeMacro(vesGeometryData);
 
   vesGeometryData() :
-    m_computeBounds(true)
+    m_computeBounds(true),
+    m_computeNormals(true)
   {
   }
 
@@ -598,6 +620,8 @@ public:
 
   void computeBounds();
 
+  void computeNormals();
+
   inline vesSharedPtr<vesPrimitive> triangles();
   inline vesSharedPtr<vesPrimitive> triangleStrips();
   inline vesSharedPtr<vesPrimitive> lines();
@@ -612,7 +636,12 @@ public:
   Sources m_sources;
 
 private:
+  void addAndUpdateNormal(unsigned int index, float n1, float n2, float n3,
+                          void *data, unsigned int stride, unsigned int offset,
+                          unsigned int sizeOfDataType);
+
   bool m_computeBounds;
+  bool m_computeNormals;
 
   vesVector3f m_boundsMin;
   vesVector3f m_boundsMax;

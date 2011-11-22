@@ -281,17 +281,10 @@ void vesDataConversionTools::ConvertTriangles(
   }
   else
   {
-#if 0
-    output->ComputeNormals();
-#endif
+    output->computeNormals();
   }
 
-
-#if 0
-  output->SetHasBounds(false);
-  output->ComputeBounds();
-#endif
-
+  output->computeBounds();
   output->m_sources.push_back(sourceData);
 }
 
@@ -379,6 +372,10 @@ vesSharedPtr<vesGeometryData> vesDataConversionTools::Convert(vtkPolyData* input
       sourceData->m_data[i].m_normal[1] = normals->GetTuple(i)[1];
       sourceData->m_data[i].m_normal[2] = normals->GetTuple(i)[2];
     }
+  }
+  else
+  {
+    output->computeNormals();
   }
 
 #if 0
