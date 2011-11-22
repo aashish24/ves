@@ -14,3 +14,7 @@ add_test(TestTexture ${EXECUTABLE_OUTPUT_PATH}/TestTexture ${VES_SOURCE_DIR} ${V
 add_executable(TestGradientBackground TestGradientBackground.cpp)
 target_link_libraries(TestGradientBackground vtkVES GLESv2 EGL X11)
 add_test(TestGradientBackground ${EXECUTABLE_OUTPUT_PATH}/TestGradientBackground ${VES_SOURCE_DIR} ${VES_SOURCE_DIR}/Testing/BaselineImages)
+
+add_executable(TestMatrix TestMatrix.cpp)
+target_link_libraries(TestMatrix ves GLESv2 EGL)
+add_test(NAME TestMatrix COMMAND TestMatrix)

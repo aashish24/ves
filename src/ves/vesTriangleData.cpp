@@ -31,18 +31,16 @@ vesTriangleData::vesTriangleData()
 vesVector3f vesTriangleData::GetMin()
 {
   if (!this->HasBounds)
-  {
     this->ComputeBounds();
-  }
+
   return this->Min;
 }
 
 vesVector3f vesTriangleData::GetMax()
 {
   if (!this->HasBounds)
-  {
     this->ComputeBounds();
-  }
+
   return this->Max;
 }
 
@@ -66,22 +64,19 @@ vesVector2f vesTriangleData::GetPointScalarRange()
 void vesTriangleData::ComputeBounds()
 {
   if (this->HasBounds)
-  {
     return;
-  }
-  for (size_t i = 0; i < this->Points.size(); ++i)
-  {
+
+  for (size_t i = 0; i < this->Points.size(); ++i) {
     vtkVertex3f v = this->Points[i];
-    for (int j = 0; j < 3; ++j)
-    {
-      if (i == 0)
-      {
+    for (int j = 0; j < 3; ++j) {
+      if (i == 0) {
         this->Max[j] = this->Min[j] = v.point[j];
       }
-      else
-      {
-        if (v.point[j] > this->Max[j]) this->Max[j] = v.point[j];
-        if (v.point[j] < this->Min[j]) this->Min[j] = v.point[j];
+      else {
+        if (v.point[j] > this->Max[j])
+          this->Max[j] = v.point[j];
+        if (v.point[j] < this->Min[j])
+          this->Min[j] = v.point[j];
       }
     }
   }

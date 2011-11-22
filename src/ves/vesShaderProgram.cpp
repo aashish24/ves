@@ -30,6 +30,7 @@
 // C++ includes
 #include <map>
 #include <vector>
+#include <iostream>
 
 class vesShaderProgram::vesInternal
 {

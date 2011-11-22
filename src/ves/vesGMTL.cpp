@@ -41,12 +41,6 @@ vesMatrix4x4f makeTranslationMatrix4x4(vesVector3f trans)
 }
 
 // -------------------------------------------------------------------------fun
-vesVector3f makeTranslationVector3f(vesMatrix4x4f matrix)
-{
-  return gmtl::makeTrans<vesVector3f>(matrix);
-}
-
-// -------------------------------------------------------------------------fun
 vesMatrix4x4f makeTransposeMatrix4x4(vesMatrix4x4f matrix)
 {
   vesMatrix4x4f mat = matrix;

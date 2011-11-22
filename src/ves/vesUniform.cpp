@@ -25,6 +25,7 @@
 
 // C++ includes
 #include <limits>
+#include <iostream>
 
 vesUniform::vesUniform() :
   m_type            (Undefined),
@@ -382,7 +383,7 @@ bool vesUniform::setElement(unsigned int index, const vesMatrix3x3f &matrix)
   unsigned int j = index * getTypeNumberOfComponents(this->m_type);
 
   for (int i = 0; i < 9; ++i)
-    (*this->m_floatArray)[j+i] = matrix.mData[i];
+    (*this->m_floatArray)[j+i] = matrix.data()[i];
 
   // \todo: Make state dirty.
 
@@ -398,7 +399,7 @@ bool vesUniform::setElement(unsigned int index, const vesMatrix4x4f &matrix)
   unsigned int j = index * getTypeNumberOfComponents(this->m_type);
 
   for (int i = 0; i < 16; ++i)
-    (*this->m_floatArray)[j+i] = matrix.mData[i];
+    (*this->m_floatArray)[j+i] = matrix.data()[i];
 
   // \todo: Make state dirty.
 
@@ -489,7 +490,9 @@ bool vesUniform::getElement(unsigned int index, vesMatrix3x3f &value) const
   if (index >= this->m_numberElements || !isCompatibleType(Float))
     return false;
 
-  value.set(&this->m_floatArray->front());
+  unsigned int j = index * getTypeNumberOfComponents(this->m_type);
+  for (unsigned int i = 0; i < 9; ++i)
+    value.data()[i] = (&m_floatArray->front())[i];
 
   return true;
 }
@@ -497,10 +500,12 @@ bool vesUniform::getElement(unsigned int index, vesMatrix3x3f &value) const
 
 bool vesUniform::getElement(unsigned int index, vesMatrix4x4f &value) const
 {
-  if (index >= this->m_numberElements || !isCompatibleType(Float))
+  if (index >= this->m_numberElements || !isCompatibleType(FloatMat4))
     return false;
 
-  value.set(&this->m_floatArray->front());
+  unsigned int j = index * getTypeNumberOfComponents(this->m_type);
+  for (unsigned int i = 0; i < 16; ++i)
+    value.data()[i] = (&m_floatArray->front())[i];
 
   return true;
 }

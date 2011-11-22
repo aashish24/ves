@@ -26,13 +26,6 @@
 #include <cstdio>
 #include <cstring>
 
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#include <X11/keysym.h>
-
-#include <GLES2/gl2.h>
-#include <EGL/egl.h>
-
 #include <vesKiwiViewerApp.h>
 #include <vesSetGet.h>
 
@@ -45,6 +38,12 @@
 #include <vtkPNGWriter.h>
 #include <vtkSmartPointer.h>
 
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/keysym.h>
+
+#include <GLES2/gl2.h>
+#include <EGL/egl.h>
 
 //----------------------------------------------------------------------------
 namespace {

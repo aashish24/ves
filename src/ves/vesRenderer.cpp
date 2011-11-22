@@ -110,10 +110,9 @@ vesVector3f vesRenderer::computeWorldToDisplay(vesVector3f world)
   vesMatrix4x4f proj_mat = this->m_camera->computeProjectionTransform(this->m_aspect[1],
                                                                     0, 1);
   vesMatrix4x4f view_mat = this->m_camera->computeViewTransform();
-  vesMatrix4x4f mat = proj_mat*view_mat;
+  vesMatrix4x4f t(proj_mat * view_mat);
   vesVector4f world4(world[0], world[1], world[2], 1);
-  vesVector4f view;
-  gmtl::xform(view, mat, world4);
+  vesVector4f view = t * world4;
   view[0] /= view[3];
   view[1] /= view[3];
   view[2] /= view[3];
@@ -141,10 +140,8 @@ vesVector3f vesRenderer::computeDisplayToWorld(vesVector3f display)
                                                                     0, 1);
   vesMatrix4x4f view_mat = this->m_camera->computeViewTransform();
   vesMatrix4x4f mat = proj_mat*view_mat;
-  vesMatrix4x4f inv;
-  gmtl::invertFull(inv, mat);
-  vesVector4f world4;
-  gmtl::xform(world4, inv, view);
+  vesMatrix4x4f inv = mat.inverse();
+  vesVector4f world4 = inv * view;
 
   vesVector3f world(world4[0]/world4[3], world4[1]/world4[3],
                     world4[2]/world4[3]);
@@ -203,7 +200,7 @@ void vesRenderer::resetCamera()
 
   // Check view-up vector against view plane normal
   vup = this->m_camera->viewUp();
-  if ( fabs(gmtl::dot(vup,vn)) > 0.999 ) {
+  if ( fabs(vup.dot(vn)) > 0.999 ) {
     // vtkWarningMacro(<<"Resetting view-up since view plane normal is parallel");
     vesVector3f temp;
     temp[0] = -vup[2];

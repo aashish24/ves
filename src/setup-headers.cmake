@@ -27,6 +27,7 @@ endfunction()
 
 process_dir(.)
 process_dir(gmtl)
+process_dir(Eigen)
 process_dir(ves)
 
 if(VES_USE_VTK)

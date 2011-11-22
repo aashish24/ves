@@ -218,7 +218,7 @@ void vesKiwiImageWidgetRepresentation::scrollImageSlice(double deltaX, double de
   vesVector3f planeNormal(0, 0, 0);
   planeNormal[flatDimension] = 1.0;
 
-  double vectorDot = gmtl::dot(motionVector, planeNormal);
+  double vectorDot = motionVector.dot(planeNormal);
   double delta = vectorDot;
   if (fabs(delta) < 1e-6) {
     delta = deltaY;
@@ -296,7 +296,7 @@ bool vesKiwiImageWidgetRepresentation::handleSingleTouchDown(int displayX, int d
 
   vesVector3f rayDirection = rayPoint1 - rayPoint0;
 
-  gmtl::normalize(rayDirection);
+  rayDirection.normalize();
   rayDirection *= 1000.0;
   rayPoint1 += rayDirection;
 
