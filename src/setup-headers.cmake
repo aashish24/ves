@@ -26,7 +26,6 @@ endfunction()
 
 
 process_dir(.)
-process_dir(gmtl)
 process_dir(Eigen)
 process_dir(ves)
 
