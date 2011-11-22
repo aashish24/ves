@@ -31,8 +31,8 @@ void main()
   // Save position for shading later.
   highp vec4 position = projectionMatrix * modelViewMatrix * vec4(vertexPosition, 1.0);
 
-  // 3 is line
-  if (primitiveType != 3) {
+  // 1 is line
+  if (primitiveType != 1) {
     // Transform vertex normal into eye space.
     lowp vec3 normal = normalize(normalMatrix * vertexNormal);
 

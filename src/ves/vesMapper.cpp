@@ -197,7 +197,6 @@ void vesMapper::render(const vesRenderState &renderState)
     ++bufferIndex;
   }
 
-
   unsigned int numberOfPrimitiveTypes = this->m_geometryData->numberOfPrimitiveTypes();
   for(unsigned int i = 0; i < numberOfPrimitiveTypes; ++i)
   {
@@ -211,14 +210,6 @@ void vesMapper::render(const vesRenderState &renderState)
 
     unsigned int drawnIndices = 0;
 
-//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_internal->m_buffers[bufferIndex++]);
-//    glDrawElements(this->m_geometryData->m_primitives[i]->primitiveType(),
-//                   this->m_geometryData->m_primitives[i]->numberOfIndices(),
-//                   GL_UNSIGNED_SHORT,
-//                   (void*)0);
-//      renderState.m_material->bindRenderData(
-//        renderState, vesRenderData(vesGLTypes::Triangles));
-
     while (drawnIndices < numberOfIndices) {
       int numberOfIndicesToDraw = numberOfIndices - drawnIndices;
 
@@ -230,10 +221,16 @@ void vesMapper::render(const vesRenderState &renderState)
         = this->m_geometryData->m_primitives[i]->sizeOfDataType()
           * drawnIndices;
 
+      // Send the primitive type information out
+      renderState.m_material->bindRenderData(
+        renderState, vesRenderData(this->m_geometryData->m_primitives[i]->primitiveType()));
+
+      // Now draw the elements
       glDrawElements(this->m_geometryData->m_primitives[i]->primitiveType(),
                      numberOfIndicesToDraw,
                      GL_UNSIGNED_SHORT,
                      (void*)offset);
+
 
       drawnIndices += numberOfIndicesToDraw;
     }
@@ -331,17 +328,8 @@ void vesMapper::createVertexBufferObjects()
   }
 
   size_t numberOfPrimitiveTypes = this->m_geometryData->numberOfPrimitiveTypes();
-  for(size_t i = 0; i < 1; ++i)
+  for(size_t i = 0; i < numberOfPrimitiveTypes; ++i)
   {
-//    size_t sizeOfBuffer = this->m_geometryData->m_primitives[i]->m_indices. size()
-//      * this->m_geometryData->m_primitives[i]->m_dataTypeSize;
-
-//    std::cout << "this->m_geometryData->m_primitives[i]->m_indices->size() " << this->m_geometryData->m_primitives[i]->m_indices.size() << std::endl;
-//    std::cout << "this->m_geometryData->m_primitives[i]->m_indexCount " << this->m_geometryData->m_primitives[i]->m_indexCount << std::endl;
-//    std::cout << "this->m_geometryData->m_primitives[i]->m_dataTypeSize" << this->m_geometryData->m_primitives[i]->m_dataTypeSize << std::endl;
-//    std::cout << "sizeOfBuffer " << sizeOfBuffer << std::endl;
-//    std::cout << "this->m_geometryData->m_primitives[i]->sizeInBytes() " << this->m_geometryData->m_primitives[i]->sizeInBytes() << std::endl;
-
     glGenBuffers(1, &bufferId);
     this->m_internal->m_buffers.push_back(bufferId);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_internal->m_buffers.back());
@@ -352,24 +340,6 @@ void vesMapper::createVertexBufferObjects()
   }
 
   this->m_initialized = true;
-
-//  if (!this->m_data->GetTriangles().empty()) {
-//    glGenBuffers(1, &bufferId);
-//    this->m_internal->m_buffers.push_back(bufferId);
-//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_internal->m_buffers.back());
-//    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-//                 this->m_data->GetTriangles().size() *sizeof(unsigned short) * 3,
-//                 &this->m_data->GetTriangles()[0], GL_STATIC_DRAW);
-//    }
-
-//  if (!this->m_data->GetLines().empty()) {
-//    glGenBuffers(1, &bufferId);
-//    this->m_internal->m_buffers.push_back(bufferId);
-//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_internal->m_buffers.back());
-//    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-//                 this->m_data->GetLines().size() *sizeof(unsigned short) * 2,
-//                 &this->m_data->GetLines()[0], GL_STATIC_DRAW);
-//    }
 }
 
 
