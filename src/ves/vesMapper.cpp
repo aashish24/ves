@@ -236,34 +236,6 @@ void vesMapper::render(const vesRenderState &renderState)
     }
   }
 
-#if 0
-  const int numberOfTriangles = this->m_data->GetTriangles().size();
-  if (numberOfTriangles > 0) {
-    int drawnTriangles = 0;
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_internal->m_buffers[bufferIndex++]);
-    renderState.m_material->bindRenderData(
-      renderState, vesRenderData(vesGLTypes::Triangles));
-    while (drawnTriangles < numberOfTriangles) {
-      int numberOfTrianglesToDraw = numberOfTriangles - drawnTriangles;
-      if (numberOfTrianglesToDraw > this->m_maximumTrianglesPerDraw) {
-        numberOfTrianglesToDraw = this->m_maximumTrianglesPerDraw;
-      }
-      glDrawElements(GL_TRIANGLES, numberOfTrianglesToDraw * 3,
-                     GL_UNSIGNED_SHORT,
-                     (void*)(drawnTriangles*sizeof(vesVector3us)));
-      drawnTriangles += numberOfTrianglesToDraw;
-    }
-  }
-
-  if (!this->m_data->GetLines().empty()) {
-    renderState.m_material->bindRenderData(
-      renderState, vesRenderData(vesGLTypes::Lines));
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_internal->m_buffers[bufferIndex++]);
-    glDrawElements(GL_LINES, this->m_data->GetLines().size() * 2,
-                   GL_UNSIGNED_SHORT, (void*)0);
-    }
-#endif
-
   // Unbind.
   bufferIndex = 0;
   constItr = this->m_internal->m_bufferVertexAttributeMap.begin();
