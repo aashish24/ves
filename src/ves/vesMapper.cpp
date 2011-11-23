@@ -201,7 +201,7 @@ void vesMapper::render(const vesRenderState &renderState)
   for(unsigned int i = 0; i < numberOfPrimitiveTypes; ++i)
   {
     const unsigned int numberOfIndices
-      = this->m_geometryData->m_primitives[i]->numberOfIndices();
+      = this->m_geometryData->primitive(i)->numberOfIndices();
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_internal->m_buffers[bufferIndex++]);
     if (numberOfIndices <=0) {
@@ -218,15 +218,15 @@ void vesMapper::render(const vesRenderState &renderState)
       }
 
       unsigned int offset
-        = this->m_geometryData->m_primitives[i]->sizeOfDataType()
+        = this->m_geometryData->primitive(i)->sizeOfDataType()
           * drawnIndices;
 
       // Send the primitive type information out
       renderState.m_material->bindRenderData(
-        renderState, vesRenderData(this->m_geometryData->m_primitives[i]->primitiveType()));
+        renderState, vesRenderData(this->m_geometryData->primitive(i)->primitiveType()));
 
       // Now draw the elements
-      glDrawElements(this->m_geometryData->m_primitives[i]->primitiveType(),
+      glDrawElements(this->m_geometryData->primitive(i)->primitiveType(),
                      numberOfIndicesToDraw,
                      GL_UNSIGNED_SHORT,
                      (void*)offset);
@@ -283,16 +283,16 @@ void vesMapper::createVertexBufferObjects()
 {
   unsigned int bufferId;
 
-  size_t numberOfSources = this->m_geometryData->m_sources.size();
-  for(size_t i = 0; i < numberOfSources; ++i)
+  unsigned int numberOfSources = this->m_geometryData->numberOfSources();
+  for(unsigned int i = 0; i < numberOfSources; ++i)
   {
     glGenBuffers(1, &bufferId);
     this->m_internal->m_buffers.push_back(bufferId);
     glBindBuffer(GL_ARRAY_BUFFER, this->m_internal->m_buffers.back());
-    glBufferData(GL_ARRAY_BUFFER, this->m_geometryData->m_sources[i]->sizeInBytes(),
-      this->m_geometryData->m_sources[i]->data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, this->m_geometryData->source(i)->sizeInBytes(),
+      this->m_geometryData->source(i)->data(), GL_STATIC_DRAW);
 
-    std::vector<int> keys = this->m_geometryData->m_sources[i]->keys();
+    std::vector<int> keys = this->m_geometryData->source(i)->keys();
     for(size_t j = 0; j < keys.size(); ++j) {
       this->m_internal->m_bufferVertexAttributeMap[
       this->m_internal->m_buffers.back()].push_back(keys[j]);
@@ -306,8 +306,8 @@ void vesMapper::createVertexBufferObjects()
     this->m_internal->m_buffers.push_back(bufferId);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_internal->m_buffers.back());
     glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-      this->m_geometryData->m_primitives[i]->sizeInBytes(),
-      this->m_geometryData->m_primitives[i]->data(),
+      this->m_geometryData->primitive(i)->sizeInBytes(),
+      this->m_geometryData->primitive(i)->data(),
       GL_STATIC_DRAW);
   }
 

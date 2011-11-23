@@ -31,7 +31,7 @@
 #include "vesVertexAttributeKeys.h"
 
 // C/C++ includes
-#include <iostream>
+#include <algorithm>
 #include <map>
 #include <string>
 #include <vector>
@@ -53,9 +53,81 @@ public:
   {
   }
 
-  unsigned int numberOfPrimitiveTypes() const
+  inline std::string name()
+  {
+    return this->m_name;
+  }
+
+  inline const std::string& name() const
+  {
+    return this->m_name;
+  }
+
+  inline bool setName(const std::string &name)
+  {
+    bool success = true;
+
+    this->m_name = name;
+
+    return success;
+  }
+
+  inline bool addSource(vesSharedPtr<vesSourceData> source)
+  {
+    bool success = true;
+
+    if (std::find(this->m_sources.begin(), this->m_sources.end(), source)
+      == this->m_sources.end())
+    {
+      this->m_sources.push_back(source);
+      return success;
+    }
+
+    return !success;
+  }
+
+  inline bool addPrimitive(vesSharedPtr<vesPrimitive> primitive)
+  {
+    bool success = true;
+
+    if (std::find(this->m_primitives.begin(), this->m_primitives.end(),
+      primitive) == this->m_primitives.end())
+    {
+      this->m_primitives.push_back(primitive);
+      return success;
+    }
+
+    return !success;
+  }
+
+  inline vesSharedPtr<vesPrimitive> primitive(unsigned int index)
+  {
+    return this->m_primitives[index];
+  }
+
+  inline const vesSharedPtr<vesPrimitive> primitive(unsigned int index) const
+  {
+    return this->m_primitives[index];
+  }
+
+  inline vesSharedPtr<vesSourceData> source(unsigned int index)
+  {
+    return this->m_sources[index];
+  }
+
+  inline const vesSharedPtr<vesSourceData> source(unsigned int index) const
+  {
+    return this->m_sources[index];
+  }
+
+  inline unsigned int numberOfPrimitiveTypes() const
   {
     return static_cast<unsigned int>(this->m_primitives.size());
+  }
+
+  inline unsigned int numberOfSources() const
+  {
+    return static_cast<unsigned int>(this->m_sources.size());
   }
 
   inline vesVector3f boundsMin()
@@ -86,17 +158,17 @@ public:
 
   inline vesSharedPtr<vesSourceData> sourceData(int key);
 
-  // The ID of the geometry element
+private:
+  void addAndUpdateNormal(unsigned int index, float n1, float n2, float n3,
+                          void *data, unsigned int stride, unsigned int offset,
+                          unsigned int sizeOfDataType);
+
+  /// The ID of the geometry element
   std::string m_name;
 
   std::vector<vesPrimitive::Ptr> m_primitives;
 
   Sources m_sources;
-
-private:
-  void addAndUpdateNormal(unsigned int index, float n1, float n2, float n3,
-                          void *data, unsigned int stride, unsigned int offset,
-                          unsigned int sizeOfDataType);
 
   bool m_computeBounds;
   bool m_computeNormals;

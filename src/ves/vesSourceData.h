@@ -167,12 +167,13 @@ public:
   {
   }
 
-  inline std::vector<T> array()
+  /// Use this method with caution
+  inline std::vector<T>& arrayReference()
   {
     return this->m_data;
   }
 
-  inline const std::vector<T>& array() const
+  inline const std::vector<T>& arrayReference() const
   {
     return this->m_data;
   }
@@ -356,10 +357,15 @@ public:
     return true;
   }
 
-  // Mesh data
-  std::vector<T> m_data;
+  inline void pushBack(const T &value)
+  {
+    this->m_data.push_back(value);
+  }
 
 protected:
+  /// Mesh data
+  std::vector<T> m_data;
+
   AttributeMap m_attributeMap;
 };
 

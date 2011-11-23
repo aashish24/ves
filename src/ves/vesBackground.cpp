@@ -190,10 +190,10 @@ vesSharedPtr<vesGeometryData> vesBackground::vesInternal::createBackgroundPlane(
   v4.m_normal = vesVector3f(0.0f, 0.0f, 1.0f);
   v4.m_color = vesVector3f(topColor[0], topColor[1], topColor[2]);
 
-  sourceData->m_data.push_back(v1);
-  sourceData->m_data.push_back(v2);
-  sourceData->m_data.push_back(v3);
-  sourceData->m_data.push_back(v4);
+  sourceData->pushBack(v1);
+  sourceData->pushBack(v2);
+  sourceData->pushBack(v3);
+  sourceData->pushBack(v4);
 
   // Triangle cells.
   vesPrimitive::Ptr triangles (new vesPrimitive());
@@ -202,9 +202,9 @@ vesSharedPtr<vesGeometryData> vesBackground::vesInternal::createBackgroundPlane(
   triangles->setPrimitiveType(GL_TRIANGLES);
   triangles->setIndexCount(3);
 
-  backgroundGeometryData->m_name = "BackgroundData";
-  backgroundGeometryData->m_sources.push_back(sourceData);
-  backgroundGeometryData->m_primitives.push_back(triangles);
+  backgroundGeometryData->setName("BackgroundData");
+  backgroundGeometryData->addSource(sourceData);
+  backgroundGeometryData->addPrimitive(triangles);
   return backgroundGeometryData;
 }
 

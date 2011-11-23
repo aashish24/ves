@@ -136,10 +136,10 @@ void vesDataConversionTools::SetVertexColors(
     colors->GetTupleValue(i, rgb);
     vesVertexDataC3f color;
     color.m_color = vesVector3f(rgb[0]/255.0, rgb[1]/255.0, rgb[2]/255.0);
-    colorSourceData->m_data.push_back(color);
+    colorSourceData->pushBack(color);
     }
 
-  geometryData->m_sources.push_back(colorSourceData);
+  geometryData->addSource(colorSourceData);
 }
 
 //----------------------------------------------------------------------------
@@ -160,10 +160,10 @@ void vesDataConversionTools::SetVertexColors(vtkDataArray* scalars,
     scalarsToColors->GetColor(scalars->GetComponent(i, 0), rgb);
     vesVertexDataC3f color;
     color.m_color = vesVector3f(rgb[0], rgb[1], rgb[2]);
-    colorSourceData->m_data.push_back(color);
+    colorSourceData->pushBack(color);
     }
 
-  geometryData->m_sources.push_back(colorSourceData);
+  geometryData->addSource(colorSourceData);
 }
 
 //----------------------------------------------------------------------------
@@ -183,10 +183,10 @@ void vesDataConversionTools::SetTextureCoordinates(vtkDataArray* tcoords,
     double* values = tcoords->GetTuple(i);
     vesVertexDataT2f textureCoordinate;
     textureCoordinate.m_textureCoordinate = vesVector2f(values[0], values[1]);
-    texCoordSourceData->m_data.push_back(textureCoordinate);
+    texCoordSourceData->pushBack(textureCoordinate);
     }
 
-  geometryData->m_sources.push_back(texCoordSourceData);
+  geometryData->addSource(texCoordSourceData);
 }
 
 //----------------------------------------------------------------------------
@@ -245,7 +245,7 @@ void vesDataConversionTools::ConvertTriangles(
 
     vesVertexDataP3N3f vertexData;
     vertexData.m_position = vesVector3f(inPoint[0], inPoint[1], inPoint[2]);
-    sourceData->m_data.push_back(vertexData);
+    sourceData->pushBack(vertexData);
   }
 
   // copy triangles in place to ves structure
@@ -274,9 +274,9 @@ void vesDataConversionTools::ConvertTriangles(
     vtkDataArray* normals = input->GetPointData()->GetNormals();
     for (int i = 0; i < input->GetNumberOfPoints(); ++i)
     {
-      sourceData->m_data[i].m_normal[0] = normals->GetTuple(i)[0];
-      sourceData->m_data[i].m_normal[1] = normals->GetTuple(i)[1];
-      sourceData->m_data[i].m_normal[2] = normals->GetTuple(i)[2];
+      sourceData->arrayReference()[i].m_normal[0] = normals->GetTuple(i)[0];
+      sourceData->arrayReference()[i].m_normal[1] = normals->GetTuple(i)[1];
+      sourceData->arrayReference()[i].m_normal[2] = normals->GetTuple(i)[2];
     }
   }
   else
@@ -285,7 +285,7 @@ void vesDataConversionTools::ConvertTriangles(
   }
 
   output->computeBounds();
-  output->m_sources.push_back(sourceData);
+  output->addSource(sourceData);
 }
 
 vesSharedPtr<vesGeometryData> vesDataConversionTools::Convert(vtkPolyData* input)
@@ -303,11 +303,11 @@ vesSharedPtr<vesGeometryData> vesDataConversionTools::Convert(vtkPolyData* input
     vertexData.m_position[0] = input->GetPoint(i)[0];
     vertexData.m_position[1] = input->GetPoint(i)[1];
     vertexData.m_position[2] = input->GetPoint(i)[2];
-    sourceData->m_data.push_back(vertexData);
+    sourceData->pushBack(vertexData);
   }
 
-  output->m_sources.push_back(sourceData);
-  output->m_name = "PolyData";
+  output->addSource(sourceData);
+  output->setName("PolyData");
 
   vtkCellArray* polys = input->GetPolys();
   vtkIdType num;
@@ -360,16 +360,16 @@ vesSharedPtr<vesGeometryData> vesDataConversionTools::Convert(vtkPolyData* input
   lines->setIndexCount(2);
   lines->setPrimitiveType(GL_LINES);
 
-  output->m_primitives.push_back(triangles);
-  output->m_primitives.push_back(triangleStrips);
-  output->m_primitives.push_back(lines);
+  output->addPrimitive(triangles);
+  output->addPrimitive(triangleStrips);
+  output->addPrimitive(lines);
 
   if (input->GetPointData()->GetNormals()) {
     vtkDataArray* normals = input->GetPointData()->GetNormals();
     for (int i = 0; i < input->GetNumberOfPoints(); ++i) {
-      sourceData->m_data[i].m_normal[0] = normals->GetTuple(i)[0];
-      sourceData->m_data[i].m_normal[1] = normals->GetTuple(i)[1];
-      sourceData->m_data[i].m_normal[2] = normals->GetTuple(i)[2];
+      sourceData->arrayReference()[i].m_normal[0] = normals->GetTuple(i)[0];
+      sourceData->arrayReference()[i].m_normal[1] = normals->GetTuple(i)[1];
+      sourceData->arrayReference()[i].m_normal[2] = normals->GetTuple(i)[2];
     }
   }
   else
