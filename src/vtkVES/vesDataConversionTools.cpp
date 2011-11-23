@@ -290,7 +290,6 @@ void vesDataConversionTools::ConvertTriangles(
 
 vesSharedPtr<vesGeometryData> vesDataConversionTools::Convert(vtkPolyData* input)
 {
-  cerr << "starting conversion" << endl;
   vesPrimitive::Ptr triangles(new vesPrimitive());
   vesPrimitive::Ptr triangleStrips(new vesPrimitive());
   vesPrimitive::Ptr lines(new vesPrimitive());
@@ -390,7 +389,5 @@ vesSharedPtr<vesGeometryData> vesDataConversionTools::Convert(vtkPolyData* input
     }
   }
 #endif
-
-  cerr << "done with conversion" << endl;
   return output;
 }

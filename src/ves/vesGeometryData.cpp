@@ -78,8 +78,6 @@ void vesGeometryData::computeNormals()
   unsigned int offset
     = sourceData->attributeOffset(vesVertexAttributeKeys::Normal);
 
-  std::cout << "stride is " << stride << std::endl;
-
   assert(numberOfComponents <= 3);
 
   for (unsigned int i = 0; i < count; ++i) {

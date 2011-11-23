@@ -286,7 +286,6 @@ void vesMapper::createVertexBufferObjects()
   size_t numberOfSources = this->m_geometryData->m_sources.size();
   for(size_t i = 0; i < numberOfSources; ++i)
   {
-    std::cout <<  "source " << i << std::endl;
     glGenBuffers(1, &bufferId);
     this->m_internal->m_buffers.push_back(bufferId);
     glBindBuffer(GL_ARRAY_BUFFER, this->m_internal->m_buffers.back());
@@ -295,9 +294,6 @@ void vesMapper::createVertexBufferObjects()
 
     std::vector<int> keys = this->m_geometryData->m_sources[i]->keys();
     for(size_t j = 0; j < keys.size(); ++j) {
-
-      std::cout << "key is " << keys[j] << std::endl;
-
       this->m_internal->m_bufferVertexAttributeMap[
       this->m_internal->m_buffers.back()].push_back(keys[j]);
     }
