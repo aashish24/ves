@@ -254,7 +254,7 @@ void vesDataConversionTools::ConvertTriangles(
   vtkIdType* vertices;
 
   vesPrimitive::Indices* triangleIndices
-    = &output->triangles()->m_indices;
+    = output->triangles()->indices();
 
   triangleIndices->clear();
   triangleIndices->resize(polys->GetNumberOfCells());
@@ -324,8 +324,8 @@ vesSharedPtr<vesGeometryData> vesDataConversionTools::Convert(vtkPolyData* input
     }
   }
 
-  triangles->m_indexCount = 3;
-  triangles->m_primitiveType = GL_TRIANGLES;
+  triangles->setIndexCount(3);
+  triangles->setPrimitiveType(GL_TRIANGLES);
 
   vtkCellArray* strips = input->GetStrips();
   strips->InitTraversal();
@@ -344,7 +344,8 @@ vesSharedPtr<vesGeometryData> vesDataConversionTools::Convert(vtkPolyData* input
     }
   }
 
-  triangleStrips->m_primitiveType = GL_TRIANGLE_STRIP;
+  triangleStrips->setIndexCount(1);
+  triangleStrips->setPrimitiveType(GL_TRIANGLE_STRIP);
 
   vtkCellArray* vtklines = input->GetLines();
   vtklines->InitTraversal();
@@ -356,13 +357,12 @@ vesSharedPtr<vesGeometryData> vesDataConversionTools::Convert(vtkPolyData* input
     }
   }
 
-  lines->m_indexCount = 2;
-  lines->m_primitiveType = GL_LINES;
+  lines->setIndexCount(2);
+  lines->setPrimitiveType(GL_LINES);
 
   output->m_primitives.push_back(triangles);
   output->m_primitives.push_back(triangleStrips);
   output->m_primitives.push_back(lines);
-
 
   if (input->GetPointData()->GetNormals()) {
     vtkDataArray* normals = input->GetPointData()->GetNormals();

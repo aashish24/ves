@@ -199,8 +199,8 @@ vesSharedPtr<vesGeometryData> vesBackground::vesInternal::createBackgroundPlane(
   vesPrimitive::Ptr triangles (new vesPrimitive());
   triangles->pushBackIndices(0, 3, 2);
   triangles->pushBackIndices(1, 0, 2);
-  triangles->m_primitiveType = GL_TRIANGLES;
-  triangles->m_indexCount = 3;
+  triangles->setPrimitiveType(GL_TRIANGLES);
+  triangles->setIndexCount(3);
 
   backgroundGeometryData->m_name = "BackgroundData";
   backgroundGeometryData->m_sources.push_back(sourceData);
