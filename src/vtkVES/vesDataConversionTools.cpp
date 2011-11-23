@@ -176,13 +176,13 @@ void vesDataConversionTools::SetTextureCoordinates(vtkDataArray* tcoords,
 
   const size_t nTuples = tcoords->GetNumberOfTuples();
 
-  vesSourceDataT3f::Ptr texCoordSourceData (new vesSourceDataT3f());
+  vesSourceDataT2f::Ptr texCoordSourceData (new vesSourceDataT2f());
 
   for (size_t i = 0; i < nTuples; ++i)
     {
     double* values = tcoords->GetTuple(i);
-    vesVertexDataT3f textureCoordinate;
-    textureCoordinate.m_textureCoordinate = vesVector3f(values[0], values[1], 0.0f);
+    vesVertexDataT2f textureCoordinate;
+    textureCoordinate.m_textureCoordinate = vesVector2f(values[0], values[1]);
     texCoordSourceData->m_data.push_back(textureCoordinate);
     }
 

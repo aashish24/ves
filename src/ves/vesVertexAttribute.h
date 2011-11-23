@@ -220,6 +220,12 @@ public:
     vesSourceData::Ptr sourceData = geometryData->sourceData(key);
     assert(sourceData);
 
+//    std::cout << "sourceData->numberOfComponents(key) " << sourceData->numberOfComponents(key) << std::endl;
+//    std::cout << "sourceData->attributeDataType(key) " << sourceData->attributeDataType(key) << std::endl;
+//    std::cout << "sourceData->isAttributeNormalized(key) " << sourceData->isAttributeNormalized(key) << std::endl;
+//    std::cout << "sourceData->attributeStride(key) " << sourceData->attributeStride(key) << std::endl;
+//    std::cout << "sourceData->attributeOffset(key) " << sourceData->attributeOffset(key) << std::endl;
+
     glVertexAttribPointer(renderState.m_material->shaderProgram()->
                           attributeLocation(this->m_name),
                           sourceData->numberOfComponents(key),
