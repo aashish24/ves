@@ -32,6 +32,7 @@
 
 // Forward declarations
 class vesGeometryData;
+class vesPrimitive;
 class vesVisitor;
 class vesRenderState;
 
@@ -66,9 +67,12 @@ private:
   vesMatrix4x4f m_normalizedMatrix;
 
 protected:
+  void drawTriangles(const vesRenderState &renderState,
+                     vesSharedPtr<vesPrimitive> triangles);
+
   bool m_initialized;
 
-  const int m_maximumIndicesPerDraw;
+  const int m_maximumTriangleIndicesPerDraw;
 
   vesSharedPtr<vesGeometryData> m_geometryData;
 

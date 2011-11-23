@@ -78,7 +78,7 @@ public:
 
 vesMapper::vesMapper() : vesBoundingObject(),
   m_initialized(false),
-  m_maximumIndicesPerDraw
+  m_maximumTriangleIndicesPerDraw
                (65535),
   m_internal   (0x0)
 {
@@ -200,39 +200,19 @@ void vesMapper::render(const vesRenderState &renderState)
   unsigned int numberOfPrimitiveTypes = this->m_geometryData->numberOfPrimitiveTypes();
   for(unsigned int i = 0; i < numberOfPrimitiveTypes; ++i)
   {
-    const unsigned int numberOfIndices
-      = this->m_geometryData->primitive(i)->numberOfIndices();
-
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_internal->m_buffers[bufferIndex++]);
-    if (numberOfIndices <=0) {
-      continue;
+
+
+    if (this->m_geometryData->primitive(i)->primitiveType() == GL_TRIANGLES) {
+      // Draw triangles
+      this->drawTriangles(renderState, this->m_geometryData->primitive(i));
     }
-
-    unsigned int drawnIndices = 0;
-
-    while (drawnIndices < numberOfIndices) {
-      int numberOfIndicesToDraw = numberOfIndices - drawnIndices;
-
-      if (numberOfIndicesToDraw > this->m_maximumIndicesPerDraw) {
-        numberOfIndicesToDraw = this->m_maximumIndicesPerDraw;
-      }
-
-      unsigned int offset
-        = this->m_geometryData->primitive(i)->sizeOfDataType()
-          * drawnIndices;
-
-      // Send the primitive type information out
-      renderState.m_material->bindRenderData(
-        renderState, vesRenderData(this->m_geometryData->primitive(i)->primitiveType()));
-
-      // Now draw the elements
+    else {
+      // Draw rest of the primitives
       glDrawElements(this->m_geometryData->primitive(i)->primitiveType(),
-                     numberOfIndicesToDraw,
+                     this->m_geometryData->primitive(i)->numberOfIndices(),
                      GL_UNSIGNED_SHORT,
-                     (void*)offset);
-
-
-      drawnIndices += numberOfIndicesToDraw;
+                     (void*)0);
     }
   }
 
@@ -320,5 +300,40 @@ void vesMapper::deleteVertexBufferObjects()
   if (!this->m_internal->m_buffers.empty()) {
     glDeleteBuffers(this->m_internal->m_buffers.size(),
                     &this->m_internal->m_buffers.front());
+  }
+}
+
+
+void vesMapper::drawTriangles(const vesRenderState &renderState,
+                              vesSharedPtr<vesPrimitive> triangles)
+{
+  const unsigned int numberOfIndices
+    = triangles->numberOfIndices();
+
+  unsigned int drawnIndices = 0;
+
+  while (drawnIndices < numberOfIndices) {
+    int numberOfIndicesToDraw = numberOfIndices - drawnIndices;
+
+    if (numberOfIndicesToDraw > this->m_maximumTriangleIndicesPerDraw) {
+      numberOfIndicesToDraw = this->m_maximumTriangleIndicesPerDraw;
+    }
+
+    unsigned int offset
+      = triangles->sizeOfDataType()
+        * drawnIndices;
+
+    // Send the primitive type information out
+    renderState.m_material->bindRenderData(
+      renderState, vesRenderData(triangles->primitiveType()));
+
+    // Now draw the elements
+    glDrawElements(triangles->primitiveType(),
+                   numberOfIndicesToDraw,
+                   GL_UNSIGNED_SHORT,
+                   (void*)offset);
+
+
+    drawnIndices += numberOfIndicesToDraw;
   }
 }
