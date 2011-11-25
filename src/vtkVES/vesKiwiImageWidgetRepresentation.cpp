@@ -66,7 +66,6 @@ public:
     }
   }
 
-  vesSharedPtr<vesRenderer> Renderer;
 
   int SelectedImageDimension;
   int CurrentSliceIndices[3];
@@ -122,6 +121,7 @@ void vesKiwiImageWidgetRepresentation::setImageData(vtkImageData* image)
   outline->SetInput(image);
   outline->Update();
   this->Internal->OutlineRep->setPolyData(outline->GetOutput());
+  this->Internal->OutlineRep->setColor(0.5, 0.5, 0.5, 0.5);
 
   if (image->GetNumberOfPoints() < 600000) {
     vtkNew<vtkContourFilter> contour;
@@ -269,8 +269,9 @@ void vesKiwiImageWidgetRepresentation::setSliceIndex(int planeIndex, int sliceIn
 //----------------------------------------------------------------------------
 bool vesKiwiImageWidgetRepresentation::handleSingleTouchPanGesture(double deltaX, double deltaY)
 {
-  if (!this->scrollSliceModeActive())
+  if (!this->interactionIsActive()) {
     return false;
+  }
 
   this->scrollImageSlice(deltaX, deltaY);
   return true;
@@ -317,12 +318,14 @@ bool vesKiwiImageWidgetRepresentation::handleSingleTouchDown(int displayX, int d
   int result = locator->IntersectWithLine(p0, p1, 0.0, t, pickPoint, paramCoords, subId, cellId);
   if (result == 1) {
     this->Internal->SelectedImageDimension = cellId;
-    return true;
+    this->interactionOn();
   }
   else {
     this->Internal->SelectedImageDimension = -1;
-    return false;
+    this->interactionOff();
   }
+
+  return this->interactionIsActive();
 }
 
 //----------------------------------------------------------------------------
@@ -346,35 +349,33 @@ bool vesKiwiImageWidgetRepresentation::handleDoubleTap()
 //----------------------------------------------------------------------------
 bool vesKiwiImageWidgetRepresentation::handleSingleTouchUp()
 {
-  if (!this->scrollSliceModeActive())
+  if (!this->interactionIsActive()) {
     return false;
+  }
 
   this->Internal->SelectedImageDimension = -1;
+  this->interactionOff();
   return true;
-}
-
-//----------------------------------------------------------------------------
-vesSharedPtr<vesRenderer> vesKiwiImageWidgetRepresentation::renderer()
-{
-  return this->Internal->Renderer;
 }
 
 //----------------------------------------------------------------------------
 void vesKiwiImageWidgetRepresentation::addSelfToRenderer(
   vesSharedPtr<vesRenderer> renderer)
 {
-  this->Internal->Renderer = renderer;
-  for (size_t i = 0; i < this->Internal->AllReps.size(); ++i)
+  this->Superclass::addSelfToRenderer(renderer);
+  for (size_t i = 0; i < this->Internal->AllReps.size(); ++i) {
     this->Internal->AllReps[i]->addSelfToRenderer(renderer);
+  }
 }
 
 //----------------------------------------------------------------------------
 void vesKiwiImageWidgetRepresentation::removeSelfFromRenderer(
   vesSharedPtr<vesRenderer> renderer)
 {
-  this->Internal->Renderer.reset();
-  for (size_t i = 0; i < this->Internal->AllReps.size(); ++i)
+  this->Superclass::removeSelfFromRenderer(renderer);
+  for (size_t i = 0; i < this->Internal->AllReps.size(); ++i) {
     this->Internal->AllReps[i]->removeSelfFromRenderer(renderer);
+  }
 }
 
 //----------------------------------------------------------------------------

@@ -19,3 +19,35 @@
  ========================================================================*/
 
 #include "vesKiwiDataRepresentation.h"
+#include "vesActor.h"
+#include "vesGMTL.h"
+
+#include <vtkTransform.h>
+
+#include <cassert>
+#include <cmath>
+
+void vesKiwiDataRepresentation::setTransformOnActor(vesSharedPtr<vesActor> actor, vtkTransform* transform)
+{
+  assert(actor);
+  assert(transform);
+
+  vesVector4f angleAxis;
+  vesVector3f translation;
+  vesVector3f scale;
+  transform->GetPosition(translation.data());
+  transform->GetOrientationWXYZ(angleAxis.data());
+  transform->GetScale(scale.data());
+  angleAxis[0] *= M_PI/180.0;
+
+  //reorder so that it is x,y,z,angle
+  double tempAngle = angleAxis[0];
+  angleAxis[0] = angleAxis[1];
+  angleAxis[1] = angleAxis[2];
+  angleAxis[2] = angleAxis[3];
+  angleAxis[3] = tempAngle;
+
+  actor->setTranslation(translation);
+  actor->setRotation(angleAxis);
+  actor->setScale(scale);
+}

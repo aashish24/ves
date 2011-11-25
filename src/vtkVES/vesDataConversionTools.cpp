@@ -80,7 +80,7 @@ vtkDataArray* vesDataConversionTools::FindTextureCoordinatesArray(vtkDataSet* da
 }
 
 //----------------------------------------------------------------------------
-vtkSmartPointer<vtkDiscretizableColorTransferFunction> GetBlackBodyRadiationColorMap(double scalarRange[2])
+vtkSmartPointer<vtkDiscretizableColorTransferFunction> vesDataConversionTools::GetBlackBodyRadiationColorMap(double scalarRange[2])
 {
   //double range[2] = {-500, 6000};
   double length = scalarRange[1] - scalarRange[0];
@@ -216,6 +216,7 @@ vtkDataArray* scalars, vtkScalarsToColors* scalarsToColors)
 void vesDataConversionTools::SetTextureData(vtkUnsignedCharArray* pixels,
   vesSharedPtr<vesTexture> texture, int width, int height)
 {
+  assert(texture);
   assert(pixels);
   assert(pixels->GetNumberOfComponents() == 4);
   assert(pixels->GetNumberOfTuples() == width*height);

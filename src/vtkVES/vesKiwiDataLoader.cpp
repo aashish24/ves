@@ -37,6 +37,7 @@
 #include <vtkPDBReader.h>
 #include <vtkGlyph3D.h>
 #include <vtkAppendPolyData.h>
+#include <vtkMetaImageReader.h>
 
 #include <cassert>
 
@@ -209,6 +210,12 @@ vtkSmartPointer<vtkDataSet> vesKiwiDataLoader::loadDataset(const std::string& fi
   else if (this->hasEnding(filename, "jpg"))
     {
     vtkSmartPointer<vtkJPEGReader> reader = vtkSmartPointer<vtkJPEGReader>::New();
+    reader->SetFileName(filename.c_str());
+    return datasetFromAlgorithm(reader);
+    }
+  else if (this->hasEnding(filename, "mha"))
+    {
+    vtkSmartPointer<vtkMetaImageReader> reader = vtkSmartPointer<vtkMetaImageReader>::New();
     reader->SetFileName(filename.c_str());
     return datasetFromAlgorithm(reader);
     }

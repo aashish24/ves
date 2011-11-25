@@ -34,7 +34,8 @@ class vesKiwiImagePlaneDataRepresentation : public vesKiwiPolyDataRepresentation
 {
 public:
 
-  typedef vesKiwiPolyDataRepresentation Superclass;
+  vesTypeMacro(vesKiwiImagePlaneDataRepresentation);
+
   vesKiwiImagePlaneDataRepresentation();
   ~vesKiwiImagePlaneDataRepresentation();
 
@@ -51,6 +52,8 @@ public:
 
   static vtkSmartPointer<vtkPolyData> polyDataForImagePlane(vtkImageData* image);
   static int imageFlatDimension(vtkImageData* image);
+
+  vesVector2f textureSize() const;
 
 protected:
 

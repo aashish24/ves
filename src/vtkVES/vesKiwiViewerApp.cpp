@@ -23,6 +23,10 @@
 #include "vesKiwiDataRepresentation.h"
 #include "vesKiwiImagePlaneDataRepresentation.h"
 #include "vesKiwiImageWidgetRepresentation.h"
+#include "vesKiwiAnimationRepresentation.h"
+#include "vesKiwiBrainAtlasRepresentation.h"
+#include "vesKiwiText2DRepresentation.h"
+#include "vesKiwiPlaneWidget.h"
 #include "vesKiwiPolyDataRepresentation.h"
 #include "vesDataConversionTools.h"
 
@@ -45,11 +49,10 @@
 #include <vtkNew.h>
 #include <vtkPolyData.h>
 #include <vtkImageData.h>
+#include <vtkCellLocator.h>
 
-// text tests
-#include <vtkTextProperty.h>
-#include <vtkFreeTypeStringToImage.h>
-#include <vtkPNGWriter.h>
+
+#include <vtksys/SystemTools.hxx>
 
 #include <cassert>
 #include <cmath>
@@ -65,9 +68,6 @@ public:
 
   vesInternal()
   {
-    this->TextToImage = vtkSmartPointer<vtkFreeTypeStringToImage>::New();
-    this->TextRepresentation = 0;
-    this->ImageWidget = 0;
   }
 
   ~vesInternal()
@@ -95,6 +95,9 @@ public:
 
   vesSharedPtr<vesShaderProgram> ShaderProgram;
   vesSharedPtr<vesShaderProgram> TextureShader;
+  vesSharedPtr<vesShaderProgram> GouraudTextureShader;
+  vesSharedPtr<vesShaderProgram> ClipShader;
+  vesSharedPtr<vesUniform> ClipUniform;
 
   std::vector<vesKiwiDataRepresentation*> DataRepresentations;
 
@@ -105,11 +108,6 @@ public:
 
   std::string CurrentShadingModel;
   std::vector<vesShaderProgramData> BuiltinShadingModels;
-
-  vtkSmartPointer<vtkFreeTypeStringToImage> TextToImage;
-  vesKiwiImagePlaneDataRepresentation* TextRepresentation;
-
-  vesKiwiImageWidgetRepresentation* ImageWidget;
 };
 
 //----------------------------------------------------------------------------
@@ -142,7 +140,7 @@ bool vesKiwiViewerApp::vesInternal::setShaderProgramOnRepresentations(
 vesKiwiViewerApp::vesKiwiViewerApp()
 {
   this->Internal = new vesInternal();
-  this->setBackgroundColor(63/255.0, 96/255.0, 144/255.0);
+  this->setDefaultBackgroundColor();
 
   this->addBuiltinDataset("Sphere", "current.stl");
   this->addBuiltinDataset("Utah Teapot", "teapot.vtp");
@@ -158,6 +156,10 @@ vesKiwiViewerApp::vesKiwiViewerApp()
   this->addBuiltinDataset("KiwiViewer Logo", "kiwi.png");
   this->addBuiltinDataset("ROS Turtle", "cturtle.vtk");
 
+  // These depend on external data, so are commented out for now.
+  //this->addBuiltinDataset("SPL-PNL Brain Atlas", "model_info.txt");
+  //this->addBuiltinDataset("Can Simulation", "can0000.vtp");
+
   this->initBlinnPhongShader(
     vesBuiltinShaders::vesBlinnPhong_vert(),
     vesBuiltinShaders::vesBlinnPhong_frag());
@@ -167,9 +169,15 @@ vesKiwiViewerApp::vesKiwiViewerApp()
   this->initGouraudShader(
     vesBuiltinShaders::vesShader_vert(),
     vesBuiltinShaders::vesShader_frag());
+  this->initGouraudTextureShader(
+    vesBuiltinShaders::vesGouraudTexture_vert(),
+    vesBuiltinShaders::vesGouraudTexture_frag());
   this->initTextureShader(
     vesBuiltinShaders::vesBackgroundTexture_vert(),
     vesBuiltinShaders::vesBackgroundTexture_frag());
+  this->initClipShader(
+    vesBuiltinShaders::vesClipPlane_vert(),
+    vesBuiltinShaders::vesClipPlane_frag());
 
   this->setShadingModel("Gouraud");
 }
@@ -202,7 +210,7 @@ int vesKiwiViewerApp::numberOfBuiltinDatasets() const
 //----------------------------------------------------------------------------
 int vesKiwiViewerApp::defaultBuiltinDatasetIndex() const
 {
-  return 10;
+  return 6;
 }
 
 //----------------------------------------------------------------------------
@@ -251,50 +259,88 @@ void vesKiwiViewerApp::addBuiltinShadingModel(
 //----------------------------------------------------------------------------
 void vesKiwiViewerApp::willRender()
 {
-  this->updateTextAnnotations();
+  for (size_t i = 0; i < this->Internal->DataRepresentations.size(); ++i) {
+    this->Internal->DataRepresentations[i]->willRender(this->renderer());
+  }
 }
 
 //----------------------------------------------------------------------------
 void vesKiwiViewerApp::handleSingleTouchPanGesture(double deltaX, double deltaY)
 {
-  if (this->Internal->ImageWidget
-      && this->Internal->ImageWidget->handleSingleTouchPanGesture(deltaX, deltaY)) {
-    return;
+  for (size_t i = 0; i < this->Internal->DataRepresentations.size(); ++i) {
+    vesKiwiWidgetRepresentation* rep = dynamic_cast<vesKiwiWidgetRepresentation*>(this->Internal->DataRepresentations[i]);
+    if (rep) {
+      if (rep->handleSingleTouchPanGesture(deltaX, deltaY)) {
+        return;
+      }
+    }
   }
 
   this->Superclass::handleSingleTouchPanGesture(deltaX, deltaY);
 }
 
-
 //----------------------------------------------------------------------------
 void vesKiwiViewerApp::handleDoubleTap()
 {
-  if (this->Internal->ImageWidget) {
-    this->Internal->ImageWidget->handleDoubleTap();
+  for (size_t i = 0; i < this->Internal->DataRepresentations.size(); ++i) {
+    vesKiwiWidgetRepresentation* rep = dynamic_cast<vesKiwiWidgetRepresentation*>(this->Internal->DataRepresentations[i]);
+    if (rep) {
+      if (rep->handleDoubleTap()) {
+        return;
+      }
+    }
   }
 }
 
 //----------------------------------------------------------------------------
 void vesKiwiViewerApp::handleSingleTouchUp()
 {
-  if (this->Internal->ImageWidget) {
-    this->Internal->ImageWidget->handleSingleTouchUp();
+  for (size_t i = 0; i < this->Internal->DataRepresentations.size(); ++i) {
+    vesKiwiWidgetRepresentation* rep = dynamic_cast<vesKiwiWidgetRepresentation*>(this->Internal->DataRepresentations[i]);
+    if (rep) {
+      if (rep->handleSingleTouchUp()) {
+        return;
+      }
+    }
+  }
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiViewerApp::handleSingleTouchTap(int displayX, int displayY)
+{
+  for (size_t i = 0; i < this->Internal->DataRepresentations.size(); ++i) {
+    vesKiwiWidgetRepresentation* rep = dynamic_cast<vesKiwiWidgetRepresentation*>(this->Internal->DataRepresentations[i]);
+    if (rep) {
+      if (rep->handleSingleTouchTap(displayX, displayY)) {
+        return;
+      }
+    }
   }
 }
 
 //----------------------------------------------------------------------------
 void vesKiwiViewerApp::handleSingleTouchDown(int displayX, int displayY)
 {
-  if (this->Internal->ImageWidget) {
-    this->Internal->ImageWidget->handleSingleTouchDown(displayX, displayY);
+  for (size_t i = 0; i < this->Internal->DataRepresentations.size(); ++i) {
+    vesKiwiWidgetRepresentation* rep = dynamic_cast<vesKiwiWidgetRepresentation*>(this->Internal->DataRepresentations[i]);
+    if (rep) {
+      if (rep->handleSingleTouchDown(displayX, displayY)) {
+        return;
+      }
+    }
   }
 }
 
 //----------------------------------------------------------------------------
-bool vesKiwiViewerApp::scrollSliceModeActive() const
+bool vesKiwiViewerApp::widgetInteractionIsActive() const
 {
-  if (this->Internal->ImageWidget) {
-    return this->Internal->ImageWidget->scrollSliceModeActive();
+  for (size_t i = 0; i < this->Internal->DataRepresentations.size(); ++i) {
+    vesKiwiWidgetRepresentation* rep = dynamic_cast<vesKiwiWidgetRepresentation*>(this->Internal->DataRepresentations[i]);
+    if (rep) {
+      if (rep->interactionIsActive()) {
+        return true;
+      }
+    }
   }
   return false;
 }
@@ -417,6 +463,38 @@ bool vesKiwiViewerApp::initTextureShader(const std::string& vertexSource,
 }
 
 //----------------------------------------------------------------------------
+bool vesKiwiViewerApp::initGouraudTextureShader(const std::string& vertexSource, const std::string& fragmentSource)
+{
+  vesShaderProgram::Ptr shaderProgram = this->addShaderProgram(vertexSource, fragmentSource);
+  this->addModelViewMatrixUniform(shaderProgram);
+  this->addProjectionMatrixUniform(shaderProgram);
+  this->addNormalMatrixUniform(shaderProgram);
+  this->addVertexPositionAttribute(shaderProgram);
+  this->addVertexNormalAttribute(shaderProgram);
+  this->addVertexTextureCoordinateAttribute(shaderProgram);
+  this->Internal->GouraudTextureShader = shaderProgram;
+  return true;
+}
+
+//----------------------------------------------------------------------------
+bool vesKiwiViewerApp::initClipShader(const std::string& vertexSource, const std::string& fragmentSource)
+{
+  vesShaderProgram::Ptr shaderProgram = this->addShaderProgram(vertexSource, fragmentSource);
+  this->addModelViewMatrixUniform(shaderProgram);
+  this->addProjectionMatrixUniform(shaderProgram);
+  this->addNormalMatrixUniform(shaderProgram);
+  this->addVertexPositionAttribute(shaderProgram);
+  this->addVertexNormalAttribute(shaderProgram);
+  this->addVertexColorAttribute(shaderProgram);
+  this->addVertexTextureCoordinateAttribute(shaderProgram);
+  this->Internal->ClipShader = shaderProgram;
+
+  this->Internal->ClipUniform = vesUniform::Ptr(new vesUniform("clipPlaneEquation", vesVector4f(1.0f, 0.0f, 0.0f, 0.0f)));
+  this->Internal->ClipShader->addUniform(this->Internal->ClipUniform);
+  return true;
+}
+
+//----------------------------------------------------------------------------
 void vesKiwiViewerApp::removeAllDataRepresentations()
 {
   for (size_t i = 0; i < this->Internal->DataRepresentations.size(); ++i) {
@@ -424,10 +502,6 @@ void vesKiwiViewerApp::removeAllDataRepresentations()
     rep->removeSelfFromRenderer(this->renderer());
     delete rep;
   }
-
-  this->Internal->ImageWidget = 0;
-  this->Internal->TextRepresentation = 0;
-
   this->Internal->DataRepresentations.clear();
 }
 
@@ -449,7 +523,6 @@ void vesKiwiViewerApp::addRepresentationsForDataSet(vtkDataSet* dataSet)
       rep->setImageData(image);
       rep->addSelfToRenderer(this->renderer());
       this->Internal->DataRepresentations.push_back(rep);
-      this->Internal->ImageWidget = rep;
 
     }
     else {
@@ -477,41 +550,23 @@ vesKiwiPolyDataRepresentation* vesKiwiViewerApp::addPolyDataRepresentation(
 }
 
 //----------------------------------------------------------------------------
-vesKiwiImagePlaneDataRepresentation* vesKiwiViewerApp::addTextRepresentation(const std::string& text)
+vesKiwiText2DRepresentation* vesKiwiViewerApp::addTextRepresentation(const std::string& text)
 {
-  vtkNew<vtkTextProperty> textProperty;
-  textProperty->SetFontFamilyToArial();
-  textProperty->SetFontSize(32);
-  textProperty->SetColor(1.0, 0.8, 0.0);
-
-  vtkNew<vtkImageData> imageTexture;
-  this->Internal->TextToImage->RenderString(textProperty.GetPointer(), text, imageTexture.GetPointer());
-
-  // The above call to RenderString() sets the imageTexture origin so some nonzero value, not sure why
-  imageTexture->SetOrigin(0, 0, 0);
-
-
-  vesKiwiImagePlaneDataRepresentation* rep = new vesKiwiImagePlaneDataRepresentation();
+  vesKiwiText2DRepresentation* rep = new vesKiwiText2DRepresentation();
   rep->initializeWithShader(this->Internal->TextureShader);
-  rep->setImageData(imageTexture.GetPointer());
+  rep->setText(text);
   rep->addSelfToRenderer(this->renderer());
   this->Internal->DataRepresentations.push_back(rep);
+  return rep;
+}
 
-  double bounds[6];
-  imageTexture->GetBounds(bounds);
-  //printf("bounds: %f %f %f %f %f %f\n", bounds[0],bounds[1],bounds[2],bounds[3],bounds[4],bounds[5]);
-
-  double screenHeight = this->viewHeight();
-  double xmargin = 5;
-  double ymargin = 5;
-
-  double height = bounds[3] - bounds[2];
-  double x = 0 + xmargin;
-  double y = screenHeight - (height + ymargin);
-
-  rep->setTranslation(vesVector3f(x, y, 0));
-  rep->actor()->setIsOverlayNode(true);
-  rep->actor()->material()->setBinNumber(20);
+//----------------------------------------------------------------------------
+vesKiwiPlaneWidget* vesKiwiViewerApp::addPlaneWidget()
+{
+  vesKiwiPlaneWidget* rep = new vesKiwiPlaneWidget();
+  rep->initializeWithShader(this->shaderProgram(), this->Internal->ClipUniform);
+  rep->addSelfToRenderer(this->renderer());
+  this->Internal->DataRepresentations.push_back(rep);
   return rep;
 }
 
@@ -526,33 +581,73 @@ void vesKiwiViewerApp::setBackgroundTexture(const std::string& filename)
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiViewerApp::updateTextAnnotations()
+void vesKiwiViewerApp::setDefaultBackgroundColor()
 {
-  if (!this->Internal->TextRepresentation) {
-    return;
-  }
+  this->setBackgroundColor(63/255.0, 96/255.0, 144/255.0);
+}
 
-  vesVector3f worldPoint(34.3, 23.7, 0);
-  vesVector3f displayPoint = this->renderer()->computeWorldToDisplay(worldPoint);
-  displayPoint[2] = 0;
-  this->Internal->TextRepresentation->setTranslation(displayPoint);
+//----------------------------------------------------------------------------
+bool vesKiwiViewerApp::loadBrainAtlas(const std::string& filename)
+{
+  vesKiwiBrainAtlasRepresentation* rep = new vesKiwiBrainAtlasRepresentation();
+  rep->initializeWithShader(this->shaderProgram(), this->Internal->TextureShader, this->Internal->ClipShader);
+  rep->loadData(filename);
+  rep->addSelfToRenderer(this->renderer());
+  this->Internal->DataRepresentations.push_back(rep);
+
+  //std::string dataDir = vtksys::SystemTools::GetFilenamePath(filename);
+  //vtkSmartPointer<vtkDataSet> imageData = this->Internal->DataLoader.loadDataset(dataDir + "/brain_atlas_mri.mha");
+  //if (imageData) {
+  //  this->addRepresentationsForDataSet(imageData);
+  //}
+
+  this->addPlaneWidget();
+  this->setBackgroundColor(0.0, 0.0, 0.0);
+  return true;
+}
+
+//----------------------------------------------------------------------------
+bool vesKiwiViewerApp::loadCanSimulation(const std::string& filename)
+{
+  vesKiwiAnimationRepresentation* rep = new vesKiwiAnimationRepresentation();
+  rep->initializeWithShader(this->shaderProgram(), this->Internal->TextureShader, this->Internal->GouraudTextureShader);
+  rep->loadData(filename);
+  rep->addSelfToRenderer(this->renderer());
+  this->Internal->DataRepresentations.push_back(rep);
+  return true;
+}
+
+//----------------------------------------------------------------------------
+bool vesKiwiViewerApp::loadDatasetWithCustomBehavior(const std::string& filename)
+{
+  // These demos are currently disabled because they depend on external data 
+  //if (vtksys::SystemTools::GetFilenameName(filename) == "model_info.txt") {
+  //  return loadBrainAtlas(filename);
+  //}
+  //else if (vtksys::SystemTools::GetFilenameName(filename) == "can0000.vtp") {
+  //  return loadCanSimulation(filename);
+  //}
+
+  return false;
 }
 
 //----------------------------------------------------------------------------
 bool vesKiwiViewerApp::loadDataset(const std::string& filename)
 {
+  this->removeAllDataRepresentations();
+  this->setDefaultBackgroundColor();
+
+  // this is a hook that can be used to load certain datasets using custom logic
+  if (this->loadDatasetWithCustomBehavior(filename)) {
+    return true;
+  }
+
   vtkSmartPointer<vtkDataSet> dataSet = this->Internal->DataLoader.loadDataset(filename);
   if (!dataSet) {
     return false;
   }
 
-  this->removeAllDataRepresentations();
   this->addRepresentationsForDataSet(dataSet);
-
-  if (filename.find("teapot.vtp") != std::string::npos) {
-    this->Internal->TextRepresentation = this->addTextRepresentation("this is a teapot");
-  }
-
   return true;
 }
 

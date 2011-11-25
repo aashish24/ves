@@ -419,11 +419,13 @@ event_loop(Display *dpy, Window win,
         haveLastMotion = true;
         lastMotionX = event.xbutton.x;
         lastMotionY = event.xbutton.y;
+        redraw = 1;
         break;
 
       case ButtonRelease:
         testHelper->app()->handleSingleTouchUp();
         haveLastMotion = false;
+        redraw = 1;
         break;
 
       case MotionNotify:
