@@ -24,6 +24,7 @@
 #include "vesActor.h"
 #include "vesDepth.h"
 #include "vesGeometryData.h"
+#include "vesGLTypes.h"
 #include "vesMapper.h"
 #include "vesMaterial.h"
 #include "vesModelViewUniform.h"
@@ -199,7 +200,7 @@ vesSharedPtr<vesGeometryData> vesBackground::vesInternal::createBackgroundPlane(
   vesPrimitive::Ptr triangles (new vesPrimitive());
   triangles->pushBackIndices(0, 3, 2);
   triangles->pushBackIndices(1, 0, 2);
-  triangles->setPrimitiveType(GL_TRIANGLES);
+  triangles->setPrimitiveType(vesPrimitiveRenderType::Triangles);
   triangles->setIndexCount(3);
 
   backgroundGeometryData->setName("BackgroundData");

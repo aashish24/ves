@@ -19,20 +19,22 @@
  ========================================================================*/
 
 #include "vesDataConversionTools.h"
-#include "vesTexture.h"
 
+// VES includes
 #include "vtkCellArray.h"
+#include "vtkDiscretizableColorTransferFunction.h"
+#include "vesEigen.h"
 #include "vesGeometryData.h"
-#include "vesGMTL.h"
+#include "vesGLTypes.h"
+#include "vtkLookupTable.h"
+#include "vtkNew.h"
 #include "vtkPointData.h"
 #include "vtkPolyData.h"
-#include "vtkNew.h"
+#include "vesTexture.h"
 #include "vtkUnsignedCharArray.h"
-#include "vtkLookupTable.h"
-#include "vtkDiscretizableColorTransferFunction.h"
 
+// C/C++ includes
 #include <cassert>
-
 
 //----------------------------------------------------------------------------
 vtkDataArray* vesDataConversionTools::FindScalarsArray(vtkDataSet* dataSet)
@@ -325,7 +327,7 @@ vesSharedPtr<vesGeometryData> vesDataConversionTools::Convert(vtkPolyData* input
   }
 
   triangles->setIndexCount(3);
-  triangles->setPrimitiveType(GL_TRIANGLES);
+  triangles->setPrimitiveType(vesPrimitiveRenderType::Triangles);
 
   vtkCellArray* strips = input->GetStrips();
   strips->InitTraversal();
@@ -345,7 +347,7 @@ vesSharedPtr<vesGeometryData> vesDataConversionTools::Convert(vtkPolyData* input
   }
 
   triangleStrips->setIndexCount(1);
-  triangleStrips->setPrimitiveType(GL_TRIANGLE_STRIP);
+  triangleStrips->setPrimitiveType(vesPrimitiveRenderType::TriangleStrip);
 
   vtkCellArray* vtklines = input->GetLines();
   vtklines->InitTraversal();
@@ -358,7 +360,7 @@ vesSharedPtr<vesGeometryData> vesDataConversionTools::Convert(vtkPolyData* input
   }
 
   lines->setIndexCount(2);
-  lines->setPrimitiveType(GL_LINES);
+  lines->setPrimitiveType(vesPrimitiveRenderType::Lines);
 
   output->addPrimitive(triangles);
   output->addPrimitive(triangleStrips);
