@@ -15,7 +15,6 @@ set(sources
   vesEigen.cpp
   vesGeometryData.cpp
   vesGroupNode.cpp
-  vesLegacyReader.cpp
   vesMapper.cpp
   vesMaterial.cpp
   vesNode.cpp
@@ -26,7 +25,6 @@ set(sources
   vesTexture.cpp
   vesTransformNode.cpp
   vesShaderProgram.cpp
-  vesSTLReader.cpp
   vesUniform.cpp
   vesViewport.cpp
   vesVisitor.cpp
