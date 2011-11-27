@@ -103,24 +103,24 @@ public:
 
   struct AttributeData
   {
-    // Number of components per group
+    /// Number of components per group
     unsigned int m_numberOfComponents;
 
-    // Type of data type (GL_FLOAT etc)
+    /// Type of data type (GL_FLOAT etc)
     unsigned int m_dataType;
 
-    // Size of data type
+    /// Size of data type
     unsigned int m_dataTypeSize;
 
-    // Specifies whether fixed-point data values should be normalized
-    // (true) or converted directly as fixed-point values (false)
-    // when they are accessed.
+    /// Specifies whether fixed-point data values should be normalized
+    /// (true) or converted directly as fixed-point values (false)
+    /// when they are accessed.
     bool m_normalized;
 
-    // Strides for each attribute.
+    /// Strides for each attribute.
     unsigned m_stride;
 
-    // Offset
+    /// Offset
     unsigned int m_offset;
   };
 
