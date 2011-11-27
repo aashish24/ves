@@ -490,7 +490,6 @@ bool vesUniform::getElement(unsigned int index, vesMatrix3x3f &value) const
   if (index >= this->m_numberElements || !isCompatibleType(Float))
     return false;
 
-  unsigned int j = index * getTypeNumberOfComponents(this->m_type);
   for (unsigned int i = 0; i < 9; ++i)
     value.data()[i] = (&m_floatArray->front())[i];
 
@@ -503,7 +502,6 @@ bool vesUniform::getElement(unsigned int index, vesMatrix4x4f &value) const
   if (index >= this->m_numberElements || !isCompatibleType(FloatMat4))
     return false;
 
-  unsigned int j = index * getTypeNumberOfComponents(this->m_type);
   for (unsigned int i = 0; i < 16; ++i)
     value.data()[i] = (&m_floatArray->front())[i];
 
