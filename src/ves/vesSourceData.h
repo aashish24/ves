@@ -478,7 +478,6 @@ public:
 
   vesSourceDataP3N3C3f() : vesGenericSourceData<vesVertexDataP3N3C3f>()
   {
-    std::cout << "Initializing " << std::endl;
     this->setAttributeDataType(vesVertexAttributeKeys::Position, GL_FLOAT);
     this->setAttributeDataType(vesVertexAttributeKeys::Normal, GL_FLOAT);
     this->setAttributeDataType(vesVertexAttributeKeys::Color, GL_FLOAT);
