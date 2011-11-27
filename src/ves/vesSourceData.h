@@ -22,7 +22,8 @@
 #define VESSOURCEDATA_H
 
 // VES includes
-#include "vesGMTL.h"
+#include "vesEigen.h"
+#include "vesGLTypes.h"
 #include "vesSetGet.h"
 #include "vesVertexAttributeKeys.h"
 
@@ -376,7 +377,7 @@ public:
 
   vesSourceDataP3f() : vesGenericSourceData<vesVertexDataP3f>()
   {
-    this->setAttributeDataType(vesVertexAttributeKeys::Position, GL_FLOAT);
+    this->setAttributeDataType(vesVertexAttributeKeys::Position, vesDataType::Float);
     this->setAttributeOffset(vesVertexAttributeKeys::Position, 0);
     this->setAttributeStride(vesVertexAttributeKeys::Position, 12);
     this->setNumberOfComponents(vesVertexAttributeKeys::Position, 3);
@@ -392,7 +393,7 @@ public:
 
   vesSourceDataN3f() : vesGenericSourceData<vesVertexDataN3f>()
   {
-    this->setAttributeDataType(vesVertexAttributeKeys::Normal, GL_FLOAT);
+    this->setAttributeDataType(vesVertexAttributeKeys::Normal, vesDataType::Float);
     this->setAttributeOffset(vesVertexAttributeKeys::Normal, 0);
     this->setAttributeStride(vesVertexAttributeKeys::Normal, 12);
     this->setNumberOfComponents(vesVertexAttributeKeys::Normal, 3);
@@ -408,7 +409,7 @@ public:
 
   vesSourceDataC3f() : vesGenericSourceData<vesVertexDataC3f>()
   {
-    this->setAttributeDataType(vesVertexAttributeKeys::Color, GL_FLOAT);
+    this->setAttributeDataType(vesVertexAttributeKeys::Color, vesDataType::Float);
     this->setAttributeOffset(vesVertexAttributeKeys::Color, 0);
     this->setAttributeStride(vesVertexAttributeKeys::Color, 12);
     this->setNumberOfComponents(vesVertexAttributeKeys::Color, 3);
@@ -424,7 +425,7 @@ public:
 
   vesSourceDataT2f() : vesGenericSourceData<vesVertexDataT2f>()
   {
-    this->setAttributeDataType(vesVertexAttributeKeys::TextureCoordinate, GL_FLOAT);
+    this->setAttributeDataType(vesVertexAttributeKeys::TextureCoordinate, vesDataType::Float);
     this->setAttributeOffset(vesVertexAttributeKeys::TextureCoordinate, 0);
     this->setAttributeStride(vesVertexAttributeKeys::TextureCoordinate, 8);
     this->setNumberOfComponents(vesVertexAttributeKeys::TextureCoordinate, 2);
@@ -440,7 +441,7 @@ public:
 
   vesSourceDataT3f() : vesGenericSourceData<vesVertexDataT3f>()
   {
-    this->setAttributeDataType(vesVertexAttributeKeys::TextureCoordinate, GL_FLOAT);
+    this->setAttributeDataType(vesVertexAttributeKeys::TextureCoordinate, vesDataType::Float);
     this->setAttributeOffset(vesVertexAttributeKeys::TextureCoordinate, 0);
     this->setAttributeStride(vesVertexAttributeKeys::TextureCoordinate, 12);
     this->setNumberOfComponents(vesVertexAttributeKeys::TextureCoordinate, 3);
@@ -456,8 +457,8 @@ public:
 
   vesSourceDataP3N3f() : vesGenericSourceData<vesVertexDataP3N3f>()
   {
-    this->setAttributeDataType(vesVertexAttributeKeys::Position, GL_FLOAT);
-    this->setAttributeDataType(vesVertexAttributeKeys::Normal, GL_FLOAT);
+    this->setAttributeDataType(vesVertexAttributeKeys::Position, vesDataType::Float);
+    this->setAttributeDataType(vesVertexAttributeKeys::Normal, vesDataType::Float);
     this->setAttributeOffset(vesVertexAttributeKeys::Position, 0);
     this->setAttributeOffset(vesVertexAttributeKeys::Normal, 12);
     this->setAttributeStride(vesVertexAttributeKeys::Position, 24);
@@ -478,9 +479,9 @@ public:
 
   vesSourceDataP3N3C3f() : vesGenericSourceData<vesVertexDataP3N3C3f>()
   {
-    this->setAttributeDataType(vesVertexAttributeKeys::Position, GL_FLOAT);
-    this->setAttributeDataType(vesVertexAttributeKeys::Normal, GL_FLOAT);
-    this->setAttributeDataType(vesVertexAttributeKeys::Color, GL_FLOAT);
+    this->setAttributeDataType(vesVertexAttributeKeys::Position, vesDataType::Float);
+    this->setAttributeDataType(vesVertexAttributeKeys::Normal, vesDataType::Float);
+    this->setAttributeDataType(vesVertexAttributeKeys::Color, vesDataType::Float);
     this->setAttributeOffset(vesVertexAttributeKeys::Position, 0);
     this->setAttributeOffset(vesVertexAttributeKeys::Normal, 12);
     this->setAttributeOffset(vesVertexAttributeKeys::Color, 24);
