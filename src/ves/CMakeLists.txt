@@ -11,7 +11,6 @@ set(sources
   vesDepth.cpp
   vesFBO.cpp
   vesFBORenderTarget.cpp
-  vesFileReader.cpp
   vesEigen.cpp
   vesGeometryData.cpp
   vesGroupNode.cpp

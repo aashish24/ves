@@ -22,8 +22,8 @@
 #define VESRENDERSTAGE_H
 
 // VES includes.
+#include "vesEigen.h"
 #include "vesGL.h"
-#include "vesGMTL.h"
 #include "vesMapper.h"
 #include "vesMaterial.h"
 #include "vesRenderLeaf.h"

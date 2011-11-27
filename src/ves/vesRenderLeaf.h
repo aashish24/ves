@@ -22,7 +22,7 @@
 #define VESRENDERLEAF_H
 
 // VES includes
-#include "vesGMTL.h"
+#include "vesEigen.h"
 #include "vesRenderState.h"
 #include "vesSetGet.h"
 

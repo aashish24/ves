@@ -22,8 +22,8 @@
 #define VESRENDERER_H
 
 // VES includes
+#include "vesEigen.h"
 #include "vesGL.h"
-#include "vesGMTL.h"
 #include "vesSetGet.h"
 
 // C++ includes

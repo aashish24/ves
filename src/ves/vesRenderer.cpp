@@ -22,8 +22,6 @@
 #include "vesBackground.h"
 #include "vesCamera.h"
 #include "vesCullVisitor.h"
-#include "vesFileReader.h"
-#include "vesGMTL.h"
 #include "vesGroupNode.h"
 #include "vesRenderer.h"
 #include "vesRenderStage.h"

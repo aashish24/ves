@@ -24,7 +24,6 @@
 #include "vesBoundingObject.h"
 
 // VES includes
-#include "vesGMTL.h"
 #include "vesSetGet.h"
 
 // C/C++ includes

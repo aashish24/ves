@@ -25,7 +25,6 @@
 #include "vesMaterial.h"
 #include "vesVisitor.h"
 
-
 vesActor::vesActor() : vesTransformNode(),
   m_sensor  (false)
 {

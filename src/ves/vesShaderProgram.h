@@ -22,7 +22,7 @@
 #define VESSHADER_PROGRAM_H
 
 // VES includes
-#include "vesGMTL.h"
+#include "vesEigen.h"
 #include "vesMaterial.h"
 #include "vesSetGet.h"
 

@@ -22,7 +22,6 @@
 #define VESVISITOR_H
 
 // VES includes.
-#include "vesGMTL.h"
 #include "vesNode.h"
 #include "vesSetGet.h"
 

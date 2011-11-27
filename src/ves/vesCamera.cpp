@@ -22,7 +22,6 @@
 
 // VES includes
 #include "vesStateAttributeBits.h"
-#include "vesGMTL.h"
 #include "vesRenderStage.h"
 #include "vesRenderState.h"
 #include "vesViewport.h"
