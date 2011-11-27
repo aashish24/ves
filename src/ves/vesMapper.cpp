@@ -202,13 +202,17 @@ void vesMapper::render(const vesRenderState &renderState)
   {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_internal->m_buffers[bufferIndex++]);
 
-
     if (this->m_geometryData->primitive(i)->primitiveType() == GL_TRIANGLES) {
       // Draw triangles
       this->drawTriangles(renderState, this->m_geometryData->primitive(i));
     }
     else {
       // Draw rest of the primitives
+
+      // Send the primitive type information out
+      renderState.m_material->bindRenderData(
+        renderState, vesRenderData(this->m_geometryData->primitive(i)->primitiveType()));
+
       glDrawElements(this->m_geometryData->primitive(i)->primitiveType(),
                      this->m_geometryData->primitive(i)->numberOfIndices(),
                      GL_UNSIGNED_SHORT,
