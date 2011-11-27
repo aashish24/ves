@@ -69,7 +69,7 @@ public:
   {
 
     vesNotUsed(program);
-    if (!renderState.m_mapper->geometryData()->sourceData(
+    if (renderState.m_mapper->geometryData()->sourceData(
       vesVertexAttributeKeys::Color)) {
       this->set(true);
     } else {
