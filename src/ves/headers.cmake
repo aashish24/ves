@@ -23,6 +23,7 @@ set(headers
   vesIntegerUniform.h
   vesMapper.h
   vesMaterial.h
+  vesMath.h
   vesModelViewUniform.h
   vesMultitouchCamera.h
   vesMultitouchSensorNode.h

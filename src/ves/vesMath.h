@@ -18,35 +18,9 @@
   limitations under the License.
  ========================================================================*/
 
-#ifndef VESMODELVIEWUNIFORM_H
-#define VESMODELVIEWUNIFORM_H
+#ifndef VESMATH_H
+#define VESMATH_H
 
-#include "vesUniform.h"
+#include "vesEigen.h"
 
-// VES includes
-#include "vesMath.h"
-#include "vesRenderStage.h"
-#include "vesSetGet.h"
-
-// C++ includes
-#include <string>
-
-class vesModelViewUniform : public vesUniform
-{
-public:
-  vesTypeMacro(vesModelViewUniform);
-
-  vesModelViewUniform(const std::string &name="modelViewMatrix") :
-    vesUniform(name, vesMatrix4x4f(vesMatrix4x4f::Identity()))
-  {
-  }
-
-  virtual void update(const vesRenderState &renderState, const vesShaderProgram &program)
-  {
-    vesNotUsed(program);
-    this->set(*renderState.m_modelViewMatrix);
-  }
-};
-
-
-#endif // VESMODELVIEWUNIFORM_H
+#endif // VESMATH_H

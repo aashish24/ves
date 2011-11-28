@@ -23,10 +23,10 @@
 // VES includes
 #include "vtkCellArray.h"
 #include "vtkDiscretizableColorTransferFunction.h"
-#include "vesEigen.h"
 #include "vesGeometryData.h"
 #include "vesGLTypes.h"
 #include "vtkLookupTable.h"
+#include "vesMath.h"
 #include "vtkNew.h"
 #include "vtkPointData.h"
 #include "vtkPolyData.h"

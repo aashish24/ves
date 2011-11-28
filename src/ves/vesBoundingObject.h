@@ -27,7 +27,7 @@
 #define __vesBoundingObject_h
 
 // VES includes
-#include "vesEigen.h"
+#include "vesMath.h"
 #include "vesSetGet.h"
 
 class vesBoundingObject

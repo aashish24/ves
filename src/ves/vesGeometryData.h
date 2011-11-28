@@ -22,8 +22,8 @@
 #define VESGEOMETRYDATA_H
 
 // VES includes
-#include "vesEigen.h"
 #include "vesGL.h"
+#include "vesMath.h"
 #include "vesPrimitive.h"
 #include "vesSetGet.h"
 #include "vesSharedPtr.h"

@@ -18,7 +18,7 @@
   limitations under the License.
  ========================================================================*/
 
-#include <ves/vesGMTL.h>
+#include <ves/vesMath.h>
 
 #include <iostream>
 #include <cmath>

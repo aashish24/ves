@@ -25,8 +25,8 @@
 #define VESUNIFORM_H
 
 // VES includes
-#include "vesEigen.h"
 #include "vesGL.h"
+#include "vesMath.h"
 #include "vesSetGet.h"
 
 // C++ includes

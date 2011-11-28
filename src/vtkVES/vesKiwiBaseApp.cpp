@@ -18,19 +18,18 @@
   limitations under the License.
  ========================================================================*/
 
-#include "vesKiwiBaseApp.h"
-#include "vesCamera.h"
-#include "vesGMTL.h"
-#include "vesRenderer.h"
-#include "vesSetGet.h"
-#include "vesUniform.h"
-#include "vesVertexAttribute.h"
-#include "vesShader.h"
-#include "vesShaderProgram.h"
-#include "vesModelViewUniform.h"
-#include "vesNormalMatrixUniform.h"
-#include "vesProjectionUniform.h"
-#include "vesVertexAttributeKeys.h"
+#include <vesKiwiBaseApp.h>
+#include <vesCamera.h>
+#include <vesRenderer.h>
+#include <vesSetGet.h>
+#include <vesUniform.h>
+#include <vesVertexAttribute.h>
+#include <vesShader.h>
+#include <vesShaderProgram.h>
+#include <vesModelViewUniform.h>
+#include <vesNormalMatrixUniform.h>
+#include <vesProjectionUniform.h>
+#include <vesVertexAttributeKeys.h>
 
 #include <cassert>
 #include <cmath>

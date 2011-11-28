@@ -22,8 +22,8 @@
 #define VESSOURCEDATA_H
 
 // VES includes
-#include "vesEigen.h"
 #include "vesGLTypes.h"
+#include "vesMath.h"
 #include "vesSetGet.h"
 #include "vesVertexAttributeKeys.h"
 

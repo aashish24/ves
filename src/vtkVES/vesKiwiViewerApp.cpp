@@ -28,7 +28,7 @@
 
 #include "vesCamera.h"
 #include "vesColorUniform.h"
-#include "vesGMTL.h"
+#include "vesMath.h"
 #include "vesModelViewUniform.h"
 #include "vesNormalMatrixUniform.h"
 #include "vesProjectionUniform.h"
