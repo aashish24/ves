@@ -43,7 +43,7 @@ public:
   vesMapper();
   virtual ~vesMapper();
 
-   virtual void computeBounds();
+  virtual void computeBounds();
 
   bool setGeometryData(vesSharedPtr<vesGeometryData> geometryData);
   vesSharedPtr<vesGeometryData> geometryData();
