@@ -22,7 +22,7 @@
 #define VESIMAGE_H
 
 // VES includes
-#include "vesColorDataType.h"
+#include "vesGLTypes.h"
 #include "vesSetGet.h"
 
 struct vesImage

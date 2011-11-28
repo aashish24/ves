@@ -26,7 +26,7 @@
 // VES includes
 #include <vesSharedPtr.h>
 
-class vesTriangleData;
+class vesGeometryData;
 class vesActor;
 class vesMapper;
 class vesRenderer;
@@ -45,7 +45,7 @@ public:
   void initializeWithShader(vesSharedPtr<vesShaderProgram> shaderProgram);
 
   void setPolyData(vtkPolyData* polyData);
-  vesSharedPtr<vesTriangleData> triangleData() const;
+  vesSharedPtr<vesGeometryData> geometryData() const;
 
   virtual void addSelfToRenderer(vesSharedPtr<vesRenderer> renderer);
   virtual void removeSelfFromRenderer(vesSharedPtr<vesRenderer>);

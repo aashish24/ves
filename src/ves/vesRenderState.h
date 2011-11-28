@@ -22,8 +22,8 @@
 #define VESRENDERSTATE_H
 
 // VES includes
-#include "vesGMTL.h"
 #include "vesMaterial.h"
+#include "vesMath.h"
 #include "vesSetGet.h"
 
 // Forward declarations

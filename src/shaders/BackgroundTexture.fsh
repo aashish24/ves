@@ -4,5 +4,5 @@ uniform highp sampler2D image;
 
 void main()
 {
-    gl_FragColor = texture2D(image, textureCoordinate);
+  gl_FragColor = texture2D(image, textureCoordinate);
 }

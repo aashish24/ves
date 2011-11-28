@@ -24,7 +24,7 @@
 #include "vesUniform.h"
 
 // VES includes
-#include "vesGMTL.h"
+#include "vesMath.h"
 #include "vesRenderStage.h"
 #include "vesSetGet.h"
 

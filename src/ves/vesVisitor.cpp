@@ -22,7 +22,6 @@
 
 #include "vesActor.h"
 #include "vesCamera.h"
-#include "vesGMTL.h"
 #include "vesGroupNode.h"
 #include "vesMapper.h"
 #include "vesNode.h"

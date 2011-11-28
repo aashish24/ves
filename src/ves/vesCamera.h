@@ -24,7 +24,6 @@
 #include "vesTransformNode.h"
 
 // VES includes
-#include "vesGMTL.h"
 #include "vesRenderTarget.h"
 #include "vesSetGet.h"
 

@@ -21,7 +21,7 @@
 #ifndef __vesKiwiBaseApp_h
 #define __vesKiwiBaseApp_h
 
-#include <vesGMTL.h>
+#include <vesMath.h>
 #include <vesSharedPtr.h>
 
 // C/C++

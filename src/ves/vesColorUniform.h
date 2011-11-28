@@ -4,7 +4,6 @@
 #include "vesUniform.h"
 
 // VES includes
-#include "vesGMTL.h"
 #include "vesRenderState.h"
 #include "vesSetGet.h"
 

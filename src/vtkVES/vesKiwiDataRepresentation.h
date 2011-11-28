@@ -21,9 +21,8 @@
 #ifndef __vesKiwiDataRepresentation_h
 #define __vesKiwiDataRepresentation_h
 
-#include "vesGMTL.h"
-
 // VES includes
+#include <vesMath.h>
 #include <vesSharedPtr.h>
 
 class vesRenderer;

@@ -24,12 +24,15 @@
 #include "vesBoundingObject.h"
 
 // VES includes
-#include "vesGMTL.h" // Needed for vesMatrix4x4f return.
 #include "vesSetGet.h"
 
+// C/C++ includes
+#include <vector>
+
 // Forward declarations
+class vesGeometryData;
+class vesPrimitive;
 class vesVisitor;
-class vesTriangleData;
 class vesRenderState;
 
 class vesMapper : public vesBoundingObject
@@ -42,9 +45,9 @@ public:
 
   virtual void computeBounds();
 
-  void setData(vesSharedPtr<vesTriangleData> data);
-  vesSharedPtr<vesTriangleData> data() { return this->m_data; }
-  const vesSharedPtr<vesTriangleData> data() const { return this->m_data; }
+  bool setGeometryData(vesSharedPtr<vesGeometryData> geometryData);
+  vesSharedPtr<vesGeometryData> geometryData();
+  const vesSharedPtr<vesGeometryData> geometryData() const;
 
   void setColor(float r, float g, float b, float a);
   float* color();
@@ -63,11 +66,14 @@ private:
   vesMatrix4x4f m_normalizedMatrix;
 
 protected:
+  void drawTriangles(const vesRenderState &renderState,
+                     vesSharedPtr<vesPrimitive> triangles);
+
   bool m_initialized;
 
-  const int m_maximumTrianglesPerDraw;
+  const int m_maximumTriangleIndicesPerDraw;
 
-  vesSharedPtr<vesTriangleData> m_data;
+  vesSharedPtr<vesGeometryData> m_geometryData;
 
   class vesInternal;
   vesInternal *m_internal;

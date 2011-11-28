@@ -28,7 +28,7 @@
 
 #include "vesCamera.h"
 #include "vesColorUniform.h"
-#include "vesGMTL.h"
+#include "vesMath.h"
 #include "vesModelViewUniform.h"
 #include "vesNormalMatrixUniform.h"
 #include "vesProjectionUniform.h"
@@ -37,7 +37,6 @@
 #include "vesShader.h"
 #include "vesShaderProgram.h"
 #include "vesTexture.h"
-#include "vesTriangleData.h"
 #include "vesUniform.h"
 #include "vesVertexAttribute.h"
 #include "vesVertexAttributeKeys.h"

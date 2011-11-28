@@ -23,9 +23,9 @@
 
 // VES includes.
 #include "vesGL.h"
-#include "vesGMTL.h"
 #include "vesMapper.h"
 #include "vesMaterial.h"
+#include "vesMath.h"
 #include "vesRenderLeaf.h"
 #include "vesSetGet.h"
 #include "vesStateAttributeBits.h"

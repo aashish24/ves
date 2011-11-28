@@ -24,7 +24,7 @@
 #include "vesMaterial.h"
 
 // VES includes.
-#include "vesColorDataType.h"
+#include "vesGLTypes.h"
 #include "vesImage.h"
 #include "vesSetGet.h"
 

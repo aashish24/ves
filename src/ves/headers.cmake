@@ -8,23 +8,22 @@ set(headers
   vesByteSwap.h
   vesCamera.h
   vesCameraSensor.h
-  vesColorDataType.h
   vesColorUniform.h
   vesCullVisitor.h
   vesDepth.h
+  vesEigen.h
   vesEngineUniform.h
   vesFBO.h
   vesFBORenderTarget.h
-  vesFileReader.h
+  vesGeometryData.h
   vesGL.h
   vesGLTypes.h
-  vesGMTL.h
   vesGroupNode.h
   vesImage.h
   vesIntegerUniform.h
-  vesLegacyReader.h
   vesMapper.h
   vesMaterial.h
+  vesMath.h
   vesModelViewUniform.h
   vesMultitouchCamera.h
   vesMultitouchSensorNode.h
@@ -45,10 +44,9 @@ set(headers
   vesShaderProgram.h
   vesSharedPtr.h
   vesStateAttributeBits.h
-  vesSTLReader.h
+  vesSourceData.h
   vesTexture.h
   vesTransformNode.h
-  vesTriangleData.h
   vesUniform.h
   vesVertexAttribute.h
   vesVertexAttributeKeys.h

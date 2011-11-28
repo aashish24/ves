@@ -17,14 +17,10 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
-#include "vesFileReader.h"
 
-vesFileReader::vesFileReader(std::string fileName)
-{
-  this->mFileName = fileName;
-  this->mHasError = false;
-}
+#ifndef VESMATH_H
+#define VESMATH_H
 
-vesFileReader::~vesFileReader()
-{
-}
+#include "vesEigen.h"
+
+#endif // VESMATH_H

@@ -22,8 +22,8 @@
 #define VESRENDERLEAF_H
 
 // VES includes
-#include "vesGMTL.h"
 #include "vesRenderState.h"
+#include "vesMath.h"
 #include "vesSetGet.h"
 
 // Forward declarations

@@ -26,7 +26,7 @@ class vtkUnsignedCharArray;
 class vtkDataArray;
 class vtkScalarsToColors;
 
-class vesTriangleData;
+class vesGeometryData;
 class vesTexture;
 
 #include <vesSharedPtr.h>
@@ -36,8 +36,8 @@ class vesTexture;
 class vesDataConversionTools
 {
 public:
-  static vesSharedPtr<vesTriangleData> Convert(vtkPolyData* input);
-  static void Convert(vtkPolyData* input, vesSharedPtr<vesTriangleData> output);
+  static vesSharedPtr<vesGeometryData> Convert(vtkPolyData* input);
+  static void Convert(vtkPolyData* input, vesSharedPtr<vesGeometryData> output);
 
   // This function is designed to be as fast as possible at the expense of
   // generality.  It only converts triangle data.  It takes about 0.2 of the time
@@ -46,7 +46,7 @@ public:
   // Note: many of the optimizations here could be added to the Convert function
   //       this would be wortwhile future work.
   static void ConvertTriangles(vtkPolyData* input,
-    vesSharedPtr<vesTriangleData> output);
+    vesSharedPtr<vesGeometryData> output);
 
 
   static vtkUnsignedCharArray* FindRGBColorsArray(vtkDataSet* dataSet);
@@ -57,11 +57,11 @@ public:
   static vtkSmartPointer<vtkLookupTable> GetRedToBlueLookupTable(double scalarRange[2]);
   static vtkSmartPointer<vtkLookupTable> GetGrayscaleLookupTable(double scalarRange[2]);
   static void SetVertexColors(vtkUnsignedCharArray* colors,
-    vesSharedPtr<vesTriangleData> triangleData);
+    vesSharedPtr<vesGeometryData> triangleData);
   static void SetVertexColors(vtkDataArray* scalars, vtkScalarsToColors* scalarsToColors,
-    vesSharedPtr<vesTriangleData> triangleData);
+    vesSharedPtr<vesGeometryData> triangleData);
   static void SetTextureCoordinates(
-    vtkDataArray* tcoords, vesSharedPtr<vesTriangleData> triangleData);
+    vtkDataArray* tcoords, vesSharedPtr<vesGeometryData> triangleData);
 
   static vtkSmartPointer<vtkUnsignedCharArray> MapScalars(vtkDataArray* scalars, vtkScalarsToColors* scalarsToColors);
   static void SetTextureData(vtkUnsignedCharArray* pixels,

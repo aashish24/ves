@@ -22,11 +22,11 @@
 
 // VES includes
 #include "vesMaterial.h"
+#include "vesGeometryData.h"
 #include "vesGLTypes.h"
 #include "vesRenderData.h"
 #include "vesRenderStage.h"
 #include "vesShaderProgram.h"
-#include "vesTriangleData.h"
 #include "vesVertexAttributeKeys.h"
 
 #include "vesGL.h"
@@ -78,8 +78,8 @@ public:
 
 vesMapper::vesMapper() : vesBoundingObject(),
   m_initialized(false),
-  m_maximumTrianglesPerDraw
-               (65536 / 3),
+  m_maximumTriangleIndicesPerDraw
+               (65535),
   m_internal   (0x0)
 {
   this->m_internal = new vesInternal();
@@ -102,23 +102,13 @@ vesMapper::~vesMapper()
 
 void vesMapper::computeBounds()
 {
-  vesVector3f min = this->m_data->GetMin();
-  vesVector3f max = this->m_data->GetMax();
+  vesVector3f min = this->m_geometryData->boundsMin();
+  vesVector3f max = this->m_geometryData->boundsMax();
 
   this->setBounds(min, max);
 
   this->setBoundsDirty(false);
 }
-
-
-void vesMapper::setData(vesSharedPtr<vesTriangleData> data)
-{
-  if (data) {
-    this->m_data = data;
-    this->m_initialized = false;
-  }
-}
-
 
 void vesMapper::normalize()
 {
@@ -130,6 +120,36 @@ void vesMapper::normalize()
 
   this->setBoundsCenter(transformPoint3f(this->m_normalizedMatrix, this->boundsCenter()));
   this->setBoundsSize(transformPoint3f(this->m_normalizedMatrix, this->boundsSize()));
+}
+
+
+bool vesMapper::setGeometryData(vesSharedPtr<vesGeometryData> geometryData)
+{
+  bool success = true;
+
+  if (geometryData && this->m_geometryData != geometryData)
+  {
+    this->m_geometryData = geometryData;
+    this->m_initialized = false;
+  }
+  else
+  {
+    success = false;
+  }
+
+  return success;
+}
+
+
+vesSharedPtr<vesGeometryData> vesMapper::geometryData()
+{
+  return this->m_geometryData;
+}
+
+
+const vesSharedPtr<vesGeometryData> vesMapper::geometryData() const
+{
+  return this->m_geometryData;
 }
 
 
@@ -177,32 +197,28 @@ void vesMapper::render(const vesRenderState &renderState)
     ++bufferIndex;
   }
 
-  const int numberOfTriangles = this->m_data->GetTriangles().size();
-  if (numberOfTriangles > 0) {
-    int drawnTriangles = 0;
+  unsigned int numberOfPrimitiveTypes = this->m_geometryData->numberOfPrimitiveTypes();
+  for(unsigned int i = 0; i < numberOfPrimitiveTypes; ++i)
+  {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_internal->m_buffers[bufferIndex++]);
-    renderState.m_material->bindRenderData(
-      renderState, vesRenderData(vesGLTypes::Triangles));
-    while (drawnTriangles < numberOfTriangles) {
-      int numberOfTrianglesToDraw = numberOfTriangles - drawnTriangles;
-      if (numberOfTrianglesToDraw > this->m_maximumTrianglesPerDraw) {
-        numberOfTrianglesToDraw = this->m_maximumTrianglesPerDraw;
-      }
-      glDrawElements(GL_TRIANGLES, numberOfTrianglesToDraw * 3,
+
+    if (this->m_geometryData->primitive(i)->primitiveType() == GL_TRIANGLES) {
+      // Draw triangles
+      this->drawTriangles(renderState, this->m_geometryData->primitive(i));
+    }
+    else {
+      // Draw rest of the primitives
+
+      // Send the primitive type information out
+      renderState.m_material->bindRenderData(
+        renderState, vesRenderData(this->m_geometryData->primitive(i)->primitiveType()));
+
+      glDrawElements(this->m_geometryData->primitive(i)->primitiveType(),
+                     this->m_geometryData->primitive(i)->numberOfIndices(),
                      GL_UNSIGNED_SHORT,
-                     (void*)(drawnTriangles*sizeof(vesVector3us)));
-      drawnTriangles += numberOfTrianglesToDraw;
+                     (void*)0);
     }
   }
-
-  if (!this->m_data->GetLines().empty()) {
-    renderState.m_material->bindRenderData(
-      renderState, vesRenderData(vesGLTypes::Lines));
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_internal->m_buffers[bufferIndex++]);
-    glDrawElements(GL_LINES, this->m_data->GetLines().size() * 2,
-                   GL_UNSIGNED_SHORT, (void*)0);
-    }
-
 
   // Unbind.
   bufferIndex = 0;
@@ -240,70 +256,46 @@ void vesMapper::setupDrawObjects(const vesRenderState &renderState)
   this->m_initialized = true;
 }
 
+struct vtkVertex3f
+{
+  vesVector3f point;
+  vesVector3f normal;
+  vesVector3f color;
+};
 
 void vesMapper::createVertexBufferObjects()
 {
-  const int numberOfFloats = 6;
-  size_t sizeOfData =
-    this->m_data->GetPoints().size() * numberOfFloats * sizeof(float);
-
   unsigned int bufferId;
 
-  if (!this->m_data->GetPoints().empty()) {
+  unsigned int numberOfSources = this->m_geometryData->numberOfSources();
+  for(unsigned int i = 0; i < numberOfSources; ++i)
+  {
     glGenBuffers(1, &bufferId);
     this->m_internal->m_buffers.push_back(bufferId);
     glBindBuffer(GL_ARRAY_BUFFER, this->m_internal->m_buffers.back());
-    glBufferData(GL_ARRAY_BUFFER, sizeOfData,
-                 &this->m_data->GetPoints()[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, this->m_geometryData->source(i)->sizeInBytes(),
+      this->m_geometryData->source(i)->data(), GL_STATIC_DRAW);
 
-    this->m_internal->m_bufferVertexAttributeMap[
-        this->m_internal->m_buffers.back()].push_back(vesVertexAttributeKeys::Position);
-
-    if (this->m_data->GetHasNormals()) {
+    std::vector<int> keys = this->m_geometryData->source(i)->keys();
+    for(size_t j = 0; j < keys.size(); ++j) {
       this->m_internal->m_bufferVertexAttributeMap[
-        this->m_internal->m_buffers.back()].push_back(vesVertexAttributeKeys::Normal);
-      }
+      this->m_internal->m_buffers.back()].push_back(keys[j]);
     }
+  }
 
-  if (!this->m_data->GetVertexColors().empty()) {
-    glGenBuffers(1, &bufferId);
-    this->m_internal->m_buffers.push_back(bufferId);
-    glBindBuffer(GL_ARRAY_BUFFER, this->m_internal->m_buffers.back());
-    glBufferData(GL_ARRAY_BUFFER, this->m_data->GetVertexColors().size() * sizeof(float) * 3,
-                 &this->m_data->GetVertexColors()[0], GL_STATIC_DRAW);
-
-    this->m_internal->m_bufferVertexAttributeMap[
-      this->m_internal->m_buffers.back()].push_back(vesVertexAttributeKeys::Color);
-    }
-
-  if (!this->m_data->GetTextureCoordinates().empty()) {
-    glGenBuffers(1, &bufferId);
-    this->m_internal->m_buffers.push_back(bufferId);
-    glBindBuffer(GL_ARRAY_BUFFER, this->m_internal->m_buffers.back());
-    glBufferData(GL_ARRAY_BUFFER, this->m_data->GetTextureCoordinates().size() * sizeof(float) * 2,
-                 &this->m_data->GetTextureCoordinates()[0], GL_STATIC_DRAW);
-
-    this->m_internal->m_bufferVertexAttributeMap[
-      this->m_internal->m_buffers.back()].push_back(vesVertexAttributeKeys::TextureCoordinate);
-    }
-
-  if (!this->m_data->GetTriangles().empty()) {
+  size_t numberOfPrimitiveTypes = this->m_geometryData->numberOfPrimitiveTypes();
+  for(size_t i = 0; i < numberOfPrimitiveTypes; ++i)
+  {
     glGenBuffers(1, &bufferId);
     this->m_internal->m_buffers.push_back(bufferId);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_internal->m_buffers.back());
     glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                 this->m_data->GetTriangles().size() *sizeof(unsigned short) * 3,
-                 &this->m_data->GetTriangles()[0], GL_STATIC_DRAW);
-    }
+      this->m_geometryData->primitive(i)->sizeInBytes(),
+      this->m_geometryData->primitive(i)->data(),
+      GL_STATIC_DRAW);
+  }
 
-  if (!this->m_data->GetLines().empty()) {
-    glGenBuffers(1, &bufferId);
-    this->m_internal->m_buffers.push_back(bufferId);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_internal->m_buffers.back());
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-                 this->m_data->GetLines().size() *sizeof(unsigned short) * 2,
-                 &this->m_data->GetLines()[0], GL_STATIC_DRAW);
-    }
+  this->m_initialized = true;
 }
 
 
@@ -312,5 +304,40 @@ void vesMapper::deleteVertexBufferObjects()
   if (!this->m_internal->m_buffers.empty()) {
     glDeleteBuffers(this->m_internal->m_buffers.size(),
                     &this->m_internal->m_buffers.front());
+  }
+}
+
+
+void vesMapper::drawTriangles(const vesRenderState &renderState,
+                              vesSharedPtr<vesPrimitive> triangles)
+{
+  const unsigned int numberOfIndices
+    = triangles->numberOfIndices();
+
+  unsigned int drawnIndices = 0;
+
+  while (drawnIndices < numberOfIndices) {
+    int numberOfIndicesToDraw = numberOfIndices - drawnIndices;
+
+    if (numberOfIndicesToDraw > this->m_maximumTriangleIndicesPerDraw) {
+      numberOfIndicesToDraw = this->m_maximumTriangleIndicesPerDraw;
+    }
+
+    unsigned int offset
+      = triangles->sizeOfDataType()
+        * drawnIndices;
+
+    // Send the primitive type information out
+    renderState.m_material->bindRenderData(
+      renderState, vesRenderData(triangles->primitiveType()));
+
+    // Now draw the elements
+    glDrawElements(triangles->primitiveType(),
+                   numberOfIndicesToDraw,
+                   GL_UNSIGNED_SHORT,
+                   (void*)offset);
+
+
+    drawnIndices += numberOfIndicesToDraw;
   }
 }

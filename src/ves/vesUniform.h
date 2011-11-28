@@ -26,7 +26,7 @@
 
 // VES includes
 #include "vesGL.h"
-#include "vesGMTL.h"
+#include "vesMath.h"
 #include "vesSetGet.h"
 
 // C++ includes

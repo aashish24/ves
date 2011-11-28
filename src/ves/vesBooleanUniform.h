@@ -24,10 +24,10 @@
 #include "vesUniform.h"
 
 // VES includes
+#include "vesGeometryData.h"
 #include "vesMapper.h"
 #include "vesRenderState.h"
 #include "vesSetGet.h"
-#include "vesTriangleData.h"
 
 // C++ includes
 #include <string>
@@ -67,8 +67,10 @@ public:
   virtual void update(const vesRenderState &renderState,
                       const vesShaderProgram &program)
   {
+
     vesNotUsed(program);
-    if (!renderState.m_mapper->data()->GetVertexColors().empty()) {
+    if (renderState.m_mapper->geometryData()->sourceData(
+      vesVertexAttributeKeys::Color)) {
       this->set(true);
     } else {
       this->set(false);

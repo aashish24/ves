@@ -22,8 +22,8 @@
 #define VESSHADER_PROGRAM_H
 
 // VES includes
-#include "vesGMTL.h"
 #include "vesMaterial.h"
+#include "vesMath.h"
 #include "vesSetGet.h"
 
 // C++ includes
