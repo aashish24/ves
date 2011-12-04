@@ -48,6 +48,9 @@ public:
   static void ConvertTriangles(vtkPolyData* input,
     vesSharedPtr<vesGeometryData> output);
 
+  /// Convert point and scalar data to VES format, it sacrifices generality for
+  /// speed and conversion of specific types useful for point clouds.
+  static vesSharedPtr<vesGeometryData> ConvertPoints(vtkPolyData* input);
 
   static vtkUnsignedCharArray* FindRGBColorsArray(vtkDataSet* dataSet);
   static vtkDataArray* FindScalarsArray(vtkDataSet* dataSet);

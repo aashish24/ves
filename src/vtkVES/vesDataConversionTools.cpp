@@ -290,6 +290,37 @@ void vesDataConversionTools::ConvertTriangles(
   output->addSource(sourceData);
 }
 
+vesSharedPtr<vesGeometryData> vesDataConversionTools::ConvertPoints(vtkPolyData* input)
+{
+  vesSharedPtr<vesGeometryData> output(new vesGeometryData());
+  vesSourceDataP3f::Ptr sourceData(new vesSourceDataP3f());
+
+  vesVertexDataP3f vertexData;
+  for (int i = 0; i < input->GetNumberOfPoints(); ++i){
+    vertexData.m_position[0] = input->GetPoint(i)[0];
+    vertexData.m_position[1] = input->GetPoint(i)[1];
+    vertexData.m_position[2] = input->GetPoint(i)[2];
+    sourceData->pushBack(vertexData);
+  }
+
+  output->addSource(sourceData);
+  output->setName("PolyData");
+
+  // Check for the scalars array too
+  vesSourceDataf::Ptr scalarData(new vesSourceDataf());
+  vtkDataArray *scalars = input->GetPointData()->GetScalars();
+  if (scalars && scalars->GetNumberOfComponents() == 1) {
+    vesVertexDataf scalar;
+    for (int i = 0; i < scalars->GetNumberOfTuples(); ++i) {
+      scalar.m_scalar = scalars->GetTuple1(i);
+      scalarData->arrayReference().push_back(scalar);
+    }
+    output->addSource(scalarData);
+  }
+
+  return output;
+}
+
 vesSharedPtr<vesGeometryData> vesDataConversionTools::Convert(vtkPolyData* input)
 {
   vesPrimitive::Ptr triangles(new vesPrimitive());
