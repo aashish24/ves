@@ -94,6 +94,11 @@ struct vesVertexDataP3N3T3C3S3f
   vesVector3f m_scalar;
 };
 
+struct vesVertexDataf
+{
+  float m_scalar;
+};
+
 /// Base class for source data
 class vesSourceData
 {
@@ -383,6 +388,22 @@ public:
     this->setNumberOfComponents(vesVertexAttributeKeys::Position, 3);
     this->setSizeOfAttributeDataType(vesVertexAttributeKeys::Position, sizeof(float));
     this->setIsAttributeNormalized(vesVertexAttributeKeys::Position, false);
+  }
+};
+
+class vesSourceDataf : public vesGenericSourceData<vesVertexDataf>
+{
+public:
+  vesTypeMacro(vesSourceDataf);
+
+  vesSourceDataf() : vesGenericSourceData<vesVertexDataf>()
+  {
+    this->setAttributeDataType(vesVertexAttributeKeys::Scalar, vesDataType::Float);
+    this->setAttributeOffset(vesVertexAttributeKeys::Scalar, 0);
+    this->setAttributeStride(vesVertexAttributeKeys::Scalar, 1);
+    this->setNumberOfComponents(vesVertexAttributeKeys::Scalar, 1);
+    this->setSizeOfAttributeDataType(vesVertexAttributeKeys::Scalar, sizeof(float));
+    this->setIsAttributeNormalized(vesVertexAttributeKeys::Scalar, false);
   }
 };
 
