@@ -101,9 +101,6 @@ vesMapper::~vesMapper()
 }
 
 
-#include <android/log.h>
-#define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "PointCloud", __VA_ARGS__))
-
 void vesMapper::computeBounds()
 {
   LOGI("start mapper computeBounds");
