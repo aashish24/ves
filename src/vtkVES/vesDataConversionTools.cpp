@@ -422,7 +422,7 @@ vesSharedPtr<vesGeometryData> vesDataConversionTools::Convert(vtkPolyData* input
   }
   else
   {
-    //output->computeNormals();
+    output->computeNormals();
   }
 
 #if 0
