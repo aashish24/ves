@@ -101,14 +101,22 @@ vesMapper::~vesMapper()
 }
 
 
+#include <android/log.h>
+#define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "PointCloud", __VA_ARGS__))
+
 void vesMapper::computeBounds()
 {
+  LOGI("start mapper computeBounds");
+  LOGI("calling min");
   vesVector3f min = this->m_geometryData->boundsMin();
+  LOGI("calling max");
   vesVector3f max = this->m_geometryData->boundsMax();
 
+  LOGI("calling setBounds");
   this->setBounds(min, max);
 
   this->setBoundsDirty(false);
+  LOGI("end mapper computeBounds");
 }
 
 void vesMapper::normalize()
@@ -198,6 +206,7 @@ void vesMapper::render(const vesRenderState &renderState)
   }
 
   // Try rendering our point cloud here
+  LOGI("drawing points");
   if (m_drawPoints)
     drawPoints(renderState);
 
@@ -350,5 +359,6 @@ void vesMapper::drawPoints(const vesRenderState &)
 {
   vesSharedPtr<vesSourceData> data =
       m_geometryData->sourceData(vesVertexAttributeKeys::Position);
+  LOGI("drawing points size %d", data->sizeOfArray());
   glDrawArrays(GL_POINTS, 0, data->sizeOfArray());
 }

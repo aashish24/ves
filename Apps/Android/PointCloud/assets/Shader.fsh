@@ -14,11 +14,12 @@
  =========================================================================*/
 //precision mediump float;
 
-varying lowp vec4 v_texcoord;
-varying lowp vec2 v_tcoord;
-uniform sampler2D s_texture;
+//varying lowp vec4 v_texcoord;
+//varying lowp vec2 v_tcoord;
+//uniform sampler2D s_texture;
 
 void main()
 {
-    gl_FragColor = texture2D(s_texture, v_tcoord);
+    //gl_FragColor = texture2D(s_texture, v_tcoord);
+    gl_FragColor = vec4(1.0f, 0.0f, 0.0f, 1.0f);
 }

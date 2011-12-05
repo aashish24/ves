@@ -37,7 +37,7 @@
 
 #include <vesDataConversionTools.h>
 
-#include <vesTriangleData.h>
+#include <vesGeometryData.h>
 #include <vesCamera.h>
 #include <vesRenderer.h>
 #include <vesShader.h>
@@ -264,23 +264,26 @@ static int engine_init_display(struct engine* engine) {
     read->Update ();
     vtkPolyData *data = read->GetOutput ();
     LOGI("a: number of points is %d", data->GetNumberOfPoints());
-    vesTriangleData* triangle_data = vesDataConversionTools::Convert(data);
-    LOGI("b: number of points is %d\n**\n", triangle_data->GetPoints().size());
-    vesVector2f range = triangle_data->GetPointScalarRange();
+    vesSharedPtr<vesGeometryData> geometry_data = vesDataConversionTools::ConvertPoints(data);
+    LOGI("b: hi!\n");
+/*
+    LOGI("b: number of points is %d\n**\n", geometry_data->GetPoints().size());
+    vesVector2f range = geometry_data->GetPointScalarRange();
     LOGI("scalar range: %f, %f\n", range[0], range[1]);
-    LOGI("scalar size: %d\n", triangle_data->GetPointScalars().size());
-    LOGI("Get the min of the data: %f, %f, %f\n", triangle_data->GetMin()[0],
-         triangle_data->GetMin()[1], triangle_data->GetMin()[2]);
-    LOGI("Get the max of the data: %f, %f, %f\n", triangle_data->GetMax()[0],
-         triangle_data->GetMax()[1], triangle_data->GetMax()[2]);
+    LOGI("scalar size: %d\n", geometry_data->GetPointScalars().size());
+    LOGI("Get the min of the data: %f, %f, %f\n", geometry_data->GetMin()[0],
+         geometry_data->GetMin()[1], geometry_data->GetMin()[2]);
+    LOGI("Get the max of the data: %f, %f, %f\n", geometry_data->GetMax()[0],
+         geometry_data->GetMax()[1], geometry_data->GetMax()[2]);
+*/
 
     AAsset* vertex_asset = AAssetManager_open(assetManager, "Shader.vsh", AASSET_MODE_UNKNOWN);
     AAsset* fragment_asset = AAssetManager_open(assetManager, "Shader.fsh", AASSET_MODE_UNKNOWN);
 
     std::string vertex_source = std::string(static_cast<const char*>(AAsset_getBuffer(vertex_asset)), AAsset_getLength(vertex_asset));
     std::string fragment_source = std::string(static_cast<const char*>(AAsset_getBuffer(fragment_asset)), AAsset_getLength(fragment_asset));
-    //LOGI("vertex_source: %s\n", vertex_source.c_str());
-    //LOGI("fragment_source: %s\n", fragment_source.c_str());
+    LOGI("vertex_source: %s\n", vertex_source.c_str());
+    LOGI("fragment_source: %s\n", fragment_source.c_str());
 
     //createProgram(vertex_source.c_str(), fragment_source.c_str());
 
@@ -299,22 +302,29 @@ static int engine_init_display(struct engine* engine) {
                                    );
     vesShader* shader = new vesShader(shader_program);
     vesMapper* mapper = new vesMapper();
-    mapper->setTriangleData(triangle_data);
+    mapper->setTriangleData(geometry_data);
     mapper->setDrawPoints(true);
 */
 
-    vesShader* vertex = new vesShader(vesShader::Vertex, vertex_source.c_str());
-    vesShader* frag = new vesShader(vesShader::Fragment, fragment_source.c_str());
-    vesShaderProgram* program = new vesShaderProgram;
+    vesSharedPtr<vesShader> vertex(new vesShader(vesShader::Vertex, vertex_source.c_str()));
+    vesSharedPtr<vesShader> frag(new vesShader(vesShader::Fragment, fragment_source.c_str()));
+    vesSharedPtr<vesShaderProgram> program(new vesShaderProgram());
     program->addShader(vertex);
     program->addShader(frag);
-    program->addUniform(new vesModelViewUniform);
-    program->addUniform(new vesProjectionUniform);
-    program->addVertexAttribute(new vesPositionVertexAttribute,
-                                vesVertexAttributeKeys::Position);
-    vesMaterial* material = new vesMaterial;
-    vesMapper* mapper = new vesMapper;
+    vesSharedPtr<vesModelViewUniform> mv(new vesModelViewUniform());
+    program->addUniform(mv);
+    vesSharedPtr<vesProjectionUniform> proj(new vesProjectionUniform());
+    program->addUniform(proj);
+    vesSharedPtr<vesPositionVertexAttribute> pv(new vesPositionVertexAttribute());
+    program->addVertexAttribute(pv, vesVertexAttributeKeys::Position);
+    vesSharedPtr<vesMaterial> material(new vesMaterial());
+    material->setShaderProgram(program);
+    vesSharedPtr<vesMapper> mapper(new vesMapper());
+    mapper->setGeometryData(geometry_data);
+    mapper->setColor(1.0f, 0.0f, 0.0f, 1.0f);
+    mapper->setDrawPoints(true);
 
+    /*
     vtkNew<vtkLookupTable> lookupTable;
     lookupTable->Build();
     unsigned char* lookupImage = lookupTable->GetPointer(0);
@@ -338,13 +348,16 @@ static int engine_init_display(struct engine* engine) {
                  lookupImage);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, lookupTableID);
+    */
 
-    vesActor* actor = new vesActor;
+    vesSharedPtr<vesActor> actor(new vesActor());
     actor->setMapper(mapper);
     actor->setMaterial(material);
     engine->renderer->addActor(actor);
     engine->renderer->resetCamera();
     engine->renderer->resetCameraClippingRange();
+    engine->renderer->setBackgroundColor(0, 0, 1, 1);
+    LOGI("g");
 
     AAsset_close(asset);
 
@@ -433,7 +446,7 @@ static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) 
         }
 
         vesRenderer* ren = engine->renderer;
-        vesCamera *camera = ren->camera();
+        vesSharedPtr<vesCamera> camera = ren->camera();
 
         if (AMotionEvent_getPointerCount(event) == 1) {
             float dx0 = x0 - px0;
