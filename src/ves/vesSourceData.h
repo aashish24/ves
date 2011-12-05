@@ -400,7 +400,7 @@ public:
   {
     this->setAttributeDataType(vesVertexAttributeKeys::Scalar, vesDataType::Float);
     this->setAttributeOffset(vesVertexAttributeKeys::Scalar, 0);
-    this->setAttributeStride(vesVertexAttributeKeys::Scalar, 1);
+    this->setAttributeStride(vesVertexAttributeKeys::Scalar, sizeof(float));
     this->setNumberOfComponents(vesVertexAttributeKeys::Scalar, 1);
     this->setSizeOfAttributeDataType(vesVertexAttributeKeys::Scalar, sizeof(float));
     this->setIsAttributeNormalized(vesVertexAttributeKeys::Scalar, false);

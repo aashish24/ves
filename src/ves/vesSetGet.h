@@ -23,9 +23,6 @@
 
 #include "vesSharedPtr.h"
 
-#include <android/log.h>
-#define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "PointCloud", __VA_ARGS__))
-
 #define vesNotUsed(x) (void)x
 
 #define vesTypeMacro(className) \

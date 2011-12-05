@@ -77,7 +77,7 @@ public:
 
 
 vesMapper::vesMapper() : vesBoundingObject(),
-  m_drawPoints(true),
+  m_drawPoints(false),
   m_initialized(false),
   m_maximumTriangleIndicesPerDraw
                (65535),
@@ -103,17 +103,12 @@ vesMapper::~vesMapper()
 
 void vesMapper::computeBounds()
 {
-  LOGI("start mapper computeBounds");
-  LOGI("calling min");
   vesVector3f min = this->m_geometryData->boundsMin();
-  LOGI("calling max");
   vesVector3f max = this->m_geometryData->boundsMax();
 
-  LOGI("calling setBounds");
   this->setBounds(min, max);
 
   this->setBoundsDirty(false);
-  LOGI("end mapper computeBounds");
 }
 
 void vesMapper::normalize()
@@ -203,7 +198,6 @@ void vesMapper::render(const vesRenderState &renderState)
   }
 
   // Try rendering our point cloud here
-  LOGI("drawing points");
   if (m_drawPoints)
     drawPoints(renderState);
 
@@ -356,6 +350,5 @@ void vesMapper::drawPoints(const vesRenderState &)
 {
   vesSharedPtr<vesSourceData> data =
       m_geometryData->sourceData(vesVertexAttributeKeys::Position);
-  LOGI("drawing points size %d", data->sizeOfArray());
   glDrawArrays(GL_POINTS, 0, data->sizeOfArray());
 }

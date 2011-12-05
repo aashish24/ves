@@ -3,12 +3,8 @@
 
 #include <cassert>
 
-#include <android/log.h>
-#define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "PointCloud", __VA_ARGS__))
-
 void vesGeometryData::computeBounds()
 {
-  LOGI("start of computeBounds");
   if (!this->m_computeBounds)
   {
     return;
@@ -32,8 +28,6 @@ void vesGeometryData::computeBounds()
 
   assert(numberOfComponents <= 3);
 
-  LOGI("hi from ves!");
-
   this->m_boundsMin[0] = this->m_boundsMin[1] = this->m_boundsMin[2] = 0.0f;
   this->m_boundsMax[0] = this->m_boundsMax[1] = this->m_boundsMax[2] = 0.0f;
 
@@ -56,7 +50,6 @@ void vesGeometryData::computeBounds()
     }
   }
 
-  LOGI("end of computeBounds");
   this->m_computeBounds = false;
 }
 

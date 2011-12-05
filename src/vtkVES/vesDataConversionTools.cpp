@@ -297,7 +297,6 @@ vesSharedPtr<vesGeometryData> vesDataConversionTools::ConvertPoints(vtkPolyData*
 
   vesVertexDataP3f vertexData;
   for (int i = 0; i < input->GetNumberOfPoints(); ++i){
-    LOGI("saving point %d", i);
     vertexData.m_position[0] = input->GetPoint(i)[0];
     vertexData.m_position[1] = input->GetPoint(i)[1];
     vertexData.m_position[2] = input->GetPoint(i)[2];

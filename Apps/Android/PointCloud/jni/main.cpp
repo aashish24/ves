@@ -37,6 +37,8 @@
 
 #include <vesDataConversionTools.h>
 
+#include <vesImage.h>
+#include <vesTexture.h>
 #include <vesGeometryData.h>
 #include <vesCamera.h>
 #include <vesRenderer.h>
@@ -87,6 +89,7 @@ struct engine {
     float *points;
     unsigned int nPoints;
     vesRenderer* renderer;
+    vtkLookupTable* lookupTable;
 };
 
 
@@ -285,7 +288,7 @@ static int engine_init_display(struct engine* engine) {
     LOGI("vertex_source: %s\n", vertex_source.c_str());
     LOGI("fragment_source: %s\n", fragment_source.c_str());
 
-    //createProgram(vertex_source.c_str(), fragment_source.c_str());
+    createProgram(vertex_source.c_str(), fragment_source.c_str());
 
 /*    vesShaderProgram* shader_program = new vesShaderProgram(
                                    const_cast<char*>(vertex_source.c_str()),
@@ -317,8 +320,11 @@ static int engine_init_display(struct engine* engine) {
     program->addUniform(proj);
     vesSharedPtr<vesPositionVertexAttribute> pv(new vesPositionVertexAttribute());
     program->addVertexAttribute(pv, vesVertexAttributeKeys::Position);
+    vesSharedPtr<vesColorVertexAttribute> color(new vesColorVertexAttribute());
+    program->addVertexAttribute(color, vesVertexAttributeKeys::Scalar);
     vesSharedPtr<vesMaterial> material(new vesMaterial());
-    material->setShaderProgram(program);
+    material->addAttribute(program);
+    //material->setShaderProgram(program);
     vesSharedPtr<vesMapper> mapper(new vesMapper());
     mapper->setGeometryData(geometry_data);
     mapper->setColor(1.0f, 0.0f, 0.0f, 1.0f);
@@ -349,6 +355,18 @@ static int engine_init_display(struct engine* engine) {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, lookupTableID);
     */
+    vesImage* image = new vesImage();
+    engine->lookupTable = vtkLookupTable::New();
+    engine->lookupTable->Build();
+    image->m_data = engine->lookupTable->GetPointer(0);
+    image->m_width = engine->lookupTable->GetNumberOfTableValues();
+    image->m_height = 1;
+    image->m_pixelDataType = vesColorDataType::UnsignedByte;
+    image->m_pixelFormat = vesColorDataType::RGBA;
+
+    vesSharedPtr<vesTexture> texture(new vesTexture());
+    texture->setImage(*image);
+    material->addAttribute(texture);
 
     vesSharedPtr<vesActor> actor(new vesActor());
     actor->setMapper(mapper);

@@ -13,22 +13,24 @@
 
  =========================================================================*/
 
-uniform mat4   modelViewMatrix;     // model-view matrix
-uniform mat4   projectionMatrix;
+uniform highp mat4   modelViewMatrix;     // model-view matrix
+uniform highp mat4   projectionMatrix;
 //uniform vec2   u_scalarRange;
 
 attribute highp vec3 vertexPosition;   // vertex position
 //attribute vec4 a_texcoord;       // texture coordinates
-//attribute float a_scalar;
+attribute highp float vertexColor;
 
-//varying vec4 v_texcoord;
-//varying vec2 v_tcoord;
+varying highp vec2 v_tcoord;
+//varying lowp vec3 color;
 
 void main()
 {
   //float val = (a_scalar - u_scalarRange.x) / (u_scalarRange.y - u_scalarRange.x);
-  //v_tcoord = vec2(a_scalar, 0.5);
+  float a_scalar = vertexColor;
+  v_tcoord = vec2(a_scalar, 0.5);
   gl_Position = projectionMatrix * modelViewMatrix * vec4(vertexPosition, 1.0);
   //gl_Position = vertexPosition;
   gl_PointSize = 1.0;
+  //color = vec3(vertexColor, 0, 0);
 }

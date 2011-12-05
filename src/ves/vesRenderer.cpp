@@ -146,21 +146,16 @@ vesVector3f vesRenderer::computeDisplayToWorld(vesVector3f display)
   return world;
 }
 
-#include <android/log.h>
-#define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "PointCloud", __VA_ARGS__))
 
 void vesRenderer::resetCamera()
 {
-  LOGI("in resetCamera");
   if (!this->m_sceneRoot) {
-    LOGI("no root");
     return;
   }
 
   // If bounds of scene are dirty make a update traversal
   // to make bounds upto date.
   if (this->m_sceneRoot->boundsDirty()) {
-    LOGI("calling updateTraverseScene");
     this->updateTraverseScene();
   }
 
