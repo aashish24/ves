@@ -13,32 +13,24 @@
 
  =========================================================================*/
 
-uniform mat4   modelViewProjectionMatrix;     // model-view-projection matrix
-uniform mat3   normalMatrix;  // normal matrix
-uniform vec3   u_ecLightDir;     // light direction in eye coordinates
-uniform vec2   u_scalarRange;
+uniform highp mat4   modelViewMatrix;     // model-view matrix
+uniform highp mat4   projectionMatrix;
+//uniform vec2   u_scalarRange;
 
-attribute vec4 vertexPosition;         // vertex position
-attribute vec3 a_normal;         // vertex normal
-attribute vec4 a_texcoord;       // texture coordinates
-attribute float a_scalar;
+attribute highp vec3 vertexPosition;   // vertex position
+//attribute vec4 a_texcoord;       // texture coordinates
+attribute highp float vertexColor;
 
-varying vec4 v_texcoord;
-varying vec2 v_tcoord;
-//varying vec2 screenPos;
+varying highp vec2 v_tcoord;
+//varying lowp vec3 color;
 
 void main()
 {
-  //vec3 ec_normal = normalize(u_normalMatrix * a_normal);
-  //float v_diffuse  = max(dot(u_ecLightDir,ec_normal),0.0);
-  //vec3 outColor = vec3(.25,.25,.25)+v_diffuse * a_texcoord.xyz ;
-
-  //v_texcoord = vec4(outColor, a_texcoord.a);
-  float val = (a_scalar - u_scalarRange.x) / (u_scalarRange.y - u_scalarRange.x);
-  //v_texcoord = vec4(a_scalar, a_scalar, a_scalar, 1);
+  //float val = (a_scalar - u_scalarRange.x) / (u_scalarRange.y - u_scalarRange.x);
+  float a_scalar = vertexColor;
   v_tcoord = vec2(a_scalar, 0.5);
-  gl_Position = modelViewProjectionMatrix * vertexPosition;
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(vertexPosition, 1.0);
+  //gl_Position = vertexPosition;
   gl_PointSize = 1.0;
-  //vec2 halfsize = vec2(480.0, 854.0) * 0.5;
-  //screenPos = halfsize + ((gl_Position.xy / gl_Position.w) * halfsize);
+  //color = vec3(vertexColor, 0, 0);
 }

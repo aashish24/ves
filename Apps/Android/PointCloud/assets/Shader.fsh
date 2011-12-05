@@ -14,14 +14,14 @@
  =========================================================================*/
 //precision mediump float;
 
-varying lowp vec4 v_texcoord;
-varying lowp vec2 v_tcoord;
-//varying lowp vec2 screenPos;
-uniform sampler2D s_texture;
+//varying lowp vec4 v_texcoord;
+varying highp vec2 v_tcoord;
+uniform highp sampler2D s_texture;
+
+//varying lowp vec3 color;
 
 void main()
 {
-    //if (distance(gl_FragCoord.xy, screenPos) > 5.0) discard;
-    //gl_FragColor = v_texcoord;
     gl_FragColor = texture2D(s_texture, v_tcoord);
+    //gl_FragColor = vec4(color, 1.0);
 }

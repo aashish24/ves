@@ -55,6 +55,8 @@ public:
 
   virtual void render(const vesRenderState &renderState);
 
+  void setDrawPoints(bool draw) { m_drawPoints = draw; }
+
 private:
   virtual void setupDrawObjects(const vesRenderState &renderState);
 
@@ -68,7 +70,8 @@ private:
 protected:
   void drawTriangles(const vesRenderState &renderState,
                      vesSharedPtr<vesPrimitive> triangles);
-
+  void drawPoints(const vesRenderState &renderState);
+  bool m_drawPoints;
   bool m_initialized;
 
   const int m_maximumTriangleIndicesPerDraw;

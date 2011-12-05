@@ -35,13 +35,21 @@
 #include <vtkNew.h>
 #include <vtkLookupTable.h>
 
-#include <vtkPolyDataToTriangleData.h>
+#include <vesDataConversionTools.h>
 
-#include <vesTriangleData.h>
-#include <vesMultitouchCamera.h>
+#include <vesImage.h>
+#include <vesTexture.h>
+#include <vesGeometryData.h>
+#include <vesCamera.h>
 #include <vesRenderer.h>
 #include <vesShader.h>
 #include <vesShaderProgram.h>
+#include <vesVertexAttribute.h>
+#include <vesVertexAttributeKeys.h>
+#include <vesModelViewUniform.h>
+#include <vesProjectionUniform.h>
+#include <vesMapper.h>
+#include <vesActor.h>
 
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "PointCloud", __VA_ARGS__))
 #define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "PointCloud", __VA_ARGS__))
@@ -81,6 +89,7 @@ struct engine {
     float *points;
     unsigned int nPoints;
     vesRenderer* renderer;
+    vtkLookupTable* lookupTable;
 };
 
 
@@ -90,18 +99,6 @@ static void checkGlError(const char* op) {
         LOGI("after %s() glError (0x%x)\n", op, error);
     }
 }
-
-static const char gVertexShader[] =
-    "attribute vec4 vPosition;\n"
-    "void main() {\n"
-    "  gl_Position = vPosition;\n"
-    "}\n";
-
-static const char gFragmentShader[] =
-    "precision mediump float;\n"
-    "void main() {\n"
-    "  gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);\n"
-    "}\n";
 
 GLuint loadShader(GLenum shaderType, const char* pSource) {
     GLuint shader = glCreateShader(shaderType);
@@ -166,8 +163,6 @@ GLuint createProgram(const char* pVertexSource, const char* pFragmentSource) {
     }
     return program;
 }
-
-
 
 /**
  * Initialize an EGL context for the current display.
@@ -240,7 +235,7 @@ static int engine_init_display(struct engine* engine) {
     engine->state.x1 = 0;
     engine->state.y1 = 0;
     engine->state.isTwoTouches = false;
-    engine->renderer->Resize(w, h, 1.0f);
+    engine->renderer->resize(w, h, 1.0f);
 
     // Initialize GL state.
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -266,16 +261,24 @@ static int engine_init_display(struct engine* engine) {
     const char* input_string = static_cast<const char*>(AAsset_getBuffer(asset));
     LOGI("\n**\nlength is %d", AAsset_getLength(asset));
 
-    vtkSmartPointer<vtkPolyDataReader> read = vtkSmartPointer<vtkPolyDataReader>::New ();
+    vtkSmartPointer<vtkPolyDataReader> read = vtkSmartPointer<vtkPolyDataReader>::New();
     read->SetInputString (input_string, len);
     read->ReadFromInputStringOn ();
     read->Update ();
     vtkPolyData *data = read->GetOutput ();
     LOGI("a: number of points is %d", data->GetNumberOfPoints());
-    vesTriangleData* triangle_data = vtkPolyDataToTriangleData::Convert (data);
-    LOGI("b: number of points is %d\n**\n", triangle_data->GetPoints().size());
-    vesVector2f range = triangle_data->GetPointScalarRange();
+    vesSharedPtr<vesGeometryData> geometry_data = vesDataConversionTools::ConvertPoints(data);
+    LOGI("b: hi!\n");
+/*
+    LOGI("b: number of points is %d\n**\n", geometry_data->GetPoints().size());
+    vesVector2f range = geometry_data->GetPointScalarRange();
     LOGI("scalar range: %f, %f\n", range[0], range[1]);
+    LOGI("scalar size: %d\n", geometry_data->GetPointScalars().size());
+    LOGI("Get the min of the data: %f, %f, %f\n", geometry_data->GetMin()[0],
+         geometry_data->GetMin()[1], geometry_data->GetMin()[2]);
+    LOGI("Get the max of the data: %f, %f, %f\n", geometry_data->GetMax()[0],
+         geometry_data->GetMax()[1], geometry_data->GetMax()[2]);
+*/
 
     AAsset* vertex_asset = AAssetManager_open(assetManager, "Shader.vsh", AASSET_MODE_UNKNOWN);
     AAsset* fragment_asset = AAssetManager_open(assetManager, "Shader.fsh", AASSET_MODE_UNKNOWN);
@@ -287,7 +290,7 @@ static int engine_init_display(struct engine* engine) {
 
     createProgram(vertex_source.c_str(), fragment_source.c_str());
 
-    vesShaderProgram* shader_program = new vesShaderProgram(
+/*    vesShaderProgram* shader_program = new vesShaderProgram(
                                    const_cast<char*>(vertex_source.c_str()),
                                    const_cast<char*>(fragment_source.c_str()),
                                    (_uni("modelViewProjectionMatrix"),
@@ -302,9 +305,32 @@ static int engine_init_display(struct engine* engine) {
                                    );
     vesShader* shader = new vesShader(shader_program);
     vesMapper* mapper = new vesMapper();
-    mapper->setTriangleData(triangle_data);
+    mapper->setTriangleData(geometry_data);
+    mapper->setDrawPoints(true);
+*/
+
+    vesSharedPtr<vesShader> vertex(new vesShader(vesShader::Vertex, vertex_source.c_str()));
+    vesSharedPtr<vesShader> frag(new vesShader(vesShader::Fragment, fragment_source.c_str()));
+    vesSharedPtr<vesShaderProgram> program(new vesShaderProgram());
+    program->addShader(vertex);
+    program->addShader(frag);
+    vesSharedPtr<vesModelViewUniform> mv(new vesModelViewUniform());
+    program->addUniform(mv);
+    vesSharedPtr<vesProjectionUniform> proj(new vesProjectionUniform());
+    program->addUniform(proj);
+    vesSharedPtr<vesPositionVertexAttribute> pv(new vesPositionVertexAttribute());
+    program->addVertexAttribute(pv, vesVertexAttributeKeys::Position);
+    vesSharedPtr<vesColorVertexAttribute> color(new vesColorVertexAttribute());
+    program->addVertexAttribute(color, vesVertexAttributeKeys::Scalar);
+    vesSharedPtr<vesMaterial> material(new vesMaterial());
+    material->addAttribute(program);
+    //material->setShaderProgram(program);
+    vesSharedPtr<vesMapper> mapper(new vesMapper());
+    mapper->setGeometryData(geometry_data);
+    mapper->setColor(1.0f, 0.0f, 0.0f, 1.0f);
     mapper->setDrawPoints(true);
 
+    /*
     vtkNew<vtkLookupTable> lookupTable;
     lookupTable->Build();
     unsigned char* lookupImage = lookupTable->GetPointer(0);
@@ -328,11 +354,28 @@ static int engine_init_display(struct engine* engine) {
                  lookupImage);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, lookupTableID);
+    */
+    vesImage* image = new vesImage();
+    engine->lookupTable = vtkLookupTable::New();
+    engine->lookupTable->Build();
+    image->m_data = engine->lookupTable->GetPointer(0);
+    image->m_width = engine->lookupTable->GetNumberOfTableValues();
+    image->m_height = 1;
+    image->m_pixelDataType = vesColorDataType::UnsignedByte;
+    image->m_pixelFormat = vesColorDataType::RGBA;
 
-    vesActor* actor = new vesActor(shader, mapper);
-    engine->renderer->AddActor(actor);
-    engine->renderer->ResetCamera();
-    engine->renderer->ResetCameraClippingRange();
+    vesSharedPtr<vesTexture> texture(new vesTexture());
+    texture->setImage(*image);
+    material->addAttribute(texture);
+
+    vesSharedPtr<vesActor> actor(new vesActor());
+    actor->setMapper(mapper);
+    actor->setMaterial(material);
+    engine->renderer->addActor(actor);
+    engine->renderer->resetCamera();
+    engine->renderer->resetCameraClippingRange();
+    engine->renderer->setBackgroundColor(0, 0, 1, 1);
+    LOGI("g");
 
     AAsset_close(asset);
 
@@ -343,8 +386,8 @@ static int engine_init_display(struct engine* engine) {
  * Just the current frame in the display.
  */
 static void engine_draw_frame(struct engine* engine) {
-    engine->renderer->ResetCameraClippingRange();
-    engine->renderer->Render();
+    engine->renderer->resetCameraClippingRange();
+    engine->renderer->render();
 
     eglSwapBuffers(engine->display, engine->surface);
 }
@@ -421,22 +464,22 @@ static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) 
         }
 
         vesRenderer* ren = engine->renderer;
-        vesCamera *camera = ren->GetCamera();
+        vesSharedPtr<vesCamera> camera = ren->camera();
 
         if (AMotionEvent_getPointerCount(event) == 1) {
             float dx0 = x0 - px0;
             float dy0 = y0 - py0;
 
-            double delta_elevation = -20.0 / ren->GetHeight();
-            double delta_azimuth = -20.0 / ren->GetWidth();
+            double delta_elevation = -20.0 / ren->height();
+            double delta_azimuth = -20.0 / ren->width();
             double motionFactor = 10.0;
 
             double rxf = dx0 * delta_azimuth * motionFactor;
             double ryf = dy0 * delta_elevation * motionFactor;
 
-            camera->Azimuth(rxf);
-            camera->Elevation(ryf);
-            camera->OrthogonalizeViewUp();
+            camera->azimuth(rxf);
+            camera->elevation(ryf);
+            camera->orthogonalizeViewUp();
         } else {
           //
           // Pan camera.
@@ -446,32 +489,32 @@ static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) 
           // Average positions of current and previous two touches.
           // Invert y since vesCamera expects y to go in opposite direction.
           float pcx = (px0 + px1)/2.0;
-          float pcy = ren->GetHeight() - (py0 + py1)/2.0;
+          float pcy = ren->height() - (py0 + py1)/2.0;
           float cx = (x0 + x1)/2.0;
-          float cy = ren->GetHeight() - (y0 + y1)/2.0;
+          float cy = ren->height() - (y0 + y1)/2.0;
 
           // Calculate the focal depth since we'll be using it a lot
-          vesVector3f viewFocus = camera->GetFocalPoint();
-          vesVector3f viewFocusDisplay = ren->ComputeWorldToDisplay(viewFocus);
+          vesVector3f viewFocus = camera->focalPoint();
+          vesVector3f viewFocusDisplay = ren->computeWorldToDisplay(viewFocus);
           float focalDepth = viewFocusDisplay[2];
 
           vesVector3f newPos(cx,
                              cy,
                              focalDepth);
-          vesVector3f newPickPoint = ren->ComputeDisplayToWorld(newPos);
+          vesVector3f newPickPoint = ren->computeDisplayToWorld(newPos);
 
           vesVector3f oldPos(pcx,
                              pcy,
                              focalDepth);
-          vesVector3f oldPickPoint = ren->ComputeDisplayToWorld(oldPos);
+          vesVector3f oldPickPoint = ren->computeDisplayToWorld(oldPos);
 
           vesVector3f motionVector = oldPickPoint - newPickPoint;
 
-          vesVector3f viewPoint = camera->GetPosition();
+          vesVector3f viewPoint = camera->position();
           vesVector3f newViewFocus = motionVector + viewFocus;
           vesVector3f newViewPoint = motionVector + viewPoint;
-          camera->SetFocalPoint(newViewFocus);
-          camera->SetPosition(newViewPoint);
+          camera->setFocalPoint(newViewFocus);
+          camera->setPosition(newViewPoint);
 
           //
           // Zoom camera.
@@ -487,9 +530,9 @@ static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) 
                                     (y0 - y1) *
                                     (y0 - y1));
           double dy = currentDist - previousDist;
-          double dyf = 10.0 * dy / (ren->GetHeight()/2.0);
+          double dyf = 10.0 * dy / (ren->height()/2.0);
           double factor = pow(1.1, dyf);
-          camera->Dolly(factor);
+          camera->dolly(factor);
 
           //
           // Roll camera.
@@ -505,8 +548,8 @@ static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) 
                                   px0 - px1);
           oldAngle *= 180.0/pi;
 
-          camera->Roll(newAngle - oldAngle);
-          camera->OrthogonalizeViewUp();
+          camera->roll(newAngle - oldAngle);
+          camera->orthogonalizeViewUp();
         }
 
         engine->state.x0 = x0;
