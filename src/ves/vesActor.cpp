@@ -59,7 +59,7 @@ void vesActor::setWidget(vesSharedPtr<vesMultitouchWidget> widget)
 
 void vesActor::setMapper(vesSharedPtr<vesMapper> mapper)
 {
-  if (mapper) {
+  if (mapper && mapper != this->m_mapper) {
     this->m_mapper = mapper;
     this->setBoundsDirty(true);
   }
@@ -68,12 +68,16 @@ void vesActor::setMapper(vesSharedPtr<vesMapper> mapper)
 
 void vesActor::accept(vesVisitor &visitor)
 {
+  assert(this->m_mapper);
+
   visitor.visit(*this);
 }
 
 
 void vesActor::ascend(vesVisitor &visitor)
 {
+  assert(this->m_mapper);
+
   // \todo: Implement this.
   vesNotUsed(visitor);
 }
@@ -81,6 +85,8 @@ void vesActor::ascend(vesVisitor &visitor)
 
 void vesActor::computeBounds()
 {
+  assert(this->m_mapper);
+
   if (this->m_mapper && this->m_mapper->boundsDirty()) {
     this->m_mapper->computeBounds();
 

@@ -98,6 +98,8 @@ vesMapper::~vesMapper()
 
 void vesMapper::computeBounds()
 {
+  assert(this->geometryData());
+
   vesVector3f min = this->m_geometryData->boundsMin();
   vesVector3f max = this->m_geometryData->boundsMax();
 
@@ -170,6 +172,8 @@ const float* vesMapper::color() const
 
 void vesMapper::render(const vesRenderState &renderState)
 {
+  assert(this->m_geometryData);
+
   if (!this->m_initialized) {
     this->setupDrawObjects(renderState);
   }
@@ -260,6 +264,8 @@ void vesMapper::setupDrawObjects(const vesRenderState &renderState)
 
 void vesMapper::createVertexBufferObjects()
 {
+  assert(this->m_geometryData);
+
   unsigned int bufferId;
 
   unsigned int numberOfSources = this->m_geometryData->numberOfSources();
@@ -306,6 +312,8 @@ void vesMapper::deleteVertexBufferObjects()
 void vesMapper::drawTriangles(const vesRenderState &renderState,
                               vesSharedPtr<vesPrimitive> triangles)
 {
+  assert(this->m_geometryData);
+
   const unsigned int numberOfIndices
     = triangles->numberOfIndices();
 
@@ -340,6 +348,8 @@ void vesMapper::drawTriangles(const vesRenderState &renderState,
 
 void vesMapper::drawPoints(const vesRenderState &)
 {
+  assert(this->m_geometryData);
+
   vesSharedPtr<vesSourceData> data =
       m_geometryData->sourceData(vesVertexAttributeKeys::Position);
   glDrawArrays(GL_POINTS, 0, data->sizeOfArray());
