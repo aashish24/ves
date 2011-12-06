@@ -382,9 +382,12 @@ public:
 
   vesSourceDataP3f() : vesGenericSourceData<vesVertexDataP3f>()
   {
+    const int totalNumberOfFloats = 3;
+    const int stride = sizeof(float) * totalNumberOfFloats;
+
     this->setAttributeDataType(vesVertexAttributeKeys::Position, vesDataType::Float);
     this->setAttributeOffset(vesVertexAttributeKeys::Position, 0);
-    this->setAttributeStride(vesVertexAttributeKeys::Position, 12);
+    this->setAttributeStride(vesVertexAttributeKeys::Position, stride);
     this->setNumberOfComponents(vesVertexAttributeKeys::Position, 3);
     this->setSizeOfAttributeDataType(vesVertexAttributeKeys::Position, sizeof(float));
     this->setIsAttributeNormalized(vesVertexAttributeKeys::Position, false);
@@ -398,9 +401,12 @@ public:
 
   vesSourceDataf() : vesGenericSourceData<vesVertexDataf>()
   {
+    const int totalNumberOfFloats = 1;
+    const int stride = sizeof(float) * totalNumberOfFloats;
+
     this->setAttributeDataType(vesVertexAttributeKeys::Scalar, vesDataType::Float);
     this->setAttributeOffset(vesVertexAttributeKeys::Scalar, 0);
-    this->setAttributeStride(vesVertexAttributeKeys::Scalar, sizeof(float));
+    this->setAttributeStride(vesVertexAttributeKeys::Scalar, stride);
     this->setNumberOfComponents(vesVertexAttributeKeys::Scalar, 1);
     this->setSizeOfAttributeDataType(vesVertexAttributeKeys::Scalar, sizeof(float));
     this->setIsAttributeNormalized(vesVertexAttributeKeys::Scalar, false);
@@ -414,9 +420,12 @@ public:
 
   vesSourceDataN3f() : vesGenericSourceData<vesVertexDataN3f>()
   {
+    const int totalNumberOfFloats = 3;
+    const int stride = sizeof(float) * totalNumberOfFloats;
+
     this->setAttributeDataType(vesVertexAttributeKeys::Normal, vesDataType::Float);
     this->setAttributeOffset(vesVertexAttributeKeys::Normal, 0);
-    this->setAttributeStride(vesVertexAttributeKeys::Normal, 12);
+    this->setAttributeStride(vesVertexAttributeKeys::Normal, stride);
     this->setNumberOfComponents(vesVertexAttributeKeys::Normal, 3);
     this->setSizeOfAttributeDataType(vesVertexAttributeKeys::Normal, sizeof(float));
     this->setIsAttributeNormalized(vesVertexAttributeKeys::Normal, false);
@@ -430,9 +439,12 @@ public:
 
   vesSourceDataC3f() : vesGenericSourceData<vesVertexDataC3f>()
   {
+    const int totalNumberOfFloats = 3;
+    const int stride = sizeof(float) * totalNumberOfFloats;
+
     this->setAttributeDataType(vesVertexAttributeKeys::Color, vesDataType::Float);
     this->setAttributeOffset(vesVertexAttributeKeys::Color, 0);
-    this->setAttributeStride(vesVertexAttributeKeys::Color, 12);
+    this->setAttributeStride(vesVertexAttributeKeys::Color, stride);
     this->setNumberOfComponents(vesVertexAttributeKeys::Color, 3);
     this->setSizeOfAttributeDataType(vesVertexAttributeKeys::Color, sizeof(float));
     this->setIsAttributeNormalized(vesVertexAttributeKeys::Color, false);
@@ -446,9 +458,12 @@ public:
 
   vesSourceDataT2f() : vesGenericSourceData<vesVertexDataT2f>()
   {
+    const int totalNumberOfFloats = 2;
+    const int stride = sizeof(float) * totalNumberOfFloats;
+
     this->setAttributeDataType(vesVertexAttributeKeys::TextureCoordinate, vesDataType::Float);
     this->setAttributeOffset(vesVertexAttributeKeys::TextureCoordinate, 0);
-    this->setAttributeStride(vesVertexAttributeKeys::TextureCoordinate, 8);
+    this->setAttributeStride(vesVertexAttributeKeys::TextureCoordinate, stride);
     this->setNumberOfComponents(vesVertexAttributeKeys::TextureCoordinate, 2);
     this->setSizeOfAttributeDataType(vesVertexAttributeKeys::TextureCoordinate, sizeof(float));
     this->setIsAttributeNormalized(vesVertexAttributeKeys::TextureCoordinate, false);
@@ -462,9 +477,12 @@ public:
 
   vesSourceDataT3f() : vesGenericSourceData<vesVertexDataT3f>()
   {
+    const int totalNumberOfFloats = 3;
+    const int stride = sizeof(float) * totalNumberOfFloats;
+
     this->setAttributeDataType(vesVertexAttributeKeys::TextureCoordinate, vesDataType::Float);
     this->setAttributeOffset(vesVertexAttributeKeys::TextureCoordinate, 0);
-    this->setAttributeStride(vesVertexAttributeKeys::TextureCoordinate, 12);
+    this->setAttributeStride(vesVertexAttributeKeys::TextureCoordinate, stride);
     this->setNumberOfComponents(vesVertexAttributeKeys::TextureCoordinate, 3);
     this->setSizeOfAttributeDataType(vesVertexAttributeKeys::TextureCoordinate, sizeof(float));
     this->setIsAttributeNormalized(vesVertexAttributeKeys::TextureCoordinate, false);
@@ -478,12 +496,15 @@ public:
 
   vesSourceDataP3N3f() : vesGenericSourceData<vesVertexDataP3N3f>()
   {
+    const int totalNumberOfFloats = 6;
+    const int stride = sizeof(float) * totalNumberOfFloats;
+
     this->setAttributeDataType(vesVertexAttributeKeys::Position, vesDataType::Float);
     this->setAttributeDataType(vesVertexAttributeKeys::Normal, vesDataType::Float);
     this->setAttributeOffset(vesVertexAttributeKeys::Position, 0);
     this->setAttributeOffset(vesVertexAttributeKeys::Normal, 12);
-    this->setAttributeStride(vesVertexAttributeKeys::Position, 24);
-    this->setAttributeStride(vesVertexAttributeKeys::Normal, 24);
+    this->setAttributeStride(vesVertexAttributeKeys::Position, stride);
+    this->setAttributeStride(vesVertexAttributeKeys::Normal, stride);
     this->setNumberOfComponents(vesVertexAttributeKeys::Position, 3);
     this->setNumberOfComponents(vesVertexAttributeKeys::Normal, 3);
     this->setSizeOfAttributeDataType(vesVertexAttributeKeys::Position, sizeof(float));
@@ -500,15 +521,18 @@ public:
 
   vesSourceDataP3N3C3f() : vesGenericSourceData<vesVertexDataP3N3C3f>()
   {
+    const int totalNumberOfFloats = 9;
+    const int stride = sizeof(float) * totalNumberOfFloats;
+
     this->setAttributeDataType(vesVertexAttributeKeys::Position, vesDataType::Float);
     this->setAttributeDataType(vesVertexAttributeKeys::Normal, vesDataType::Float);
     this->setAttributeDataType(vesVertexAttributeKeys::Color, vesDataType::Float);
     this->setAttributeOffset(vesVertexAttributeKeys::Position, 0);
     this->setAttributeOffset(vesVertexAttributeKeys::Normal, 12);
     this->setAttributeOffset(vesVertexAttributeKeys::Color, 24);
-    this->setAttributeStride(vesVertexAttributeKeys::Position, 36);
-    this->setAttributeStride(vesVertexAttributeKeys::Normal, 36);
-    this->setAttributeStride(vesVertexAttributeKeys::Color, 36);
+    this->setAttributeStride(vesVertexAttributeKeys::Position, stride);
+    this->setAttributeStride(vesVertexAttributeKeys::Normal, stride);
+    this->setAttributeStride(vesVertexAttributeKeys::Color, stride);
     this->setNumberOfComponents(vesVertexAttributeKeys::Position, 3);
     this->setNumberOfComponents(vesVertexAttributeKeys::Normal, 3);
     this->setNumberOfComponents(vesVertexAttributeKeys::Color, 3);
