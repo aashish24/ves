@@ -44,24 +44,20 @@ public:
     this->m_color.resize(4);
   }
 
-
   ~vesInternal()
   {
     this->cleanUpDrawObjects();
   }
-
 
   void setColor(const float &r, const float &g, const float &b, const float &a)
   {
     m_color[0] = r; m_color[1] = g; m_color[2] = b; m_color[3] = a;
   }
 
-
   const float* color() const
   {
     return &(this->m_color.front());
   }
-
 
   void cleanUpDrawObjects()
   {
@@ -73,7 +69,6 @@ public:
   std::vector< unsigned int >                m_buffers;
   std::map< unsigned int, std::vector<int> > m_bufferVertexAttributeMap;
 };
-
 
 
 vesMapper::vesMapper() : vesBoundingObject(),
@@ -111,6 +106,7 @@ void vesMapper::computeBounds()
   this->setBoundsDirty(false);
 }
 
+
 void vesMapper::normalize()
 {
   float r = this->boundsRadius();
@@ -122,6 +118,7 @@ void vesMapper::normalize()
   this->setBoundsCenter(transformPoint3f(this->m_normalizedMatrix, this->boundsCenter()));
   this->setBoundsSize(transformPoint3f(this->m_normalizedMatrix, this->boundsSize()));
 }
+
 
 bool vesMapper::setGeometryData(vesSharedPtr<vesGeometryData> geometryData)
 {
@@ -345,6 +342,7 @@ void vesMapper::drawTriangles(const vesRenderState &renderState,
     drawnIndices += numberOfIndicesToDraw;
   }
 }
+
 
 void vesMapper::drawPoints(const vesRenderState &)
 {
