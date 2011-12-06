@@ -74,171 +74,84 @@ protected:
 };
 
 
-class vesPositionVertexAttribute : public vesVertexAttribute
+class vesGenericVertexAttribute : public vesVertexAttribute
+{
+public:
+  vesGenericVertexAttribute(const std::string &name="vertexGeneric") :
+    vesVertexAttribute(name)
+  {
+  }
+
+  virtual void bindVertexData(const vesRenderState &renderState, int key)
+  {
+    vesNotUsed(key);
+    assert(renderState.m_material && renderState.m_material->shaderProgram());
+
+    vesGeometryData::Ptr geometryData = renderState.m_mapper->geometryData();
+    assert(geometryData);
+
+    vesSourceData::Ptr sourceData = geometryData->sourceData(key);
+    assert(sourceData);
+
+    glVertexAttribPointer(renderState.m_material->shaderProgram()->
+                          attributeLocation(this->m_name),
+                          sourceData->numberOfComponents(key),
+                          sourceData->attributeDataType(key),
+                          sourceData->isAttributeNormalized(key),
+                          sourceData->attributeStride(key),
+                          (void*)sourceData->attributeOffset(key));
+
+    glEnableVertexAttribArray(renderState.m_material->shaderProgram()->
+                              attributeLocation(this->m_name));
+  }
+
+  virtual void unbindVertexData(const vesRenderState &renderState, int key)
+  {
+    vesNotUsed(key);
+    assert(renderState.m_material && renderState.m_material->shaderProgram());
+
+    glDisableVertexAttribArray(renderState.m_material->shaderProgram()->
+                               attributeLocation(this->m_name));
+  }
+};
+
+
+class vesPositionVertexAttribute : public vesGenericVertexAttribute
 {
 public:
   vesPositionVertexAttribute(const std::string &name="vertexPosition") :
-    vesVertexAttribute(name)
+    vesGenericVertexAttribute(name)
   {
-  }
-
-  virtual void bindVertexData(const vesRenderState &renderState, int key)
-  {
-    vesNotUsed(key);
-    assert(renderState.m_material && renderState.m_material->shaderProgram());
-
-    vesGeometryData::Ptr geometryData = renderState.m_mapper->geometryData();
-    assert(geometryData);
-
-    vesSourceData::Ptr sourceData = geometryData->sourceData(key);
-    assert(sourceData);
-
-    glVertexAttribPointer(renderState.m_material->shaderProgram()->
-                          attributeLocation(this->m_name),
-                          sourceData->numberOfComponents(key),
-                          sourceData->attributeDataType(key),
-                          sourceData->isAttributeNormalized(key),
-                          sourceData->attributeStride(key),
-                          (void*)sourceData->attributeOffset(key));
-
-    glEnableVertexAttribArray(renderState.m_material->shaderProgram()->
-                              attributeLocation(this->m_name));
-  }
-
-  virtual void unbindVertexData(const vesRenderState &renderState, int key)
-  {
-    vesNotUsed(key);
-    assert(renderState.m_material && renderState.m_material->shaderProgram());
-
-    glDisableVertexAttribArray(renderState.m_material->shaderProgram()->
-                               attributeLocation(this->m_name));
   }
 };
 
 
-class vesNormalVertexAttribute : public vesVertexAttribute
+class vesNormalVertexAttribute : public vesGenericVertexAttribute
 {
 public:
   vesNormalVertexAttribute(const std::string &name="vertexNormal") :
-    vesVertexAttribute(name)
+    vesGenericVertexAttribute(name)
   {
-  }
-
-  virtual void bindVertexData(const vesRenderState &renderState, int key)
-  {
-    vesNotUsed(key);
-    assert(renderState.m_material && renderState.m_material->shaderProgram());
-
-    vesGeometryData::Ptr geometryData = renderState.m_mapper->geometryData();
-    assert(geometryData);
-
-    vesSourceData::Ptr sourceData = geometryData->sourceData(key);
-    assert(sourceData);
-
-    glVertexAttribPointer(renderState.m_material->shaderProgram()->
-                          attributeLocation(this->m_name),
-                          sourceData->numberOfComponents(key),
-                          sourceData->attributeDataType(key),
-                          sourceData->isAttributeNormalized(key),
-                          sourceData->attributeStride(key),
-                          (void*)sourceData->attributeOffset(key));
-
-    glEnableVertexAttribArray(renderState.m_material->shaderProgram()->
-                              attributeLocation(this->m_name));
-  }
-
-  virtual void unbindVertexData(const vesRenderState &renderState, int key)
-  {
-    vesNotUsed(key);
-    assert(renderState.m_material && renderState.m_material->shaderProgram());
-
-    glDisableVertexAttribArray(renderState.m_material->shaderProgram()->
-                               attributeLocation(this->m_name));
   }
 };
 
 
-class vesColorVertexAttribute : public vesVertexAttribute
+class vesColorVertexAttribute : public vesGenericVertexAttribute
 {
 public:
   vesColorVertexAttribute(const std::string &name="vertexColor") :
-    vesVertexAttribute(name)
+    vesGenericVertexAttribute(name)
   {
-  }
-
-  virtual void bindVertexData(const vesRenderState &renderState, int key)
-  {
-    vesNotUsed(key);
-    assert(renderState.m_material && renderState.m_material->shaderProgram());
-
-    vesGeometryData::Ptr geometryData = renderState.m_mapper->geometryData();
-    assert(geometryData);
-
-    vesSourceData::Ptr sourceData = geometryData->sourceData(key);
-    assert(sourceData);
-
-    glVertexAttribPointer(renderState.m_material->shaderProgram()->
-                          attributeLocation(this->m_name),
-                          sourceData->numberOfComponents(key),
-                          sourceData->attributeDataType(key),
-                          sourceData->isAttributeNormalized(key),
-                          sourceData->attributeStride(key),
-                          (void*)sourceData->attributeOffset(key));
-
-    glEnableVertexAttribArray(renderState.m_material->shaderProgram()->
-                              attributeLocation(this->m_name));
-  }
-
-  virtual void unbindVertexData(const vesRenderState &renderState, int key)
-  {
-    vesNotUsed(key);
-    assert(renderState.m_material && renderState.m_material->shaderProgram());
-
-    glDisableVertexAttribArray(renderState.m_material->shaderProgram()->
-                               attributeLocation(this->m_name));
   }
 };
 
 
-
-class vesTextureCoordinateVertexAttribute : public vesVertexAttribute
+class vesTextureCoordinateVertexAttribute : public vesGenericVertexAttribute
 {
 public:
   vesTextureCoordinateVertexAttribute(const std::string &name="vertexTextureCoordinate") :
-    vesVertexAttribute(name)
+    vesGenericVertexAttribute(name)
   {
-  }
-
-  virtual void bindVertexData(const vesRenderState &renderState, int key)
-  {
-    vesNotUsed(key);
-    assert(renderState.m_material && renderState.m_material->shaderProgram());
-
-    vesGeometryData::Ptr geometryData = renderState.m_mapper->geometryData();
-    assert(geometryData);
-
-    vesSourceData::Ptr sourceData = geometryData->sourceData(key);
-    assert(sourceData);
-
-    glVertexAttribPointer(renderState.m_material->shaderProgram()->
-                          attributeLocation(this->m_name),
-                          sourceData->numberOfComponents(key),
-                          sourceData->attributeDataType(key),
-                          sourceData->isAttributeNormalized(key),
-                          sourceData->attributeStride(key),
-                          (void*)sourceData->attributeOffset(key));
-
-    glEnableVertexAttribArray(renderState.m_material->shaderProgram()->
-                              attributeLocation(this->m_name));
-  }
-
-  virtual void unbindVertexData(const vesRenderState &renderState, int key)
-  {
-    vesNotUsed(key);
-    assert(renderState.m_material && renderState.m_material->shaderProgram());
-
-    glDisableVertexAttribArray(renderState.m_material->shaderProgram()->
-                               attributeLocation(this->m_name));
   }
 };
 
