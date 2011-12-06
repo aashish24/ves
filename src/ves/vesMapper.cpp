@@ -257,12 +257,6 @@ void vesMapper::setupDrawObjects(const vesRenderState &renderState)
   this->m_initialized = true;
 }
 
-struct vtkVertex3f
-{
-  vesVector3f point;
-  vesVector3f normal;
-  vesVector3f color;
-};
 
 void vesMapper::createVertexBufferObjects()
 {
