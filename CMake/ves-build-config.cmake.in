@@ -1,2 +1,5 @@
 list(APPEND VES_INCLUDE_DIRS "@VES_BINARY_DIR@")
 set(VES_INCLUDE_BASE_DIR "@VES_SOURCE_DIR@/src")
+
+# add the eigen include directory that is used by ves
+list(APPEND VES_INCLUDE_DIRS "@EIGEN_INCLUDE_DIR@")
