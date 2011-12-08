@@ -25,6 +25,15 @@ set(module_defaults
   -DModule_vtkImagingCore:BOOL=ON
 )
 
+macro(force_build proj)
+  ExternalProject_Add_Step(${proj} forcebuild
+    COMMAND ${CMAKE_COMMAND} -E remove ${base}/Stamp/${proj}/${proj}-build
+    DEPENDEES configure
+    DEPENDERS build
+    ALWAYS 1
+  )
+endmacro()
+
 macro(compile_vtk proj)
   ExternalProject_Add(
     ${proj}
@@ -55,12 +64,7 @@ macro(compile_ves proj)
       -DCMAKE_CXX_FLAGS:STRING=${VES_CXX_FLAGS}
   )
 
-  ExternalProject_Add_Step(${proj} forcebuild
-    COMMAND ${CMAKE_COMMAND} -E remove ${base}/Stamp/${proj}/${proj}-build
-    DEPENDEES configure
-    DEPENDERS build
-    ALWAYS 1
-  )
+  force_build(${proj})
 endmacro()
 
 macro(crosscompile_vtk proj toolchain_file)
@@ -95,12 +99,7 @@ macro(crosscompile_ves proj tag toolchain_file)
       -DVTK_DIR:PATH=${build_prefix}/vtkmodular-${tag}
   )
 
-  ExternalProject_Add_Step(${proj} forcebuild
-    COMMAND ${CMAKE_COMMAND} -E remove ${base}/Stamp/${proj}/${proj}-build
-    DEPENDEES configure
-    DEPENDERS build
-    ALWAYS 1
-  )
+  force_build(${proj})
 endmacro()
 
 compile_vtk(vtkmodular-host)
