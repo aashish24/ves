@@ -95,6 +95,7 @@ macro(crosscompile_ves proj tag toolchain_file)
       -DCMAKE_INSTALL_PREFIX:PATH=${install_prefix}/${proj}
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
       -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${toolchain_dir}/${toolchain_file}
+      -DCMAKE_CXX_FLAGS:STRING=${VES_CXX_FLAGS}
       -DVES_USE_VTK:BOOL=ON
       -DVTK_DIR:PATH=${build_prefix}/vtkmodular-${tag}
   )
