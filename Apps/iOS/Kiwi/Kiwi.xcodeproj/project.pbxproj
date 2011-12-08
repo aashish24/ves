@@ -507,9 +507,9 @@
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				HEADER_SEARCH_PATHS = (
 					"$(ves_build)/CMakeExternals/Source/vtkmodular/**",
-					"$(ves_source)/src",
 					"$(ves_source)/src/vtkVES",
-					"$(ves_source)/src/ves/**",
+					"$(ves_source)/src/ves",
+					"$(ves_build)/CMakeExternals/Install/eigen",
 				);
 				INFOPLIST_FILE = "Kiwi/Kiwi-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
@@ -547,9 +547,9 @@
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				HEADER_SEARCH_PATHS = (
 					"$(ves_build)/CMakeExternals/Source/vtkmodular/**",
-					"$(ves_source)/src",
 					"$(ves_source)/src/vtkVES",
-					"$(ves_source)/src/ves/**",
+					"$(ves_source)/src/ves",
+					"$(ves_build)/CMakeExternals/Install/eigen",
 				);
 				INFOPLIST_FILE = "Kiwi/Kiwi-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
@@ -612,9 +612,9 @@
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				HEADER_SEARCH_PATHS = (
 					"$(ves_build)/CMakeExternals/Source/vtkmodular/**",
-					"$(ves_source)/src",
 					"$(ves_source)/src/vtkVES",
-					"$(ves_source)/src/ves/**",
+					"$(ves_source)/src/ves",
+					"$(ves_build)/CMakeExternals/Install/eigen",
 				);
 				INFOPLIST_FILE = "Kiwi/Kiwi-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
@@ -674,9 +674,9 @@
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				HEADER_SEARCH_PATHS = (
 					"$(ves_build)/CMakeExternals/Source/vtkmodular/**",
-					"$(ves_source)/src",
 					"$(ves_source)/src/vtkVES",
-					"$(ves_source)/src/ves/**",
+					"$(ves_source)/src/ves",
+					"$(ves_build)/CMakeExternals/Install/eigen",
 				);
 				INFOPLIST_FILE = "Kiwi/Kiwi-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
