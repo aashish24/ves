@@ -34,6 +34,22 @@ macro(force_build proj)
   )
 endmacro()
 
+macro(install_eigen)
+  # The official download link for eigen redirects to https, and unfortunately
+  # cmake's builtin curl lacks https support.
+  set(eigen_url http://patmarion.com/kiwi/eigen-3.1.0-alpha1.tar.gz)
+  set(eigen_md5 c04dedf4ae97b055b6dd2aaa01daf5e9)
+  ExternalProject_Add(
+    eigen
+    SOURCE_DIR ${source_prefix}/eigen
+    URL ${eigen_url}
+    URL_MD5 ${eigen_md5}
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND ""
+    INSTALL_COMMAND ${CMAKE_COMMAND} -E copy_directory "${source_prefix}/eigen/Eigen" "${install_prefix}/eigen/Eigen"
+  )
+endmacro()
+
 macro(compile_vtk proj)
   ExternalProject_Add(
     ${proj}
@@ -54,12 +70,13 @@ macro(compile_ves proj)
     ${proj}
     SOURCE_DIR ${ves_src}
     DOWNLOAD_COMMAND ""
-    DEPENDS vtkmodular-host
+    DEPENDS vtkmodular-host eigen
     CMAKE_ARGS
       -DCMAKE_INSTALL_PREFIX:PATH=${install_prefix}/${proj}
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
       -DVES_USE_VTK:BOOL=ON
       -DVTK_DIR:PATH=${build_prefix}/vtkmodular-host
+      -DEIGEN_INCLUDE_DIR:PATH=${install_prefix}/eigen
       -DBUILD_TESTING:BOOL=ON
       -DCMAKE_CXX_FLAGS:STRING=${VES_CXX_FLAGS}
   )
@@ -90,7 +107,7 @@ macro(crosscompile_ves proj tag toolchain_file)
     ${proj}
     SOURCE_DIR ${ves_src}
     DOWNLOAD_COMMAND ""
-    DEPENDS vtkmodular-${tag}
+    DEPENDS vtkmodular-${tag} eigen
     CMAKE_ARGS
       -DCMAKE_INSTALL_PREFIX:PATH=${install_prefix}/${proj}
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
@@ -98,11 +115,13 @@ macro(crosscompile_ves proj tag toolchain_file)
       -DCMAKE_CXX_FLAGS:STRING=${VES_CXX_FLAGS}
       -DVES_USE_VTK:BOOL=ON
       -DVTK_DIR:PATH=${build_prefix}/vtkmodular-${tag}
+      -DEIGEN_INCLUDE_DIR:PATH=${install_prefix}/eigen
   )
 
   force_build(${proj})
 endmacro()
 
+install_eigen()
 compile_vtk(vtkmodular-host)
 
 if(VES_IOS_SUPERBUILD)

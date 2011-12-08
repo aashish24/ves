@@ -7,6 +7,8 @@ endif()
 
 project(VES)
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake/Modules")
+
 # set project variables
 set(VES_MAJOR_VERSION 0)
 set(VES_MINOR_VERSION 1)

@@ -5,6 +5,10 @@ if(NOT APPLE)
   add_definitions(-DANDROID)
 endif()
 
+# find and include eigen
+find_package(Eigen REQUIRED)
+include_directories(${EIGEN_INCLUDE_DIRS})
+
 include(setup-headers.cmake)
 
 add_subdirectory(ves)
