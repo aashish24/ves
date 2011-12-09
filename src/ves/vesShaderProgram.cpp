@@ -203,7 +203,7 @@ int vesShaderProgram::attributeLocation(const std::string &name) const
 
 void vesShaderProgram::use()
 {
-  assert(this->m_internal->m_programHandle >= 0);
+  assert(this->m_internal->m_programHandle > 0);
 
   glUseProgram(this->m_internal->m_programHandle);
 }
