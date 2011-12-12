@@ -40,16 +40,6 @@
   if (self)
   {
     self->mApp = new vesKiwiViewerApp;
-    self->mApp->initGouraudShader([[self stringFromFileContents:@"Shader.vsh"] UTF8String],
-                                  [[self stringFromFileContents:@"Shader.fsh"] UTF8String]);
-    self->mApp->initBlinnPhongShader([[self stringFromFileContents:@"BlinnPhong.vsh"] UTF8String],
-                                     [[self stringFromFileContents:@"BlinnPhong.fsh"] UTF8String]);
-    self->mApp->initToonShader([[self stringFromFileContents:@"ToonShader.vsh"] UTF8String],
-                               [[self stringFromFileContents:@"ToonShader.fsh"] UTF8String]);
-    self->mApp->initTextureShader([[self stringFromFileContents:@"BackgroundTexture.vsh"] UTF8String],
-                                  [[self stringFromFileContents:@"BackgroundTexture.fsh"] UTF8String]);
-
-    self->mApp->setShadingModel("Gouraud");
   }
 
   return self;

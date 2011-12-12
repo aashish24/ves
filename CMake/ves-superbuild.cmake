@@ -16,6 +16,8 @@ set(install_prefix ${base}/Install)
 set(toolchain_dir "${CMAKE_CURRENT_SOURCE_DIR}/CMake/toolchains")
 set(ves_src "${CMAKE_CURRENT_SOURCE_DIR}")
 
+find_package(PythonInterp REQUIRED)
+
 set(module_defaults
   -DModule_vtkFiltersCore:BOOL=ON
   -DModule_vtkFiltersSources:BOOL=ON
@@ -116,6 +118,7 @@ macro(crosscompile_ves proj tag toolchain_file)
       -DVES_USE_VTK:BOOL=ON
       -DVTK_DIR:PATH=${build_prefix}/vtkmodular-${tag}
       -DEIGEN_INCLUDE_DIR:PATH=${install_prefix}/eigen
+      -DPYTHON_EXECUTABLE:FILEPATH=${PYTHON_EXECUTABLE}
   )
 
   force_build(${proj})

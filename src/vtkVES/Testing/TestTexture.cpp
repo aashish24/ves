@@ -34,6 +34,7 @@
 #include <vesShaderProgram.h>
 #include <vesTexture.h>
 #include <vesUniform.h>
+#include <vesBuiltinShaders.h>
 
 #include <vtkPolyData.h>
 #include <vtkErrorCode.h>
@@ -314,8 +315,8 @@ void InitRendering()
 {
   std::cout << "Init rendering " << std::endl;
   testHelper->app()->initTextureShader(
-    GetFileContents(testHelper->sourceDirectory() + "/src/shaders/TestTexture.vsh"),
-    GetFileContents(testHelper->sourceDirectory() + "/src/shaders/TestTexture.fsh"));
+    vesBuiltinShaders::vesTestTexture_vert(),
+    vesBuiltinShaders::vesTestTexture_frag());
 }
 
 //----------------------------------------------------------------------------

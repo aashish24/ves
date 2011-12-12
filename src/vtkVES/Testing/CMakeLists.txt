@@ -1,25 +1,21 @@
+set(tests
+  TestKiwiViewer
+  TestClipPlane
+  TestTexture
+  TestGradientBackground
+  TestPointCloud
+  TestMatrix
+  )
 
-add_executable(TestKiwiViewer TestKiwiViewer.cpp)
-target_link_libraries(TestKiwiViewer vtkVES GLESv2 EGL X11)
-add_test(TestKiwiViewer ${EXECUTABLE_OUTPUT_PATH}/TestKiwiViewer ${VES_SOURCE_DIR} ${VES_SOURCE_DIR}/Testing/BaselineImages)
 
-add_executable(TestClipPlane TestClipPlane.cpp)
-target_link_libraries(TestClipPlane vtkVES GLESv2 EGL X11)
-add_test(TestClipPlane ${EXECUTABLE_OUTPUT_PATH}/TestClipPlane ${VES_SOURCE_DIR} ${VES_SOURCE_DIR}/Testing/BaselineImages)
+macro(ves_add_test name)
+  set(deps vtkVES GLESv2 EGL X11)
+  add_executable(${name} ${name}.cpp)
+  target_link_libraries(${name} ${deps})
+  add_test(${name} ${EXECUTABLE_OUTPUT_PATH}/${name} ${VES_SOURCE_DIR} ${VES_SOURCE_DIR}/Testing/BaselineImages)
+endmacro()
 
-add_executable(TestTexture TestTexture.cpp)
-target_link_libraries(TestTexture vtkVES GLESv2 EGL X11)
-add_test(TestTexture ${EXECUTABLE_OUTPUT_PATH}/TestTexture ${VES_SOURCE_DIR} ${VES_SOURCE_DIR}/Testing/BaselineImages)
 
-add_executable(TestGradientBackground TestGradientBackground.cpp)
-target_link_libraries(TestGradientBackground vtkVES GLESv2 EGL X11)
-add_test(TestGradientBackground ${EXECUTABLE_OUTPUT_PATH}/TestGradientBackground ${VES_SOURCE_DIR} ${VES_SOURCE_DIR}/Testing/BaselineImages)
-
-add_executable(TestPointCloud TestPointCloud.cpp)
-target_link_libraries(TestPointCloud vtkVES GLESv2 EGL X11)
-add_test(NAME TestPointCloud
-  COMMAND TestPointCloud ${VES_SOURCE_DIR} ${VES_SOURCE_DIR}/Testing/BaselineImages)
-
-add_executable(TestMatrix TestMatrix.cpp)
-target_link_libraries(TestMatrix ves GLESv2 EGL)
-add_test(NAME TestMatrix COMMAND TestMatrix)
+foreach(name ${tests})
+  ves_add_test(${name})
+endforeach()

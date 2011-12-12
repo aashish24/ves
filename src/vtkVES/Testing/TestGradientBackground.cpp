@@ -35,6 +35,7 @@
 #include <vesSetGet.h>
 #include <vesShaderProgram.h>
 #include <vesUniform.h>
+#include <vesBuiltinShaders.h>
 
 #include <vtkPolyData.h>
 #include <vtkErrorCode.h>
@@ -298,8 +299,8 @@ std::string GetFileContents(const std::string& filename)
 void InitRendering()
 {
   testHelper->app()->initClipShader(
-    GetFileContents(testHelper->sourceDirectory() + "/src/shaders/ClipPlane.vsh"),
-    GetFileContents(testHelper->sourceDirectory() + "/src/shaders/ClipPlane.fsh"));
+    vesBuiltinShaders::vesClipPlane_vert(),
+    vesBuiltinShaders::vesClipPlane_frag());
 }
 
 //----------------------------------------------------------------------------

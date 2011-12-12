@@ -13,16 +13,6 @@ set(assets
   ${kiwi_data}/visible-woman-hand.vtp
   ${kiwi_data}/head.vti
   ${kiwi_data}/kiwi.png
-  ../../../src/shaders/Shader.fsh
-  ../../../src/shaders/Shader.vsh
-  ../../../src/shaders/BackgroundTexture.fsh
-  ../../../src/shaders/BackgroundTexture.vsh
-  ../../../src/shaders/BlinnPhong.fsh
-  ../../../src/shaders/BlinnPhong.vsh
-  ../../../src/shaders/ClipPlane.fsh
-  ../../../src/shaders/ClipPlane.vsh
-  ../../../src/shaders/ToonShader.fsh
-  ../../../src/shaders/ToonShader.vsh
   )
 
 foreach(f ${assets})
