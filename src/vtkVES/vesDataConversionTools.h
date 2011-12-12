@@ -18,6 +18,9 @@
   limitations under the License.
  ========================================================================*/
 
+#ifndef __vesDataConversionTools_h
+#define __vesDataConversionTools_h
+
 class vtkPolyData;
 class vtkDataSet;
 class vtkDiscretizableColorTransferFunction;
@@ -71,3 +74,5 @@ public:
     vesSharedPtr<vesTexture> texture, int width, int height);
 
 };
+
+#endif
