@@ -40,6 +40,7 @@
 #include "vesUniform.h"
 #include "vesVertexAttribute.h"
 #include "vesVertexAttributeKeys.h"
+#include "vesBuiltinShaders.h"
 
 #include <vtkNew.h>
 #include <vtkPolyData.h>
@@ -155,6 +156,21 @@ vesKiwiViewerApp::vesKiwiViewerApp()
   this->addBuiltinDataset("Caffeine", "caffeine.pdb");
   this->addBuiltinDataset("Head", "head.vti");
   this->addBuiltinDataset("KiwiViewer Logo", "kiwi.png");
+
+  this->initBlinnPhongShader(
+    vesBuiltinShaders::vesBlinnPhong_vert(),
+    vesBuiltinShaders::vesBlinnPhong_frag());
+  this->initToonShader(
+    vesBuiltinShaders::vesToonShader_vert(),
+    vesBuiltinShaders::vesToonShader_frag());
+  this->initGouraudShader(
+    vesBuiltinShaders::vesShader_vert(),
+    vesBuiltinShaders::vesShader_frag());
+  this->initTextureShader(
+    vesBuiltinShaders::vesBackgroundTexture_vert(),
+    vesBuiltinShaders::vesBackgroundTexture_frag());
+
+  this->setShadingModel("Gouraud");
 }
 
 //----------------------------------------------------------------------------

@@ -215,15 +215,6 @@ bool setupGraphics(int w, int h)
   vtkAndroidOutputWindow::Install();
 
   app = new vesKiwiViewerApp();
-  app->initGouraudShader(getContentsOfAssetFile("Shader.vsh"),
-                         getContentsOfAssetFile("Shader.fsh"));
-  app->initTextureShader(getContentsOfAssetFile("BackgroundTexture.vsh"),
-                         getContentsOfAssetFile("BackgroundTexture.fsh"));
-  app->initBlinnPhongShader(getContentsOfAssetFile("BlinnPhong.vsh"),
-                         getContentsOfAssetFile("BlinnPhong.fsh"));
-  app->initToonShader(getContentsOfAssetFile("ToonShader.vsh"),
-                         getContentsOfAssetFile("ToonShader.fsh"));
-  app->setShadingModel("Gouraud");
   app->resizeView(w, h);
 
   if (!isResume) {

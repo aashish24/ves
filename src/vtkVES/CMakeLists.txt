@@ -40,6 +40,7 @@ set(sources ${sources}
 
 set(deps
   ves
+  vesShaders
   vtkIOGeometry
   vtkIOXML
   vtkIOImage
