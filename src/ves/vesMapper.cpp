@@ -354,7 +354,7 @@ void vesMapper::drawPoints(const vesRenderState &renderState,
 {
   assert(this->m_geometryData);
 
-  if( points->size() )
+  if(points->size())
   {
     // Draw using indices
     this->drawPrimitive(renderState, points);
