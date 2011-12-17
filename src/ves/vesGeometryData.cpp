@@ -60,6 +60,12 @@ void vesGeometryData::computeNormals()
     return;
   }
 
+  vesPrimitive::Ptr triangles = this->triangles();
+  if (!triangles) {
+    // \todo Put a log message here
+    return;
+  }
+
   vesSourceData::Ptr sourceData
     = this->sourceData(vesVertexAttributeKeys::Normal);
   if (!sourceData) {
@@ -90,7 +96,6 @@ void vesGeometryData::computeNormals()
     }
   }
 
-  vesPrimitive::Ptr triangles = this->triangles();
   unsigned int numberOfIndices = triangles->numberOfIndices();
   unsigned int indexCount = triangles->indexCount();
 

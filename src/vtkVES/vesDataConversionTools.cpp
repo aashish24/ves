@@ -329,10 +329,10 @@ vesSharedPtr<vesGeometryData> vesDataConversionTools::ConvertPoints(vtkPolyData*
 
 vesSharedPtr<vesGeometryData> vesDataConversionTools::Convert(vtkPolyData* input)
 {
-  vesPrimitive::Ptr trianglesPrimitive(new vesPrimitive());
-  vesPrimitive::Ptr triangleStripsPrimitive(new vesPrimitive());
-  vesPrimitive::Ptr linesPrimitive(new vesPrimitive());
-  vesPrimitive::Ptr verticesPrimitive(new vesPrimitive());
+  vesPrimitive::Ptr trianglesPrimitive;
+  vesPrimitive::Ptr triangleStripsPrimitive;
+  vesPrimitive::Ptr linesPrimitive;
+  vesPrimitive::Ptr verticesPrimitive;
 
   vesSharedPtr<vesGeometryData> output =
     vesSharedPtr<vesGeometryData>(new vesGeometryData());
@@ -352,71 +352,95 @@ vesSharedPtr<vesGeometryData> vesDataConversionTools::Convert(vtkPolyData* input
   output->addSource(sourceData);
   output->setName("PolyData");
 
-  vtkCellArray* polys = input->GetPolys();
   vtkIdType num;
   vtkIdType* vertices;
+
+  // Add triangles
+  vtkCellArray* polys = input->GetPolys();
   polys->InitTraversal();
-  for (int i = 0; i < polys->GetNumberOfCells(); ++i) {
-    polys->GetNextCell(num, vertices);
-    if (num == 3) {
-      trianglesPrimitive->pushBackIndices(vertices[0], vertices[1], vertices[2]);
-    }
-    else if (num == 4) {
-      trianglesPrimitive->pushBackIndices(vertices[0], vertices[1], vertices[2]);
-      trianglesPrimitive->pushBackIndices(vertices[3], vertices[0], vertices[2]);
+
+  if (polys->GetNumberOfCells() > 0) {
+    trianglesPrimitive = vesPrimitive::Ptr(new vesPrimitive());
+    trianglesPrimitive->setIndexCount(3);
+    trianglesPrimitive->setPrimitiveType(vesPrimitiveRenderType::Triangles);
+
+    output->addPrimitive(trianglesPrimitive);
+
+    for (int i = 0; i < polys->GetNumberOfCells(); ++i) {
+      polys->GetNextCell(num, vertices);
+      if (num == 3) {
+        trianglesPrimitive->pushBackIndices(vertices[0], vertices[1], vertices[2]);
+      }
+      else if (num == 4) {
+        trianglesPrimitive->pushBackIndices(vertices[0], vertices[1], vertices[2]);
+        trianglesPrimitive->pushBackIndices(vertices[3], vertices[0], vertices[2]);
+      }
     }
   }
 
-  trianglesPrimitive->setIndexCount(3);
-  trianglesPrimitive->setPrimitiveType(vesPrimitiveRenderType::Triangles);
-
+  // Add triangle strips
   vtkCellArray* strips = input->GetStrips();
   strips->InitTraversal();
-  for (int i = 0; i < strips->GetNumberOfCells(); ++i) {
-    strips->GetNextCell(num, vertices);
-    for (int i = 2; i < num; ++i)
-    {
-      if (i & 1)
+
+  if (strips->GetNumberOfCells() > 0) {
+    triangleStripsPrimitive = vesPrimitive::Ptr(new vesPrimitive());
+    triangleStripsPrimitive->setIndexCount(1);
+    triangleStripsPrimitive->setPrimitiveType(vesPrimitiveRenderType::TriangleStrip);
+
+    output->addPrimitive(triangleStripsPrimitive);
+
+    for (int i = 0; i < strips->GetNumberOfCells(); ++i) {
+      strips->GetNextCell(num, vertices);
+      for (int i = 2; i < num; ++i)
       {
-        triangleStripsPrimitive->pushBackIndices(vertices[i-1], vertices[i-2], vertices[i]);
-      }
-      else
-      {
-        triangleStripsPrimitive->pushBackIndices(vertices[i-2], vertices[i-1], vertices[i]);
+        if (i & 1)
+        {
+          triangleStripsPrimitive->pushBackIndices(vertices[i-1], vertices[i-2], vertices[i]);
+        }
+        else
+        {
+          triangleStripsPrimitive->pushBackIndices(vertices[i-2], vertices[i-1], vertices[i]);
+        }
       }
     }
   }
 
-  triangleStripsPrimitive->setIndexCount(1);
-  triangleStripsPrimitive->setPrimitiveType(vesPrimitiveRenderType::TriangleStrip);
+  // Add lines
+  vtkCellArray* lines = input->GetLines();
+  lines->InitTraversal();
 
-  vtkCellArray* vtklines = input->GetLines();
-  vtklines->InitTraversal();
-  for (int i = 0; i < vtklines->GetNumberOfCells(); ++i) {
-    vtklines->GetNextCell(num, vertices);
-    for (int i = 1; i < num; ++i)
-    {
-      linesPrimitive->pushBackIndices(vertices[i-1], vertices[i]);
+  if (lines->GetNumberOfCells() > 0) {
+    linesPrimitive = vesPrimitive::Ptr(new vesPrimitive());
+    linesPrimitive->setIndexCount(2);
+    linesPrimitive->setPrimitiveType(vesPrimitiveRenderType::Lines);
+
+    output->addPrimitive(linesPrimitive);
+
+    for (int i = 0; i < lines->GetNumberOfCells(); ++i) {
+      lines->GetNextCell(num, vertices);
+      for (int i = 1; i < num; ++i)
+      {
+        linesPrimitive->pushBackIndices(vertices[i-1], vertices[i]);
+      }
     }
   }
 
-  linesPrimitive->setIndexCount(2);
-  linesPrimitive->setPrimitiveType(vesPrimitiveRenderType::Lines);
+  // Add verts
+  vtkCellArray* verts = input->GetVerts();
+  verts->InitTraversal();
 
-  vtkCellArray* vtkvertices = input->GetVerts();
-  vtkvertices->InitTraversal();
-  for (int i = 0; i < vtkvertices->GetNumberOfCells() && i < 65000; ++i) {
-    vtkvertices->GetNextCell(num, vertices);
-    verticesPrimitive->pushBackIndices(vertices[0]);
+  if (verts->GetNumberOfCells() > 0) {
+    verticesPrimitive = vesPrimitive::Ptr(new vesPrimitive());
+    verticesPrimitive->setIndexCount(1);
+    verticesPrimitive->setPrimitiveType(vesPrimitiveRenderType::Points);
+
+    output->addPrimitive(verticesPrimitive);
+
+    for (int i = 0; i < verts->GetNumberOfCells() && i < 65000; ++i) {
+      verts->GetNextCell(num, vertices);
+      verticesPrimitive->pushBackIndices(vertices[0]);
+    }
   }
-
-  verticesPrimitive->setIndexCount(1);
-  verticesPrimitive->setPrimitiveType(vesPrimitiveRenderType::Points);
-
-  output->addPrimitive(trianglesPrimitive);
-  output->addPrimitive(triangleStripsPrimitive);
-  output->addPrimitive(linesPrimitive);
-  output->addPrimitive(verticesPrimitive);
 
   if (input->GetPointData()->GetNormals()) {
     vtkDataArray* normals = input->GetPointData()->GetNormals();
