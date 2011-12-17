@@ -328,7 +328,6 @@ static int engine_init_display(struct engine* engine) {
     vesSharedPtr<vesMapper> mapper(new vesMapper());
     mapper->setGeometryData(geometry_data);
     mapper->setColor(1.0f, 0.0f, 0.0f, 1.0f);
-    mapper->setDrawPoints(true);
 
     /*
     vtkNew<vtkLookupTable> lookupTable;

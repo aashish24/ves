@@ -318,6 +318,12 @@ vesSharedPtr<vesGeometryData> vesDataConversionTools::ConvertPoints(vtkPolyData*
     output->addSource(scalarData);
   }
 
+  // Add point primitive
+  vesPrimitive::Ptr pointPrimitive (new vesPrimitive());
+  pointPrimitive->setPrimitiveType(vesPrimitiveRenderType::Points);
+  pointPrimitive->setIndexCount(1);
+  output->addPrimitive(pointPrimitive);
+
   return output;
 }
 
@@ -410,7 +416,7 @@ vesSharedPtr<vesGeometryData> vesDataConversionTools::Convert(vtkPolyData* input
   output->addPrimitive(triangles);
   output->addPrimitive(triangleStrips);
   output->addPrimitive(lines);
-  //output->addPrimitive(verticesPrimitive);
+  output->addPrimitive(verticesPrimitive);
 
   if (input->GetPointData()->GetNormals()) {
     vtkDataArray* normals = input->GetPointData()->GetNormals();

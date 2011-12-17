@@ -82,9 +82,8 @@ public:
 
   bool setPrimitiveType(unsigned int type)
   {
-    bool success = true;
     this->m_primitiveType = type;
-    return success;
+    return true;
   }
 
   inline unsigned int indexCount() const
