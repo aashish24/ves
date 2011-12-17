@@ -95,7 +95,10 @@
     n++;
     }
 
+  NSLog(@"Opening path: %@", fpath);
+
   bool loadSuccess = self->mApp->loadDataset([fpath UTF8String]);
+
   if (!loadSuccess)
   {
     [readerAlert dismissWithClickedButtonIndex:0 animated:YES];

@@ -113,6 +113,31 @@
 	return YES;
 }
 
+-(NSString*) documentsDirectory
+{
+  NSArray* documentDirectories = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+  return [documentDirectories objectAtIndex:0];
+}
+
+-(NSString*) pathInDocumentsDirectoryForFileName:(NSString*) fileName
+{
+  return [[self documentsDirectory] stringByAppendingPathComponent:fileName];
+}
+
+-(void) loadBuiltinDatasetWithIndex:(int)index
+{
+  vesKiwiViewerApp* app = [self.glView getApp];
+  NSString* datasetFilename = [NSString stringWithUTF8String:app->builtinDatasetFilename(index).c_str()];  
+  NSString* absolutePath = [[NSBundle mainBundle] pathForResource:datasetFilename ofType:nil];
+  if (absolutePath == nil)
+    {
+    absolutePath = [self pathInDocumentsDirectoryForFileName:datasetFilename];
+    }
+
+  NSURL* url = [NSURL fileURLWithPath:absolutePath];
+  [self handleCustomURLScheme:url];    
+}
+
 - (BOOL)handleCustomURLScheme:(NSURL *)url;
 {
   //
@@ -128,8 +153,7 @@
     {
     NSLog(@"Null url; opening default data file");
     vesKiwiViewerApp* app = [self.glView getApp];
-    NSString* defaultDataset = [NSString stringWithUTF8String:app->builtinDatasetFilename(app->defaultBuiltinDatasetIndex()).c_str()];
-    [glView setFilePath:[[NSBundle mainBundle] pathForResource:defaultDataset ofType:nil]];
+    [self loadBuiltinDatasetWithIndex:app->defaultBuiltinDatasetIndex()];
     return YES;
     }
 
@@ -160,13 +184,11 @@
   nameOfDownloadedVTK = [[pathComponentForCustomURL lastPathComponent] retain];
 
   // Check to make sure that the file has not already been downloaded, if so, just switch to it
-  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-  NSString *documentsDirectory = [paths objectAtIndex:0];
+  NSString *documentsDirectory = [self documentsDirectory];
 
   NSLog(@"path = %@",pathComponentForCustomURL);
   NSLog(@"loc = %@",locationOfRemoteVTKFile);
   NSLog(@"name = %@",nameOfDownloadedVTK);
-  NSLog(@"paths = %@",paths);
   NSLog(@"docDir = %@",documentsDirectory);
 
   downloadCancelled = NO;
@@ -257,9 +279,7 @@
 {
 	if (fileData != nil)
     {
-    // Add the new protein to the list by gunzipping the data and pulling out the title
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString *documentsDirectory = [self documentsDirectory];
 
     NSError *error = nil;
     BOOL writeStatus;
@@ -321,10 +341,6 @@
 
 -(void)dataSelected:(int)index
 {
-  vesKiwiViewerApp* app = [self.glView getApp];
-  NSString* datasetFilename = [NSString stringWithUTF8String:app->builtinDatasetFilename(index).c_str()];
-  NSURL* url = [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:datasetFilename ofType:nil]];
-
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
     {
     [self.viewController dismissModalViewControllerAnimated:NO];
@@ -333,7 +349,8 @@
     {
     [self.loadDataPopover dismissPopoverAnimated:YES];
     }
-  [self handleCustomURLScheme:url];
+
+  [self loadBuiltinDatasetWithIndex:index];
 }
 
 -(IBAction)setLoadDataButtonTapped:(id)sender

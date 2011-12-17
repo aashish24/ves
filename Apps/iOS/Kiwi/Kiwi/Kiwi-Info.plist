@@ -172,6 +172,8 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>2011083101</string>
+	<key>UIFileSharingEnabled</key>
+	<true/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSMainNibFile</key>

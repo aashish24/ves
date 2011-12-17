@@ -274,7 +274,7 @@
 
 - (void)drawView:(id) sender
 {    
-  if (self->shouldRender)
+  if (TRUE || self->shouldRender)
     {
     NSDate* startRenderTotalDate = [NSDate date];
     [[NSNotificationCenter defaultCenter] postNotificationName:@"willRender" object:nil];
@@ -409,10 +409,16 @@
   if (sender.state == UIGestureRecognizerStateEnded ||
       sender.state == UIGestureRecognizerStateCancelled)
     {
-    bool imageSliceModeActive = self->renderer.app->scrollSliceModeActive();
+    bool widgetInteractionActive = self->renderer.app->widgetInteractionIsActive();
 
     self->renderer.app->handleSingleTouchUp();
-    if (!imageSliceModeActive && lastRotationMotionNorm > 4.0f)
+    
+    // clear any pending rotation events
+    self->accumulatedRotationDelta.x = 0.0;
+    self->accumulatedRotationDelta.y = 0.0;
+    
+    [self scheduleRender];
+    if (!widgetInteractionActive && lastRotationMotionNorm > 4.0f)
       {
       self->inertialRotationThread = [[NSThread alloc] initWithTarget:self selector:@selector(handleInertialRotation) object:nil];
       [inertialRotationThread start];
@@ -431,6 +437,7 @@
   if (sender.state == UIGestureRecognizerStateBegan)
     {
     self->renderer.app->handleSingleTouchDown(currentLocation.x, currentLocation.y);
+    [self scheduleRender];
     }
   
   // 
@@ -499,8 +506,11 @@
 }
 
 - (IBAction)handleTapGesture:(UITapGestureRecognizer *)sender
-{ 
+{
+  CGPoint currentLocation = [sender locationInView:self];
+  self->renderer.app->handleSingleTouchTap(currentLocation.x, currentLocation.y);
   [self stopInertialMotion];
+  [self scheduleRender];
 }
 
 -(void)scheduleRotate:(CGPoint)delta
