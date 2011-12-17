@@ -72,7 +72,6 @@ public:
 
 
 vesMapper::vesMapper() : vesBoundingObject(),
-  m_drawPoints(false),
   m_initialized(false),
   m_maximumTriangleIndicesPerDraw
                (65535),
@@ -198,30 +197,24 @@ void vesMapper::render(const vesRenderState &renderState)
     ++bufferIndex;
   }
 
-  // Try rendering our point cloud here
-  if (m_drawPoints)
-    drawPoints(renderState);
-
   unsigned int numberOfPrimitiveTypes = this->m_geometryData->numberOfPrimitiveTypes();
   for(unsigned int i = 0; i < numberOfPrimitiveTypes; ++i)
   {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this->m_internal->m_buffers[bufferIndex++]);
 
-    if (this->m_geometryData->primitive(i)->primitiveType() == GL_TRIANGLES) {
+    if (this->m_geometryData->primitive(i)->primitiveType()
+      == vesPrimitiveRenderType::Triangles) {
       // Draw triangles
       this->drawTriangles(renderState, this->m_geometryData->primitive(i));
     }
+    else if (this->m_geometryData->primitive(i)->primitiveType()
+      == vesPrimitiveRenderType::Points )
+      {
+      this->drawPoints(renderState, this->m_geometryData->primitive(i));
+      }
+    // Draw rest of the primitives
     else {
-      // Draw rest of the primitives
-
-      // Send the primitive type information out
-      renderState.m_material->bindRenderData(
-        renderState, vesRenderData(this->m_geometryData->primitive(i)->primitiveType()));
-
-      glDrawElements(this->m_geometryData->primitive(i)->primitiveType(),
-                     this->m_geometryData->primitive(i)->numberOfIndices(),
-                     GL_UNSIGNED_SHORT,
-                     (void*)0);
+      this->drawPrimitive(renderState, this->m_geometryData->primitive(i));
     }
   }
 
@@ -309,6 +302,18 @@ void vesMapper::deleteVertexBufferObjects()
 }
 
 
+void vesMapper::drawPrimitive(const vesRenderState &renderState,
+                              vesSharedPtr<vesPrimitive> primitive)
+{
+  // Send the primitive type information out
+  renderState.m_material->bindRenderData(
+    renderState, vesRenderData(primitive->primitiveType()));
+
+  glDrawElements(primitive->primitiveType(), primitive->numberOfIndices(),
+                 GL_UNSIGNED_SHORT,  (void*)0);
+}
+
+
 void vesMapper::drawTriangles(const vesRenderState &renderState,
                               vesSharedPtr<vesPrimitive> triangles)
 {
@@ -335,10 +340,8 @@ void vesMapper::drawTriangles(const vesRenderState &renderState,
       renderState, vesRenderData(triangles->primitiveType()));
 
     // Now draw the elements
-    glDrawElements(triangles->primitiveType(),
-                   numberOfIndicesToDraw,
-                   GL_UNSIGNED_SHORT,
-                   (void*)offset);
+    glDrawElements(triangles->primitiveType(), numberOfIndicesToDraw,
+                   GL_UNSIGNED_SHORT, (void*)offset);
 
 
     drawnIndices += numberOfIndicesToDraw;
@@ -346,11 +349,20 @@ void vesMapper::drawTriangles(const vesRenderState &renderState,
 }
 
 
-void vesMapper::drawPoints(const vesRenderState &)
+void vesMapper::drawPoints(const vesRenderState &renderState,
+                           vesSharedPtr<vesPrimitive> points)
 {
   assert(this->m_geometryData);
 
-  vesSharedPtr<vesSourceData> data =
-      m_geometryData->sourceData(vesVertexAttributeKeys::Position);
-  glDrawArrays(GL_POINTS, 0, data->sizeOfArray());
+  if( points->size() )
+  {
+    // Draw using indices
+    this->drawPrimitive(renderState, points);
+  }
+  else
+  {
+    vesSharedPtr<vesSourceData> data =
+        m_geometryData->sourceData(vesVertexAttributeKeys::Position);
+    glDrawArrays(points->primitiveType(), 0, data->sizeOfArray());
+  }
 }

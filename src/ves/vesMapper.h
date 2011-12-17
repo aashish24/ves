@@ -55,8 +55,6 @@ public:
 
   virtual void render(const vesRenderState &renderState);
 
-  void setDrawPoints(bool draw) { m_drawPoints = draw; }
-
 private:
   virtual void setupDrawObjects(const vesRenderState &renderState);
 
@@ -68,10 +66,13 @@ private:
   vesMatrix4x4f m_normalizedMatrix;
 
 protected:
+  void drawPrimitive(const vesRenderState &renderState,
+                     vesSharedPtr<vesPrimitive> primitive);
   void drawTriangles(const vesRenderState &renderState,
                      vesSharedPtr<vesPrimitive> triangles);
-  void drawPoints(const vesRenderState &renderState);
-  bool m_drawPoints;
+  void drawPoints(const vesRenderState &renderState,
+                  vesSharedPtr<vesPrimitive> points);
+
   bool m_initialized;
 
   const int m_maximumTriangleIndicesPerDraw;
