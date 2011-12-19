@@ -33,6 +33,13 @@
 #include <vesGeometryData.h>
 #include <vesDataConversionTools.h>
 #include <vesVertexAttributeKeys.h>
+#include <vesKiwiDataLoader.h>
+#include <vesDataConversionTools.h>
+#include <vesTexture.h>
+#include <vesCamera.h>
+#include <vesVertexAttribute.h>
+#include <vesVertexAttributeKeys.h>
+
 
 #include <vtkPolyDataReader.h>
 #include <vtkPolyData.h>
@@ -44,6 +51,7 @@
 #include <vtkPNGReader.h>
 #include <vtkPNGWriter.h>
 #include <vtkSmartPointer.h>
+#include <vtkLookupTable.h>
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -63,13 +71,22 @@ public:
 
   vesPointApp() : vesKiwiBaseApp()
   {
-    this->setBackgroundColor(1.0, 1.0, 1.0);
-    this->m_dataRep = 0;
+    this->setBackgroundColor(0.0, 0.0, 0.0);
   }
 
   ~vesPointApp()
   {
     this->unloadData();
+  }
+
+  void resetView()
+  {
+    this->vesKiwiBaseApp::resetView();
+
+    // move the camera for a better default view of the cturtle.vtk dataset
+    this->camera()->elevation(180);
+    this->camera()->roll(180);
+    this->camera()->dolly(2.5);
   }
 
   void initShader(const std::string& vertexSource, const std::string fragmentSource)
@@ -78,14 +95,16 @@ public:
     this->addModelViewMatrixUniform(m_shader);
     this->addProjectionMatrixUniform(m_shader);
     this->addVertexPositionAttribute(m_shader);
+
+    vesGenericVertexAttribute::Ptr vertexScalar(new vesGenericVertexAttribute("vertexColor"));
+    m_shader->addVertexAttribute(vertexScalar, vesVertexAttributeKeys::Scalar);
   }
 
   void unloadData()
   {
     if (this->m_dataRep) {
       this->m_dataRep->removeSelfFromRenderer(this->renderer());
-      delete this->m_dataRep;
-      this->m_dataRep = 0;
+      this->m_dataRep.reset();
     }
   }
 
@@ -93,43 +112,30 @@ public:
   {
     this->unloadData();
 
-    cout << "Reading data from " << filename << endl;
-    vtkSmartPointer<vtkPolyDataReader> read = vtkSmartPointer<vtkPolyDataReader>::New();
-    read->SetFileName(filename.c_str());
-    read->Update();
-    vtkSmartPointer<vtkPolyData> polyData = read->GetOutput();
-    assert(polyData.GetPointer());
-    polyData->Print(cout);
+    vtkSmartPointer<vtkPolyDataReader> reader = vtkSmartPointer<vtkPolyDataReader>::New();
+    reader->SetFileName(filename.c_str());
+    reader->Update();
+    vtkSmartPointer<vtkPolyData> polyData = reader->GetOutput();
+    assert(polyData->GetNumberOfPoints());
 
-    m_data = vesDataConversionTools::ConvertPoints(polyData.GetPointer());
-    vesSharedPtr<vesSourceData> data = m_data->sourceData(vesVertexAttributeKeys::Position);
-    cout << "Number of sources in m_data: " << m_data->numberOfSources() << endl;
-    cout << "m_data read in " << data.get()
-         << "\n\tnumber of components: "
-         << data->numberOfComponents(vesVertexAttributeKeys::Position)
-         << "\n\tsize: " << data->sizeOfArray()
-         << endl;
-    data = m_data->sourceData(vesVertexAttributeKeys::Scalar);
-    cout << "m_data (scalars) read in " << data.get()
-         << "\n\tnumber of components: "
-         << data->numberOfComponents(vesVertexAttributeKeys::Scalar)
-         << "\n\tsize: " << data->sizeOfArray()
-         << endl;
-    vesVector3f min = m_data->boundsMin();
-    vesVector3f max = m_data->boundsMax();
-    cout << "min: " << min << "\nmax: " << max << endl;
-
-    vesKiwiPolyDataRepresentation* rep = new vesKiwiPolyDataRepresentation();
+    vesKiwiPolyDataRepresentation::Ptr rep = vesKiwiPolyDataRepresentation::Ptr(new vesKiwiPolyDataRepresentation());
     rep->initializeWithShader(this->m_shader);
     rep->setPolyData(polyData);
     rep->addSelfToRenderer(this->renderer());
-
     this->m_dataRep = rep;
+
+    double lutScalarRange[2] = {0.0, 1.0};
+    this->m_lut = vesDataConversionTools::GetRedToBlueLookupTable(lutScalarRange);
+    vesSharedPtr<vesTexture> texture(new vesTexture());
+    vesDataConversionTools::SetTextureData(this->m_lut->GetTable(), texture, this->m_lut->GetNumberOfTableValues(), 1);
+    rep->setTexture(texture);
   }
 
   vesSharedPtr<vesShaderProgram> m_shader;
   vesSharedPtr<vesGeometryData> m_data;
-  vesKiwiPolyDataRepresentation* m_dataRep;
+  vesSharedPtr<vesKiwiPolyDataRepresentation> m_dataRep;
+
+  vtkSmartPointer<vtkLookupTable> m_lut;
 };
 
 class vesTestHelper {

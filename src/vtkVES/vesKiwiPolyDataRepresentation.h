@@ -39,6 +39,8 @@ class vesKiwiPolyDataRepresentation : public vesKiwiDataRepresentation
 {
 public:
 
+  vesTypeMacro(vesKiwiPolyDataRepresentation);
+
   vesKiwiPolyDataRepresentation();
   ~vesKiwiPolyDataRepresentation();
 

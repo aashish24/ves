@@ -24,12 +24,15 @@
 // VES includes
 #include <vesMath.h>
 #include <vesSharedPtr.h>
+#include <vesSetGet.h>
 
 class vesRenderer;
 
 class vesKiwiDataRepresentation
 {
 public:
+
+  vesTypeMacro(vesKiwiDataRepresentation);
 
   vesKiwiDataRepresentation() {}
   virtual ~vesKiwiDataRepresentation() {}
