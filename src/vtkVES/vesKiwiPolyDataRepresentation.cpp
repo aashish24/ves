@@ -62,6 +62,11 @@ void ConvertVertexArrays(vtkDataSet* dataSet, vesSharedPtr<vesGeometryData> geom
 
 vesSharedPtr<vesGeometryData> GeometryDataFromPolyData(vtkPolyData* polyData)
 {
+  if (!polyData->GetNumberOfPolys() && !polyData->GetNumberOfLines())
+    {
+    return vesDataConversionTools::ConvertPoints(polyData);
+    }
+
   // Use triangle filter for now to ensure that models containing
   // polygons other than tris and quads will be rendered correctly.
 
@@ -161,9 +166,6 @@ void vesKiwiPolyDataRepresentation::initializeWithShader(
   assert(!this->Internal->Mapper && !this->Internal->Actor);
 
   this->Internal->Mapper = vesSharedPtr<vesMapper>(new vesMapper());
-#if 0
-  this->Internal->Mapper->setData(vesSharedPtr<vesTriangleData>(new vesTriangleData));
-#endif
 
   this->Internal->Actor = vesSharedPtr<vesActor>(new vesActor());
   this->Internal->Actor->setMapper(this->Internal->Mapper);
