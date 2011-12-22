@@ -25,9 +25,6 @@ set(headers
   vesMaterial.h
   vesMath.h
   vesModelViewUniform.h
-  vesMultitouchCamera.h
-  vesMultitouchSensorNode.h
-  vesMultitouchWidget.h
   vesNode.h
   vesNormalMatrixUniform.h
   vesObject.h
