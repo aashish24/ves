@@ -165,6 +165,11 @@ bool DoTesting()
       testHelper->app()->setBackgroundTexture(testHelper->sourceDirectory() + "/Apps/iOS/Kiwi/Kiwi/Data/kiwi.png");
       }
 
+    // call the info methods, this helps coverage, though we're not testing the return values
+    testHelper->app()->numberOfModelFacets();
+    testHelper->app()->numberOfModelVertices();
+    testHelper->app()->numberOfModelLines();
+
     testHelper->app()->render();
     std::string datasetName = testHelper->app()->builtinDatasetName(i);
 
