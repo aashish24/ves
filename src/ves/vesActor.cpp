@@ -83,6 +83,22 @@ void vesActor::ascend(vesVisitor &visitor)
 }
 
 
+bool vesActor::computeLocalToWorldMatrix(vesMatrix4x4f &matrix,
+                                         vesVisitor &visitor)
+{
+  vesNotUsed(visitor);
+
+  if (this->m_referenceFrame == Absolute) {
+    matrix = this->modelViewMatrix();
+  }
+  else  {
+    matrix = matrix * this->modelViewMatrix();
+  }
+
+  return true;
+}
+
+
 void vesActor::computeBounds()
 {
   assert(this->m_mapper);

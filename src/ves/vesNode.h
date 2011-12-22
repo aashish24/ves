@@ -43,18 +43,24 @@ public:
   vesNode();
   virtual ~vesNode();
 
+  /// \brief Accept visitor for scene traversal
   virtual void accept(vesVisitor &visitor);
 
+  /// \brief Set material to be used for the node
   void setMaterial(vesSharedPtr<vesMaterial> material);
   vesSharedPtr<vesMaterial> material() { return this->m_material; }
   const vesSharedPtr<vesMaterial> material() const { return this->m_material; }
 
-  vesGroupNode* parent(){ return this->m_parent; }
+  /// \brief Set parent of this node
   bool setParent(vesGroupNode *parent);
+  vesGroupNode* parent(){ return this->m_parent; }
 
+  /// \brief Set if this node is a overlay node. Overlay nodes are drawn
+  /// on top of scene nodes.
   inline void setIsOverlayNode(bool value) { this->m_isOverlayNode = value; }
   inline bool isOverlayNode() const { return this->m_isOverlayNode; }
 
+  /// \brief Set if this node should be visible
   void setVisible(bool value);
   bool isVisible() const { return this->m_visible; }
 
@@ -67,11 +73,11 @@ public:
   virtual vesActor* asActor() { return 0x0; }
   virtual const vesActor* asActor() const { return 0x0; }
 
-  /// Traverse upwards.
+  /// \brief Traverse parent and their parents
   virtual void ascend(vesVisitor &visitor)
     { vesNotUsed(visitor); }
 
-  /// Traverse downwards.
+  /// \brief Traverse children and their children
   virtual void traverse(vesVisitor &visitor)
     { vesNotUsed(visitor); }
 

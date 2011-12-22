@@ -65,15 +65,17 @@ public:
   vesSharedPtr<vesMapper> mapper() { return this->m_mapper; }
   const vesSharedPtr<vesMapper> mapper() const { return this->m_mapper; }
 
-
   virtual void accept(vesVisitor &visitor);
   virtual void ascend(vesVisitor &visitor);
+
+  /// \copydoc vesTransformNode::computeLocalToWorldMatrix
+  virtual bool computeLocalToWorldMatrix(vesMatrix4x4f &matrix,
+                                         vesVisitor &visitor);
 
 protected:
   virtual void computeBounds();
 
   bool m_sensor;
-
 
   vesSharedPtr<vesMapper> m_mapper;
   vesSharedPtr<vesMultitouchWidget> m_widget;
