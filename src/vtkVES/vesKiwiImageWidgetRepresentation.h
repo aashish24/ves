@@ -54,6 +54,8 @@ public:
   bool handleSingleTouchUp();
   bool handleDoubleTap();
 
+  virtual void willRender(vesSharedPtr<vesRenderer> renderer);
+
   virtual bool interactionIsActive() const { return this->scrollSliceModeActive(); }
 
   bool scrollSliceModeActive() const;

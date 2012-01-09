@@ -39,6 +39,7 @@
 #include <vtkAppendPolyData.h>
 
 #include <vector>
+#include <map>
 #include <cassert>
 
 //----------------------------------------------------------------------------
@@ -75,6 +76,8 @@ public:
   std::vector<vesKiwiDataRepresentation*> AllReps;
   std::vector<vesKiwiImagePlaneDataRepresentation*> SliceReps;
 
+  std::map<int, int> TargetSliceIndex;
+
   vesKiwiPolyDataRepresentation* ContourRep;
   vesKiwiPolyDataRepresentation* OutlineRep;
 
@@ -93,6 +96,20 @@ vesKiwiImageWidgetRepresentation::vesKiwiImageWidgetRepresentation()
 vesKiwiImageWidgetRepresentation::~vesKiwiImageWidgetRepresentation()
 {
   delete this->Internal;
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiImageWidgetRepresentation::willRender(vesSharedPtr<vesRenderer> renderer)
+{
+  if (this->Internal->TargetSliceIndex.size()) {
+
+    std::map<int, int>::const_iterator itr;
+    for (itr = this->Internal->TargetSliceIndex.begin(); itr != this->Internal->TargetSliceIndex.end(); ++itr) {
+      this->setSliceIndex(itr->first, itr->second);
+    }
+
+    this->Internal->TargetSliceIndex.clear();
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -229,9 +246,9 @@ void vesKiwiImageWidgetRepresentation::scrollImageSlice(double deltaX, double de
     sliceDelta = delta > 0 ? 1 : -1;
   }
 
-  // Get new slice index
   int sliceIndex = this->Internal->CurrentSliceIndices[flatDimension] + sliceDelta;
-  this->setSliceIndex(flatDimension, sliceIndex);
+  this->Internal->TargetSliceIndex[flatDimension] = sliceIndex;
+  this->Internal->CurrentSliceIndices[flatDimension] = sliceIndex;
 }
 
 //----------------------------------------------------------------------------
