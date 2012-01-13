@@ -93,8 +93,10 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = @VES_SOURCE_DIR@/src/ves \
-                         @VES_SOURCE_DIR@/src/vtkVES
+INPUT                  = @VES_SOURCE_DIR@/Docs/Doxygen \
+                         @VES_SOURCE_DIR@/src/ves \
+                         @VES_SOURCE_DIR@/src/vtkVES \
+                         @VES_SOURCE_DIR@/Apps/Android/Kiwi/jni
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.h \
                          *.hpp
@@ -271,7 +273,7 @@ SKIP_FUNCTION_MACROS   = YES
 #---------------------------------------------------------------------------
 # Configuration::additions related to external references
 #---------------------------------------------------------------------------
-TAGFILES               =
+TAGFILES               = @TAGFILES@
 GENERATE_TAGFILE       =
 ALLEXTERNALS           = NO
 EXTERNAL_GROUPS        = YES
