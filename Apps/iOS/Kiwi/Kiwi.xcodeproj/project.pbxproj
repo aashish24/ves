@@ -37,6 +37,7 @@
 		435026EF140E93C9000C315D /* caffeine.pdb in Resources */ = {isa = PBXBuildFile; fileRef = 435026ED140E93C9000C315D /* caffeine.pdb */; };
 		435026F0140E93C9000C315D /* motor.g in Resources */ = {isa = PBXBuildFile; fileRef = 435026EE140E93C9000C315D /* motor.g */; };
 		4356FCC814A01159008AF7D3 /* cturtle.vtk in Resources */ = {isa = PBXBuildFile; fileRef = 4356FCC714A01159008AF7D3 /* cturtle.vtk */; };
+		4356FCCB14A015B1008AF7D3 /* libvtkIOPLY.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4356FCCA14A015B1008AF7D3 /* libvtkIOPLY.a */; };
 		436B34B413C802D500C5726C /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 436B34AF13C802D500C5726C /* Default-Landscape~ipad.png */; };
 		436B34B513C802D500C5726C /* Default-Portrait~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 436B34B013C802D500C5726C /* Default-Portrait~ipad.png */; };
 		436B34B613C802D500C5726C /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 436B34B113C802D500C5726C /* icon.png */; };
@@ -111,6 +112,7 @@
 		435026ED140E93C9000C315D /* caffeine.pdb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = caffeine.pdb; sourceTree = "<group>"; };
 		435026EE140E93C9000C315D /* motor.g */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = motor.g; sourceTree = "<group>"; };
 		4356FCC714A01159008AF7D3 /* cturtle.vtk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cturtle.vtk; sourceTree = "<group>"; };
+		4356FCCA14A015B1008AF7D3 /* libvtkIOPLY.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkIOPLY.a; path = "../../../../build/CMakeExternals/Build/vtkmodular-ios-device/lib/libvtkIOPLY.a"; sourceTree = "<group>"; };
 		436B34AF13C802D500C5726C /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
 		436B34B013C802D500C5726C /* Default-Portrait~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait~ipad.png"; sourceTree = "<group>"; };
 		436B34B113C802D500C5726C /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
@@ -184,6 +186,7 @@
 				43BA864F14299EB2000D91C3 /* libvtkpng.a in Frameworks */,
 				437857F71446577900FEDC72 /* libvtkfreetype.a in Frameworks */,
 				432A52191495B6D50010EB71 /* libvesShaders.a in Frameworks */,
+				4356FCCB14A015B1008AF7D3 /* libvtkIOPLY.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -252,6 +255,7 @@
 		432DE16E13D15E8C000F8EC0 /* vtkmodular libs */ = {
 			isa = PBXGroup;
 			children = (
+				4356FCCA14A015B1008AF7D3 /* libvtkIOPLY.a */,
 				437857F61446577900FEDC72 /* libvtkfreetype.a */,
 				43BA864C14299EB2000D91C3 /* libvtkjpeg.a */,
 				43BA864D14299EB2000D91C3 /* libvtkpng.a */,

@@ -44,6 +44,7 @@ set(deps
   vtkIOGeometry
   vtkIOXML
   vtkIOImage
+  vtkIOPLY
   vtkFiltersCore
   vtkFiltersSources
   vtkImagingCore)

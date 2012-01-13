@@ -32,6 +32,7 @@
 #include <vtkNew.h>
 #include <vtkPolyData.h>
 #include <vtkBYUReader.h>
+#include <vtkPLYReader.h>
 #include <vtkSphereSource.h>
 #include <vtkPDBReader.h>
 #include <vtkGlyph3D.h>
@@ -151,6 +152,12 @@ vtkSmartPointer<vtkDataSet> vesKiwiDataLoader::loadDataset(const std::string& fi
   else if (this->hasEnding(filename, "stl"))
     {
     vtkSmartPointer<vtkSTLReader> reader = vtkSmartPointer<vtkSTLReader>::New();
+    reader->SetFileName(filename.c_str());
+    return this->datasetFromAlgorithm(reader);
+    }
+  else if (this->hasEnding(filename, "ply"))
+    {
+    vtkSmartPointer<vtkPLYReader> reader = vtkSmartPointer<vtkPLYReader>::New();
     reader->SetFileName(filename.c_str());
     return this->datasetFromAlgorithm(reader);
     }

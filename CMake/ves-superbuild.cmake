@@ -24,6 +24,7 @@ set(module_defaults
   -DModule_vtkIOGeometry:BOOL=ON
   -DModule_vtkIOXML:BOOL=ON
   -DModule_vtkIOImage:BOOL=ON
+  -DModule_vtkIOPLY:BOOL=ON
   -DModule_vtkImagingCore:BOOL=ON
 )
 

@@ -120,6 +120,22 @@
 				<string>com.kitware.pdb</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleTypeIconFiles</key>
+			<array>
+				<string>Kiwi_Splash_72</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>PLY File</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Owner</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.kitware.ply</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
@@ -343,6 +359,30 @@
 				<string>pdb</string>
 				<key>public.mime-type</key>
 				<string>pdb</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.plain-text</string>
+				<string>public.text</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>PLY File</string>
+			<key>UTTypeIdentifier</key>
+			<string>com.kitware.ply</string>
+			<key>UTTypeReferenceURL</key>
+			<string>http://www.vtk.org/</string>
+			<key>UTTypeSize64IconFile</key>
+			<string>Kiwi_Splash_72</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key></key>
+				<string></string>
+				<key>public.filename-extension</key>
+				<string>ply</string>
+				<key>public.mime-type</key>
+				<string>ply</string>
 			</dict>
 		</dict>
 	</array>
