@@ -32,7 +32,7 @@ void main()
   highp vec4 position = projectionMatrix * modelViewMatrix * vec4(vertexPosition, 1.0);
 
   // 1 is line
-  if (primitiveType != 1) {
+  if (primitiveType != 1 && primitiveType != 0) {
     // Transform vertex normal into eye space.
     lowp vec3 normal = normalize(normalMatrix * vertexNormal);
 
@@ -43,6 +43,8 @@ void main()
 
     varColor = vec4(varColor.xyz * nDotL, varColor.w);
   }
+
+  gl_PointSize = 1.0;
 
   // GLSL still requires this.
   gl_Position = position;

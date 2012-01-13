@@ -36,6 +36,7 @@
 		432DE16D13D15E1C000F8EC0 /* libves.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 432DE16C13D15E1C000F8EC0 /* libves.a */; };
 		435026EF140E93C9000C315D /* caffeine.pdb in Resources */ = {isa = PBXBuildFile; fileRef = 435026ED140E93C9000C315D /* caffeine.pdb */; };
 		435026F0140E93C9000C315D /* motor.g in Resources */ = {isa = PBXBuildFile; fileRef = 435026EE140E93C9000C315D /* motor.g */; };
+		4356FCC814A01159008AF7D3 /* cturtle.vtk in Resources */ = {isa = PBXBuildFile; fileRef = 4356FCC714A01159008AF7D3 /* cturtle.vtk */; };
 		436B34B413C802D500C5726C /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 436B34AF13C802D500C5726C /* Default-Landscape~ipad.png */; };
 		436B34B513C802D500C5726C /* Default-Portrait~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 436B34B013C802D500C5726C /* Default-Portrait~ipad.png */; };
 		436B34B613C802D500C5726C /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 436B34B113C802D500C5726C /* icon.png */; };
@@ -109,6 +110,7 @@
 		432DE16C13D15E1C000F8EC0 /* libves.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libves.a; path = "../CMakeBuild/build/CMakeExternals/Build/ves-ios-device/lib/libves.a"; sourceTree = "<group>"; };
 		435026ED140E93C9000C315D /* caffeine.pdb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = caffeine.pdb; sourceTree = "<group>"; };
 		435026EE140E93C9000C315D /* motor.g */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = motor.g; sourceTree = "<group>"; };
+		4356FCC714A01159008AF7D3 /* cturtle.vtk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cturtle.vtk; sourceTree = "<group>"; };
 		436B34AF13C802D500C5726C /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
 		436B34B013C802D500C5726C /* Default-Portrait~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait~ipad.png"; sourceTree = "<group>"; };
 		436B34B113C802D500C5726C /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
@@ -306,6 +308,7 @@
 		6F25E6F2137D88DD00BF4BCA /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				4356FCC714A01159008AF7D3 /* cturtle.vtk */,
 				43E58D8F14299CC100D53D13 /* kiwi.png */,
 				43E0526D1424014300FC4F02 /* head.vti */,
 				435026ED140E93C9000C315D /* caffeine.pdb */,
@@ -416,6 +419,7 @@
 				43C1C1CE1410533A00A721F7 /* Default.png in Resources */,
 				43E0526E1424014300FC4F02 /* head.vti in Resources */,
 				43E58D9014299CC100D53D13 /* kiwi.png in Resources */,
+				4356FCC814A01159008AF7D3 /* cturtle.vtk in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

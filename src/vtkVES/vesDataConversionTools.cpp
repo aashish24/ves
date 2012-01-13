@@ -306,18 +306,6 @@ vesSharedPtr<vesGeometryData> vesDataConversionTools::ConvertPoints(vtkPolyData*
   output->addSource(sourceData);
   output->setName("PolyData");
 
-  // Check for the scalars array too
-  vesSourceDataf::Ptr scalarData(new vesSourceDataf());
-  vtkDataArray *scalars = input->GetPointData()->GetScalars();
-  if (scalars && scalars->GetNumberOfComponents() == 1) {
-    vesVertexDataf scalar;
-    for (int i = 0; i < scalars->GetNumberOfTuples(); ++i) {
-      scalar.m_scalar = scalars->GetTuple1(i);
-      scalarData->arrayReference().push_back(scalar);
-    }
-    output->addSource(scalarData);
-  }
-
   // Add point primitive
   vesPrimitive::Ptr pointPrimitive (new vesPrimitive());
   pointPrimitive->setPrimitiveType(vesPrimitiveRenderType::Points);

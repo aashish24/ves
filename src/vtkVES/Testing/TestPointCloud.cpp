@@ -39,7 +39,7 @@
 #include <vesCamera.h>
 #include <vesVertexAttribute.h>
 #include <vesVertexAttributeKeys.h>
-
+#include <vesBuiltinShaders.h>
 
 #include <vtkPolyDataReader.h>
 #include <vtkPolyData.h>
@@ -59,9 +59,6 @@
 #include <GLES2/gl2.h>
 #include <EGL/egl.h>
 
-#ifdef Bool
-#undef Bool
-#endif
 
 //----------------------------------------------------------------------------
 namespace {
@@ -95,9 +92,9 @@ public:
     this->addModelViewMatrixUniform(m_shader);
     this->addProjectionMatrixUniform(m_shader);
     this->addVertexPositionAttribute(m_shader);
-
-    vesGenericVertexAttribute::Ptr vertexScalar(new vesGenericVertexAttribute("vertexColor"));
-    m_shader->addVertexAttribute(vertexScalar, vesVertexAttributeKeys::Scalar);
+    this->addNormalMatrixUniform(m_shader);
+    this->addVertexNormalAttribute(m_shader);
+    this->addVertexColorAttribute(m_shader);
   }
 
   void unloadData()
@@ -124,11 +121,13 @@ public:
     rep->addSelfToRenderer(this->renderer());
     this->m_dataRep = rep;
 
+    /*
     double lutScalarRange[2] = {0.0, 1.0};
     this->m_lut = vesDataConversionTools::GetRedToBlueLookupTable(lutScalarRange);
     vesSharedPtr<vesTexture> texture(new vesTexture());
     vesDataConversionTools::SetTextureData(this->m_lut->GetTable(), texture, this->m_lut->GetNumberOfTableValues(), 1);
     rep->setTexture(texture);
+    */
   }
 
   vesSharedPtr<vesShaderProgram> m_shader;
@@ -310,11 +309,8 @@ std::string GetFileContents(const std::string& filename)
 //----------------------------------------------------------------------------
 void InitRendering()
 {
-  testHelper->app()->initShader(
-    GetFileContents(testHelper->sourceDirectory() +
-                    "/Apps/Android/PointCloud/assets/Shader.vsh"),
-    GetFileContents(testHelper->sourceDirectory() +
-                    "/Apps/Android/PointCloud/assets/Shader.fsh"));
+  testHelper->app()->initShader(vesBuiltinShaders::vesShader_vert(),
+                                vesBuiltinShaders::vesShader_frag());
 }
 
 //----------------------------------------------------------------------------

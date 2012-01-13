@@ -109,9 +109,13 @@ vtkSmartPointer<vtkDataSet> vesKiwiDataLoader::datasetFromAlgorithm(vtkAlgorithm
   vtkDataSet* dataset = vtkDataSet::SafeDownCast(algorithm->GetOutputDataObject(0));
   assert(dataset);
 
-  // VES cannot handle too many points, so handle the error at this point
+  // VES cannot handle too many points (if the dataset has non-vertex cells),
+  // so handle the error at this point
   const vtkIdType maximumNumberOfPoints = 65536;
-  if (vtkPointSet::SafeDownCast(dataset) && dataset->GetNumberOfPoints() > maximumNumberOfPoints)
+  vtkPolyData* polyData = vtkPolyData::SafeDownCast(dataset);
+  if (polyData
+      && polyData->GetNumberOfPoints() > maximumNumberOfPoints
+      && (polyData->GetNumberOfPolys() || polyData->GetNumberOfLines() || polyData->GetNumberOfStrips()))
     {
     this->setMaximumNumberOfPointsErrorMessage();
     return 0;

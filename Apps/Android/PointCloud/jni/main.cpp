@@ -20,9 +20,7 @@
 #include <errno.h>
 
 #include <EGL/egl.h>
-/*
-#include <GLES/gl.h>
-*/
+
 
 #include <android/sensor.h>
 #include <android/log.h>
@@ -33,27 +31,88 @@
 #include <vtkSmartPointer.h>
 #include <vtkPolyData.h>
 #include <vtkNew.h>
-#include <vtkLookupTable.h>
 
-#include <vesDataConversionTools.h>
-
-#include <vesImage.h>
-#include <vesTexture.h>
-#include <vesGeometryData.h>
 #include <vesCamera.h>
-#include <vesRenderer.h>
-#include <vesShader.h>
 #include <vesShaderProgram.h>
-#include <vesVertexAttribute.h>
-#include <vesVertexAttributeKeys.h>
-#include <vesModelViewUniform.h>
-#include <vesProjectionUniform.h>
-#include <vesMapper.h>
-#include <vesActor.h>
+#include <vesSetGet.h>
+#include <vesKiwiPolyDataRepresentation.h>
+#include <vesKiwiBaseApp.h>
+
 
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "PointCloud", __VA_ARGS__))
 #define LOGW(...) ((void)__android_log_print(ANDROID_LOG_WARN, "PointCloud", __VA_ARGS__))
 #define LOGE(...) ((void)__android_log_print(ANDROID_LOG_WARN, "PointCloud", __VA_ARGS__))
+
+
+//----------------------------------------------------------------------------
+namespace {
+
+class vesKiwiPointCloudApp : public vesKiwiBaseApp {
+public:
+
+  vesTypeMacro(vesKiwiPointCloudApp);
+
+  vesKiwiPointCloudApp() : vesKiwiBaseApp()
+  {
+    this->setBackgroundColor(0.0, 0.0, 0.0);
+  }
+
+  ~vesKiwiPointCloudApp()
+  {
+    this->unloadData();
+  }
+
+  void resetView()
+  {
+    this->vesKiwiBaseApp::resetView();
+
+    // move the camera for a better default view of the cturtle.vtk dataset
+    this->camera()->elevation(180);
+    this->camera()->roll(180);
+  }
+
+  void initShader(const std::string& vertexSource, const std::string fragmentSource)
+  {
+    this->m_shader = this->addShaderProgram(vertexSource, fragmentSource);
+    this->addModelViewMatrixUniform(m_shader);
+    this->addProjectionMatrixUniform(m_shader);
+    this->addVertexPositionAttribute(m_shader);
+    this->addNormalMatrixUniform(m_shader);
+    this->addVertexNormalAttribute(m_shader);
+    this->addVertexColorAttribute(m_shader);
+  }
+
+  void unloadData()
+  {
+    if (this->m_dataRep) {
+      this->m_dataRep->removeSelfFromRenderer(this->renderer());
+      this->m_dataRep.reset();
+    }
+  }
+
+  void loadData(const char* data, int length)
+  {
+    this->unloadData();
+
+    vtkSmartPointer<vtkPolyDataReader> reader = vtkSmartPointer<vtkPolyDataReader>::New();
+    reader->SetInputString(data, length);
+    reader->ReadFromInputStringOn();
+    reader->Update();
+    vtkPolyData *polyData = reader->GetOutput();
+
+    vesKiwiPolyDataRepresentation::Ptr rep = vesKiwiPolyDataRepresentation::Ptr(new vesKiwiPolyDataRepresentation());
+    rep->initializeWithShader(this->m_shader);
+    rep->setPolyData(polyData);
+    rep->addSelfToRenderer(this->renderer());
+    this->m_dataRep = rep;
+  }
+
+  vesSharedPtr<vesShaderProgram> m_shader;
+  vesSharedPtr<vesKiwiPolyDataRepresentation> m_dataRep;
+};
+
+}
+
 
 /**
  * Our saved state data.
@@ -86,83 +145,9 @@ struct engine {
     int32_t height;
     struct saved_state state;
 
-    float *points;
-    unsigned int nPoints;
-    vesRenderer* renderer;
-    vtkLookupTable* lookupTable;
+    vesKiwiPointCloudApp::Ptr kiwiApp;
 };
 
-
-static void checkGlError(const char* op) {
-    for (GLint error = glGetError(); error; error
-            = glGetError()) {
-        LOGI("after %s() glError (0x%x)\n", op, error);
-    }
-}
-
-GLuint loadShader(GLenum shaderType, const char* pSource) {
-    GLuint shader = glCreateShader(shaderType);
-    if (shader) {
-        glShaderSource(shader, 1, &pSource, NULL);
-        glCompileShader(shader);
-        GLint compiled = 0;
-        glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
-        if (!compiled) {
-            GLint infoLen = 0;
-            glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &infoLen);
-            if (infoLen) {
-                char* buf = (char*) malloc(infoLen);
-                if (buf) {
-                    glGetShaderInfoLog(shader, infoLen, NULL, buf);
-                    LOGE("Could not compile shader %d:\n%s\n",
-                            shaderType, buf);
-                    free(buf);
-                }
-                glDeleteShader(shader);
-                shader = 0;
-            }
-        }
-    }
-    return shader;
-}
-
-GLuint createProgram(const char* pVertexSource, const char* pFragmentSource) {
-    GLuint vertexShader = loadShader(GL_VERTEX_SHADER, pVertexSource);
-    if (!vertexShader) {
-        return 0;
-    }
-
-    GLuint pixelShader = loadShader(GL_FRAGMENT_SHADER, pFragmentSource);
-    if (!pixelShader) {
-        return 0;
-    }
-
-    GLuint program = glCreateProgram();
-    if (program) {
-        glAttachShader(program, vertexShader);
-        checkGlError("glAttachShader");
-        glAttachShader(program, pixelShader);
-        checkGlError("glAttachShader");
-        glLinkProgram(program);
-        GLint linkStatus = GL_FALSE;
-        glGetProgramiv(program, GL_LINK_STATUS, &linkStatus);
-        if (linkStatus != GL_TRUE) {
-            GLint bufLength = 0;
-            glGetProgramiv(program, GL_INFO_LOG_LENGTH, &bufLength);
-            if (bufLength) {
-                char* buf = (char*) malloc(bufLength);
-                if (buf) {
-                    glGetProgramInfoLog(program, bufLength, NULL, buf);
-                    LOGE("Could not link program:\n%s\n", buf);
-                    free(buf);
-                }
-            }
-            glDeleteProgram(program);
-            program = 0;
-        }
-    }
-    return program;
-}
 
 /**
  * Initialize an EGL context for the current display.
@@ -219,11 +204,10 @@ static int engine_init_display(struct engine* engine) {
         return -1;
     }
 
-    engine->renderer = new vesRenderer();
 
     eglQuerySurface(display, surface, EGL_WIDTH, &w);
     eglQuerySurface(display, surface, EGL_HEIGHT, &h);
-    LOGI("Width %d, Height %d", w, h);
+
     engine->display = display;
     engine->context = context;
     engine->surface = surface;
@@ -235,148 +219,44 @@ static int engine_init_display(struct engine* engine) {
     engine->state.x1 = 0;
     engine->state.y1 = 0;
     engine->state.isTwoTouches = false;
-    engine->renderer->resize(w, h, 1.0f);
 
-    // Initialize GL state.
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-#if 0
-    glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
-    glEnable(GL_CULL_FACE);
-    glShadeModel(GL_SMOOTH);
-    glDisable(GL_DEPTH_TEST);
 
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrthof(-2.0, 2.0, -2.0, 2.0, -2.0, 2.0);
-    //glFrustumf(-2.0, 2.0, -2.0, 2.0, -2.0, 2.0);
+    vesKiwiPointCloudApp::Ptr kiwiApp = vesKiwiPointCloudApp::Ptr(new vesKiwiPointCloudApp);
+    engine->kiwiApp = kiwiApp;
 
-#endif
+    kiwiApp->resizeView(w, h);
+
 
     AAssetManager* assetManager = engine->app->activity->assetManager;
-    AAsset* asset = AAssetManager_open(assetManager, "cturtle.vtk", AASSET_MODE_UNKNOWN);
-    if (asset == NULL) {
-        LOGW("could not open asset");
-    }
-    off_t len = AAsset_getLength(asset);
-    const char* input_string = static_cast<const char*>(AAsset_getBuffer(asset));
-    LOGI("\n**\nlength is %d", AAsset_getLength(asset));
 
-    vtkSmartPointer<vtkPolyDataReader> read = vtkSmartPointer<vtkPolyDataReader>::New();
-    read->SetInputString (input_string, len);
-    read->ReadFromInputStringOn ();
-    read->Update ();
-    vtkPolyData *data = read->GetOutput ();
-    LOGI("a: number of points is %d", data->GetNumberOfPoints());
-    vesSharedPtr<vesGeometryData> geometry_data = vesDataConversionTools::ConvertPoints(data);
-    LOGI("b: hi!\n");
-/*
-    LOGI("b: number of points is %d\n**\n", geometry_data->GetPoints().size());
-    vesVector2f range = geometry_data->GetPointScalarRange();
-    LOGI("scalar range: %f, %f\n", range[0], range[1]);
-    LOGI("scalar size: %d\n", geometry_data->GetPointScalars().size());
-    LOGI("Get the min of the data: %f, %f, %f\n", geometry_data->GetMin()[0],
-         geometry_data->GetMin()[1], geometry_data->GetMin()[2]);
-    LOGI("Get the max of the data: %f, %f, %f\n", geometry_data->GetMax()[0],
-         geometry_data->GetMax()[1], geometry_data->GetMax()[2]);
-*/
 
-    AAsset* vertex_asset = AAssetManager_open(assetManager, "Shader.vsh", AASSET_MODE_UNKNOWN);
-    AAsset* fragment_asset = AAssetManager_open(assetManager, "Shader.fsh", AASSET_MODE_UNKNOWN);
+    // initialize shaders
+    AAsset* vertex_asset = AAssetManager_open(assetManager, "vesShader_vert.glsl", AASSET_MODE_UNKNOWN);
+    AAsset* fragment_asset = AAssetManager_open(assetManager, "vesShader_frag.glsl", AASSET_MODE_UNKNOWN);
 
     std::string vertex_source = std::string(static_cast<const char*>(AAsset_getBuffer(vertex_asset)), AAsset_getLength(vertex_asset));
     std::string fragment_source = std::string(static_cast<const char*>(AAsset_getBuffer(fragment_asset)), AAsset_getLength(fragment_asset));
+
+    AAsset_close(vertex_asset);
+    AAsset_close(fragment_asset);
+
     LOGI("vertex_source: %s\n", vertex_source.c_str());
     LOGI("fragment_source: %s\n", fragment_source.c_str());
 
-    createProgram(vertex_source.c_str(), fragment_source.c_str());
+    kiwiApp->initShader(vertex_source, fragment_source);
 
-/*    vesShaderProgram* shader_program = new vesShaderProgram(
-                                   const_cast<char*>(vertex_source.c_str()),
-                                   const_cast<char*>(fragment_source.c_str()),
-                                   (_uni("modelViewProjectionMatrix"),
-                                    _uni("normalMatrix"),
-                                    _uni("u_ecLightDir"),
-                                    _uni("u_scalarRange"),
-                                    _uni("s_texture")),
-                                   (_att("vertexPosition"),
-                                    _att("a_normal"),
-                                    _att("a_texcoord"),
-                                    _att("a_scalar"))
-                                   );
-    vesShader* shader = new vesShader(shader_program);
-    vesMapper* mapper = new vesMapper();
-    mapper->setTriangleData(geometry_data);
-    mapper->setDrawPoints(true);
-*/
 
-    vesSharedPtr<vesShader> vertex(new vesShader(vesShader::Vertex, vertex_source.c_str()));
-    vesSharedPtr<vesShader> frag(new vesShader(vesShader::Fragment, fragment_source.c_str()));
-    vesSharedPtr<vesShaderProgram> program(new vesShaderProgram());
-    program->addShader(vertex);
-    program->addShader(frag);
-    vesSharedPtr<vesModelViewUniform> mv(new vesModelViewUniform());
-    program->addUniform(mv);
-    vesSharedPtr<vesProjectionUniform> proj(new vesProjectionUniform());
-    program->addUniform(proj);
-    vesSharedPtr<vesPositionVertexAttribute> pv(new vesPositionVertexAttribute());
-    program->addVertexAttribute(pv, vesVertexAttributeKeys::Position);
-    vesSharedPtr<vesColorVertexAttribute> color(new vesColorVertexAttribute());
-    program->addVertexAttribute(color, vesVertexAttributeKeys::Scalar);
-    vesSharedPtr<vesMaterial> material(new vesMaterial());
-    material->addAttribute(program);
-    //material->setShaderProgram(program);
-    vesSharedPtr<vesMapper> mapper(new vesMapper());
-    mapper->setGeometryData(geometry_data);
-    mapper->setColor(1.0f, 0.0f, 0.0f, 1.0f);
 
-    /*
-    vtkNew<vtkLookupTable> lookupTable;
-    lookupTable->Build();
-    unsigned char* lookupImage = lookupTable->GetPointer(0);
-    glEnable(GL_TEXTURE_2D);
-    unsigned int lookupTableID;
-    glGenTextures(1,&lookupTableID);
-    glBindTexture(GL_TEXTURE_2D, lookupTableID);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glTexImage2D(GL_TEXTURE_2D,
-                 0,
-                 GL_RGBA,
-                 lookupTable->GetNumberOfTableValues(),
-                 1,
-                 0,
-                 GL_RGBA,
-                 GL_UNSIGNED_BYTE,
-                 lookupImage);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, lookupTableID);
-    */
-    vesImage* image = new vesImage();
-    engine->lookupTable = vtkLookupTable::New();
-    engine->lookupTable->Build();
-    image->m_data = engine->lookupTable->GetPointer(0);
-    image->m_width = engine->lookupTable->GetNumberOfTableValues();
-    image->m_height = 1;
-    image->m_pixelDataType = vesColorDataType::UnsignedByte;
-    image->m_pixelFormat = vesColorDataType::RGBA;
+    // read point cloud data
+    AAsset* asset = AAssetManager_open(assetManager, "cturtle.vtk", AASSET_MODE_UNKNOWN);
+    const char* input_string = static_cast<const char*>(AAsset_getBuffer(asset));
 
-    vesSharedPtr<vesTexture> texture(new vesTexture());
-    texture->setImage(*image);
-    material->addAttribute(texture);
-
-    vesSharedPtr<vesActor> actor(new vesActor());
-    actor->setMapper(mapper);
-    actor->setMaterial(material);
-    engine->renderer->addActor(actor);
-    engine->renderer->resetCamera();
-    engine->renderer->resetCameraClippingRange();
-    engine->renderer->setBackgroundColor(0, 0, 1, 1);
-    LOGI("g");
+    kiwiApp->loadData(input_string, AAsset_getLength(asset));
 
     AAsset_close(asset);
+
+
+    kiwiApp->resetView();
 
     return 0;
 }
@@ -385,9 +265,7 @@ static int engine_init_display(struct engine* engine) {
  * Just the current frame in the display.
  */
 static void engine_draw_frame(struct engine* engine) {
-    engine->renderer->resetCameraClippingRange();
-    engine->renderer->render();
-
+    engine->kiwiApp->render();
     eglSwapBuffers(engine->display, engine->surface);
 }
 
@@ -462,63 +340,27 @@ static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) 
             y1 = AMotionEvent_getY(event, 1);
         }
 
-        vesRenderer* ren = engine->renderer;
-        vesSharedPtr<vesCamera> camera = ren->camera();
 
         if (AMotionEvent_getPointerCount(event) == 1) {
             float dx0 = x0 - px0;
             float dy0 = y0 - py0;
-
-            double delta_elevation = -20.0 / ren->height();
-            double delta_azimuth = -20.0 / ren->width();
-            double motionFactor = 10.0;
-
-            double rxf = dx0 * delta_azimuth * motionFactor;
-            double ryf = dy0 * delta_elevation * motionFactor;
-
-            camera->azimuth(rxf);
-            camera->elevation(ryf);
-            camera->orthogonalizeViewUp();
+            engine->kiwiApp->handleSingleTouchPanGesture(dx0, dy0);
         } else {
-          //
-          // Pan camera.
-          // Implemented based on vtkInteractorStyleTrackballCamera::Pan().
-          //
+
+          int viewHeight = engine->kiwiApp->viewHeight();
 
           // Average positions of current and previous two touches.
           // Invert y since vesCamera expects y to go in opposite direction.
           float pcx = (px0 + px1)/2.0;
-          float pcy = ren->height() - (py0 + py1)/2.0;
+          float pcy = viewHeight - (py0 + py1)/2.0;
           float cx = (x0 + x1)/2.0;
-          float cy = ren->height() - (y0 + y1)/2.0;
+          float cy = viewHeight - (y0 + y1)/2.0;
 
-          // Calculate the focal depth since we'll be using it a lot
-          vesVector3f viewFocus = camera->focalPoint();
-          vesVector3f viewFocusDisplay = ren->computeWorldToDisplay(viewFocus);
-          float focalDepth = viewFocusDisplay[2];
 
-          vesVector3f newPos(cx,
-                             cy,
-                             focalDepth);
-          vesVector3f newPickPoint = ren->computeDisplayToWorld(newPos);
+          engine->kiwiApp->handleTwoTouchPanGesture(pcx, pcy, cx, cy);
 
-          vesVector3f oldPos(pcx,
-                             pcy,
-                             focalDepth);
-          vesVector3f oldPickPoint = ren->computeDisplayToWorld(oldPos);
 
-          vesVector3f motionVector = oldPickPoint - newPickPoint;
-
-          vesVector3f viewPoint = camera->position();
-          vesVector3f newViewFocus = motionVector + viewFocus;
-          vesVector3f newViewPoint = motionVector + viewPoint;
-          camera->setFocalPoint(newViewFocus);
-          camera->setPosition(newViewPoint);
-
-          //
-          // Zoom camera.
-          // Implemented based on vkInteractorStyleTrackballCamera::Dolly().
-          //
+            // zoom and rotate too
 
           double previousDist = sqrt((px0 - px1) *
                                      (px0 - px1) +
@@ -529,9 +371,10 @@ static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) 
                                     (y0 - y1) *
                                     (y0 - y1));
           double dy = currentDist - previousDist;
-          double dyf = 10.0 * dy / (ren->height()/2.0);
+          double dyf = 10.0 * dy / (viewHeight/2.0);
           double factor = pow(1.1, dyf);
-          camera->dolly(factor);
+
+          engine->kiwiApp->handleTwoTouchPinchGesture(factor);
 
           //
           // Roll camera.
@@ -541,14 +384,15 @@ static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) 
           double pi = 3.14159265358979;
           double newAngle = atan2(y0 - y1,
                                   x0 - x1);
-          newAngle *= 180.0/pi;
 
           double oldAngle = atan2(py0 - py1,
                                   px0 - px1);
-          oldAngle *= 180.0/pi;
 
-          camera->roll(newAngle - oldAngle);
-          camera->orthogonalizeViewUp();
+          double rotation = newAngle - oldAngle;
+
+          engine->kiwiApp->handleTwoTouchRotationGesture(rotation);
+
+
         }
 
         engine->state.x0 = x0;

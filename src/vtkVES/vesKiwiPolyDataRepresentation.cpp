@@ -64,7 +64,9 @@ vesSharedPtr<vesGeometryData> GeometryDataFromPolyData(vtkPolyData* polyData)
 {
   if (!polyData->GetNumberOfPolys() && !polyData->GetNumberOfLines())
     {
-    return vesDataConversionTools::ConvertPoints(polyData);
+    vesSharedPtr<vesGeometryData> geometryData = vesDataConversionTools::ConvertPoints(polyData);
+    ConvertVertexArrays(polyData, geometryData);
+    return geometryData;
     }
 
   // Use triangle filter for now to ensure that models containing
@@ -72,9 +74,11 @@ vesSharedPtr<vesGeometryData> GeometryDataFromPolyData(vtkPolyData* polyData)
 
   vtkNew<vtkTriangleFilter> triangleFilter;
   triangleFilter->PassLinesOn();
+  triangleFilter->PassVertsOn();
   triangleFilter->SetInput(polyData);
   triangleFilter->Update();
   polyData = triangleFilter->GetOutput();
+
   vesSharedPtr<vesGeometryData> geometryData =
     vesDataConversionTools::Convert(polyData);
   ConvertVertexArrays(polyData, geometryData);

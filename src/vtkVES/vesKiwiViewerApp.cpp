@@ -156,6 +156,7 @@ vesKiwiViewerApp::vesKiwiViewerApp()
   this->addBuiltinDataset("Caffeine", "caffeine.pdb");
   this->addBuiltinDataset("Head", "head.vti");
   this->addBuiltinDataset("KiwiViewer Logo", "kiwi.png");
+  this->addBuiltinDataset("ROS Turtle", "cturtle.vtk");
 
   this->initBlinnPhongShader(
     vesBuiltinShaders::vesBlinnPhong_vert(),
