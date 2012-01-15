@@ -80,7 +80,6 @@ public class KiwiViewerActivity extends Activity {
           public void onClick(View v) {
               // todo- maybe check storage state first?
               // Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)
-              //mView.loadNextDataset();
 
               Intent datasetTableIntent =
                 new Intent("com.kitware.KiwiViewer.action.DatasetList",
@@ -125,8 +124,7 @@ public class KiwiViewerActivity extends Activity {
         String name = curBundle.getString("com.kitware.KiwiViewer.bundle.DatasetName");
         int offset = curBundle.getInt("com.kitware.KiwiViewer.bundle.DatasetOffset");
         Toast.makeText(getBaseContext(), "Loading " + name + "...", Toast.LENGTH_SHORT).show();
-        KiwiNative.loadDatasetWithOffset(offset);
-        mView.resetCamera();
+        mView.loadDataset(offset);
       }
 
       super.onActivityResult(requestCode, resultCode, data);

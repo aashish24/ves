@@ -157,19 +157,6 @@ void loadDataset(int index)
 }
 
 //----------------------------------------------------------------------------
-void loadNextDataset()
-{
-  static int currentDatasetIndex = -1;
-  currentDatasetIndex++;
-  if (currentDatasetIndex >= app->numberOfBuiltinDatasets())
-    {
-    currentDatasetIndex = 0;
-    }
-
-  loadDataset(currentDatasetIndex);
-}
-
-//----------------------------------------------------------------------------
 std::string getContentsOfAssetFile(const std::string filename)
 {
   AAsset* assetFile = AAssetManager_open(assetManager, filename.c_str(), AASSET_MODE_UNKNOWN);
@@ -253,12 +240,11 @@ extern "C" {
   JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_handleSingleTouchUp(JNIEnv * env, jobject obj);
   JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_render(JNIEnv * env, jobject obj);
   JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_resetCamera(JNIEnv * env, jobject obj);
-  JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_loadNextDataset(JNIEnv * env, jobject obj);
   JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_loadAssets(JNIEnv* env, jclass obj, jobject assetManager, jstring filename);
   JNIEXPORT jstring JNICALL Java_com_kitware_KiwiViewer_KiwiNative_getDatasetName(JNIEnv* env, jobject obj, jint offset);
   JNIEXPORT jstring JNICALL Java_com_kitware_KiwiViewer_KiwiNative_getDatasetFilename(JNIEnv* env, jobject obj, jint offset);
   JNIEXPORT jint JNICALL Java_com_kitware_KiwiViewer_KiwiNative_getNumberOfBuiltinDatasets(JNIEnv* env, jobject obj);
-  JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_loadDatasetWithOffset(JNIEnv * env, jobject obj, jint offset);
+  JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_loadDataset(JNIEnv * env, jobject obj, jint datasetIndex);
 };
 
 //-----------------------------------------------------------------------------
@@ -354,12 +340,6 @@ JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_resetCamera(JNIEnv
   app->resetView();
 }
 
-JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_loadNextDataset(JNIEnv * env, jobject obj)
-{
-  stopInertialMotion();
-  loadNextDataset();
-}
-
 JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_loadAssets(JNIEnv* env, jclass obj,
         jobject assetManagerJava, jstring filename)
 {
@@ -393,7 +373,8 @@ JNIEXPORT jint JNICALL Java_com_kitware_KiwiViewer_KiwiNative_getNumberOfBuiltin
   return static_cast<jint>(app->numberOfBuiltinDatasets());
 }
 
-JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_loadDatasetWithOffset(JNIEnv * env, jobject obj, jint offset)
+JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_loadDataset(JNIEnv * env, jobject obj, jint datasetIndex)
 {
-  loadDataset(offset);
+  stopInertialMotion();
+  loadDataset(datasetIndex);
 }

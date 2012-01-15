@@ -213,10 +213,10 @@ public class KiwiGLSurfaceView extends GLSurfaceView implements MultiTouchObject
     }
 
 
-    public void loadNextDataset() {
+    public void loadDataset(final int datasetIndex) {
       queueEvent(new Runnable() {
                  public void run() {
-                    mRenderer.loadNextDataset();
+                    KiwiNative.loadDataset(datasetIndex);
                     mRenderer.resetCamera();
                     requestRender();
                  }});
@@ -487,10 +487,6 @@ public class KiwiGLSurfaceView extends GLSurfaceView implements MultiTouchObject
 
 
 class MyRenderer implements GLSurfaceView.Renderer {
-
-  public void loadNextDataset() {
-    KiwiNative.loadNextDataset();
-  }
 
   public void handleSingleTouchUp() {
     KiwiNative.handleSingleTouchUp();
