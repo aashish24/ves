@@ -34,6 +34,8 @@ class vesShaderProgram;
 class vesTexture;
 
 class vtkPolyData;
+class vtkScalarsToColors;
+class vtkDataArray;
 
 class vesKiwiPolyDataRepresentation : public vesKiwiDataRepresentation
 {
@@ -46,13 +48,17 @@ public:
 
   void initializeWithShader(vesSharedPtr<vesShaderProgram> shaderProgram);
 
-  void setPolyData(vtkPolyData* polyData);
+  void setPolyData(vtkPolyData* polyData, vtkScalarsToColors* scalarsToColors=NULL);
+
+  void addTextureCoordinates(vtkDataArray* textureCoordinates);
+
   vesSharedPtr<vesGeometryData> geometryData() const;
 
   virtual void addSelfToRenderer(vesSharedPtr<vesRenderer> renderer);
   virtual void removeSelfFromRenderer(vesSharedPtr<vesRenderer>);
 
   void setColor(double r, double g, double b, double a);
+  vesVector4f color();
 
   void setTexture(vesSharedPtr<vesTexture> texture);
   vesSharedPtr<vesTexture> texture() const;

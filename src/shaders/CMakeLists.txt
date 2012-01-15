@@ -5,6 +5,8 @@ set(shaders
   vesBlinnPhong_vert.glsl
   vesClipPlane_frag.glsl
   vesClipPlane_vert.glsl
+  vesGouraudTexture_frag.glsl
+  vesGouraudTexture_vert.glsl
   vesShader_frag.glsl
   vesShader_vert.glsl
   vesTestTexture_frag.glsl

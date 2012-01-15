@@ -40,7 +40,8 @@
 
 //----------------------------------------------------------------------------
 namespace {
-void ConvertVertexArrays(vtkDataSet* dataSet, vesSharedPtr<vesGeometryData> geometryData)
+
+void ConvertVertexArrays(vtkDataSet* dataSet, vesSharedPtr<vesGeometryData> geometryData, vtkScalarsToColors* scalarsToColors=NULL)
 {
   vtkUnsignedCharArray* colors = vesDataConversionTools::FindRGBColorsArray(dataSet);
   vtkDataArray* scalars = vesDataConversionTools::FindScalarsArray(dataSet);
@@ -51,8 +52,12 @@ void ConvertVertexArrays(vtkDataSet* dataSet, vesSharedPtr<vesGeometryData> geom
     }
   else if (scalars)
     {
-    vtkSmartPointer<vtkLookupTable> lut = vesDataConversionTools::GetRedToBlueLookupTable(scalars->GetRange());
-    vesDataConversionTools::SetVertexColors(scalars, lut, geometryData);
+    vtkSmartPointer<vtkScalarsToColors> colorMap = scalarsToColors;
+    if (!colorMap)
+      {
+      colorMap = vesDataConversionTools::GetRedToBlueLookupTable(scalars->GetRange());
+      }
+    vesDataConversionTools::SetVertexColors(scalars, colorMap, geometryData);
     }
   else if (tcoords)
     {
@@ -64,9 +69,7 @@ vesSharedPtr<vesGeometryData> GeometryDataFromPolyData(vtkPolyData* polyData)
 {
   if (!polyData->GetNumberOfPolys() && !polyData->GetNumberOfLines())
     {
-    vesSharedPtr<vesGeometryData> geometryData = vesDataConversionTools::ConvertPoints(polyData);
-    ConvertVertexArrays(polyData, geometryData);
-    return geometryData;
+    return vesDataConversionTools::ConvertPoints(polyData);
     }
 
   // Use triangle filter for now to ensure that models containing
@@ -77,13 +80,9 @@ vesSharedPtr<vesGeometryData> GeometryDataFromPolyData(vtkPolyData* polyData)
   triangleFilter->PassVertsOn();
   triangleFilter->SetInput(polyData);
   triangleFilter->Update();
-  polyData = triangleFilter->GetOutput();
-
-  vesSharedPtr<vesGeometryData> geometryData =
-    vesDataConversionTools::Convert(polyData);
-  ConvertVertexArrays(polyData, geometryData);
-  return geometryData;
+  return vesDataConversionTools::Convert(triangleFilter->GetOutput());
 }
+
 }
 
 //----------------------------------------------------------------------------
@@ -120,12 +119,13 @@ vesKiwiPolyDataRepresentation::~vesKiwiPolyDataRepresentation()
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiPolyDataRepresentation::setPolyData(vtkPolyData* polyData)
+void vesKiwiPolyDataRepresentation::setPolyData(vtkPolyData* polyData, vtkScalarsToColors* scalarsToColors)
 {
   assert(polyData);
   assert(this->Internal->Mapper);
 
   vesSharedPtr<vesGeometryData> geometryData = GeometryDataFromPolyData(polyData);
+  ConvertVertexArrays(polyData, geometryData, scalarsToColors);
   this->Internal->Mapper->setGeometryData(geometryData);
 }
 
@@ -136,6 +136,16 @@ vesSharedPtr<vesGeometryData> vesKiwiPolyDataRepresentation::geometryData() cons
     return this->Internal->Mapper->geometryData();
   }
   return vesSharedPtr<vesGeometryData>();
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiPolyDataRepresentation::addTextureCoordinates(vtkDataArray* textureCoordinates)
+{
+  assert(this->Internal->Mapper);
+  assert(this->Internal->Mapper->geometryData());
+
+  vesGeometryData::Ptr geometryData = this->Internal->Mapper->geometryData();
+  vesDataConversionTools::SetTextureCoordinates(textureCoordinates, geometryData);
 }
 
 //----------------------------------------------------------------------------
@@ -213,6 +223,13 @@ void vesKiwiPolyDataRepresentation::setColor(double r, double g, double b, doubl
 {
   assert(this->Internal->Actor && this->Internal->Actor->mapper());
   this->Internal->Actor->mapper()->setColor(r, g, b, a);
+}
+
+//----------------------------------------------------------------------------
+vesVector4f vesKiwiPolyDataRepresentation::color()
+{
+  float* color = this->Internal->Actor->mapper()->color();
+  return vesVector4f(color[0], color[1], color[2], color[4]);
 }
 
 //----------------------------------------------------------------------------

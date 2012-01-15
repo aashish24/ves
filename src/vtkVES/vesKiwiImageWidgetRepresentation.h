@@ -21,7 +21,7 @@
 #ifndef __vesKiwiImageWidgetRepresentation_h
 #define __vesKiwiImageWidgetRepresentation_h
 
-#include "vesKiwiDataRepresentation.h"
+#include "vesKiwiWidgetRepresentation.h"
 
 class vesShaderProgram;
 class vesKiwiPolyDataRepresentation;
@@ -30,10 +30,11 @@ class vesKiwiImagePlaneDataRepresentation;
 class vtkImageData;
 class vtkPolyData;
 
-class vesKiwiImageWidgetRepresentation : public vesKiwiDataRepresentation
+class vesKiwiImageWidgetRepresentation : public vesKiwiWidgetRepresentation
 {
 public:
 
+  typedef vesKiwiWidgetRepresentation Superclass;
   vesKiwiImageWidgetRepresentation();
   ~vesKiwiImageWidgetRepresentation();
 
@@ -53,15 +54,14 @@ public:
   bool handleSingleTouchUp();
   bool handleDoubleTap();
 
+  virtual void willRender(vesSharedPtr<vesRenderer> renderer);
+
+  virtual bool interactionIsActive() const { return this->scrollSliceModeActive(); }
+
   bool scrollSliceModeActive() const;
 
   virtual void setShaderProgram(vesSharedPtr<vesShaderProgram> shaderProgram);
   virtual vesSharedPtr<vesShaderProgram> shaderProgram() const;
-
-  // HACK
-  // A renderer should be passed into all the methods that require a renderer.  This class should
-  // not store a single renderer, it should work with multiple renderers.
-  vesSharedPtr<vesRenderer> renderer();
 
 protected:
 

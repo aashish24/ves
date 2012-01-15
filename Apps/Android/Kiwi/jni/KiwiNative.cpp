@@ -62,9 +62,46 @@ int fpsFrames;
 double fpsT0;
 
 //----------------------------------------------------------------------------
+double touchDownTime;
+double tapPanDistance;;
+int tapX;
+int tapY;
+
+void maybeTapDown(int x, int y)
+{
+  touchDownTime = vtkTimerLog::GetUniversalTime();
+  tapPanDistance = 0.0;
+  tapX = x;
+  tapY = y;
+}
+
+void maybeTapUp()
+{
+  double upTime = vtkTimerLog::GetUniversalTime();
+  double elapsed = upTime - touchDownTime;
+
+  if (tapPanDistance < 3.0 && elapsed < 0.25) {
+    app->handleSingleTouchTap(tapX, tapY);
+  }
+}
+
+void maybeCancelTap(double dx, double dy)
+{
+  double dist = sqrtf(dx*dx + dy*dy);
+  tapPanDistance += dist;
+}
+
+//----------------------------------------------------------------------------
+std::string documentsDirectory()
+{
+  assert(storageDir.size());
+  return storageDir + "/KiwiViewer";
+}
+
+//----------------------------------------------------------------------------
 std::string copyAssetToExternalStorage(std::string filename)
 {
-  std::string destDirectory = storageDir + "/KiwiViewer";
+  std::string destDirectory = documentsDirectory();
   std::string destFilename = destDirectory + "/" + filename;
 
   if (vtksys::SystemTools::FileExists(destFilename.c_str())) {
@@ -278,6 +315,8 @@ JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_handleSingleTouchP
     }
 
   app->handleSingleTouchPanGesture(dx, dy);
+
+  maybeCancelTap(dx, dy);
 }
 
 JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_handleTwoTouchPanGesture(JNIEnv * env, jobject obj,  jfloat x0, jfloat y0, jfloat x1, jfloat y1)
@@ -304,17 +343,21 @@ JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_handleTwoTouchRota
 JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_handleSingleTouchDown(JNIEnv * env, jobject obj,  jfloat x, jfloat y)
 {
   app->handleSingleTouchDown(x, y);
+
+  maybeTapDown(x, y);
 }
 
 JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_handleSingleTouchUp(JNIEnv * env, jobject obj)
 {
-  if (!app->scrollSliceModeActive()) {
+  if (!app->widgetInteractionIsActive()) {
     startInertialMotion();
   }
   else {
     stopInertialMotion();
   }
   app->handleSingleTouchUp();
+
+  maybeTapUp();
 }
 
 JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_render(JNIEnv * env, jobject obj)

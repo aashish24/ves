@@ -7,14 +7,20 @@ include_directories("${VTK_SOURCE_DIR}/Filters/Core"
                     "${VTK_SOURCE_DIR}/Filters/Sources")
 
 set(sources
+  vesDataConversionTools.cpp
+  vesKiwiAnimationRepresentation.cpp
+  vesKiwiBaseApp.cpp
+  vesKiwiBrainAtlasRepresentation.cpp
   vesKiwiDataLoader.cpp
   vesKiwiDataRepresentation.cpp
-  vesKiwiPolyDataRepresentation.cpp
   vesKiwiImagePlaneDataRepresentation.cpp
   vesKiwiImageWidgetRepresentation.cpp
-  vesKiwiBaseApp.cpp
+  vesKiwiPlaneWidget.cpp
+  vesKiwiPolyDataRepresentation.cpp
+  vesKiwiText2DRepresentation.cpp
   vesKiwiViewerApp.cpp
-  vesDataConversionTools.cpp)
+  vesKiwiWidgetRepresentation.cpp
+  )
 
 include_directories(Text)
 include_directories("${VTK_SOURCE_DIR}/Utilities"

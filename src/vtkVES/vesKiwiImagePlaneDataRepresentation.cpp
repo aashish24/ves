@@ -81,6 +81,14 @@ void vesKiwiImagePlaneDataRepresentation::setImageData(vtkImageData* imageData)
 }
 
 //----------------------------------------------------------------------------
+vesVector2f vesKiwiImagePlaneDataRepresentation::textureSize() const
+{
+  assert(this->texture());
+  vesImage image = this->texture()->image();
+  return vesVector2f(image.m_width, image.m_height);
+}
+
+//----------------------------------------------------------------------------
 vtkPolyData* vesKiwiImagePlaneDataRepresentation::imagePlanePolyData()
 {
   return this->Internal->ImagePlane;

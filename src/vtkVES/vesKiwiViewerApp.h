@@ -34,6 +34,8 @@ class vesCamera;
 class vesKiwiDataRepresentation;
 class vesKiwiPolyDataRepresentation;
 class vesKiwiImagePlaneDataRepresentation;
+class vesKiwiText2DRepresentation;
+class vesKiwiPlaneWidget;
 class vesRenderer;
 class vesShaderProgram;
 class vesTexture;
@@ -69,15 +71,18 @@ public:
   bool initBlinnPhongShader(const std::string& vertexSource, const std::string& fragmentSource);
   bool initToonShader(const std::string& vertexSource, const std::string& fragmentSource);
   bool initTextureShader(const std::string& vertexSource, const std::string& fragmentSource);
+  bool initGouraudTextureShader(const std::string& vertexSource, const std::string& fragmentSource);
+  bool initClipShader(const std::string& vertexSource, const std::string& fragmentSource);
 
   void setBackgroundTexture(const std::string& filename);
 
   virtual void handleSingleTouchPanGesture(double deltaX, double deltaY);
   virtual void handleSingleTouchDown(int displayX, int displayY);
+  virtual void handleSingleTouchTap(int displayX, int displayY);
   virtual void handleSingleTouchUp();
   virtual void handleDoubleTap();
 
-  bool scrollSliceModeActive() const;
+  bool widgetInteractionIsActive() const;
 
   int numberOfModelFacets() const;
   int numberOfModelVertices() const;
@@ -91,16 +96,22 @@ protected:
 
   virtual void willRender();
 
+  virtual bool loadDatasetWithCustomBehavior(const std::string& filename);
+
   void addBuiltinDataset(const std::string& name, const std::string& filename);
   void addBuiltinShadingModel(
     const std::string& name, vesSharedPtr<vesShaderProgram> shaderProgram);
 
   void removeAllDataRepresentations();
   void addRepresentationsForDataSet(vtkDataSet* dataSet);
+
   vesKiwiPolyDataRepresentation* addPolyDataRepresentation(
     vtkPolyData* polyData, vesSharedPtr<vesShaderProgram> program);
-  vesKiwiImagePlaneDataRepresentation* addTextRepresentation(const std::string& text);
-  void updateTextAnnotations();
+  vesKiwiText2DRepresentation* addTextRepresentation(const std::string& text);
+  vesKiwiPlaneWidget* addPlaneWidget();
+  bool loadBrainAtlas(const std::string& filename);
+  bool loadCanSimulation(const std::string& filename);
+  void setDefaultBackgroundColor();
 
 private:
 

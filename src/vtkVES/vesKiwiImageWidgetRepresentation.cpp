@@ -39,6 +39,7 @@
 #include <vtkAppendPolyData.h>
 
 #include <vector>
+#include <map>
 #include <cassert>
 
 //----------------------------------------------------------------------------
@@ -66,7 +67,6 @@ public:
     }
   }
 
-  vesSharedPtr<vesRenderer> Renderer;
 
   int SelectedImageDimension;
   int CurrentSliceIndices[3];
@@ -75,6 +75,8 @@ public:
 
   std::vector<vesKiwiDataRepresentation*> AllReps;
   std::vector<vesKiwiImagePlaneDataRepresentation*> SliceReps;
+
+  std::map<int, int> TargetSliceIndex;
 
   vesKiwiPolyDataRepresentation* ContourRep;
   vesKiwiPolyDataRepresentation* OutlineRep;
@@ -94,6 +96,20 @@ vesKiwiImageWidgetRepresentation::vesKiwiImageWidgetRepresentation()
 vesKiwiImageWidgetRepresentation::~vesKiwiImageWidgetRepresentation()
 {
   delete this->Internal;
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiImageWidgetRepresentation::willRender(vesSharedPtr<vesRenderer> renderer)
+{
+  if (this->Internal->TargetSliceIndex.size()) {
+
+    std::map<int, int>::const_iterator itr;
+    for (itr = this->Internal->TargetSliceIndex.begin(); itr != this->Internal->TargetSliceIndex.end(); ++itr) {
+      this->setSliceIndex(itr->first, itr->second);
+    }
+
+    this->Internal->TargetSliceIndex.clear();
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -122,6 +138,7 @@ void vesKiwiImageWidgetRepresentation::setImageData(vtkImageData* image)
   outline->SetInput(image);
   outline->Update();
   this->Internal->OutlineRep->setPolyData(outline->GetOutput());
+  this->Internal->OutlineRep->setColor(0.5, 0.5, 0.5, 0.5);
 
   if (image->GetNumberOfPoints() < 600000) {
     vtkNew<vtkContourFilter> contour;
@@ -229,9 +246,9 @@ void vesKiwiImageWidgetRepresentation::scrollImageSlice(double deltaX, double de
     sliceDelta = delta > 0 ? 1 : -1;
   }
 
-  // Get new slice index
   int sliceIndex = this->Internal->CurrentSliceIndices[flatDimension] + sliceDelta;
-  this->setSliceIndex(flatDimension, sliceIndex);
+  this->Internal->TargetSliceIndex[flatDimension] = sliceIndex;
+  this->Internal->CurrentSliceIndices[flatDimension] = sliceIndex;
 }
 
 //----------------------------------------------------------------------------
@@ -269,8 +286,9 @@ void vesKiwiImageWidgetRepresentation::setSliceIndex(int planeIndex, int sliceIn
 //----------------------------------------------------------------------------
 bool vesKiwiImageWidgetRepresentation::handleSingleTouchPanGesture(double deltaX, double deltaY)
 {
-  if (!this->scrollSliceModeActive())
+  if (!this->interactionIsActive()) {
     return false;
+  }
 
   this->scrollImageSlice(deltaX, deltaY);
   return true;
@@ -317,12 +335,14 @@ bool vesKiwiImageWidgetRepresentation::handleSingleTouchDown(int displayX, int d
   int result = locator->IntersectWithLine(p0, p1, 0.0, t, pickPoint, paramCoords, subId, cellId);
   if (result == 1) {
     this->Internal->SelectedImageDimension = cellId;
-    return true;
+    this->interactionOn();
   }
   else {
     this->Internal->SelectedImageDimension = -1;
-    return false;
+    this->interactionOff();
   }
+
+  return this->interactionIsActive();
 }
 
 //----------------------------------------------------------------------------
@@ -346,35 +366,33 @@ bool vesKiwiImageWidgetRepresentation::handleDoubleTap()
 //----------------------------------------------------------------------------
 bool vesKiwiImageWidgetRepresentation::handleSingleTouchUp()
 {
-  if (!this->scrollSliceModeActive())
+  if (!this->interactionIsActive()) {
     return false;
+  }
 
   this->Internal->SelectedImageDimension = -1;
+  this->interactionOff();
   return true;
-}
-
-//----------------------------------------------------------------------------
-vesSharedPtr<vesRenderer> vesKiwiImageWidgetRepresentation::renderer()
-{
-  return this->Internal->Renderer;
 }
 
 //----------------------------------------------------------------------------
 void vesKiwiImageWidgetRepresentation::addSelfToRenderer(
   vesSharedPtr<vesRenderer> renderer)
 {
-  this->Internal->Renderer = renderer;
-  for (size_t i = 0; i < this->Internal->AllReps.size(); ++i)
+  this->Superclass::addSelfToRenderer(renderer);
+  for (size_t i = 0; i < this->Internal->AllReps.size(); ++i) {
     this->Internal->AllReps[i]->addSelfToRenderer(renderer);
+  }
 }
 
 //----------------------------------------------------------------------------
 void vesKiwiImageWidgetRepresentation::removeSelfFromRenderer(
   vesSharedPtr<vesRenderer> renderer)
 {
-  this->Internal->Renderer.reset();
-  for (size_t i = 0; i < this->Internal->AllReps.size(); ++i)
+  this->Superclass::removeSelfFromRenderer(renderer);
+  for (size_t i = 0; i < this->Internal->AllReps.size(); ++i) {
     this->Internal->AllReps[i]->removeSelfFromRenderer(renderer);
+  }
 }
 
 //----------------------------------------------------------------------------
