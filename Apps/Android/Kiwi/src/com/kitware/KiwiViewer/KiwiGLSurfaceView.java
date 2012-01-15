@@ -55,7 +55,8 @@ import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.opengles.GL10;
 
 
-class KiwiGLSurfaceView extends GLSurfaceView implements MultiTouchObjectCanvas<KiwiGLSurfaceView> {
+public class KiwiGLSurfaceView extends GLSurfaceView implements MultiTouchObjectCanvas<KiwiGLSurfaceView> {
+  
     private static String TAG = "KiwiViewer";
     private static final boolean DEBUG = false;
 
@@ -98,6 +99,16 @@ class KiwiGLSurfaceView extends GLSurfaceView implements MultiTouchObjectCanvas<
     public KiwiGLSurfaceView(Context context) {
       super(context);
 
+      // requires api level 11
+      //setPreserveEGLContextOnPause(true);
+
+      init(true, 8, 0);
+    }
+
+
+    public KiwiGLSurfaceView(Context context, AttributeSet attrs) {
+      super(context, attrs);
+      
       // requires api level 11
       //setPreserveEGLContextOnPause(true);
 
@@ -202,10 +213,10 @@ class KiwiGLSurfaceView extends GLSurfaceView implements MultiTouchObjectCanvas<
     }
 
 
-    public void loadNextDataset() {
+    public void loadDataset(final int datasetIndex) {
       queueEvent(new Runnable() {
                  public void run() {
-                    mRenderer.loadNextDataset();
+                    KiwiNative.loadDataset(datasetIndex);
                     mRenderer.resetCamera();
                     requestRender();
                  }});
@@ -476,10 +487,6 @@ class KiwiGLSurfaceView extends GLSurfaceView implements MultiTouchObjectCanvas<
 
 
 class MyRenderer implements GLSurfaceView.Renderer {
-
-  public void loadNextDataset() {
-    KiwiNative.loadNextDataset();
-  }
 
   public void handleSingleTouchUp() {
     KiwiNative.handleSingleTouchUp();

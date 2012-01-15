@@ -21,66 +21,72 @@
 package com.kitware.KiwiViewer;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.res.AssetManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
-import android.view.WindowManager;
-
-import android.content.res.AssetManager;
-
 import android.view.View;
-import android.view.Gravity;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.LinearLayout;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.Toast;
 
 public class KiwiViewerActivity extends Activity {
 
-    KiwiGLSurfaceView mView;
+    public static final String TAG = "KiwiViewerActivity";
+  
+    protected KiwiGLSurfaceView mView;
 
+    protected ImageButton  mLoadButton;
+    protected ImageButton  mResetViewButton;
+    
+    protected ListView mDatasetList;
 
-    LinearLayout mRootLayout;
-    LinearLayout mButtonLayout;
+    private static AssetManager assetManager;
+    
+    public static final int DATASETTABLE_REQUEST_CODE = 1;
+    
+    /**
+     * @return a string array of available datasets
+     */
+    protected String[] createDatasetArray() {
+      int numberOfDatasets = KiwiNative.getNumberOfBuiltinDatasets();
+      String[] ret = new String[numberOfDatasets];
+      for(int i = 0; i < numberOfDatasets; ++i) {
+        ret[i] = KiwiNative.getDatasetName(i);
+      }
+      return ret;
+    }
 
-    Button  mLoadButton;
-    Button  mResetViewButton;
-
-    static AssetManager assetManager;
-
-    @Override protected void onCreate(Bundle icicle) {
+    @Override 
+    protected void onCreate(Bundle icicle) {
+      
       super.onCreate(icicle);
-
-
-      mView = new KiwiGLSurfaceView(getApplication());
+      
+      this.setContentView(R.layout.kiwivieweractivity);
+      
+      mView = (KiwiGLSurfaceView) this.findViewById(R.id.glSurfaceView);
 
       assetManager = getAssets();
       String storageDir = Environment.getExternalStorageDirectory().getAbsolutePath();
       KiwiNative.loadAssets(assetManager, storageDir);
 
-      mRootLayout = new LinearLayout(this);
-      mRootLayout.setOrientation(LinearLayout.VERTICAL);
-      mRootLayout.setLayoutParams(new LayoutParams(
-                              LayoutParams.MATCH_PARENT,
-                              LayoutParams.MATCH_PARENT));
+      mLoadButton = (ImageButton) this.findViewById(R.id.loadDataButton);
+      mResetViewButton = (ImageButton) this.findViewById(R.id.resetButton);
 
-
-      mButtonLayout = new LinearLayout(this);
-      mButtonLayout.setOrientation(LinearLayout.HORIZONTAL);
-      mButtonLayout.setLayoutParams(new LayoutParams(
-                              LayoutParams.MATCH_PARENT,
-                              LayoutParams.WRAP_CONTENT));
-
-      mLoadButton = new Button(this);
-      mLoadButton.setText("Load Data");
-
-      mResetViewButton = new Button(this);
-      mResetViewButton.setText("Reset View");
 
       mLoadButton.setOnClickListener(new Button.OnClickListener() {
           public void onClick(View v) {
               // todo- maybe check storage state first?
               // Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)
-              mView.loadNextDataset();
+
+              Intent datasetTableIntent =
+                new Intent("com.kitware.KiwiViewer.action.DatasetList",
+                           getIntent().getData());
+              String[] datasets = createDatasetArray();
+              datasetTableIntent.putExtra("com.kitware.KiwiViewer.bundle.DatasetList", datasets);
+              startActivityForResult(datasetTableIntent, DATASETTABLE_REQUEST_CODE);
           }
       });
 
@@ -89,17 +95,6 @@ public class KiwiViewerActivity extends Activity {
               mView.resetCamera();
           }
       });
-
-      mButtonLayout.addView(mResetViewButton);
-      mButtonLayout.addView(mLoadButton);
-      mButtonLayout.setGravity(Gravity.RIGHT);
-
-      this.addContentView(mView, new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
-
-      LinearLayout ll = new LinearLayout(this);
-      ll.addView(mButtonLayout);
-      ll.setGravity(Gravity.RIGHT | Gravity.BOTTOM);
-      this.addContentView(ll, new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT));
 
     }
 
@@ -111,5 +106,27 @@ public class KiwiViewerActivity extends Activity {
     @Override protected void onResume() {
         super.onResume();
         mView.onResume();
+    }
+    
+    /**
+     * Get results from the dataset dialog
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+      Bundle curBundle = null;
+      Log.d(TAG,"Test");
+      if (data != null) {
+        curBundle = data.getExtras();
+      }
+      if (requestCode == DATASETTABLE_REQUEST_CODE && curBundle != null
+          && curBundle.containsKey("com.kitware.KiwiViewer.bundle.DatasetName")) {
+          
+        String name = curBundle.getString("com.kitware.KiwiViewer.bundle.DatasetName");
+        int offset = curBundle.getInt("com.kitware.KiwiViewer.bundle.DatasetOffset");
+        Toast.makeText(getBaseContext(), "Loading " + name + "...", Toast.LENGTH_SHORT).show();
+        mView.loadDataset(offset);
+      }
+
+      super.onActivityResult(requestCode, resultCode, data);
     }
 }
