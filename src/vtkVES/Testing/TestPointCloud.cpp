@@ -191,7 +191,7 @@ vesTestHelper* testHelper;
 void LoadData()
 {
   std::string filename = testHelper->sourceDirectory() +
-    std::string("/Apps/Android/PointCloud/assets/cturtle.vtk");
+    std::string("/Apps/iOS/Kiwi/Kiwi/Data/cturtle.vtk");
 
   testHelper->app()->loadData(filename);
   testHelper->app()->resetView();
