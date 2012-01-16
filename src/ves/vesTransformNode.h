@@ -65,11 +65,19 @@ public:
 
   virtual void accept(vesVisitor &visitor);
 
+  /// \brief Compute local to world matrix
+  virtual bool computeLocalToWorldMatrix(vesMatrix4x4f& matrix,
+                                         vesVisitor& visitor);
+
+  /// \brief Compute world to local matrix
+  virtual bool computeWorldToLocalMatrix(vesMatrix4x4f& matrix,
+                                         vesVisitor& visitor);
+
 protected:
   void updateBounds(vesNode &child);
 
-private:
   void setInternals();
+
   vesMatrix4x4f computeTransform();
 
   vesVector3f m_center;
@@ -80,6 +88,7 @@ private:
 
   ReferenceFrame m_referenceFrame;
 
+private:
   class vesInternal;
   vesInternal *m_internal;
 };

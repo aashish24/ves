@@ -130,6 +130,14 @@ public:
 
   virtual void accept(vesVisitor &visitor);
 
+  /// \copydoc vesTransformNode::computeLocalToWorldMatrix
+  virtual bool computeLocalToWorldMatrix(vesMatrix4x4f &matrix,
+                                         vesVisitor &visitor);
+
+  /// \copydoc vesTransformNode::computeWorldToLocalMatrix
+  virtual bool computeWorldToLocalMatrix(vesMatrix4x4f& matrix,
+                                         vesVisitor& visitor);
+
 protected:
   void computeDistance();
   void computeViewPlaneNormal();

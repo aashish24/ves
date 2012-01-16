@@ -54,7 +54,10 @@ void vesCullVisitor::visit(vesGroupNode &groupNode)
 
 void vesCullVisitor::visit(vesTransformNode &transformNode)
 {
-  this->pushModelViewMatrix(transformNode.matrix());
+  vesMatrix4x4f matrix = this->modelViewMatrix();
+  transformNode.computeLocalToWorldMatrix(matrix, *this);
+
+  this->pushModelViewMatrix(matrix);
 
   this->invokeCallbacksAndTraverse(transformNode);
 
@@ -64,7 +67,10 @@ void vesCullVisitor::visit(vesTransformNode &transformNode)
 
 void vesCullVisitor::visit(vesActor &actor)
 {
-  this->pushModelViewMatrix(actor.modelViewMatrix());
+  vesMatrix4x4f matrix = this->modelViewMatrix();
+  actor.computeLocalToWorldMatrix(matrix, *this);
+
+  this->pushModelViewMatrix(matrix);
 
    if (actor.isOverlayNode()) {
     this->addGeometryAndStates(actor.mapper(), actor.material(),
@@ -84,13 +90,15 @@ void vesCullVisitor::visit(vesActor &actor)
 
 void vesCullVisitor::visit(vesCamera &camera)
 {
+  vesMatrix4x4f matrix = this->modelViewMatrix();
+  camera.computeLocalToWorldMatrix(matrix, *this);
+
+  this->pushModelViewMatrix(matrix);
+
   if (camera.referenceFrame() == vesTransformNode::Relative) {
     this->pushProjectionMatrix(this->projectionMatrix() * camera.projectionMatrix());
-    this->pushModelViewMatrix(this->modelViewMatrix() * camera.modelViewMatrix());
   } else {
     this->pushProjectionMatrix(camera.projectionMatrix());
-    this->clearModelViewMatrixStack();
-    this->pushModelViewMatrix(camera.modelViewMatrix());
   }
 
   // If camera is set as a NestedRender, treat camera as

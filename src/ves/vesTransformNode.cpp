@@ -195,6 +195,40 @@ void vesTransformNode::accept(vesVisitor &visitor)
 }
 
 
+bool vesTransformNode::computeLocalToWorldMatrix(vesMatrix4x4f &matrix,
+                                                 vesVisitor &visitor)
+{
+  vesNotUsed(visitor);
+
+  if (this->m_referenceFrame == Absolute) {
+    matrix = this->matrix();
+  }
+  else  {
+    matrix = matrix * this->matrix();
+  }
+
+  return true;
+}
+
+
+bool vesTransformNode::computeWorldToLocalMatrix(vesMatrix4x4f &matrix,
+                                                 vesVisitor &visitor)
+{
+  vesNotUsed(visitor);
+
+  vesMatrix4x4f inverseMatrix = this->matrix().inverse();
+
+  if (this->m_referenceFrame == Absolute) {
+    matrix  = inverseMatrix;
+  }
+  else {
+    matrix = inverseMatrix * matrix;
+  }
+
+  return true;
+}
+
+
 void vesTransformNode::updateBounds(vesNode &child)
 {
   if (!this->boundsDirty()) {
