@@ -99,6 +99,24 @@ bool vesActor::computeLocalToWorldMatrix(vesMatrix4x4f &matrix,
 }
 
 
+bool vesActor::computeWorldToLocalMatrix(vesMatrix4x4f &matrix,
+                                         vesVisitor &visitor)
+{
+  vesNotUsed(visitor);
+
+  vesMatrix4x4f inverseMatrix = this->modelViewMatrix().inverse();
+
+  if (this->m_referenceFrame == Absolute) {
+    matrix  = inverseMatrix;
+  }
+  else {
+    matrix = inverseMatrix * matrix;
+  }
+
+  return true;
+}
+
+
 void vesActor::computeBounds()
 {
   assert(this->m_mapper);

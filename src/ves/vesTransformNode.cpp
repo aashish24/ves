@@ -216,12 +216,13 @@ bool vesTransformNode::computeWorldToLocalMatrix(vesMatrix4x4f &matrix,
 {
   vesNotUsed(visitor);
 
+  vesMatrix4x4f inverseMatrix = this->matrix().inverse();
+
   if (this->m_referenceFrame == Absolute) {
-    matrix.setIdentity();
-    return false;
+    matrix  = inverseMatrix;
   }
   else {
-    // \TODO: Implement this
+    matrix = inverseMatrix * matrix;
   }
 
   return true;
