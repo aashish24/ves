@@ -85,12 +85,6 @@ void vesVisitor::popModelViewMatrix()
 }
 
 
-void vesVisitor::clearModelViewMatrixStack()
-{
-  this->m_internal->m_modelViewMatrixStack.clear();
-}
-
-
 void vesVisitor::pushProjectionMatrix(const vesMatrix4x4f &matrix)
 {
   this->m_internal->m_projectionMatrixStack.push_back(&matrix);
@@ -107,9 +101,9 @@ vesMatrix4x4f vesVisitor::modelViewMatrix()
 {
   vesMatrix4x4f matrix;
   matrix.setIdentity();
-  size_t count = this->m_internal->m_modelViewMatrixStack.size();
-  for (size_t i = 0; i < count ; ++i) {
-    matrix *= *this->m_internal->m_modelViewMatrixStack[i];
+
+  if (!this->m_internal->m_modelViewMatrixStack.empty()) {
+    matrix = *this->m_internal->m_modelViewMatrixStack.back();
   }
 
   return matrix;

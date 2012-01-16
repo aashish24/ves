@@ -451,3 +451,19 @@ void vesCamera::accept(vesVisitor &visitor)
 {
   visitor.visit(*this);
 }
+
+
+bool vesCamera::computeLocalToWorldMatrix(vesMatrix4x4f &matrix,
+                                          vesVisitor &visitor)
+{
+  vesNotUsed(visitor);
+
+  if (this->m_referenceFrame == Absolute) {
+    matrix = this->modelViewMatrix();
+  }
+  else  {
+    matrix = matrix * this->modelViewMatrix();
+  }
+
+  return true;
+}
