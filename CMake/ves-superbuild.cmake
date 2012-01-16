@@ -38,9 +38,7 @@ macro(force_build proj)
 endmacro()
 
 macro(install_eigen)
-  # The official download link for eigen redirects to https, and unfortunately
-  # cmake's builtin curl lacks https support.
-  set(eigen_url http://patmarion.com/kiwi/eigen-3.1.0-alpha1.tar.gz)
+  set(eigen_url http://www.vtk.org/files/support/eigen-3.1.0-alpha1.tar.gz)
   set(eigen_md5 c04dedf4ae97b055b6dd2aaa01daf5e9)
   ExternalProject_Add(
     eigen
