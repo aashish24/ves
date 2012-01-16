@@ -73,11 +73,11 @@ public:
   virtual vesActor* asActor() { return 0x0; }
   virtual const vesActor* asActor() const { return 0x0; }
 
-  /// \brief Traverse parent and their parents
+  /// \brief Traverse parent
   virtual void ascend(vesVisitor &visitor)
     { vesNotUsed(visitor); }
 
-  /// \brief Traverse children and their children
+  /// \brief Traverse children
   virtual void traverse(vesVisitor &visitor)
     { vesNotUsed(visitor); }
 
