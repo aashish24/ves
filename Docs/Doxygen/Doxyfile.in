@@ -11,14 +11,16 @@ PROJECT_LOGO           =
 OUTPUT_DIRECTORY       = @doxygen_BINARY_DIR@
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English
-BRIEF_MEMBER_DESC      = YES
+BRIEF_MEMBER_DESC      = NO
 REPEAT_BRIEF           = YES
 ABBREVIATE_BRIEF       =
 ALWAYS_DETAILED_SEC    = NO
 INLINE_INHERITED_MEMB  = NO
 FULL_PATH_NAMES        = YES
-STRIP_FROM_PATH        =
-STRIP_FROM_INC_PATH    =
+STRIP_FROM_PATH        = "@VES_SOURCE_DIR@" \
+                         "@VES_BINARY_DIR@"
+STRIP_FROM_INC_PATH    = "@VES_SOURCE_DIR@" \
+                         "@VES_BINARY_DIR@"
 SHORT_NAMES            = NO
 JAVADOC_AUTOBRIEF      = NO
 QT_AUTOBRIEF           = NO
@@ -95,11 +97,14 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 INPUT                  = @VES_SOURCE_DIR@/Docs/Doxygen \
                          @VES_SOURCE_DIR@/src/ves \
+                         @VES_SOURCE_DIR@/src/shaders \
+                         @VES_BINARY_DIR@/src/shaders \
                          @VES_SOURCE_DIR@/src/vtkVES \
                          @VES_SOURCE_DIR@/Apps/Android/Kiwi/jni
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.h \
-                         *.hpp
+                         *.hpp \
+                         *.glsl
 RECURSIVE              = YES
 EXCLUDE                =
 EXCLUDE_SYMLINKS       = NO
@@ -245,30 +250,8 @@ EXPAND_ONLY_PREDEF     = YES
 SEARCH_INCLUDES        = YES
 INCLUDE_PATH           =
 INCLUDE_FILE_PATTERNS  =
-PREDEFINED             = "vtkSetMacro(name,type)=                  virtual void Set##name (type);" \
-                         "vtkGetMacro(name,type)=                  virtual type Get##name ();" \
-                         "vtkSetStringMacro(name)=                  virtual void Set##name (const char*);" \
-                         "vtkGetStringMacro(name)=                  virtual char* Get##name ();" \
-                         "vtkSetClampMacro(name,type,min,max)=                  virtual void Set##name (type);" \
-                         "vtkSetObjectMacro(name,type)=                  virtual void Set##name (type*);" \
-                         "vtkGetObjectMacro(name,type)=                  virtual type *Get##name ();" \
-                         "vtkBooleanMacro(name,type)=                  virtual void name##On ();                  virtual void name##Off ();" \
-                         "vtkSetVector2Macro(name,type)=                  virtual void Set##name (type, type);                  void Set##name (type [2]);" \
-                         "vtkGetVector2Macro(name,type)=                  virtual type *Get##name ();                  virtual void Get##name (type &, type &);                  virtual void Get##name (type [2]);" \
-                         "vtkSetVector3Macro(name,type)=                  virtual void Set##name (type, type, type);                  virtual void Set##name (type [3]);" \
-                         "vtkGetVector3Macro(name,type)=                  virtual type *Get##name ();                  virtual void Get##name (type &, type &, type &);                  virtual void Get##name (type [3]);" \
-                         "vtkSetVector4Macro(name,type)=                  virtual void Set##name (type, type, type, type);                  virtual void Set##name (type [4]);" \
-                         "vtkGetVector4Macro(name,type)=                  virtual type *Get##name ();                  virtual void Get##name (type &, type &, type &, type &);                  virtual void Get##name (type [4]);" \
-                         "vtkSetVector6Macro(name,type)=                  virtual void Set##name (type, type, type, type,                                          type, type);                  virtual void Set##name (type [6]);" \
-                         "vtkGetVector6Macro(name,type)=                   virtual type *Get##name ();                   virtual void Get##name (type &, type &, type &,                                           type &, type &, type &);                   virtual void Get##name (type [6]);" \
-                         "vtkSetVectorMacro(name,type,count)=                   virtual void Set##name(type data[]);" \
-                         "vtkGetVectorMacro(name,type,count)=                    virtual type *Get##name ();                    virtual void Get##name(type data[##count]);" \
-                         "vtkWorldCoordinateMacro(name)=                    virtual vtkCoordinate *Get##name##Coordinate ();                    virtual void Set##name(float x[3]);                    virtual void Set##name(float x, float y, float z);                    virtual float *Get##name();" \
-                         "vtkViewportCoordinateMacro(name)=                    virtual vtkCoordinate *Get##name##Coordinate ();                    virtual void Set##name(float x[2]);                    virtual void Set##name(float x, float y);                    virtual float *Get##name();" \
-                         "vtkTypeMacro(thisClass,superclass)=                    typedef superclass Superclass;                    virtual const char *GetClassName();                    static int IsTypeOf(const char *type);                    virtual int IsA(const char *type);                    static thisClass* SafeDownCast(vtkObject *o);" \
-                         "vtkTypeMacro(thisClass,superclass)=                    typedef superclass Superclass;                    virtual const char *GetClassName();                    static int IsTypeOf(const char *type);                    virtual int IsA(const char *type);                    static thisClass* SafeDownCast(vtkObject *o);" \
-                         "VTK_LEGACY(x)= x"
-EXPAND_AS_DEFINED      =
+PREDEFINED             =
+EXPAND_AS_DEFINED      = vesNotUsed vesTypeMacro vesSharedPtr vesWeakPtr
 SKIP_FUNCTION_MACROS   = YES
 #---------------------------------------------------------------------------
 # Configuration::additions related to external references
@@ -284,22 +267,22 @@ PERL_PATH              = /usr/bin/perl
 CLASS_DIAGRAMS         = YES
 MSCGEN_PATH            =
 HIDE_UNDOC_RELATIONS   = YES
-HAVE_DOT               = NO
+HAVE_DOT               = YES
 DOT_NUM_THREADS        = 0
 DOT_FONTNAME           = FreeSans
 DOT_FONTSIZE           = 10
 DOT_FONTPATH           =
 CLASS_GRAPH            = YES
-COLLABORATION_GRAPH    = YES
-GROUP_GRAPHS           = YES
+COLLABORATION_GRAPH    = NO
+GROUP_GRAPHS           = NO
 UML_LOOK               = NO
-TEMPLATE_RELATIONS     = YES
-INCLUDE_GRAPH          = YES
-INCLUDED_BY_GRAPH      = YES
+TEMPLATE_RELATIONS     = NO
+INCLUDE_GRAPH          = NO
+INCLUDED_BY_GRAPH      = NO
 CALL_GRAPH             = NO
 CALLER_GRAPH           = NO
 GRAPHICAL_HIERARCHY    = YES
-DIRECTORY_GRAPH        = YES
+DIRECTORY_GRAPH        = NO
 DOT_IMAGE_FORMAT       = png
 INTERACTIVE_SVG        = NO
 DOT_PATH               =
