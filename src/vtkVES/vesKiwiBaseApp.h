@@ -17,16 +17,20 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
-
+/// \class vesKiwiBaseApp
+/// \ingroup KiwiPlatform
+/// \brief A base class for implementing an application with a single renderer.
+//
+/// vesKiwiBaseApp can be subclassed to create an application that has
+/// a single renderer and camera.  vesKiwiBaseApp manages the renderer,
+/// camera, and translates touch events into camera movements.
 #ifndef __vesKiwiBaseApp_h
 #define __vesKiwiBaseApp_h
 
 #include <vesMath.h>
 #include <vesSharedPtr.h>
 
-// C/C++
 #include <string>
-#include<tr1/memory>
 
 class vesCamera;
 class vesRenderer;
@@ -42,30 +46,80 @@ public:
   vesKiwiBaseApp();
   virtual ~vesKiwiBaseApp();
 
+  /// Call vesRenderer::render() on the vesRenderer owned by this app object.
+  /// willRender() is called at the start of this method, and didRender() is called
+  /// at the end.  Subclasses can override those methods to implement custom
+  /// behavior, rather than overriding this method.
   void render();
 
+  /// Reset the camera to a default viewing direction and position.
+  /// The camera view direction is reset to the world +Z axis and the view up
+  /// direction is set to +Y.  The camera focal point is set to the center of
+  /// the bounds of all visible objects in the renderer and the camera is
+  /// dollied away from the focal point so that all objects are visible in the view.
+  /// \see vesCamera::resetCamera()
   virtual void resetView();
+
+  /// Resizes the renderer to the given width and height.
   virtual void resizeView(int width, int height);
 
+  /// Handle a two touch pan gesture.  The implementation translates the movement
+  /// in 2D to a 3D translation to be applied to the camera position and focal point.
   virtual void handleTwoTouchPanGesture(double x0, double y0, double x1, double y1);
+
+  /// Handle a single touch pan gesture.  The implementation translates the movement
+  /// in 2D into a 3D camera rotation.
+  /// \see  vesCamera::azimuth()
+  /// \see  vesCamera::elevation()
   virtual void handleSingleTouchPanGesture(double deltaX, double deltaY);
+
+  /// Handle a two touch pinch gesture.  The implementation calls vesCamera::dolly()
+  /// with the given scale factor.  The scale factor represents a percentage of
+  /// the current view diagonal using a value between -1.0 and 1.0.
   virtual void handleTwoTouchPinchGesture(double scale);
+
+  /// Handle a two touch rotation gesture.  The implementation rotates the
+  /// camera about the view direction.  Rotation is given in radians.
+  /// \see vesCamera::roll()
   virtual void handleTwoTouchRotationGesture(double rotation);
+
+  /// Handle a single touch down event.  The location of the touch down event
+  /// is given in 2D screen coordinates.  The default implementation is a no-op.
   virtual void handleSingleTouchDown(int displayX, int displayY);
+
+  /// Handle a single touch up event.  The default implementation is a no-op.
   virtual void handleSingleTouchUp();
+
+  /// Handle a double tap event.  The default implementation is a no-op.
   virtual void handleDoubleTap();
 
+  /// Set the background color of the renderer.
   void setBackgroundColor(double r, double g, double b);
 
+  /// Get the width of the renderer.
+  /// \see resizeView()
   int viewWidth() const;
+
+  /// Get the height of the renderer.
+  /// \see resizeView()
   int viewHeight() const;
 
+  /// Get the current camera position.
   vesVector3f cameraPosition() const;
+
+  /// Get the current camera focal point.
   vesVector3f cameraFocalPoint() const;
+
+  /// Get the current camera view up direction.
   vesVector3f cameraViewUp() const;
 
+  /// Set the camera position.
   void setCameraPosition(const vesVector3f& position);
+
+  /// Set the camera focal point.
   void setCameraFocalPoint(const vesVector3f& focalPoint);
+
+  /// Set the camera view up direction.
   void setCameraViewUp(const vesVector3f& viewUp);
 
 protected:
@@ -96,11 +150,13 @@ protected:
   vesSharedPtr<vesVertexAttribute> addVertexTextureCoordinateAttribute(
     vesSharedPtr<vesShaderProgram> program, const std::string& name=std::string());
 
-  // These accessors are protected so that apps cannot use the APIs of
-  // these objects.  Instead, this class should provide public methods to
-  // wrap the APIs.  The goal is to allow the ves APIs to be refactored
-  // without breaking the Android and iOS KiwiViewer apps.
+  /// This accessor is protected so that clients of this class do not use the
+  /// API of the returned object. Instead, this class should provide public methods
+  /// that wrap the API. The goal is to allow the VES API to be refactored
+  /// without breaking clients of this class (only this class breaks)
   vesSharedPtr<vesCamera> camera() const;
+
+  /// \copydoc camera()
   vesSharedPtr<vesRenderer> renderer() const;
 
 private:
