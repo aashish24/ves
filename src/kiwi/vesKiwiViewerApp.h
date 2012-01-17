@@ -17,7 +17,8 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
-
+/// \class vesKiwiViewerApp
+/// \ingroup KiwiPlatform
 #ifndef __vesKiwiViewerApp_h
 #define __vesKiwiViewerApp_h
 

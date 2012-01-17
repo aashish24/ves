@@ -17,7 +17,8 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
-
+/// \class vesKiwiBrainAtlasRepresentation
+/// \ingroup KiwiPlatform
 #ifndef __vesKiwiBrainAtlasRepresentation_h
 #define __vesKiwiBrainAtlasRepresentation_h
 

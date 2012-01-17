@@ -17,7 +17,8 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
-
+/// \class vesKiwiDataRepresentation
+/// \ingroup KiwiPlatform
 #ifndef __vesKiwiDataRepresentation_h
 #define __vesKiwiDataRepresentation_h
 

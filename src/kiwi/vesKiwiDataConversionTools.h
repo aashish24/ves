@@ -17,7 +17,8 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
-
+/// \class vesKiwiDataConversionTools
+/// \ingroup KiwiPlatform
 #ifndef __vesKiwiDataConversionTools_h
 #define __vesKiwiDataConversionTools_h
 

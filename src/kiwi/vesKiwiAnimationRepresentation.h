@@ -17,7 +17,8 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
-
+/// \class vesKiwiAnimationRepresentation
+/// \ingroup KiwiPlatform
 #ifndef __vesKiwiAnimationRepresentation_h
 #define __vesKiwiAnimationRepresentation_h
 
