@@ -33,7 +33,7 @@ def writeFactoryFile(outDir, factoryName, variableNames):
     includes = []
 
     for variableName in variableNames:
-        methodDeclarations.append('  static char* %s();' % variableName)
+        methodDeclarations.append('  /// Get the source to the %s.glsl shader program\n  static char* %s();\n' % (variableName, variableName))
         methodDefinitions.append('char* %s::%s() { return ::%s; }' % (factoryName, variableName, variableName))
         includes.append('#include "%s.h"' % variableName)
 
@@ -41,12 +41,14 @@ def writeFactoryFile(outDir, factoryName, variableNames):
     outFile.write(
 '''#ifndef __%s_h
 
+/// %s provides accessors to builtin glsl shader program source code.
+/// \ingroup shaders
 class %s {
 public:
 %s
 };
 #endif
-''' % (factoryName, factoryName, '\n'.join(methodDeclarations)))
+''' % (factoryName, factoryName, factoryName, '\n'.join(methodDeclarations)))
 
     outFile = open(cppFile, 'w')
     outFile.write(
