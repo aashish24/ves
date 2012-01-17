@@ -2,7 +2,7 @@
 
 
 <ul>
-        <li><a href="classes.html">Class and Function Documentation</a></li>
+        <li><a href="classes.html">API Documentation</a></li>
         <li>\ref repository</li>
         <li>\ref installation</li>
         <li>\ref bugs</li>
