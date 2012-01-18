@@ -17,6 +17,14 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
+/// \class vesActor
+/// \ingroup ves
+/// \brief Transform node that contains a drawable entity
+///
+/// vesActor is a placeholder transform node that contains a drawable entity.
+/// One actor can contain only one drawable entity (mapper).
+/// A mapper however can be set to multiple actors.
+/// \see vesTransformNode vesMapper
 
 #ifndef VESACTOR_H
 #define VESACTOR_H
@@ -29,11 +37,8 @@
 // Forward declarations
 class vesMapper;
 class vesMaterial;
-class vesMultitouchWidget;
 class vesVisitor;
 
-/// \class vesActor
-///  \brief Defines an entity in the scene.
 class vesActor : public vesTransformNode
 {
 public:
@@ -43,46 +48,35 @@ public:
   ~vesActor();
 
   /// Evaluate the transform associated with the vtkActor.
-  /// \return The 4x4 matrix of the actor.
+  /// Return affine transformation for the actor.
   vesMatrix4x4f modelViewMatrix();
 
-  /// Mark the actor as a sensor (true denotes an actor that is a sensor).
-  /// \param isSensor True to mark the actor as a sensor in the scene.
-  void setSensor(bool isSensor) { m_sensor = isSensor; }
-
-  /// Check if this actor instance is a sensor.
-  /// \return true if the actor is a sensor.
-  bool isSensor() const { return m_sensor; }
-
-  void setWidget(vesSharedPtr<vesMultitouchWidget> widget);
-  vesSharedPtr<vesMultitouchWidget> widget() { return this->m_widget; }
-  const vesSharedPtr<vesMultitouchWidget> widget() const { return this->m_widget; }
-
-  void setVisible(bool value);
-  bool isVisible() const { return m_visible; }
-
+  /// Set mapper for the actor
+  /// \see vesMapper
   void setMapper(vesSharedPtr<vesMapper> mapper);
+  /// Get mapper of the actor
+  /// \see vesMapper
   vesSharedPtr<vesMapper> mapper() { return this->m_mapper; }
   const vesSharedPtr<vesMapper> mapper() const { return this->m_mapper; }
 
+  /// \copydoc vesTransformNode::accept()
   virtual void accept(vesVisitor &visitor);
+
+  /// \copydoc vesTransformNode::ascend()
   virtual void ascend(vesVisitor &visitor);
 
-  /// \copydoc vesTransformNode::computeLocalToWorldMatrix
+  /// \copydoc vesTransformNode::computeLocalToWorldMatrix()
   virtual bool computeLocalToWorldMatrix(vesMatrix4x4f &matrix,
                                          vesVisitor &visitor);
 
-  /// \copydoc vesTransformNode::computeWorldToLocalMatrix
+  /// \copydoc vesTransformNode::computeWorldToLocalMatrix()
   virtual bool computeWorldToLocalMatrix(vesMatrix4x4f& matrix,
                                          vesVisitor& visitor);
 
 protected:
   virtual void computeBounds();
 
-  bool m_sensor;
-
   vesSharedPtr<vesMapper> m_mapper;
-  vesSharedPtr<vesMultitouchWidget> m_widget;
 
 private:
 };

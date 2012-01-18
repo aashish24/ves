@@ -25,8 +25,7 @@
 #include "vesMaterial.h"
 #include "vesVisitor.h"
 
-vesActor::vesActor() : vesTransformNode(),
-  m_sensor  (false)
+vesActor::vesActor() : vesTransformNode()
 {
   // \todo: Create a default apperance.
 }
@@ -40,20 +39,6 @@ vesActor::~vesActor()
 vesMatrix4x4f vesActor::modelViewMatrix()
 {
   return this->vesTransformNode::matrix();
-}
-
-
-void vesActor::setVisible(bool value)
-{
-  this->m_visible = value;
-}
-
-
-void vesActor::setWidget(vesSharedPtr<vesMultitouchWidget> widget)
-{
-  if (widget) {
-    this->m_widget = widget;
-  }
 }
 
 
