@@ -17,6 +17,13 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
+/// \class vesNode
+/// \ingroup ves
+/// \brief Base class for all nodes in the scenegraph
+///
+/// vesNode provides most common interface for generic node
+/// operations. vesNode can be subclassed to provide more specific
+/// node operations.
 
 #ifndef __VESNODE_H
 #define __VESNODE_H
@@ -43,41 +50,54 @@ public:
   vesNode();
   virtual ~vesNode();
 
-  /// \brief Accept visitor for scene traversal
+  /// Accept visitor for scene traversal
   virtual void accept(vesVisitor &visitor);
 
-  /// \brief Set material to be used for the node
+  /// Set material to be used for the node
+  ///
+  /// Material defines the apperance of the node. Only one material
+  /// per node is allowed. Once defined a material for the node, all of
+  /// node's children will inherit the same material unless they have their
+  /// own material.
+  /// \see vesMaterial
   void setMaterial(vesSharedPtr<vesMaterial> material);
   vesSharedPtr<vesMaterial> material() { return this->m_material; }
   const vesSharedPtr<vesMaterial> material() const { return this->m_material; }
 
-  /// \brief Set parent of this node
+  /// Set parent of this node
   bool setParent(vesGroupNode *parent);
   vesGroupNode* parent(){ return this->m_parent; }
 
-  /// \brief Set if this node is a overlay node. Overlay nodes are drawn
+  /// Set if this node is an overlay node. Overlay nodes are drawn
   /// on top of scene nodes.
   inline void setIsOverlayNode(bool value) { this->m_isOverlayNode = value; }
   inline bool isOverlayNode() const { return this->m_isOverlayNode; }
 
-  /// \brief Set if this node should be visible
+  /// Set if this node should be visible
   void setVisible(bool value);
   bool isVisible() const { return this->m_visible; }
 
+  /// Cast node as group node. Returns NULL on failure.
   virtual vesGroupNode* asGroupNode() { return 0x0; }
   virtual const vesGroupNode* asGroupNode() const { return 0x0; }
+
+  /// Cast node as transform node. Returns NULL on failure.
   virtual vesTransformNode* asTransformNode() { return 0x0; }
   virtual const vesTransformNode* asTransformNode() const { return 0x0; }
+
+  /// Cast node as camera node. Returns NULL on failure.
   virtual vesCamera* asCamera() { return 0x0; }
   virtual const vesCamera* asCamera() const { return 0x0; }
+
+  /// Cast node as actor node. Returns NULL on failure.
   virtual vesActor* asActor() { return 0x0; }
   virtual const vesActor* asActor() const { return 0x0; }
 
-  /// \brief Traverse parent
+  /// Traverse parent
   virtual void ascend(vesVisitor &visitor)
     { vesNotUsed(visitor); }
 
-  /// \brief Traverse children
+  /// Traverse children
   virtual void traverse(vesVisitor &visitor)
     { vesNotUsed(visitor); }
 

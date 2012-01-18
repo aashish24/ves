@@ -17,6 +17,13 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
+/// \class vesTransformNode
+/// \ingroup ves
+/// \brief Group node that defines coordinate space of child nodes
+///
+/// vesTransformNode is a group node that provides interface for affine
+/// transformations.
+/// \see vesNode vesGroupNode
 
 #ifndef __VESTRANSFORMNODE_H
 #define __VESTRANSFORMNODE_H
@@ -40,36 +47,57 @@ public:
   vesTransformNode();
   virtual ~vesTransformNode();
 
+  /// Set center of transformations
   void setCenter(const vesVector3f &center);
+  /// Get center of transformations
   const vesVector3f& center() const;
 
+  /// Set rotation as described by angle and axis
+  /// ( angle, axis(x, y, z) )
   void setRotation(const vesVector4f &rotation);
+  /// Get rotation as described by angle and axis
+  /// ( angle, axis(x, y, z) )
   const vesVector4f& rotation() const;
 
+  /// Set scale in x, y and z directions
   void setScale(const vesVector3f &scale);
+  /// Get scale in x, y and z directions
   const vesVector3f& scale() const;
 
+  /// Set scale orientation (rotation) defined by angle and axis
+  /// ( angle, axis(x, y, z) )
   void setScaleOrientation(const vesVector4f &scaleOrientation);
+  /// Get scale orientation (rotation) defined by angle and axis
+  /// ( angle, axis(x, y, z) )
   const vesVector4f& scaleOrientation() const;
 
+  /// Set translation in x, y and z directions
   void setTranslation(const vesVector3f &translation);
+  /// Get translation in x, y and z directions
   const vesVector3f& translation() const;
 
+  /// Set reference frame for the transformations. Possible values
+  /// are Absolute and Relative.
   bool setReferenceFrame(ReferenceFrame referenceFrame);
+  /// Get reference frame for the transformations. Possible values
+  /// are Absolute and Relative.
   ReferenceFrame referenceFrame() const;
 
+  /// Return affine transformation matrix
   vesMatrix4x4f matrix();
 
+  /// \copydoc vesNode::asTransformNode()
   virtual vesTransformNode* asTransformNode() { return this; }
   virtual const vesTransformNode* asTransformNode() const { return this; }
 
+  /// \copydoc vesNode::accept(vesVisitor&)
   virtual void accept(vesVisitor &visitor);
 
-  /// \brief Compute local to world matrix
+  /// Compute local to world matrix
   virtual bool computeLocalToWorldMatrix(vesMatrix4x4f& matrix,
                                          vesVisitor& visitor);
 
-  /// \brief Compute world to local matrix
+  /// Compute world to local matrix
   virtual bool computeWorldToLocalMatrix(vesMatrix4x4f& matrix,
                                          vesVisitor& visitor);
 
