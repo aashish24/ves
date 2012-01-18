@@ -23,6 +23,7 @@ set(headers
   vesIntegerUniform.h
   vesMapper.h
   vesMaterial.h
+  vesMaterialAttribute.h
   vesMath.h
   vesModelViewUniform.h
   vesNode.h
