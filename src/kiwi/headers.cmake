@@ -1,8 +1,8 @@
 set(headers
-  vesDataConversionTools.h
   vesKiwiAnimationRepresentation.h
   vesKiwiBaseApp.h
   vesKiwiBrainAtlasRepresentation.h
+  vesKiwiDataConversionTools.h
   vesKiwiDataLoader.h
   vesKiwiDataRepresentation.h
   vesKiwiImagePlaneDataRepresentation.h

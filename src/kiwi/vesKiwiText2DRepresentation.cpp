@@ -22,7 +22,6 @@
 #include "vesActor.h"
 #include "vesRenderer.h"
 #include "vesCamera.h"
-#include "vesDataConversionTools.h"
 #include "vesTexture.h"
 #include "vesImage.h"
 

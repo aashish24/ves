@@ -23,7 +23,7 @@
 #include "vesRenderer.h"
 #include "vesCamera.h"
 #include "vesMapper.h"
-#include "vesDataConversionTools.h"
+#include "vesKiwiDataConversionTools.h"
 #include "vesKiwiImagePlaneDataRepresentation.h"
 #include "vesKiwiPolyDataRepresentation.h"
 
@@ -117,7 +117,7 @@ void vesKiwiImageWidgetRepresentation::setImageData(vtkImageData* image)
 {
   image->GetPointData()->GetScalars()->GetRange(this->Internal->ImageScalarRange);
   vtkSmartPointer<vtkScalarsToColors> colorMap =
-    vesDataConversionTools::GetGrayscaleLookupTable(this->Internal->ImageScalarRange);
+    vesKiwiDataConversionTools::GetGrayscaleLookupTable(this->Internal->ImageScalarRange);
   for (int i = 0; i < 3; ++i)
     this->Internal->SliceReps[i]->setColorMap(colorMap);
 

@@ -25,7 +25,6 @@
 #include "vesCamera.h"
 #include "vesMapper.h"
 #include "vesUniform.h"
-#include "vesDataConversionTools.h"
 #include "vesKiwiPolyDataRepresentation.h"
 
 #include <vtkNew.h>
@@ -37,6 +36,7 @@
 #include <vtkPointData.h>
 #include <vtkCellLocator.h>
 #include <vtkAppendPolyData.h>
+#include <vtkSmartPointer.h>
 #include <vtkTransform.h>
 
 #include <vector>

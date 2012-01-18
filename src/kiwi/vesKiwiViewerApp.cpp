@@ -28,7 +28,6 @@
 #include "vesKiwiText2DRepresentation.h"
 #include "vesKiwiPlaneWidget.h"
 #include "vesKiwiPolyDataRepresentation.h"
-#include "vesDataConversionTools.h"
 
 #include "vesCamera.h"
 #include "vesColorUniform.h"

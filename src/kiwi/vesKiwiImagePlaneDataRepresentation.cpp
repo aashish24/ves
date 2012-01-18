@@ -19,7 +19,7 @@
  ========================================================================*/
 
 #include "vesKiwiImagePlaneDataRepresentation.h"
-#include "vesDataConversionTools.h"
+#include "vesKiwiDataConversionTools.h"
 #include "vesSetGet.h"
 #include "vesTexture.h"
 
@@ -109,7 +109,7 @@ void vesKiwiImagePlaneDataRepresentation::setColorMap(vtkScalarsToColors* map)
 //----------------------------------------------------------------------------
 void vesKiwiImagePlaneDataRepresentation::setGrayscaleColorMap(double scalarRange[2])
 {
-  this->setColorMap(vesDataConversionTools::GetGrayscaleLookupTable(scalarRange));
+  this->setColorMap(vesKiwiDataConversionTools::GetGrayscaleLookupTable(scalarRange));
 }
 
 //----------------------------------------------------------------------------
@@ -142,7 +142,7 @@ void vesKiwiImagePlaneDataRepresentation::setTextureFromImage(
   if (!pixels) {
     vtkScalarsToColors* map = this->colorMap();
     assert(map);
-    pixels = vesDataConversionTools::MapScalars(image->GetPointData()->GetScalars(), map);
+    pixels = vesKiwiDataConversionTools::MapScalars(image->GetPointData()->GetScalars(), map);
   }
 
   int dimensions[3];
@@ -168,7 +168,7 @@ void vesKiwiImagePlaneDataRepresentation::setTextureFromImage(
     height = image->GetDimensions()[2];
   }
 
-  vesDataConversionTools::SetTextureData(pixels, texture, width, height);
+  vesKiwiDataConversionTools::SetTextureData(pixels, texture, width, height);
   this->Internal->TextureData = pixels;
 }
 

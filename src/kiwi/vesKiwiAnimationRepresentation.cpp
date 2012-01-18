@@ -27,7 +27,7 @@
 #include "vesShaderProgram.h"
 #include "vesTexture.h"
 #include "vesKiwiDataLoader.h"
-#include "vesDataConversionTools.h"
+#include "vesKiwiDataConversionTools.h"
 #include "vesKiwiText2DRepresentation.h"
 #include "vesKiwiPolyDataRepresentation.h"
 
@@ -142,7 +142,7 @@ void vesKiwiAnimationRepresentation::loadData(const std::string& filename)
   vesKiwiDataLoader dataLoader;
 
   double scalarRange[2] = {0.0, 6000.0};
-  vtkSmartPointer<vtkScalarsToColors> scalarsToColors = vesDataConversionTools::GetBlackBodyRadiationColorMap(scalarRange);
+  vtkSmartPointer<vtkScalarsToColors> scalarsToColors = vesKiwiDataConversionTools::GetBlackBodyRadiationColorMap(scalarRange);
 
   int colorTableResolution = 256;
   vtkNew<vtkDoubleArray> scalarRangeValues;
@@ -155,7 +155,7 @@ void vesKiwiAnimationRepresentation::loadData(const std::string& filename)
     scalarRangeValues->SetValue(i, scalarRangeValue);
   }
 
-  this->Internal->ColorTable = vesDataConversionTools::MapScalars(scalarRangeValues.GetPointer(), scalarsToColors);
+  this->Internal->ColorTable = vesKiwiDataConversionTools::MapScalars(scalarRangeValues.GetPointer(), scalarsToColors);
 
   for (size_t i = 0; i < filenames.size(); ++i) {
 
@@ -171,7 +171,7 @@ void vesKiwiAnimationRepresentation::loadData(const std::string& filename)
     rep->initializeWithShader(this->Internal->GeometryShader);
     rep->setPolyData(polyData, scalarsToColors);
 
-    vtkDataArray* scalars = vesDataConversionTools::FindScalarsArray(polyData);
+    vtkDataArray* scalars = vesKiwiDataConversionTools::FindScalarsArray(polyData);
     assert(scalars);
     const vtkIdType nTuples = scalars->GetNumberOfTuples();
     vtkNew<vtkDoubleArray> tcoords;
@@ -187,7 +187,7 @@ void vesKiwiAnimationRepresentation::loadData(const std::string& filename)
     rep->addTextureCoordinates(tcoords.GetPointer());
 
     vesTexture::Ptr texture = vesTexture::Ptr(new vesTexture());
-    vesDataConversionTools::SetTextureData(this->Internal->ColorTable, texture, this->Internal->ColorTable->GetNumberOfTuples(), 1);
+    vesKiwiDataConversionTools::SetTextureData(this->Internal->ColorTable, texture, this->Internal->ColorTable->GetNumberOfTuples(), 1);
     rep->setTexture(texture);
 
     this->Internal->AllReps.push_back(rep);

@@ -18,7 +18,7 @@
   limitations under the License.
  ========================================================================*/
 
-#include "vesDataConversionTools.h"
+#include "vesKiwiDataConversionTools.h"
 
 // VES includes
 #include "vtkCellArray.h"
@@ -37,7 +37,7 @@
 #include <cassert>
 
 //----------------------------------------------------------------------------
-vtkDataArray* vesDataConversionTools::FindScalarsArray(vtkDataSet* dataSet)
+vtkDataArray* vesKiwiDataConversionTools::FindScalarsArray(vtkDataSet* dataSet)
 {
   vtkDataArray* scalars = dataSet->GetPointData()->GetScalars();
   if (scalars && scalars->GetNumberOfComponents() == 1)
@@ -58,7 +58,7 @@ vtkDataArray* vesDataConversionTools::FindScalarsArray(vtkDataSet* dataSet)
 }
 
 //----------------------------------------------------------------------------
-vtkUnsignedCharArray* vesDataConversionTools::FindRGBColorsArray(vtkDataSet* dataSet)
+vtkUnsignedCharArray* vesKiwiDataConversionTools::FindRGBColorsArray(vtkDataSet* dataSet)
 {
   vtkUnsignedCharArray* colors = vtkUnsignedCharArray::SafeDownCast(dataSet->GetPointData()->GetArray("rgb_colors"));
   if (colors && colors->GetNumberOfComponents() == 3)
@@ -69,7 +69,7 @@ vtkUnsignedCharArray* vesDataConversionTools::FindRGBColorsArray(vtkDataSet* dat
 }
 
 //----------------------------------------------------------------------------
-vtkDataArray* vesDataConversionTools::FindTextureCoordinatesArray(vtkDataSet* dataSet)
+vtkDataArray* vesKiwiDataConversionTools::FindTextureCoordinatesArray(vtkDataSet* dataSet)
 {
   vtkDataArray* tcoords = dataSet->GetPointData()->GetArray("tcoords");
   if (tcoords && tcoords->GetNumberOfComponents() == 2)
@@ -80,7 +80,7 @@ vtkDataArray* vesDataConversionTools::FindTextureCoordinatesArray(vtkDataSet* da
 }
 
 //----------------------------------------------------------------------------
-vtkSmartPointer<vtkDiscretizableColorTransferFunction> vesDataConversionTools::GetBlackBodyRadiationColorMap(double scalarRange[2])
+vtkSmartPointer<vtkDiscretizableColorTransferFunction> vesKiwiDataConversionTools::GetBlackBodyRadiationColorMap(double scalarRange[2])
 {
   //double range[2] = {-500, 6000};
   double length = scalarRange[1] - scalarRange[0];
@@ -100,7 +100,7 @@ vtkSmartPointer<vtkDiscretizableColorTransferFunction> vesDataConversionTools::G
 }
 
 //----------------------------------------------------------------------------
-vtkSmartPointer<vtkLookupTable> vesDataConversionTools::GetRedToBlueLookupTable(double scalarRange[2])
+vtkSmartPointer<vtkLookupTable> vesKiwiDataConversionTools::GetRedToBlueLookupTable(double scalarRange[2])
 {
   vtkSmartPointer<vtkLookupTable> table = vtkSmartPointer<vtkLookupTable>::New();
   table->SetRange(scalarRange);
@@ -110,7 +110,7 @@ vtkSmartPointer<vtkLookupTable> vesDataConversionTools::GetRedToBlueLookupTable(
 }
 
 //----------------------------------------------------------------------------
-vtkSmartPointer<vtkLookupTable> vesDataConversionTools::GetGrayscaleLookupTable(double scalarRange[2])
+vtkSmartPointer<vtkLookupTable> vesKiwiDataConversionTools::GetGrayscaleLookupTable(double scalarRange[2])
 {
   vtkSmartPointer<vtkLookupTable> table = vtkSmartPointer<vtkLookupTable>::New();
   table->SetRange(scalarRange);
@@ -122,7 +122,7 @@ vtkSmartPointer<vtkLookupTable> vesDataConversionTools::GetGrayscaleLookupTable(
 }
 
 //----------------------------------------------------------------------------
-void vesDataConversionTools::SetVertexColors(
+void vesKiwiDataConversionTools::SetVertexColors(
   vtkUnsignedCharArray* colors, vesSharedPtr<vesGeometryData> geometryData)
 {
   assert(geometryData);
@@ -145,7 +145,7 @@ void vesDataConversionTools::SetVertexColors(
 }
 
 //----------------------------------------------------------------------------
-void vesDataConversionTools::SetVertexColors(vtkDataArray* scalars,
+void vesKiwiDataConversionTools::SetVertexColors(vtkDataArray* scalars,
   vtkScalarsToColors* scalarsToColors, vesSharedPtr<vesGeometryData> geometryData)
 {
   assert(scalars);
@@ -169,7 +169,7 @@ void vesDataConversionTools::SetVertexColors(vtkDataArray* scalars,
 }
 
 //----------------------------------------------------------------------------
-void vesDataConversionTools::SetTextureCoordinates(vtkDataArray* tcoords,
+void vesKiwiDataConversionTools::SetTextureCoordinates(vtkDataArray* tcoords,
   vesSharedPtr<vesGeometryData> geometryData)
 {
   assert(tcoords);
@@ -192,7 +192,7 @@ void vesDataConversionTools::SetTextureCoordinates(vtkDataArray* tcoords,
 }
 
 //----------------------------------------------------------------------------
-vtkSmartPointer<vtkUnsignedCharArray> vesDataConversionTools::MapScalars(
+vtkSmartPointer<vtkUnsignedCharArray> vesKiwiDataConversionTools::MapScalars(
 vtkDataArray* scalars, vtkScalarsToColors* scalarsToColors)
 {
   assert(scalars->GetNumberOfComponents() == 1);
@@ -213,7 +213,7 @@ vtkDataArray* scalars, vtkScalarsToColors* scalarsToColors)
 }
 
 //----------------------------------------------------------------------------
-void vesDataConversionTools::SetTextureData(vtkUnsignedCharArray* pixels,
+void vesKiwiDataConversionTools::SetTextureData(vtkUnsignedCharArray* pixels,
   vesSharedPtr<vesTexture> texture, int width, int height)
 {
   assert(texture);
@@ -232,7 +232,7 @@ void vesDataConversionTools::SetTextureData(vtkUnsignedCharArray* pixels,
 }
 
 //----------------------------------------------------------------------------
-void vesDataConversionTools::ConvertTriangles(
+void vesKiwiDataConversionTools::ConvertTriangles(
   vtkPolyData* input, vesSharedPtr<vesGeometryData> output)
 {
   if (!input || !output)
@@ -291,7 +291,7 @@ void vesDataConversionTools::ConvertTriangles(
   output->addSource(sourceData);
 }
 
-vesSharedPtr<vesGeometryData> vesDataConversionTools::ConvertPoints(vtkPolyData* input)
+vesSharedPtr<vesGeometryData> vesKiwiDataConversionTools::ConvertPoints(vtkPolyData* input)
 {
   vesSharedPtr<vesGeometryData> output(new vesGeometryData());
   vesSourceDataP3f::Ptr sourceData(new vesSourceDataP3f());
@@ -316,7 +316,7 @@ vesSharedPtr<vesGeometryData> vesDataConversionTools::ConvertPoints(vtkPolyData*
   return output;
 }
 
-vesSharedPtr<vesGeometryData> vesDataConversionTools::Convert(vtkPolyData* input)
+vesSharedPtr<vesGeometryData> vesKiwiDataConversionTools::Convert(vtkPolyData* input)
 {
   vesPrimitive::Ptr trianglesPrimitive;
   vesPrimitive::Ptr triangleStripsPrimitive;

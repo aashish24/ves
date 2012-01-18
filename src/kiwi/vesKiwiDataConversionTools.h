@@ -18,8 +18,8 @@
   limitations under the License.
  ========================================================================*/
 
-#ifndef __vesDataConversionTools_h
-#define __vesDataConversionTools_h
+#ifndef __vesKiwiDataConversionTools_h
+#define __vesKiwiDataConversionTools_h
 
 class vtkPolyData;
 class vtkDataSet;
@@ -36,7 +36,7 @@ class vesTexture;
 
 #include <vtkSmartPointer.h>
 
-class vesDataConversionTools
+class vesKiwiDataConversionTools
 {
 public:
   static vesSharedPtr<vesGeometryData> Convert(vtkPolyData* input);

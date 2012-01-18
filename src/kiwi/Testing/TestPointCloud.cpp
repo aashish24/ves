@@ -31,10 +31,8 @@
 #include <vesShaderProgram.h>
 #include <vesUniform.h>
 #include <vesGeometryData.h>
-#include <vesDataConversionTools.h>
 #include <vesVertexAttributeKeys.h>
 #include <vesKiwiDataLoader.h>
-#include <vesDataConversionTools.h>
 #include <vesTexture.h>
 #include <vesCamera.h>
 #include <vesVertexAttribute.h>
@@ -120,14 +118,6 @@ public:
     rep->setPolyData(polyData);
     rep->addSelfToRenderer(this->renderer());
     this->m_dataRep = rep;
-
-    /*
-    double lutScalarRange[2] = {0.0, 1.0};
-    this->m_lut = vesDataConversionTools::GetRedToBlueLookupTable(lutScalarRange);
-    vesSharedPtr<vesTexture> texture(new vesTexture());
-    vesDataConversionTools::SetTextureData(this->m_lut->GetTable(), texture, this->m_lut->GetNumberOfTableValues(), 1);
-    rep->setTexture(texture);
-    */
   }
 
   vesSharedPtr<vesShaderProgram> m_shader;

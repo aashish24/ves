@@ -7,10 +7,10 @@ include_directories("${VTK_SOURCE_DIR}/Filters/Core"
                     "${VTK_SOURCE_DIR}/Filters/Sources")
 
 set(sources
-  vesDataConversionTools.cpp
   vesKiwiAnimationRepresentation.cpp
   vesKiwiBaseApp.cpp
   vesKiwiBrainAtlasRepresentation.cpp
+  vesKiwiDataConversionTools.cpp
   vesKiwiDataLoader.cpp
   vesKiwiDataRepresentation.cpp
   vesKiwiImagePlaneDataRepresentation.cpp

@@ -30,7 +30,7 @@
 #include "vesShaderProgram.h"
 #include "vesTexture.h"
 
-#include "vesDataConversionTools.h"
+#include "vesKiwiDataConversionTools.h"
 
 #include <vtkNew.h>
 #include <vtkTriangleFilter.h>
@@ -43,25 +43,25 @@ namespace {
 
 void ConvertVertexArrays(vtkDataSet* dataSet, vesSharedPtr<vesGeometryData> geometryData, vtkScalarsToColors* scalarsToColors=NULL)
 {
-  vtkUnsignedCharArray* colors = vesDataConversionTools::FindRGBColorsArray(dataSet);
-  vtkDataArray* scalars = vesDataConversionTools::FindScalarsArray(dataSet);
-  vtkDataArray* tcoords = vesDataConversionTools::FindTextureCoordinatesArray(dataSet);
+  vtkUnsignedCharArray* colors = vesKiwiDataConversionTools::FindRGBColorsArray(dataSet);
+  vtkDataArray* scalars = vesKiwiDataConversionTools::FindScalarsArray(dataSet);
+  vtkDataArray* tcoords = vesKiwiDataConversionTools::FindTextureCoordinatesArray(dataSet);
   if (colors)
     {
-    vesDataConversionTools::SetVertexColors(colors, geometryData);
+    vesKiwiDataConversionTools::SetVertexColors(colors, geometryData);
     }
   else if (scalars)
     {
     vtkSmartPointer<vtkScalarsToColors> colorMap = scalarsToColors;
     if (!colorMap)
       {
-      colorMap = vesDataConversionTools::GetRedToBlueLookupTable(scalars->GetRange());
+      colorMap = vesKiwiDataConversionTools::GetRedToBlueLookupTable(scalars->GetRange());
       }
-    vesDataConversionTools::SetVertexColors(scalars, colorMap, geometryData);
+    vesKiwiDataConversionTools::SetVertexColors(scalars, colorMap, geometryData);
     }
   else if (tcoords)
     {
-    vesDataConversionTools::SetTextureCoordinates(tcoords, geometryData);
+    vesKiwiDataConversionTools::SetTextureCoordinates(tcoords, geometryData);
     }
 }
 
@@ -69,7 +69,7 @@ vesSharedPtr<vesGeometryData> GeometryDataFromPolyData(vtkPolyData* polyData)
 {
   if (!polyData->GetNumberOfPolys() && !polyData->GetNumberOfLines())
     {
-    return vesDataConversionTools::ConvertPoints(polyData);
+    return vesKiwiDataConversionTools::ConvertPoints(polyData);
     }
 
   // Use triangle filter for now to ensure that models containing
@@ -80,7 +80,7 @@ vesSharedPtr<vesGeometryData> GeometryDataFromPolyData(vtkPolyData* polyData)
   triangleFilter->PassVertsOn();
   triangleFilter->SetInput(polyData);
   triangleFilter->Update();
-  return vesDataConversionTools::Convert(triangleFilter->GetOutput());
+  return vesKiwiDataConversionTools::Convert(triangleFilter->GetOutput());
 }
 
 }
@@ -145,7 +145,7 @@ void vesKiwiPolyDataRepresentation::addTextureCoordinates(vtkDataArray* textureC
   assert(this->Internal->Mapper->geometryData());
 
   vesGeometryData::Ptr geometryData = this->Internal->Mapper->geometryData();
-  vesDataConversionTools::SetTextureCoordinates(textureCoordinates, geometryData);
+  vesKiwiDataConversionTools::SetTextureCoordinates(textureCoordinates, geometryData);
 }
 
 //----------------------------------------------------------------------------
