@@ -25,7 +25,7 @@
 #include "vesGLTypes.h"
 #include "vesSetGet.h"
 
-struct vesImage
+class vesImage
 {
   vesTypeMacro(vesImage);
 
@@ -39,6 +39,63 @@ struct vesImage
   {
   }
 
+  /// Set image width
+  inline void setWidth(int width) { this->m_width = width; }
+
+  /// Get image width
+  inline int width() const { return this->m_width; }
+
+  /// Set image height
+  inline void setHeight(int height) { this->m_height = height; }
+
+  /// Get image height
+  inline int height() const { return this->m_height; }
+
+  /// Set image depth
+  inline void setDepth(int depth) { this->m_depth = depth; }
+
+  /// Get image depth
+  inline int depth() const { return this->m_depth; }
+
+  /// Set pixel format. It is important that this is done at the time of
+  /// initialization.
+  inline void setPixelFormat(vesColorDataType::PixelFormat format)
+    {
+    this->m_pixelFormat = format;
+    }
+
+  /// Get pixel format
+  inline vesColorDataType::PixelFormat pixelFormat() const
+    {
+    return this->m_pixelFormat;
+    }
+
+  /// Set pixel data type. It is important that this is done at the time of
+  /// initialization.
+  inline void setPixelDataType(vesColorDataType::PixelDataType type)
+    {
+    this->m_pixelDataType = type;
+    }
+
+  /// Get pixel data type
+  inline vesColorDataType::PixelDataType() const
+    {
+    return this->m_pixelDataType;
+    }
+
+  /// Set pixel data
+  inline setData(void *data, unsigned int size)
+    {
+    memcpy(data, this->m_data, size);
+    }
+
+  /// Get pixel data
+  void* data() const
+    {
+    return this->m_data;
+    }
+
+protected:
   int m_width;
   int m_height;
   int m_depth;
