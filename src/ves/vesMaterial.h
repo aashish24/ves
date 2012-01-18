@@ -17,6 +17,14 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
+/// \class vesMaterial
+/// \ingroup ves
+/// \brief Class that defines the apperance of a geometry
+///
+/// vesMaterial defines how the geometry is going to look once rendered.
+/// Material primarily constitute of various attributes such as color, texture,
+/// etc. vesMaterial is a collection of these material attributes.
+/// \see vesMaterialAttribute
 
 #ifndef VESMATERIAL_H
 #define VESMATERIAL_H
@@ -54,26 +62,40 @@ public:
   vesMaterial();
   virtual ~vesMaterial();
 
+  /// Set bin number of the material
+  ///
+  /// Bin number decides the render order within the same render hint group.
+  /// Material with a higher bin number will render later compare to a
+  /// material with a lower bin number.
   void setBinNumber(int number) { this->m_binNumber = number; }
+
+  /// Return bin number of the material
   int binNumber() { return this->m_binNumber; }
   const int& binNumber() const { return this->m_binNumber; }
 
+  /// Add new material attribute. Return true on success.
   bool addAttribute(vesSharedPtr<vesMaterialAttribute> attribute);
+
+  /// Get material attribute
   vesSharedPtr<vesMaterialAttribute> attribute(
     vesMaterialAttribute::AttributeType type);
   const vesSharedPtr<vesMaterialAttribute> attribute(
     vesMaterialAttribute::AttributeType type) const;
 
-  /*! Provide quick acces to shader program */
+  /// Provide quick acces to shader program
   bool setShaderProgram(vesSharedPtr<vesShaderProgram> shaderProgram);
   vesSharedPtr<vesShaderProgram> shaderProgram()
     { return this->m_shaderProgram; }
   const vesSharedPtr<vesShaderProgram> shaderProgram() const
     { return this->m_shaderProgram; }
 
+  /// Render the material
   virtual void render(const vesRenderState &renderState);
+
+  /// Remove (unbind) the material
   virtual void remove(const vesRenderState &renderState);
 
+  /// Per render bind and setup calls
   virtual void bind(const vesRenderState &renderState);
   virtual void unbind(const vesRenderState &renderState);
   virtual void setup(const vesRenderState &renderState);

@@ -18,11 +18,6 @@
   limitations under the License.
  ========================================================================*/
 
-
-/// \section DESCRIPTION
-///
-///Specifies bounds of an object
-
 #ifndef __vesBoundingObject_h
 #define __vesBoundingObject_h
 

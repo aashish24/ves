@@ -17,6 +17,16 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
+/// \class vesMaterialAttribute
+/// \ingroup ves
+/// \brief Base class that defines attributes of a material such as color,
+/// texture etc
+///
+/// vesMaterialAttribute is base class for all attributes defined for a material.
+/// Basically material in VES consists of attributes such as color, texture, shader etc.
+/// vesMaterialAttribute provides common interface to set various key aspects of
+/// material attribute such as type of attribute, binding type.
+/// \see vesMaterial
 
 #ifndef VESMATERIALATTRIBUTE_H
 #define VESMATERIALATTRIBUTE_H
@@ -72,12 +82,15 @@ public:
   inline AttributeType type() const { return this->m_type; }
 
   /// Define what sort of bind calls required by the attribute
-  ///Should be set at the time of creation of the attribute.
+  /// \note Should be set at the time of creation of the attribute.
   inline bool setBinding(AttributeBinding binding)
     { this->m_binding = binding; return true; }
+
+  /// Return what kind of binding call is set on the attribute
   inline AttributeBinding binding() { return this->m_binding; }
   inline AttributeBinding binding() const { return this->m_binding; }
 
+  /// Per render bind and setup calls
   virtual void bind(const vesRenderState &renderState)
     { vesNotUsed(renderState); }
   virtual void unbind(const vesRenderState &renderState)
