@@ -47,7 +47,7 @@ process_dir(ves)
 process_dir(shaders)
 
 if(VES_USE_VTK)
-  process_dir(vtkVES)
+  process_dir(kiwi)
 endif()
 
 

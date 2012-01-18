@@ -54,7 +54,7 @@
 		43C1C1CE1410533A00A721F7 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 43C1C1CD1410533A00A721F7 /* Default.png */; };
 		43E0526E1424014300FC4F02 /* head.vti in Resources */ = {isa = PBXBuildFile; fileRef = 43E0526D1424014300FC4F02 /* head.vti */; };
 		43E58D9014299CC100D53D13 /* kiwi.png in Resources */ = {isa = PBXBuildFile; fileRef = 43E58D8F14299CC100D53D13 /* kiwi.png */; };
-		43EB039814105402002F463B /* libvtkVES.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43EB039714105402002F463B /* libvtkVES.a */; };
+		43EB039814105402002F463B /* libkiwi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43EB039714105402002F463B /* libkiwi.a */; };
 		43FA5BE4141705FD00ECC80E /* kiwiAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 43FA5BE3141705FD00ECC80E /* kiwiAppDelegate.mm */; };
 		453036EB1406A298003A861A /* InfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 453036EA1406A298003A861A /* InfoView.xib */; };
 		6F25E721137DEA5400BF4BCA /* current.stl in Resources */ = {isa = PBXBuildFile; fileRef = 6F25E720137DEA5400BF4BCA /* current.stl */; };
@@ -131,7 +131,7 @@
 		43C1C1CD1410533A00A721F7 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		43E0526D1424014300FC4F02 /* head.vti */ = {isa = PBXFileReference; lastKnownFileType = file; path = head.vti; sourceTree = "<group>"; };
 		43E58D8F14299CC100D53D13 /* kiwi.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = kiwi.png; sourceTree = "<group>"; };
-		43EB039714105402002F463B /* libvtkVES.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkVES.a; path = "../CMakeBuild/build/CMakeExternals/Build/ves-ios-device/lib/libvtkVES.a"; sourceTree = "<group>"; };
+		43EB039714105402002F463B /* libkiwi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libkiwi.a; path = "../CMakeBuild/build/CMakeExternals/Build/ves-ios-device/lib/libkiwi.a"; sourceTree = "<group>"; };
 		43F0A7A21448D1E500A8CE8D /* kiwi.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = kiwi.xcconfig; sourceTree = "<group>"; };
 		43FA5BE3141705FD00ECC80E /* kiwiAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = kiwiAppDelegate.mm; sourceTree = "<group>"; };
 		453036EA1406A298003A861A /* InfoView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InfoView.xib; sourceTree = "<group>"; };
@@ -182,7 +182,7 @@
 				28FD15000DC6FC520079059D /* OpenGLES.framework in Frameworks */,
 				28FD15080DC6FC5B0079059D /* QuartzCore.framework in Frameworks */,
 				6F5CF7A313103D7700BB1195 /* CoreGraphics.framework in Frameworks */,
-				43EB039814105402002F463B /* libvtkVES.a in Frameworks */,
+				43EB039814105402002F463B /* libkiwi.a in Frameworks */,
 				43BA864814299E77000D91C3 /* libvtkFiltersSources.a in Frameworks */,
 				43BA864914299E78000D91C3 /* libvtkImagingCore.a in Frameworks */,
 				43BA864A14299E78000D91C3 /* libvtkIOImage.a in Frameworks */,
@@ -291,7 +291,7 @@
 			isa = PBXGroup;
 			children = (
 				432A52181495B6D50010EB71 /* libvesShaders.a */,
-				43EB039714105402002F463B /* libvtkVES.a */,
+				43EB039714105402002F463B /* libkiwi.a */,
 				432DE16C13D15E1C000F8EC0 /* libves.a */,
 			);
 			name = "ves libs";
@@ -471,7 +471,7 @@
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				HEADER_SEARCH_PATHS = (
 					"$(ves_build)/CMakeExternals/Source/vtkmodular/**",
-					"$(ves_source)/src/vtkVES",
+					"$(ves_source)/src/kiwi",
 					"$(ves_source)/src/ves",
 					"$(ves_build)/CMakeExternals/Install/eigen",
 				);
@@ -511,7 +511,7 @@
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				HEADER_SEARCH_PATHS = (
 					"$(ves_build)/CMakeExternals/Source/vtkmodular/**",
-					"$(ves_source)/src/vtkVES",
+					"$(ves_source)/src/kiwi",
 					"$(ves_source)/src/ves",
 					"$(ves_build)/CMakeExternals/Install/eigen",
 				);
@@ -576,7 +576,7 @@
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				HEADER_SEARCH_PATHS = (
 					"$(ves_build)/CMakeExternals/Source/vtkmodular/**",
-					"$(ves_source)/src/vtkVES",
+					"$(ves_source)/src/kiwi",
 					"$(ves_source)/src/ves",
 					"$(ves_build)/CMakeExternals/Install/eigen",
 				);
@@ -638,7 +638,7 @@
 				GCC_VERSION = com.apple.compilers.llvmgcc42;
 				HEADER_SEARCH_PATHS = (
 					"$(ves_build)/CMakeExternals/Source/vtkmodular/**",
-					"$(ves_source)/src/vtkVES",
+					"$(ves_source)/src/kiwi",
 					"$(ves_source)/src/ves",
 					"$(ves_build)/CMakeExternals/Install/eigen",
 				);

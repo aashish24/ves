@@ -55,7 +55,7 @@ set(deps
   vtkFiltersSources
   vtkImagingCore)
 
-ves_add_library(vtkVES "${sources}" "${deps}")
+ves_add_library(kiwi "${sources}" "${deps}")
 
 if(BUILD_TESTING)
   add_subdirectory(Testing)

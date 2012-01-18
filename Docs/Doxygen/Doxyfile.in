@@ -99,7 +99,7 @@ INPUT                  = @VES_SOURCE_DIR@/Docs/Doxygen \
                          @VES_SOURCE_DIR@/src/ves \
                          @VES_SOURCE_DIR@/src/shaders \
                          @VES_BINARY_DIR@/src/shaders \
-                         @VES_SOURCE_DIR@/src/vtkVES \
+                         @VES_SOURCE_DIR@/src/kiwi \
                          @VES_SOURCE_DIR@/Apps/Android/Kiwi/jni
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.h \

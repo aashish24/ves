@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		4325001213CE9F5300D41D42 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4325001013CE9F5300D41D42 /* RootViewController.m */; };
 		4325001313CE9F5300D41D42 /* RootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4325001113CE9F5300D41D42 /* RootViewController.xib */; };
-		432DE7B3141058FF00236E60 /* libvtkVES.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 432DE7B2141058FF00236E60 /* libvtkVES.a */; };
+		432DE7B3141058FF00236E60 /* libkiwi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 432DE7B2141058FF00236E60 /* libkiwi.a */; };
 		4334F0AE13CD0C2D0053A32A /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 4334F0AC13CD0C2D0053A32A /* Shader.fsh */; };
 		4334F0AF13CD0C2D0053A32A /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 4334F0AD13CD0C2D0053A32A /* Shader.vsh */; };
 		43533ACB13CD0654004DCF07 /* ESRenderer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 43533AC613CD0654004DCF07 /* ESRenderer.mm */; };
@@ -50,7 +50,7 @@
 		4325000F13CE9F5300D41D42 /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
 		4325001013CE9F5300D41D42 /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootViewController.m; sourceTree = "<group>"; };
 		4325001113CE9F5300D41D42 /* RootViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RootViewController.xib; sourceTree = "<group>"; };
-		432DE7B2141058FF00236E60 /* libvtkVES.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkVES.a; path = "../CMakeBuild/build/CMakeExternals/Build/ves-device/lib/libvtkVES.a"; sourceTree = "<group>"; };
+		432DE7B2141058FF00236E60 /* libkiwi.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libkiwi.a; path = "../CMakeBuild/build/CMakeExternals/Build/ves-device/lib/libkiwi.a"; sourceTree = "<group>"; };
 		4334F0AC13CD0C2D0053A32A /* Shader.fsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = Shader.fsh; path = ../../../../src/shaders/Shader.fsh; sourceTree = "<group>"; };
 		4334F0AD13CD0C2D0053A32A /* Shader.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = Shader.vsh; path = ../../../../src/shaders/Shader.vsh; sourceTree = "<group>"; };
 		43533AC513CD0654004DCF07 /* ESRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ESRenderer.h; path = ../Common/ESRenderView/ESRenderer.h; sourceTree = "<group>"; };
@@ -117,7 +117,7 @@
 				43533C2113CD0A39004DCF07 /* QuartzCore.framework in Frameworks */,
 				43533C2313CD0A41004DCF07 /* OpenGLES.framework in Frameworks */,
 				43533C1713CD08D9004DCF07 /* libves.a in Frameworks */,
-				432DE7B3141058FF00236E60 /* libvtkVES.a in Frameworks */,
+				432DE7B3141058FF00236E60 /* libkiwi.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -181,7 +181,7 @@
 				4385FDAF13CE905000BCE998 /* libvtkIOXML.a */,
 				4385FDB013CE905000BCE998 /* libvtksys.a */,
 				4385FDB113CE905000BCE998 /* libvtkzlib.a */,
-				432DE7B2141058FF00236E60 /* libvtkVES.a */,
+				432DE7B2141058FF00236E60 /* libkiwi.a */,
 				43533C1613CD08D9004DCF07 /* libves.a */,
 				43D6025C13CD05830077C8B7 /* UIKit.framework */,
 				43D6025E13CD05830077C8B7 /* Foundation.framework */,
@@ -368,7 +368,7 @@
 				GCC_PREFIX_HEADER = "Sandbox/Sandbox-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
 					../../../src,
-					../../../src/vtkVES,
+					../../../src/kiwi,
 					../../../src/ves,
 					../../../src/ves/vsg,
 					../../../src/ves/vsg/Core,
@@ -407,7 +407,7 @@
 				GCC_PREFIX_HEADER = "Sandbox/Sandbox-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
 					../../../src,
-					../../../src/vtkVES,
+					../../../src/kiwi,
 					../../../src/ves,
 					../../../src/ves/vsg,
 					../../../src/ves/vsg/Core,
