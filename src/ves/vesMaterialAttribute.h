@@ -21,6 +21,8 @@
 #ifndef VESMATERIALATTRIBUTE_H
 #define VESMATERIALATTRIBUTE_H
 
+#include "vesObject.h"
+
 // Forward declarations
 class vesRenderData;
 class vesRenderState;
