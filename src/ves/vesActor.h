@@ -76,10 +76,7 @@ public:
 protected:
   virtual void computeBounds();
 
-  bool m_sensor;
-
   vesSharedPtr<vesMapper> m_mapper;
-  vesSharedPtr<vesMultitouchWidget> m_widget;
 
 private:
 };
