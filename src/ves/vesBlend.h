@@ -17,6 +17,9 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
+/// \class vesBlend
+/// \ingroup ves
+/// \see vesMaterial vesMaterialAttribute vesBlendFunction
 
 #ifndef VESBLEND_H
 #define VESBLEND_H

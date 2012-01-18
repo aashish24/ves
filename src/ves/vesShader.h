@@ -17,6 +17,9 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
+/// \class vesShader
+/// \ingroup ves
+/// \see vesShader vesShaderProgram vesMaterial
 
 #ifndef VESSHADER_H
 #define VESSHADER_H

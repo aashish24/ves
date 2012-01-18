@@ -17,6 +17,9 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
+/// \class vesRenderToTexture
+/// \ingroup ves
+/// \see vesFBORenderTarget vesFBO
 
 #ifndef VESRENDERTOTEXTURE_H
 #define VESRENDERTOTEXTURE_H

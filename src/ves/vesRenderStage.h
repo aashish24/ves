@@ -17,6 +17,9 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
+/// \class vesRenderStage
+/// \ingroup ves
+/// \see vesRenderLeaf vesRenderState vesRenderer
 
 #ifndef VESRENDERSTAGE_H
 #define VESRENDERSTAGE_H

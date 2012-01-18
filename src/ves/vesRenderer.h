@@ -17,6 +17,9 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
+/// \class vesRenderer
+/// \ingroup ves
+/// \see vesActor vesMapper
 
 #ifndef VESRENDERER_H
 #define VESRENDERER_H

@@ -17,6 +17,9 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
+/// \class vesTexture
+/// \ingroup ves
+/// \see vesMaterialAttribute vesMaterial
 
 #ifndef __vesTexture_h
 #define __vesTexture_h

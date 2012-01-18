@@ -255,7 +255,10 @@ public:
   /// Get clear depth value.
   double clearDepth() const;
 
+  /// Return model view matrix for the camera
   virtual vesMatrix4x4f modelViewMatrix();
+
+  /// Return projection matrix for the camera
   virtual vesMatrix4x4f projectionMatrix();
 
   /// \copydoc vesTransformNode::accept()

@@ -17,6 +17,9 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
+/// \class vesMapper
+/// \ingroup ves
+/// \see vesBoundingObject vesActor
 
 #ifndef VESMAPPER_H
 #define VESMAPPER_H
