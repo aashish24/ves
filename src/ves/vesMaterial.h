@@ -24,87 +24,13 @@
 #include "vesObject.h"
 
 // VES includes
+#include "vesMaterialAttribute.h"
 #include "vesSetGet.h"
 
 // Forward declarations
 class vesRenderData;
 class vesRenderState;
 class vesShaderProgram;
-
-class vesMaterialAttribute : public vesObject
-{
-public:
-  vesTypeMacro(vesMaterialAttribute);
-
-  enum AttributeType
-  {
-    Undefined = 0x0,
-    Shader = 0x1,
-    Texture = 0x2,
-    Blend = 0x3,
-    Depth = 0x4
-  };
-
-
-  enum AttributeBinding
-  {
-    BindAll = 0,
-    BindMinimal = 1,
-    BindVertexData = 2,
-    BindRenderData = 3
-  };
-
-
-  vesMaterialAttribute() : vesObject(),
-    m_enable(true),
-    m_type(Undefined),
-    m_binding(BindMinimal)
-  {
-  }
-
-
-  virtual ~vesMaterialAttribute()
-  {
-  }
-
-  inline void enable() { this->m_enable = true; }
-  inline void disable() { this->m_enable = false; }
-  inline bool isEnabled() const { return this->m_enable; }
-
-  bool setType(AttributeType type) { this->m_type = type; return true; }
-  AttributeType type() { return this->m_type; }
-  AttributeType type() const { return this->m_type; }
-
-  /// Define what sort of bind calls required by the attribute
-  ///Should be set at the time of creation of the attribute.
-  bool setBinding(AttributeBinding binding) { this->m_binding = binding; return true; }
-  AttributeBinding binding() { return this->m_binding; }
-  AttributeBinding binding() const { return this->m_binding; }
-
-  //  \note: Fix (unused parameter warning)
-  virtual void bind(const vesRenderState &renderState)
-    { vesNotUsed(renderState); }
-  virtual void unbind(const vesRenderState &renderState)
-    { vesNotUsed(renderState); }
-  virtual void setup(const vesRenderState &renderState)
-    { vesNotUsed(renderState); }
-  virtual void bindVertexData(const vesRenderState &renderState, int key)
-    { vesNotUsed(renderState); vesNotUsed(key); }
-  virtual void unbindVertexData(const vesRenderState &renderState, int key)
-    { vesNotUsed(renderState); vesNotUsed(key); }
-  virtual void setupVertexData(const vesRenderState &renderState, int key)
-    { vesNotUsed(renderState); vesNotUsed(key); }
-
-  virtual void bindRenderData(const vesRenderState &renderState,
-                              const vesRenderData  &renderData)
-    { vesNotUsed(renderState); vesNotUsed(renderData); }
-
-protected:
-  bool m_enable;
-  AttributeType m_type;
-  AttributeBinding m_binding;
-};
-
 
 class vesMaterial
 {

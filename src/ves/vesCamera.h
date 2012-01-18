@@ -241,20 +241,18 @@ public:
   unsigned int clearMask() const;
 
   /// Set clear color value. This defines the default color
-  /// value of the rendered pixel.
+  /// value of the rendered pixel.Default is (1,1,1,1).
   void setClearColor(const vesVector4f &clearColor);
 
-  /// Get clear color value. This defines the default color
-  /// value of the rendered pixel.
+  /// Get clear color value.
   vesVector4f clearColor();
   const vesVector4f& clearColor() const;
 
   /// Set clear depth value. This defines the default depth
-  /// value of the rendered pixel.
+  /// value of the rendered pixel. Default is 1.
   void setClearDepth(double depth);
 
-  /// Get clear depth value. This defines the default depth
-  /// value of the rendered pixel.
+  /// Get clear depth value.
   double clearDepth() const;
 
   virtual vesMatrix4x4f modelViewMatrix();
