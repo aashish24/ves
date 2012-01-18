@@ -5,9 +5,7 @@ set(headers
   vesBlend.h
   vesBooleanUniform.h
   vesBoundingObject.h
-  vesByteSwap.h
   vesCamera.h
-  vesCameraSensor.h
   vesColorUniform.h
   vesCullVisitor.h
   vesDepth.h
