@@ -55,30 +55,35 @@ public:
   /// Set rotation as described by angle and axis
   /// ( angle, axis(x, y, z) )
   void setRotation(const vesVector4f &rotation);
+
   /// Get rotation as described by angle and axis
   /// ( angle, axis(x, y, z) )
   const vesVector4f& rotation() const;
 
   /// Set scale in x, y and z directions
   void setScale(const vesVector3f &scale);
+
   /// Get scale in x, y and z directions
   const vesVector3f& scale() const;
 
   /// Set scale orientation (rotation) defined by angle and axis
   /// ( angle, axis(x, y, z) )
   void setScaleOrientation(const vesVector4f &scaleOrientation);
+
   /// Get scale orientation (rotation) defined by angle and axis
   /// ( angle, axis(x, y, z) )
   const vesVector4f& scaleOrientation() const;
 
   /// Set translation in x, y and z directions
   void setTranslation(const vesVector3f &translation);
+
   /// Get translation in x, y and z directions
   const vesVector3f& translation() const;
 
   /// Set reference frame for the transformations. Possible values
   /// are Absolute and Relative.
   bool setReferenceFrame(ReferenceFrame referenceFrame);
+
   /// Get reference frame for the transformations. Possible values
   /// are Absolute and Relative.
   ReferenceFrame referenceFrame() const;
@@ -93,11 +98,11 @@ public:
   /// \copydoc vesNode::accept(vesVisitor&)
   virtual void accept(vesVisitor &visitor);
 
-  /// Compute local to world matrix
+  /// Compute local to world matrix transformation
   virtual bool computeLocalToWorldMatrix(vesMatrix4x4f& matrix,
                                          vesVisitor& visitor);
 
-  /// Compute world to local matrix
+  /// Compute world to local matrix transformation
   virtual bool computeWorldToLocalMatrix(vesMatrix4x4f& matrix,
                                          vesVisitor& visitor);
 

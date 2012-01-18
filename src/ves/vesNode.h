@@ -61,20 +61,28 @@ public:
   /// own material.
   /// \see vesMaterial
   void setMaterial(vesSharedPtr<vesMaterial> material);
+
+  /// Get material of the node
   vesSharedPtr<vesMaterial> material() { return this->m_material; }
   const vesSharedPtr<vesMaterial> material() const { return this->m_material; }
 
-  /// Set parent of this node
+  /// Set parent of the node
   bool setParent(vesGroupNode *parent);
+
+  /// Get parent of the node
   vesGroupNode* parent(){ return this->m_parent; }
 
   /// Set if this node is an overlay node. Overlay nodes are drawn
   /// on top of scene nodes.
   inline void setIsOverlayNode(bool value) { this->m_isOverlayNode = value; }
+
+  /// Return if node is an overlay node
   inline bool isOverlayNode() const { return this->m_isOverlayNode; }
 
   /// Set if this node should be visible
   void setVisible(bool value);
+
+  /// Return if node is visible
   bool isVisible() const { return this->m_visible; }
 
   /// Cast node as group node. Returns NULL on failure.

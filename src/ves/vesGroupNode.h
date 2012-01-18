@@ -50,7 +50,7 @@ public:
   typedef std::list< vesSharedPtr<vesNode> > Children;
 
   /// Add a node as a child node
-  bool addChild   (vesSharedPtr<vesNode> child);
+  bool addChild(vesSharedPtr<vesNode> child);
 
   /// Remove a child node. Return true on success.
   bool removeChild(vesSharedPtr<vesNode> child);
