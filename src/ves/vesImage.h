@@ -47,7 +47,7 @@ public:
   ~vesImage()
     {
     if (this->m_data) {
-      free(this->m_data);
+      this->releaseData();
       }
     }
 
@@ -106,12 +106,7 @@ public:
       return retval;
       }
 
-    // If previously allocated, then release the last buffer.
-    if (this->m_data) {
-      free(this->m_data);
-      }
-
-    this->m_data = malloc(size);
+    this->allocate(size);
 
     memcpy(this->m_data, data, size);
 
@@ -133,6 +128,20 @@ protected:
   vesColorDataType::PixelDataType m_pixelDataType;
 
   void *m_data;
+
+  inline void allocate(unsigned int size)
+    {
+    this->releaseData();
+
+    this->m_data = malloc(size);
+    }
+
+  inline void releaseData()
+    {
+    if (this->m_data) {
+      free(this->m_data);
+      }
+    }
 };
 
 #endif // VESIMAGE_H
