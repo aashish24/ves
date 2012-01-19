@@ -19,7 +19,14 @@
  ========================================================================*/
 /// \class vesRenderer
 /// \ingroup ves
-/// \see vesActor vesMapper
+/// \brief Class responsible for rendering drawable entities in the scene
+///
+/// vesRenderer is the backbone of the rendering in VES.  It performs
+/// the rendering by visiting registered actors with the renderer. Rendering
+/// in VES is a three pass algorithm. Scene gets updated first, culled afterwards
+/// and then gets rendered.
+///
+/// \see vesActor vesMapper vesVisitor
 
 #ifndef VESRENDERER_H
 #define VESRENDERER_H
@@ -48,27 +55,51 @@ public:
   vesRenderer();
   virtual ~vesRenderer();
 
+  /// Render the scene
   virtual void render();
 
+  /// Reset camera, calculate its position and other parameters
+  /// again based on the current scene.
   virtual void resetCamera();
+
+  /// Recalculate camera's clipping range
   virtual void resetCameraClippingRange();
+
+  /// Resize viewport based on the new width and height of the window
   virtual void resize(int width,int height, float scale);
 
+  /// Set background color of the renderer
   virtual void setBackgroundColor(float r, float g, float b, float a=1.0f);
+
+  /// Get background color of the renderer
   vesSharedPtr<vesBackground> background();
   const vesSharedPtr<vesBackground> background() const;
 
+  /// Add new actor to the collection. This is required if the actor
+  /// needs to be rendered by the renderer.
   virtual void addActor   (vesSharedPtr<vesActor> actor);
+
+  /// Remove the actor from the collection.This method will
+  /// not trigger reset camera.
   virtual void removeActor(vesSharedPtr<vesActor> actor);
 
+  /// Get scene root. Do not change scene root or its data unless
+  /// required in some special circumstances.
   const  vesSharedPtr<vesGroupNode> sceneRoot() const { return this->m_sceneRoot; }
 
+  /// Get camera of the renderer
   inline vesSharedPtr<vesCamera> camera(){ return this->m_camera; }
 
+  /// Get width of the window last set
   inline int width()   { return this->m_width;  }
+
+  /// Get height of the window last set
   inline int height()  { return this->m_height; }
 
+  /// Transform a vector in world space to display space
   vesVector3f computeWorldToDisplay(vesVector3f world);
+
+  /// Transform a vector in display space to world space
   vesVector3f computeDisplayToWorld(vesVector3f display);
 
 protected:
