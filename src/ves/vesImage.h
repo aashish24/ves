@@ -98,15 +98,19 @@ public:
   /// Set pixel data
   inline bool setData(const void *data, unsigned int size)
     {
-    bool retval = true;
+    bool retval = false;
 
     if(!data)
       {
-      retval = false;
       return retval;
       }
 
-    this->allocate(size);
+    if (!this->allocate(size)) {
+      return retval;
+      }
+
+    // All is good
+    retval = true;
 
     memcpy(this->m_data, data, size);
 
@@ -129,11 +133,19 @@ protected:
 
   void *m_data;
 
-  inline void allocate(unsigned int size)
+  inline bool allocate(unsigned int size)
     {
     this->releaseData();
 
+    // If the function failed to allocate the requested block of memory,
+    // a null pointer is returned
     this->m_data = malloc(size);
+
+    if (this->m_data) {
+      return true;
+      }
+
+    return false;
     }
 
   inline void releaseData()
