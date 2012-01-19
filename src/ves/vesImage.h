@@ -25,8 +25,13 @@
 #include "vesGLTypes.h"
 #include "vesSetGet.h"
 
+// C/C++ includes
+#include <cstdlib>
+#include <cstring>
+
 class vesImage
 {
+public:
   vesTypeMacro(vesImage);
 
   vesImage() :
@@ -38,6 +43,13 @@ class vesImage
     m_data(0x0)
   {
   }
+
+  ~vesImage()
+    {
+    if (this->m_data) {
+      free(this->m_data);
+      }
+    }
 
   /// Set image width
   inline void setWidth(int width) { this->m_width = width; }
@@ -78,15 +90,32 @@ class vesImage
     }
 
   /// Get pixel data type
-  inline vesColorDataType::PixelDataType() const
+  inline vesColorDataType::PixelDataType pixelDataType() const
     {
     return this->m_pixelDataType;
     }
 
   /// Set pixel data
-  inline setData(void *data, unsigned int size)
+  inline bool setData(const void *data, unsigned int size)
     {
-    memcpy(data, this->m_data, size);
+    bool retval = true;
+
+    if(!data)
+      {
+      retval = false;
+      return retval;
+      }
+
+    // If previously allocated, then release the last buffer.
+    if (this->m_data) {
+      free(this->m_data);
+      }
+
+    this->m_data = malloc(size);
+
+    memcpy(this->m_data, data, size);
+
+    return retval;
     }
 
   /// Get pixel data

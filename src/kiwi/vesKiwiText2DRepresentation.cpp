@@ -155,7 +155,7 @@ void vesKiwiText2DRepresentation::willRender(vesSharedPtr<vesRenderer> renderer)
   anchorOffset *= this->Internal->AnchorOffset;
   vesVector3f worldPoint = this->Internal->WorldAnchorPoint - anchorOffset;
   vesVector3f displayPoint = renderer->computeWorldToDisplay(worldPoint);
-  displayPoint[0] -= this->texture()->image().m_width / 2.0;
+  displayPoint[0] -= this->texture()->image()->width() / 2.0;
 
   this->setDisplayPosition(vesVector2f(displayPoint[0], displayPoint[1]));
 }
