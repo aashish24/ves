@@ -17,6 +17,9 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
+/// \class vesTexture
+/// \ingroup ves
+/// \see vesMaterialAttribute vesMaterial
 
 #ifndef __vesTexture_h
 #define __vesTexture_h
@@ -49,8 +52,8 @@ public:
   virtual void unbind(const vesRenderState &renderState);
   virtual void setup(const vesRenderState &renderState);
 
-  void setImage(vesImage image);
-  vesImage image() const;
+  void setImage(vesSharedPtr<vesImage> image);
+  vesSharedPtr<vesImage> image() const;
 
   void setTextureUnit(unsigned int unit);
   unsigned int textureUnit() const { return this->m_textureUnit; }
@@ -85,7 +88,7 @@ protected:
   void computeInternalFormatUsingImage();
   void updateDimensions();
 
-  vesImage m_image;
+  vesSharedPtr<vesImage> m_image;
 
   bool m_hasImage;
 

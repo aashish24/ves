@@ -17,6 +17,9 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
+/// \class vesUniform
+/// \ingroup ves
+/// \see vesShaderProgram vesShader
 
 // \note: Eventually we can make this class use templates. But for simplicity
 // and clearity we are sticking with non templated version.

@@ -4,9 +4,7 @@ set(sources
   vesBlend.cpp
   vesBlendFunction.cpp
   vesBoundingObject.cpp
-  vesByteSwap.cpp
   vesCamera.cpp
-  vesCameraSensor.cpp
   vesCullVisitor.cpp
   vesDepth.cpp
   vesFBO.cpp

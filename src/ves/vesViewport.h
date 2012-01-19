@@ -17,6 +17,9 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
+/// \class vesViewport
+/// \ingroup ves
+/// \see vesCamera
 
 #ifndef vesViewport_H
 #define vesViewport_H

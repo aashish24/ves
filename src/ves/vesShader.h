@@ -17,9 +17,9 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
-// .NAME vesShader - Concrete class which implementes ProgramShader
-// .SECTION Description
-// vesShader [refer ISO/IEC 19775-1:2008 31.4.6]
+/// \class vesShader
+/// \ingroup ves
+/// \see vesShader vesShaderProgram vesMaterial
 
 #ifndef VESSHADER_H
 #define VESSHADER_H

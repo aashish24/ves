@@ -17,6 +17,9 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
+/// \class vesBackground
+/// \ingroup ves
+/// \see vesCamera
 
 #ifndef VESBACKGROUND_H
 #define VESBACKGROUND_H
@@ -46,7 +49,10 @@ public:
   virtual void setGradientColor(const vesVector4f &topColor,
                                 const vesVector4f &bottomColor);
 
+  /// \copydoc vesCamera::modelViewMatrix()
   virtual vesMatrix4x4f modelViewMatrix();
+
+  /// \copydoc vesCamera::projectionMatrix()
   virtual vesMatrix4x4f projectionMatrix();
 
 protected:

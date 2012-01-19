@@ -221,12 +221,12 @@ void vesKiwiDataConversionTools::SetTextureData(vtkUnsignedCharArray* pixels,
   assert(pixels->GetNumberOfComponents() == 4);
   assert(pixels->GetNumberOfTuples() == width*height);
 
-  vesImage image;
-  image.m_width = width;
-  image.m_height = height;
-  image.m_pixelFormat = vesColorDataType::RGBA;
-  image.m_pixelDataType = vesColorDataType::UnsignedByte;
-  image.m_data = pixels->WriteVoidPointer(0, 0);
+  vesImage::Ptr image (new vesImage());
+  image->setWidth(width);
+  image->setHeight(height);
+  image->setPixelFormat(vesColorDataType::RGBA);
+  image->setPixelDataType(vesColorDataType::UnsignedByte);
+  image->setData(pixels->WriteVoidPointer(0, 0), pixels->GetSize());
 
   texture->setImage(image);
 }

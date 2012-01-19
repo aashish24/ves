@@ -69,9 +69,9 @@ void vesTexture::unbind(const vesRenderState &renderState)
 }
 
 
-void vesTexture::setImage(vesImage image)
+void vesTexture::setImage(vesSharedPtr<vesImage> image)
 {
-  if (image.m_data) {
+  if (image->data()) {
     this->m_hasImage = true;
     this->m_image = image;
 
@@ -82,7 +82,7 @@ void vesTexture::setImage(vesImage image)
 }
 
 
-vesImage vesTexture::image() const
+vesSharedPtr<vesImage> vesTexture::image() const
 {
   return this->m_image;
 }
@@ -180,7 +180,7 @@ bool vesTexture::setPixelFormat(vesColorDataType::PixelFormat pixelFormat)
 vesColorDataType::PixelFormat vesTexture::pixelFormat() const
 {
   if (this->m_hasImage) {
-    return this->m_image.m_pixelFormat;
+    return this->m_image->pixelFormat();
   }
 
   return this->m_pixelFormat;
@@ -246,7 +246,7 @@ void vesTexture::setup(const vesRenderState &renderState)
 
       glTexImage2D(GL_TEXTURE_2D, 0, this->m_internalFormat, this->m_width, this->m_height, 0,
                    this->m_pixelFormat ? this->m_pixelFormat : this->m_internalFormat,
-                   this->m_pixelDataType ? this->m_pixelDataType : GL_UNSIGNED_BYTE, this->m_image.m_data);
+                   this->m_pixelDataType ? this->m_pixelDataType : GL_UNSIGNED_BYTE, this->m_image->data());
     }
     else {
       glTexImage2D(GL_TEXTURE_2D, 0, this->m_internalFormat, this->m_width,
@@ -265,7 +265,7 @@ void vesTexture::computeInternalFormatUsingImage()
   // Currently image does not define internal format
   // and hence it's pixel format is the only way to query
   // information on how color has been stored.
-  switch (this->m_image.m_pixelFormat) {
+  switch (this->m_image->pixelFormat()) {
   case vesColorDataType::RGB:
     this->m_internalFormat = vesColorDataType::RGB;
     break;
@@ -289,9 +289,9 @@ void vesTexture::computeInternalFormatUsingImage()
 void vesTexture::updateDimensions()
 {
   if (this->m_hasImage) {
-    this->m_width = this->m_image.m_width;
-    this->m_height = this->m_image.m_height;
-    this->m_depth  = this->m_image.m_depth;
+    this->m_width = this->m_image->width();
+    this->m_height = this->m_image->height();
+    this->m_depth  = this->m_image->depth();
   }
 }
 

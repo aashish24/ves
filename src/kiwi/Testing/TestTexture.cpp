@@ -68,7 +68,6 @@ public:
   {
     this->setBackgroundColor(63/255.0, 96/255.0, 144/255.0);
 
-    this->Image = 0x0;
     this->DataRep = 0x0;
   }
 
@@ -90,17 +89,22 @@ public:
 
   void create1DTexture()
   {
-    this->Image = new vesImage();
+    this->Image = vesImage::Ptr(new vesImage());
     this->LookupTable = vtkSmartPointer<vtkLookupTable>::New();
     this->LookupTable->Build();
-    this->Image->m_data = this->LookupTable->GetPointer(0);
-    this->Image->m_width = this->LookupTable->GetNumberOfTableValues();
-    this->Image->m_height = 1;
-    this->Image->m_pixelDataType = vesColorDataType::UnsignedByte;
-    this->Image->m_pixelFormat = vesColorDataType::RGBA;
+
+    /// RGBA
+    int numberOfColorComponents = 4;
+    this->Image->setData(this->LookupTable->GetPointer(0),
+                         this->LookupTable->GetNumberOfTableValues()
+                         * numberOfColorComponents);
+    this->Image->setWidth(this->LookupTable->GetNumberOfTableValues());
+    this->Image->setHeight(1);
+    this->Image->setPixelDataType(vesColorDataType::UnsignedByte);
+    this->Image->setPixelFormat(vesColorDataType::RGBA);
 
     this->Texture = vesSharedPtr<vesTexture>(new vesTexture());
-    this->Texture->setImage(*this->Image);
+    this->Texture->setImage(this->Image);
     this->DataRep->setTexture(this->Texture);
   }
 
@@ -111,8 +115,6 @@ public:
       delete this->DataRep;
       this->DataRep = 0;
     }
-
-    delete this->Image; this->Image = 0x0;
   }
 
   void loadData(const std::string& filename)
@@ -133,7 +135,7 @@ public:
     this->create1DTexture();
   }
 
-  vesImage *Image;
+  vesSharedPtr<vesImage> Image;
   vesSharedPtr<vesTexture> Texture;
   vtkSmartPointer<vtkLookupTable> LookupTable;
   vesSharedPtr<vesShaderProgram> TextureShader;

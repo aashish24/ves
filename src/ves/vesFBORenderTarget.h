@@ -17,6 +17,9 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
+/// \class vesFBORenderTarget
+/// \ingroup ves
+/// \see vesRenderTarget
 
 #ifndef VESFBORENDERTARGET_H
 #define VESFBORENDERTARGET_H

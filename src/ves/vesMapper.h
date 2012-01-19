@@ -17,6 +17,17 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
+/// \class vesMapper
+/// \ingroup ves
+/// \brief Mapper contains a geometry data and has the responsibility of rendering
+/// the geometry appropriately.
+///
+/// Actor and mapper works in pair where mapper takes the responsibility of
+/// rendering a geometry using OpenGL ES 2.0 API. vesMapper defines
+/// a light weight polydata rendering entity that works in conjunction with a
+/// vesActor.
+///
+/// \see vesBoundingObject vesActor vesGeometryData
 
 #ifndef VESMAPPER_H
 #define VESMAPPER_H
@@ -43,16 +54,24 @@ public:
   vesMapper();
   virtual ~vesMapper();
 
+  /// Compute bounds of the mapper
   virtual void computeBounds();
 
+  /// Set geometry data for the mapper
   bool setGeometryData(vesSharedPtr<vesGeometryData> geometryData);
+
+  /// Get geometry data of the mapper
   vesSharedPtr<vesGeometryData> geometryData();
   const vesSharedPtr<vesGeometryData> geometryData() const;
 
+  /// Set single geometry color. Default is (0.9, 0.9, 0.9, 1.0).
   void setColor(float r, float g, float b, float a);
+
+  /// Get single geometry color. Default is (0.9, 0.9, 0.9, 1.0).
   float* color();
   const float* color() const;
 
+  /// Render the geometry
   virtual void render(const vesRenderState &renderState);
 
 private:

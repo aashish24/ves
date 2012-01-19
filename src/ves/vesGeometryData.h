@@ -17,6 +17,16 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
+/// \class vesGeometryData
+/// \ingroup ves
+/// \brief Class defines a data structure that constitutes a geometry
+///
+/// vesGeometryData is modeled after collada (collada.org) and XDMF (xdmf.org).
+/// Primarily vesGeometryData constitutes of sources and primitives. Sources define
+/// the data in some coordinate space and primitives made references to the source data
+/// in order to constitute a meaningful geometry primitive.
+///
+/// \see vesMapper vesActor vesSourceData vesPrimitive
 
 #ifndef VESGEOMETRYDATA_H
 #define VESGEOMETRYDATA_H
@@ -53,16 +63,19 @@ public:
   {
   }
 
+  /// Get name / ID of the geometry data
   inline std::string name()
   {
     return this->m_name;
   }
 
+  /// Get name / ID of the geometry data
   inline const std::string& name() const
   {
     return this->m_name;
   }
 
+  /// Set name / ID of the geometry data
   inline bool setName(const std::string &name)
   {
     bool success = true;
@@ -72,6 +85,7 @@ public:
     return success;
   }
 
+  /// Add a new source to the geometry. Return true on success.
   inline bool addSource(vesSharedPtr<vesSourceData> source)
   {
     bool success = true;
@@ -86,6 +100,7 @@ public:
     return !success;
   }
 
+  /// Add a new primitive to the geometry. Return true on success.
   inline bool addPrimitive(vesSharedPtr<vesPrimitive> primitive)
   {
     bool success = true;
@@ -100,36 +115,43 @@ public:
     return !success;
   }
 
+  /// Return a primitive given a index. Return NULL on failure.
   inline vesSharedPtr<vesPrimitive> primitive(unsigned int index)
   {
     return this->m_primitives[index];
   }
 
+  /// Return a primitive given a index. Return NULL on failure.
   inline const vesSharedPtr<vesPrimitive> primitive(unsigned int index) const
   {
     return this->m_primitives[index];
   }
 
+  /// Return a source given a index. Return NULL on failure.
   inline vesSharedPtr<vesSourceData> source(unsigned int index)
   {
     return this->m_sources[index];
   }
 
+  /// Return a source given a index. Return NULL on failure.
   inline const vesSharedPtr<vesSourceData> source(unsigned int index) const
   {
     return this->m_sources[index];
   }
 
+  /// Return number of primitive types contained at the moment in the geometry
   inline unsigned int numberOfPrimitiveTypes() const
   {
     return static_cast<unsigned int>(this->m_primitives.size());
   }
 
+  /// Return number of sources contained at the moment in the geometry
   inline unsigned int numberOfSources() const
   {
     return static_cast<unsigned int>(this->m_sources.size());
   }
 
+  /// Compute and return geometry min bounds
   inline vesVector3f boundsMin()
   {
     if (this->m_computeBounds) {
@@ -139,6 +161,7 @@ public:
     return this->m_boundsMin;
   }
 
+  /// Compute and return geometry max bounds
   inline vesVector3f boundsMax()
   {
     if (this->m_computeBounds) {
@@ -148,14 +171,22 @@ public:
     return this->m_boundsMax;
   }
 
+  /// Compute geometry bounds
   void computeBounds();
 
+  /// Compute normals (per vertex) if possible
   void computeNormals();
 
+  /// Return primitive of type triangles. Return NULL on failure.
   inline vesSharedPtr<vesPrimitive> triangles();
+
+  /// Return primitive of type triangle strips. Return NULL on failure.
   inline vesSharedPtr<vesPrimitive> triangleStrips();
+
+  /// Return primitive of type lines. Return NULL on failure.
   inline vesSharedPtr<vesPrimitive> lines();
 
+  /// Return source data given a key. Return NULL on failure.
   inline vesSharedPtr<vesSourceData> sourceData(int key);
 
 private:
