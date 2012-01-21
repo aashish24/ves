@@ -32,3 +32,6 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/vesVersion.h.in
   ${CMAKE_CURRENT_BINARY_DIR}/vesVersion.h @ONLY)
 
 ves_add_library(ves "${sources}" "")
+
+# Fow now we have a single version string
+set_target_properties(ves PROPERTIES SOVERSION ${VES_GLOBAL_VERSION_STR} VERSION ${VES_GLOBAL_VERSION_STR})
