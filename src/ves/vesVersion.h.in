@@ -1,0 +1,7 @@
+#ifndef __vesVersion_h
+#define __vesVersion_h
+
+#define VES_VERSION_STR "@VES_GLOBAL_VERSION_STR@"
+#define VES_COPY_YEAR @VES_GLOBAL_COPY_YEAR@
+
+#endif // __vesVersion_h
