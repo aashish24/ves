@@ -31,6 +31,7 @@ option(VES_USE_VTK "Build the kiwi library.  Requires VTK." OFF)
 # include cmake scripts
 include(CMake/ves-macros.cmake)
 include(CMake/ves-testing.cmake)
+include(CMake/ves-global-version.cmake)
 
 # build project
 add_subdirectory(src)

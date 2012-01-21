@@ -27,4 +27,8 @@ set(sources
   vesVisitor.cpp
 )
 
+# Configure version file
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/vesVersion.h.in
+  ${CMAKE_CURRENT_BINARY_DIR}/vesVersion.h @ONLY)
+
 ves_add_library(ves "${sources}" "")
