@@ -53,3 +53,11 @@ set(headers
 set(header_dirs
   .
 )
+
+set(build_headers
+  vesVersion.h
+)
+
+set(build_header_dirs
+  .
+)
