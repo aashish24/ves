@@ -152,6 +152,7 @@ void vesKiwiImageWidgetRepresentation::setImageData(vtkImageData* image)
     this->Internal->ContourRep->setPolyData(contour->GetOutput());
     this->Internal->ContourRep->setColor(0.8, 0.8, 0.8, 0.4);
     this->Internal->ContourVis = 1;
+    this->Internal->AllReps.push_back(this->Internal->ContourRep);
   }
 }
 
@@ -169,7 +170,6 @@ void vesKiwiImageWidgetRepresentation::initializeWithShader(
   this->Internal->OutlineRep = new vesKiwiPolyDataRepresentation();
   this->Internal->OutlineRep->initializeWithShader(geometryShader);
   this->Internal->OutlineRep->setBinNumber(2);
-  this->Internal->AllReps.push_back(this->Internal->ContourRep);
   this->Internal->AllReps.push_back(this->Internal->OutlineRep);
 
   for (int i = 0; i < 3; ++i) {
