@@ -363,6 +363,9 @@ void vesMapper::drawPoints(const vesRenderState &renderState,
   {
     vesSharedPtr<vesSourceData> data =
         m_geometryData->sourceData(vesVertexAttributeKeys::Position);
+    // Send the primitive type information out
+    renderState.m_material->bindRenderData(
+      renderState, vesRenderData(vesPrimitiveRenderType::Points));
     glDrawArrays(points->primitiveType(), 0, data->sizeOfArray());
   }
 }
