@@ -5,5 +5,13 @@ gen
 libs
 build.xml
 default.properties
+project.properties
 local.properties
 proguard.cfg
+
+CMakeCache.txt
+CMakeFiles
+Makefile
+cmake_install.cmake
+.classpath
+.project
