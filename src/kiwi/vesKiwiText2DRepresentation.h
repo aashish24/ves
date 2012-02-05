@@ -52,6 +52,9 @@ public:
   void setDisplayPosition(vesVector2f displayPosition);
   vesVector2f displayPosition() const;
 
+  /// Return the width of the texture used by this text annotation.
+  int textWidth();
+
 private:
 
   vesKiwiText2DRepresentation(const vesKiwiText2DRepresentation&); // Not implemented

@@ -143,6 +143,12 @@ vesVector2f vesKiwiText2DRepresentation::displayPosition() const
 }
 
 //----------------------------------------------------------------------------
+int vesKiwiText2DRepresentation::textWidth()
+{
+  return this->texture()->image()->width();
+}
+
+//----------------------------------------------------------------------------
 void vesKiwiText2DRepresentation::willRender(vesSharedPtr<vesRenderer> renderer)
 {
   if (!this->Internal->WorldAnchorPointEnabled || !this->texture()) {
