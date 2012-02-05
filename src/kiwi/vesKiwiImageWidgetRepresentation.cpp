@@ -58,6 +58,8 @@ public:
 
     this->ContourRep = 0;
     this->OutlineRep = 0;
+    this->UseContour = false;
+    this->InteractionEnabled = true;
   }
 
   ~vesInternal()
@@ -71,6 +73,8 @@ public:
   int SelectedImageDimension;
   int CurrentSliceIndices[3];
   int ContourVis;
+  bool UseContour;
+  bool InteractionEnabled;
   double ImageScalarRange[2];
 
   std::vector<vesKiwiDataRepresentation*> AllReps;
@@ -153,6 +157,7 @@ void vesKiwiImageWidgetRepresentation::setImageData(vtkImageData* image)
     this->Internal->ContourRep->setColor(0.8, 0.8, 0.8, 0.4);
     this->Internal->ContourVis = 1;
     this->Internal->AllReps.push_back(this->Internal->ContourRep);
+    this->Internal->UseContour = true;
   }
 }
 
@@ -297,6 +302,10 @@ bool vesKiwiImageWidgetRepresentation::handleSingleTouchPanGesture(double deltaX
 //----------------------------------------------------------------------------
 bool vesKiwiImageWidgetRepresentation::handleSingleTouchDown(int displayX, int displayY)
 {
+  if (!this->Internal->InteractionEnabled) {
+    return false;
+  }
+
   // calculate the focal depth so we'll know how far to move
   vesSharedPtr<vesRenderer> ren = this->renderer();
 
@@ -348,6 +357,12 @@ bool vesKiwiImageWidgetRepresentation::handleSingleTouchDown(int displayX, int d
 //----------------------------------------------------------------------------
 bool vesKiwiImageWidgetRepresentation::handleDoubleTap()
 {
+  if (!this->Internal->UseContour) {
+
+    this->Internal->InteractionEnabled = !this->Internal->InteractionEnabled;
+    return true;
+  }
+
   this->Internal->ContourVis = (this->Internal->ContourVis + 1) % 3;
   if (this->Internal->ContourVis == 0) {
     this->Internal->ContourRep->removeSelfFromRenderer(this->renderer());
