@@ -90,8 +90,14 @@ public:
   /// Handle a single touch up event.  The default implementation is a no-op.
   virtual void handleSingleTouchUp();
 
+  /// Handle a single touch tap event.  The default implementation is a no-op.
+  virtual void handleSingleTouchTap(int displayX, int displayY);
+
   /// Handle a double tap event.  The default implementation is a no-op.
-  virtual void handleDoubleTap();
+  virtual void handleDoubleTap(int displayX, int displayY);
+
+  /// Handle a long press event.  The default implementation is a no-op.
+  virtual void handleLongPress(int displayX, int displayY);
 
   /// Set the background color of the renderer.
   void setBackgroundColor(double r, double g, double b);

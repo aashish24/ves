@@ -279,12 +279,25 @@ void vesKiwiViewerApp::handleSingleTouchPanGesture(double deltaX, double deltaY)
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiViewerApp::handleDoubleTap()
+void vesKiwiViewerApp::handleDoubleTap(int displayX, int displayY)
 {
   for (size_t i = 0; i < this->Internal->DataRepresentations.size(); ++i) {
     vesKiwiWidgetRepresentation* rep = dynamic_cast<vesKiwiWidgetRepresentation*>(this->Internal->DataRepresentations[i]);
     if (rep) {
-      if (rep->handleDoubleTap()) {
+      if (rep->handleDoubleTap(displayX, displayY)) {
+        return;
+      }
+    }
+  }
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiViewerApp::handleLongPress(int displayX, int displayY)
+{
+  for (size_t i = 0; i < this->Internal->DataRepresentations.size(); ++i) {
+    vesKiwiWidgetRepresentation* rep = dynamic_cast<vesKiwiWidgetRepresentation*>(this->Internal->DataRepresentations[i]);
+    if (rep) {
+      if (rep->handleLongPress(displayX, displayY)) {
         return;
       }
     }

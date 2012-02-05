@@ -69,7 +69,13 @@ bool vesKiwiWidgetRepresentation::handleSingleTouchTap(int displayX, int display
 }
 
 //----------------------------------------------------------------------------
-bool vesKiwiWidgetRepresentation::handleDoubleTap()
+bool vesKiwiWidgetRepresentation::handleDoubleTap(int displayX, int displayY)
+{
+  return false;
+}
+
+//----------------------------------------------------------------------------
+bool vesKiwiWidgetRepresentation::handleLongPress(int displayX, int displayY)
 {
   return false;
 }

@@ -173,8 +173,24 @@ void vesKiwiBaseApp::handleSingleTouchPanGesture(double deltaX, double deltaY)
 
 
 //----------------------------------------------------------------------------
-void vesKiwiBaseApp::handleDoubleTap()
+void vesKiwiBaseApp::handleSingleTouchTap(int displayX, int displayY)
 {
+  vesNotUsed(displayX);
+  vesNotUsed(displayY);
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiBaseApp::handleDoubleTap(int displayX, int displayY)
+{
+  vesNotUsed(displayX);
+  vesNotUsed(displayY);
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiBaseApp::handleLongPress(int displayX, int displayY)
+{
+  vesNotUsed(displayX);
+  vesNotUsed(displayY);
 }
 
 //----------------------------------------------------------------------------

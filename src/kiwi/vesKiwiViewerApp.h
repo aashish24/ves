@@ -81,7 +81,8 @@ public:
   virtual void handleSingleTouchDown(int displayX, int displayY);
   virtual void handleSingleTouchTap(int displayX, int displayY);
   virtual void handleSingleTouchUp();
-  virtual void handleDoubleTap();
+  virtual void handleDoubleTap(int displayX, int displayY);
+  virtual void handleLongPress(int displayX, int displayY);
 
   bool widgetInteractionIsActive() const;
 

@@ -355,8 +355,11 @@ bool vesKiwiImageWidgetRepresentation::handleSingleTouchDown(int displayX, int d
 }
 
 //----------------------------------------------------------------------------
-bool vesKiwiImageWidgetRepresentation::handleDoubleTap()
+bool vesKiwiImageWidgetRepresentation::handleDoubleTap(int displayX, int displayY)
 {
+  vesNotUsed(displayX);
+  vesNotUsed(displayY);
+
   if (!this->Internal->UseContour) {
 
     this->Internal->InteractionEnabled = !this->Internal->InteractionEnabled;
