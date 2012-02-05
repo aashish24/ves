@@ -37,9 +37,9 @@
 		432DE16D13D15E1C000F8EC0 /* libves.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 432DE16C13D15E1C000F8EC0 /* libves.a */; };
 		435026EF140E93C9000C315D /* caffeine.pdb in Resources */ = {isa = PBXBuildFile; fileRef = 435026ED140E93C9000C315D /* caffeine.pdb */; };
 		435026F0140E93C9000C315D /* motor.g in Resources */ = {isa = PBXBuildFile; fileRef = 435026EE140E93C9000C315D /* motor.g */; };
+		43554395144F22650040C85C /* libvtkFiltersGeneral.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43554394144F22650040C85C /* libvtkFiltersGeneral.a */; };
 		4356FCC814A01159008AF7D3 /* cturtle.vtk in Resources */ = {isa = PBXBuildFile; fileRef = 4356FCC714A01159008AF7D3 /* cturtle.vtk */; };
 		4356FCCB14A015B1008AF7D3 /* libvtkIOPLY.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4356FCCA14A015B1008AF7D3 /* libvtkIOPLY.a */; };
-		43554395144F22650040C85C /* libvtkFiltersGeneral.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43554394144F22650040C85C /* libvtkFiltersGeneral.a */; };
 		436B34B413C802D500C5726C /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 436B34AF13C802D500C5726C /* Default-Landscape~ipad.png */; };
 		436B34B513C802D500C5726C /* Default-Portrait~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 436B34B013C802D500C5726C /* Default-Portrait~ipad.png */; };
 		436B34B613C802D500C5726C /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 436B34B113C802D500C5726C /* icon.png */; };
@@ -114,9 +114,9 @@
 		432DE16C13D15E1C000F8EC0 /* libves.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libves.a; path = "../CMakeBuild/build/CMakeExternals/Build/ves-ios-device/lib/libves.a"; sourceTree = "<group>"; };
 		435026ED140E93C9000C315D /* caffeine.pdb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = caffeine.pdb; sourceTree = "<group>"; };
 		435026EE140E93C9000C315D /* motor.g */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = motor.g; sourceTree = "<group>"; };
+		43554394144F22650040C85C /* libvtkFiltersGeneral.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkFiltersGeneral.a; path = "../../../../build/CMakeExternals/Build/vtkmodular-ios-device/lib/libvtkFiltersGeneral.a"; sourceTree = "<group>"; };
 		4356FCC714A01159008AF7D3 /* cturtle.vtk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cturtle.vtk; sourceTree = "<group>"; };
 		4356FCCA14A015B1008AF7D3 /* libvtkIOPLY.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkIOPLY.a; path = "../../../../build/CMakeExternals/Build/vtkmodular-ios-device/lib/libvtkIOPLY.a"; sourceTree = "<group>"; };
-		43554394144F22650040C85C /* libvtkFiltersGeneral.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkFiltersGeneral.a; path = "../../../../build/CMakeExternals/Build/vtkmodular-ios-device/lib/libvtkFiltersGeneral.a"; sourceTree = "<group>"; };
 		436B34AF13C802D500C5726C /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
 		436B34B013C802D500C5726C /* Default-Portrait~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait~ipad.png"; sourceTree = "<group>"; };
 		436B34B113C802D500C5726C /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
@@ -377,7 +377,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0410;
+				LastUpgradeCheck = 0420;
 			};
 			buildConfigurationList = C01FCF4E08A954540054247B /* Build configuration list for PBXProject "Kiwi" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -468,7 +468,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Kiwi/Kiwi-Prefix.pch";
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = (
 					"$(ves_build)/CMakeExternals/Source/vtkmodular/**",
 					"$(ves_source)/src/kiwi",
@@ -508,7 +508,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Kiwi/Kiwi-Prefix.pch";
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = (
 					"$(ves_build)/CMakeExternals/Source/vtkmodular/**",
 					"$(ves_source)/src/kiwi",
@@ -573,7 +573,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Kiwi/Kiwi-Prefix.pch";
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = (
 					"$(ves_build)/CMakeExternals/Source/vtkmodular/**",
 					"$(ves_source)/src/kiwi",
@@ -635,7 +635,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Kiwi/Kiwi-Prefix.pch";
 				"GCC_THUMB_SUPPORT[arch=armv6]" = "";
-				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = (
 					"$(ves_build)/CMakeExternals/Source/vtkmodular/**",
 					"$(ves_source)/src/kiwi",
