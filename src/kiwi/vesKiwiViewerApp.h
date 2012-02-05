@@ -89,6 +89,8 @@ public:
   int numberOfModelVertices() const;
   int numberOfModelLines() const;
 
+  void checkForAdditionalData(const std::string& dirname);
+
   const vesSharedPtr<vesShaderProgram> shaderProgram() const;
   vesSharedPtr<vesShaderProgram> shaderProgram();
 

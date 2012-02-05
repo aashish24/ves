@@ -586,6 +586,11 @@ void vesKiwiViewerApp::setDefaultBackgroundColor()
 }
 
 //----------------------------------------------------------------------------
+void vesKiwiViewerApp::checkForAdditionalData(const std::string& dirname)
+{
+}
+
+//----------------------------------------------------------------------------
 bool vesKiwiViewerApp::loadBrainAtlas(const std::string& filename)
 {
   vesKiwiBrainAtlasRepresentation* rep = new vesKiwiBrainAtlasRepresentation();
