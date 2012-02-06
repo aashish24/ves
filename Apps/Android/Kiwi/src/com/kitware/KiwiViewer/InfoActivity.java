@@ -25,19 +25,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
+import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
-/**
- *
- *
- */
-public class DatasetListActivity extends Activity {
 
-  public ListView mListView;
+public class InfoActivity extends Activity {
+
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -50,26 +47,18 @@ public class DatasetListActivity extends Activity {
     // ...but notify us that it happened.
     getWindow().setFlags(LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH, LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH);
 
-    setTitle("Open Data");
+    requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-    this.setContentView(R.layout.datasetlistactivity);
-    String[] datasets = getIntent().getExtras().getStringArray("com.kitware.KiwiViewer.bundle.DatasetList");
-    ArrayAdapter<String> adapter = new ArrayAdapter<String>(getBaseContext(),android.R.layout.simple_list_item_1,datasets);
-    mListView = (ListView) findViewById(R.id.listView);
-    mListView.setAdapter(adapter);
-    mListView.setOnItemClickListener(new OnItemClickListener() {
+    this.setContentView(R.layout.infoactivity);
 
-      @Override
-      public void onItemClick(AdapterView<?> adapterView, View view, int pos,
-          long arg3) {
-        String value = (String) adapterView.getItemAtPosition(pos);
-        Intent curIntent = new Intent();
-        curIntent.putExtra("com.kitware.KiwiViewer.bundle.DatasetName",value);
-        curIntent.putExtra("com.kitware.KiwiViewer.bundle.DatasetOffset",pos);
-        setResult(Activity.RESULT_OK, curIntent);
-        finish();
-      }
-    });
+    String detailsStr = String.format("Scene statistics:\n  Triangles: %d\n  Lines: %d\n  Vertices: %d\n  Drawing @ %d fps",
+      KiwiNative.getNumberOfTriangles(),
+      KiwiNative.getNumberOfLines(),
+      KiwiNative.getNumberOfVertices(),
+      KiwiNative.getFramesPerSecond());
+
+    TextView detailsText = (TextView) findViewById(R.id.detailsText);
+    detailsText.setText(detailsStr);
 
   }
 

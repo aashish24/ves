@@ -36,11 +36,24 @@ public class KiwiNative {
      public static native void handleTwoTouchRotationGesture(float rotation);
      public static native void handleSingleTouchUp();
      public static native void handleSingleTouchDown(float x, float y);
+     public static native void handleSingleTouchTap(float x, float y);
+     public static native void handleDoubleTap(float x, float y);
+     public static native void handleLongPress(float x, float y);
      public static native void render();
      public static native void resetCamera();
-     public static native void loadAssets(AssetManager assetManager, String filename);
      public static native String getDatasetName(int offset);
      public static native String getDatasetFilename(int offset);
      public static native int getNumberOfBuiltinDatasets();
-     public static native void loadDataset(int datasetIndex);
+     public static native int getDefaultBuiltinDatasetIndex();
+     public static native boolean getDatasetIsLoaded();
+     public static native void clearExistingDataset();
+     public static native boolean loadDatasetPath(String filename);
+     public static native void checkForAdditionalDatasets(String storageDir);
+     public static native String getLoadDatasetErrorTitle();
+     public static native String getLoadDatasetErrorMessage();
+
+     public static native int getNumberOfTriangles();
+     public static native int getNumberOfLines();
+     public static native int getNumberOfVertices();
+     public static native int getFramesPerSecond();
 }
