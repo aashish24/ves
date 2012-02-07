@@ -108,19 +108,15 @@ public:
        uniform highp mat4 projectionMatrix;\n \
        attribute highp vec4 vertexPosition;\n \
        attribute mediump vec4 vertexColor;\n \
-       attribute mediump vec4 vertexTextureCoordinate;\n \
-       varying mediump vec2 textureCoordinate;\n \
        varying mediump vec4 varColor;\n \
        void main()\n \
        {\n \
-         gl_Position = vertexPosition;\n \
-         textureCoordinate = vertexTextureCoordinate.xy;\n \
+         gl_Position = projectionMatrix * modelViewMatrix * vertexPosition;\n \
          varColor = vertexColor;\n \
        }";
 
     const std::string fragmentShaderSource =
-      "varying mediump vec2 textureCoordinate;\n \
-       varying mediump vec4 varColor;\n \
+      "varying mediump vec4 varColor;\n \
        void main()\n \
        {\n \
          gl_FragColor = varColor;\n \
@@ -155,29 +151,31 @@ public:
     vesGeometryData::Ptr geometryData (new vesGeometryData());
     vesSourceDataP3N3C3f::Ptr sourceData(new vesSourceDataP3N3C3f());
 
-    vesVector4f topColor = vesVector4f(1.0f, 0.0f, 0.0f, 1.0f);
-    vesVector4f bottomColor = vesVector4f(0.0f, 1.0f, 0.0f, 1.0f);
+    vesVector4f topLeftColor = vesVector4f(0.5f, 0.0f, 0.0f, 1.0f);
+    vesVector4f bottomRightColor = vesVector4f(0.0f, 0.0f, 0.5f, 1.0f);
+    vesVector4f color = vesVector4f(0.5f, 0.5f, 0.5f, 1.0f);
+
 
     // Points.
     vesVertexDataP3N3C3f v1;
     v1.m_position = vesVector3f(-1.0f, -1.0f, 0.0f);
     v1.m_normal = vesVector3f(0.0f, 0.0f, 1.0f);
-    v1.m_color = vesVector3f(bottomColor[0], bottomColor[1], bottomColor[2]);
+    v1.m_color = vesVector3f(color[0], color[1], color[2]);
 
     vesVertexDataP3N3C3f v2;
     v2.m_position = vesVector3f(1.0f, -1.0f, 0.0f);
     v2.m_normal = vesVector3f(0.0f, 0.0f, 1.0f);
-    v2.m_color = vesVector3f(bottomColor[0], bottomColor[1], bottomColor[2]);
+    v2.m_color = vesVector3f(bottomRightColor[0], bottomRightColor[1], bottomRightColor[2]);
 
     vesVertexDataP3N3C3f v3;
     v3.m_position = vesVector3f(1.0f, 1.0f, 0.0f);
     v3.m_normal = vesVector3f(0.0f, 0.0f, 1.0f);
-    v3.m_color = vesVector3f(topColor[0], topColor[1], topColor[2]);
+    v3.m_color = vesVector3f(color[0], color[1], color[2]);
 
     vesVertexDataP3N3C3f v4;
     v4.m_position = vesVector3f(-1.0f, 1.0f, 0.0f);
     v4.m_normal = vesVector3f(0.0f, 0.0f, 1.0f);
-    v4.m_color = vesVector3f(topColor[0], topColor[1], topColor[2]);
+    v4.m_color = vesVector3f(topLeftColor[0], topLeftColor[1], topLeftColor[2]);
 
     sourceData->pushBack(v1);
     sourceData->pushBack(v2);
