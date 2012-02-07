@@ -17,3 +17,8 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
+/*========================================================================
+  Portions of this work were supported by Willow Garage, Inc.
+
+  Copyright 2012 Willow Garage, Inc.
+ ========================================================================*/
