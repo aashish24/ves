@@ -71,7 +71,7 @@ public:
   /// Set background color of the renderer
   virtual void setBackgroundColor(float r, float g, float b, float a=1.0f);
 
-  /// Get background color of the renderer
+  /// Get background object of the renderer
   vesSharedPtr<vesBackground> background();
   const vesSharedPtr<vesBackground> background() const;
 
