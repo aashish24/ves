@@ -40,9 +40,11 @@ class vesRenderData;
 class vesRenderState;
 class vesShaderProgram;
 
-class vesMaterial
+class vesMaterial : public vesObject
 {
 public:
+  vesTypeMacro(vesMaterial);
+
   enum RenderHint
   {
     DefaultBin      = 0,
