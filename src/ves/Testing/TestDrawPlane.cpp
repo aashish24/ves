@@ -28,7 +28,6 @@
 
 #include <vesActor.h>
 #include <vesCamera.h>
-#include <vesBuiltinShaders.h>
 #include <vesMapper.h>
 #include <vesMaterial.h>
 #include <vesModelViewUniform.h>
