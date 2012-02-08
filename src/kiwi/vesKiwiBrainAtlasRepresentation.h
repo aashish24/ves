@@ -48,7 +48,17 @@ public:
   virtual int numberOfVertices();
   virtual int numberOfLines();
 
+  virtual void showTextLabel(int modelIndex);
+  virtual void hideTextLabel();
+  virtual int findTappedModel(int displayX, int displayY);
+  virtual bool hideModel(int displayX, int displayY);
+  virtual bool selectModel(int displayX, int displayY);
+  virtual void deselectModel();
+  virtual bool toggleSkinOpacity(int displayX, int displayY);
+
   virtual bool handleSingleTouchTap(int displayX, int displayY);
+  virtual bool handleDoubleTap(int displayX, int displayY);
+  virtual bool handleLongPress(int displayX, int displayY);
 
 protected:
 
