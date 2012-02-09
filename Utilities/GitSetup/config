@@ -1,0 +1,9 @@
+[hooks]
+	url = http://vtk.org/VES.git
+[ssh]
+	host = vtk.org
+	key = id_git_vtk
+	request-url = https://www.kitware.com/Admin/SendPassword.cgi
+[stage]
+	url = git://vtk.org/stage/VES.git
+	pushurl = git@vtk.org:stage/VES.git
