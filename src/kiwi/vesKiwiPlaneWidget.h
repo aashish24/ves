@@ -57,6 +57,7 @@ public:
 
 protected:
 
+  void updatePlaneFunction();
 
 private:
 
