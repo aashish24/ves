@@ -36,7 +36,6 @@
 		432DE16D13D15E1C000F8EC0 /* libves.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 432DE16C13D15E1C000F8EC0 /* libves.a */; };
 		435026EF140E93C9000C315D /* caffeine.pdb in Resources */ = {isa = PBXBuildFile; fileRef = 435026ED140E93C9000C315D /* caffeine.pdb */; };
 		43554395144F22650040C85C /* libvtkFiltersGeneral.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43554394144F22650040C85C /* libvtkFiltersGeneral.a */; };
-		4356FCC814A01159008AF7D3 /* cturtle.vtk in Resources */ = {isa = PBXBuildFile; fileRef = 4356FCC714A01159008AF7D3 /* cturtle.vtk */; };
 		4356FCCB14A015B1008AF7D3 /* libvtkIOPLY.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4356FCCA14A015B1008AF7D3 /* libvtkIOPLY.a */; };
 		436B34B413C802D500C5726C /* Default-Landscape~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 436B34AF13C802D500C5726C /* Default-Landscape~ipad.png */; };
 		436B34B513C802D500C5726C /* Default-Portrait~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 436B34B013C802D500C5726C /* Default-Portrait~ipad.png */; };
@@ -44,6 +43,7 @@
 		436B34B713C802D500C5726C /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = 436B34B213C802D500C5726C /* iTunesArtwork */; };
 		436B34B813C802D500C5726C /* Kiwi_Splash_72.png in Resources */ = {isa = PBXBuildFile; fileRef = 436B34B313C802D500C5726C /* Kiwi_Splash_72.png */; };
 		437813A114E70D7B003E7931 /* libvtkFiltersGeometry.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 437813A014E70D7B003E7931 /* libvtkFiltersGeometry.a */; };
+		437813A714E70DFC003E7931 /* cturtle.vtp in Resources */ = {isa = PBXBuildFile; fileRef = 437813A314E70DFC003E7931 /* cturtle.vtp */; };
 		437857F71446577900FEDC72 /* libvtkfreetype.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 437857F61446577900FEDC72 /* libvtkfreetype.a */; };
 		43BA864814299E77000D91C3 /* libvtkFiltersSources.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43BA864514299E77000D91C3 /* libvtkFiltersSources.a */; };
 		43BA864914299E78000D91C3 /* libvtkImagingCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43BA864614299E77000D91C3 /* libvtkImagingCore.a */; };
@@ -118,6 +118,7 @@
 		436B34B213C802D500C5726C /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; path = iTunesArtwork; sourceTree = "<group>"; };
 		436B34B313C802D500C5726C /* Kiwi_Splash_72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Kiwi_Splash_72.png; sourceTree = "<group>"; };
 		437813A014E70D7B003E7931 /* libvtkFiltersGeometry.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkFiltersGeometry.a; path = "../../../../build/CMakeExternals/Build/vtkmodular-ios-device/lib/libvtkFiltersGeometry.a"; sourceTree = "<group>"; };
+		437813A314E70DFC003E7931 /* cturtle.vtp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cturtle.vtp; sourceTree = "<group>"; };
 		437857F61446577900FEDC72 /* libvtkfreetype.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkfreetype.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-ios-device/lib/libvtkfreetype.a"; sourceTree = "<group>"; };
 		43BA864514299E77000D91C3 /* libvtkFiltersSources.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkFiltersSources.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-ios-device/lib/libvtkFiltersSources.a"; sourceTree = "<group>"; };
 		43BA864614299E77000D91C3 /* libvtkImagingCore.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkImagingCore.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-ios-device/lib/libvtkImagingCore.a"; sourceTree = "<group>"; };
@@ -316,7 +317,7 @@
 		6F25E6F2137D88DD00BF4BCA /* Data */ = {
 			isa = PBXGroup;
 			children = (
-				4356FCC714A01159008AF7D3 /* cturtle.vtk */,
+				437813A314E70DFC003E7931 /* cturtle.vtp */,
 				43E58D8F14299CC100D53D13 /* kiwi.png */,
 				43E0526D1424014300FC4F02 /* head.vti */,
 				435026ED140E93C9000C315D /* caffeine.pdb */,
@@ -420,7 +421,7 @@
 				43C1C1CE1410533A00A721F7 /* Default.png in Resources */,
 				43E0526E1424014300FC4F02 /* head.vti in Resources */,
 				43E58D9014299CC100D53D13 /* kiwi.png in Resources */,
-				4356FCC814A01159008AF7D3 /* cturtle.vtk in Resources */,
+				437813A714E70DFC003E7931 /* cturtle.vtp in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

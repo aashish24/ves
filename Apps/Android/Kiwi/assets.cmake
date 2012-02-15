@@ -11,7 +11,7 @@ set(assets
   ${kiwi_data}/visible-woman-hand.vtp
   ${kiwi_data}/head.vti
   ${kiwi_data}/kiwi.png
-  ${kiwi_data}/cturtle.vtk
+  ${kiwi_data}/cturtle.vtp
   )
 
 foreach(f ${assets})

@@ -151,7 +151,7 @@ vesKiwiViewerApp::vesKiwiViewerApp()
   this->addBuiltinDataset("Caffeine", "caffeine.pdb");
   this->addBuiltinDataset("Head", "head.vti");
   this->addBuiltinDataset("KiwiViewer Logo", "kiwi.png");
-  this->addBuiltinDataset("ROS Turtle", "cturtle.vtk");
+  this->addBuiltinDataset("ROS C Turtle", "cturtle.vtp");
 
   // These depend on external data, so are commented out for now.
   //this->addBuiltinDataset("SPL-PNL Brain Atlas", "model_info.txt");
