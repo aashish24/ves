@@ -64,10 +64,10 @@ public:
   vesSharedPtr<vesGeometryData> geometryData();
   const vesSharedPtr<vesGeometryData> geometryData() const;
 
-  /// Set single geometry color. Default is (0.9, 0.9, 0.9, 1.0).
+  /// Set single geometry color. Default is (1.0, 1.0, 1.0, 1.0).
   void setColor(float r, float g, float b, float a);
 
-  /// Get single geometry color. Default is (0.9, 0.9, 0.9, 1.0).
+  /// Get single geometry color. Default is (1.0, 1.0, 1.0, 1.0).
   float* color();
   const float* color() const;
 

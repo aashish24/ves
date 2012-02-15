@@ -39,19 +39,10 @@ varying lowp vec4 varColor;
 
 void main()
 {
-  // Default ambient color for now.
-  lowp vec4 ambientColor = vec4(0.01, 0.01, 0.01, 0.0);
-  lowp vec4 diffuseColor = vec4(0.1, 0.1, 0.1, 0.0);
-
-  if (hasVertexColors) {
-    varColor = vertexColor + diffuseColor;
-  }
-  else {
-    varColor = vertexColor + ambientColor;
-  }
-
   // Save position for shading later.
   highp vec4 position = projectionMatrix * modelViewMatrix * vec4(vertexPosition, 1.0);
+
+  varColor = vertexColor;
 
   // 1 is line
   if (primitiveType != 1 && primitiveType != 0) {
@@ -70,7 +61,5 @@ void main()
   }
 
   gl_PointSize = 1.0;
-
-  // GLSL still requires this.
   gl_Position = position;
 }

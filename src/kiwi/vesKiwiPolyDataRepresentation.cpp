@@ -193,8 +193,6 @@ void vesKiwiPolyDataRepresentation::initializeWithShader(
   this->Internal->Actor->material()->addAttribute(shaderProgram);
   this->Internal->Actor->material()->addAttribute(this->Internal->Blend);
   this->Internal->Actor->material()->addAttribute(this->Internal->Depth);
-
-  this->Internal->Actor->mapper()->setColor(0.9, 0.9, 0.9, 1.0);
 }
 
 //----------------------------------------------------------------------------
