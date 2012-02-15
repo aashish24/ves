@@ -82,7 +82,6 @@ vtkDataArray* vesKiwiDataConversionTools::FindTextureCoordinatesArray(vtkDataSet
 //----------------------------------------------------------------------------
 vtkSmartPointer<vtkDiscretizableColorTransferFunction> vesKiwiDataConversionTools::GetBlackBodyRadiationColorMap(double scalarRange[2])
 {
-  //double range[2] = {-500, 6000};
   double length = scalarRange[1] - scalarRange[0];
   double points[4] = {0.0, 0.4, 0.75, 1.0};
 

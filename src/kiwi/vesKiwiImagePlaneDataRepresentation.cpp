@@ -131,9 +131,6 @@ void vesKiwiImagePlaneDataRepresentation::setTextureFromImage(
   vtkSmartPointer<vtkUnsignedCharArray> pixels = vtkUnsignedCharArray::SafeDownCast(image->GetPointData()->GetScalars());
 
   if (!pixels) {
-
-    printf("input image is not unsigned char, mapping...\n");
-
     vtkScalarsToColors* map = this->colorMap();
     assert(map);
     pixels = vesKiwiDataConversionTools::MapScalars(image->GetPointData()->GetScalars(), map);
