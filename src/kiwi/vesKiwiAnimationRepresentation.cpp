@@ -227,7 +227,7 @@ bool vesKiwiAnimationRepresentation::handleSingleTouchUp()
 bool vesKiwiAnimationRepresentation::handleSingleTouchTap(int displayX, int displayY)
 {
   vesVector2f textSize = this->Internal->PlayRep->textureSize();
-  double margin = 10;
+  double margin = 30;
   textSize += vesVector2f(margin, margin);
 
   if (displayX <= textSize[0] && displayY <= textSize[1]) {
