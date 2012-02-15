@@ -67,7 +67,7 @@ void ConvertVertexArrays(vtkDataSet* dataSet, vesSharedPtr<vesGeometryData> geom
 
 vesSharedPtr<vesGeometryData> GeometryDataFromPolyData(vtkPolyData* polyData)
 {
-  if (!polyData->GetNumberOfPolys() && !polyData->GetNumberOfLines())
+  if (!polyData->GetNumberOfStrips() && !polyData->GetNumberOfPolys() && !polyData->GetNumberOfLines())
     {
     return vesKiwiDataConversionTools::ConvertPoints(polyData);
     }
@@ -80,6 +80,7 @@ vesSharedPtr<vesGeometryData> GeometryDataFromPolyData(vtkPolyData* polyData)
   triangleFilter->PassVertsOn();
   triangleFilter->SetInput(polyData);
   triangleFilter->Update();
+
   return vesKiwiDataConversionTools::Convert(triangleFilter->GetOutput());
 }
 
