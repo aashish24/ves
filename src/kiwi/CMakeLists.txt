@@ -53,7 +53,9 @@ set(deps
   vtkIOPLY
   vtkFiltersCore
   vtkFiltersSources
-  vtkImagingCore)
+  vtkFiltersGeometry
+  vtkImagingCore
+  )
 
 # Configure version file
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/vesKiwiVersion.h.in

@@ -41,7 +41,12 @@ public:
 
 protected:
 
+  /// Update the given algorithm and return the output dataset.  If the output
+  /// dataset is not vtkPolyData or vtkImageData then this method will apply
+  /// a surface filter and return the result of the surface filter instead.
   vtkSmartPointer<vtkDataSet> datasetFromAlgorithm(vtkAlgorithm* algorithm);
+
+
   bool updateAlgorithmOrSetErrorString(vtkAlgorithm* algorithm);
   bool hasEnding(const std::string& fullString, const std::string& ending) const;
   void setMaximumNumberOfPointsErrorMessage();

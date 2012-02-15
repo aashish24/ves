@@ -21,6 +21,7 @@ find_package(PythonInterp REQUIRED)
 set(module_defaults
   -DModule_vtkFiltersCore:BOOL=ON
   -DModule_vtkFiltersSources:BOOL=ON
+  -DModule_vtkFiltersGeometry:BOOL=ON
   -DModule_vtkIOGeometry:BOOL=ON
   -DModule_vtkIOXML:BOOL=ON
   -DModule_vtkIOImage:BOOL=ON

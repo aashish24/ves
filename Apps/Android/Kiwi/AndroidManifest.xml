@@ -53,6 +53,12 @@
               <data android:pathPattern=".*\\..*\\..*\\..*\\.vtp" />
               <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.vtp" />
 
+              <data android:pathPattern=".*\\.vtu" />
+              <data android:pathPattern=".*\\..*\\.vtu" />
+              <data android:pathPattern=".*\\..*\\..*\\.vtu" />
+              <data android:pathPattern=".*\\..*\\..*\\..*\\.vtu" />
+              <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.vtu" />
+
               <data android:pathPattern=".*\\.vti" />
               <data android:pathPattern=".*\\..*\\.vti" />
               <data android:pathPattern=".*\\..*\\..*\\.vti" />
@@ -126,6 +132,12 @@
               <data android:pathPattern=".*\\..*\\..*\\.vtp" />
               <data android:pathPattern=".*\\..*\\..*\\..*\\.vtp" />
               <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.vtp" />
+
+              <data android:pathPattern=".*\\.vtu" />
+              <data android:pathPattern=".*\\..*\\.vtu" />
+              <data android:pathPattern=".*\\..*\\..*\\.vtu" />
+              <data android:pathPattern=".*\\..*\\..*\\..*\\.vtu" />
+              <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.vtu" />
 
               <data android:pathPattern=".*\\.vti" />
               <data android:pathPattern=".*\\..*\\.vti" />
