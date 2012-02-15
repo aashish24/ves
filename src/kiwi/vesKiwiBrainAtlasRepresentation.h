@@ -25,6 +25,7 @@
 #include "vesKiwiWidgetRepresentation.h"
 
 class vesShaderProgram;
+class vtkPlane;
 
 class vesKiwiBrainAtlasRepresentation : public vesKiwiWidgetRepresentation
 {
@@ -39,6 +40,8 @@ public:
                             vesSharedPtr<vesShaderProgram> clipShader);
 
   void loadData(const std::string& filename);
+
+  void setClipPlane(vtkPlane* plane);
 
   virtual void addSelfToRenderer(vesSharedPtr<vesRenderer> renderer);
   virtual void removeSelfFromRenderer(vesSharedPtr<vesRenderer> renderer);

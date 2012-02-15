@@ -27,6 +27,7 @@
 #include "vesKiwiDataLoader.h"
 #include "vesKiwiText2DRepresentation.h"
 #include "vesKiwiPolyDataRepresentation.h"
+#include "vesEigen.h"
 
 #include <vtkNew.h>
 #include <vtkBoundingBox.h>
@@ -55,6 +56,7 @@ public:
     this->TextVisible = false;
     this->ActiveModel = -1;
     this->SkinRepIndex = -1;
+    this->SkullRepIndex = -1;
     this->SkinOpacity = 1.0;
   }
 
@@ -73,6 +75,7 @@ public:
   bool TextVisible;
   int ActiveModel;
   int SkinRepIndex;
+  int SkullRepIndex;
   double SkinOpacity;
   vesKiwiPolyDataRepresentation::Ptr SkinRep;
   std::vector<bool> ModelStatus;
@@ -83,6 +86,8 @@ public:
   std::vector<vesVector3f> Colors;
   std::vector<vesVector3f> AnnotationAnchors;
   std::vector<double> AnchorOffsets;
+
+  vtkSmartPointer<vtkPlane> Plane;
 };
 
 //----------------------------------------------------------------------------
@@ -193,27 +198,26 @@ void vesKiwiBrainAtlasRepresentation::loadData(const std::string& filename)
       this->Internal->SkinRep = rep;
       rep->setBinNumber(5);
     }
-
+    else if (anatomicalName == "skull_bone") {
+      this->Internal->SkullRepIndex = this->Internal->AnatomicalModels.size() - 1;
+    }
   }
 }
 
 //----------------------------------------------------------------------------
 namespace {
 
-double PickDataSet(vtkCellLocator* locator, const vesVector3f& rayPoint0, const vesVector3f& rayPoint1)
+double PickDataSet(vtkCellLocator* locator, vesVector3d& rayPoint0, vesVector3d& rayPoint1)
 {
-  double p0[3] = {rayPoint0[0], rayPoint0[1], rayPoint0[2]};
-  double p1[3] = {rayPoint1[0], rayPoint1[1], rayPoint1[2]};
-
   double pickPoint[3];
   double t;
   double paramCoords[3];
   vtkIdType cellId = -1;
   int subId;
 
-  int result = locator->IntersectWithLine(p0, p1, 0.0, t, pickPoint, paramCoords, subId);//, cellId);
+  int result = locator->IntersectWithLine(rayPoint0.data(), rayPoint1.data(), 0.0, t, pickPoint, paramCoords, subId);
   if (result == 1) {
-      return t;
+      return t*vesVector3d(rayPoint1 - rayPoint0).norm();
   }
 
   return -1;
@@ -260,24 +264,52 @@ bool vesKiwiBrainAtlasRepresentation::handleDoubleTap(int displayX, int displayY
 }
 
 //----------------------------------------------------------------------------
+void vesKiwiBrainAtlasRepresentation::setClipPlane(vtkPlane* plane)
+{
+  this->Internal->Plane = plane;
+}
+
+//----------------------------------------------------------------------------
 int vesKiwiBrainAtlasRepresentation::findTappedModel(int displayX, int displayY)
 {
 
   vesSharedPtr<vesRenderer> ren = this->renderer();
   displayY = ren->height() - displayY;
 
-  vesVector3f rayPoint0 = ren->computeDisplayToWorld(vesVector3f(displayX, displayY, /*focalDepth=*/0.0));
-  vesVector3f rayPoint1 = ren->computeDisplayToWorld(vesVector3f(displayX, displayY, /*focalDepth=*/1.0));
+  vesVector3d rayPoint0 = ren->computeDisplayToWorld(vesVector3f(displayX, displayY, /*focalDepth=*/0.0)).cast<double>();
+  vesVector3d rayPoint1 = ren->computeDisplayToWorld(vesVector3f(displayX, displayY, /*focalDepth=*/1.0)).cast<double>();
 
   int tappedModel = -1;
   double minDist = -1;
 
+  double extraDist = 0;
   for (size_t i = 0; i < this->Internal->Locators.size(); ++i) {
 
     if (!this->Internal->ModelStatus[i])
       continue;
 
-    double dist = PickDataSet(this->Internal->Locators[i], rayPoint0, rayPoint1);
+    vesVector3d pickRayPoint0 = rayPoint0;
+    extraDist = 0.0;
+
+    if (i == this->Internal->SkullRepIndex || i == this->Internal->SkinRepIndex) {
+
+      // set rayPoint0 to intersection of ray with plane so that the ray
+      // only intersects with the non-clipped portion of these models
+      if (this->Internal->Plane && this->Internal->Plane->EvaluateFunction (rayPoint0.data()) > 0) {
+        double t;
+        vesVector3d planeIntersection;
+        this->Internal->Plane->IntersectWithLine(rayPoint0.data(), rayPoint1.data(), t, planeIntersection.data());
+        pickRayPoint0 = planeIntersection;
+        vesVector3d rayToPlane = pickRayPoint0 - rayPoint0;
+        extraDist = rayToPlane.norm();
+      }
+    }
+
+    double dist = PickDataSet(this->Internal->Locators[i], pickRayPoint0, rayPoint1);
+
+    if (dist >= 0)
+      dist += extraDist;
+
     if (dist >= 0 && (minDist == -1 || dist < minDist)) {
       tappedModel = i;
       minDist = dist;

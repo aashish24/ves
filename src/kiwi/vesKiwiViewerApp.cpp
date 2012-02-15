@@ -612,14 +612,10 @@ bool vesKiwiViewerApp::loadBrainAtlas(const std::string& filename)
   rep->addSelfToRenderer(this->renderer());
   this->Internal->DataRepresentations.push_back(rep);
 
-  //std::string dataDir = vtksys::SystemTools::GetFilenamePath(filename);
-  //vtkSmartPointer<vtkDataSet> imageData = this->Internal->DataLoader.loadDataset(dataDir + "/brain_atlas_mri.mha");
-  //if (imageData) {
-  //  this->addRepresentationsForDataSet(imageData);
-  //}
+  vesKiwiPlaneWidget* planeWidget = this->addPlaneWidget();
+  rep->setClipPlane(planeWidget->plane());
 
-  this->addPlaneWidget();
-  this->setBackgroundColor(0.0, 0.0, 0.0);
+  this->setBackgroundColor(0., 0., 0.);
   return true;
 }
 
