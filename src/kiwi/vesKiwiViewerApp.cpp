@@ -67,6 +67,7 @@ public:
 
   vesInternal()
   {
+    this->IsAnimating = false;
   }
 
   ~vesInternal()
@@ -109,6 +110,7 @@ public:
   bool setShaderProgramOnRepresentations(
     vesSharedPtr<vesShaderProgram> shaderProgram);
 
+  bool IsAnimating;
   vesSharedPtr<vesShaderProgram> ShaderProgram;
   vesSharedPtr<vesShaderProgram> TextureShader;
   vesSharedPtr<vesShaderProgram> GouraudTextureShader;
@@ -157,7 +159,7 @@ bool vesKiwiViewerApp::vesInternal::setShaderProgramOnRepresentations(
 vesKiwiViewerApp::vesKiwiViewerApp()
 {
   this->Internal = new vesInternal();
-  this->setDefaultBackgroundColor();
+  this->resetScene();
 
   this->addBuiltinDataset("Utah Teapot", "teapot.vtp");
   this->addBuiltinDataset("Stanford Bunny", "bunny.vtp");
@@ -285,6 +287,18 @@ void vesKiwiViewerApp::addBuiltinShadingModel(
 
   this->Internal->BuiltinShadingModels.push_back(
     vesInternal::vesShaderProgramData(name, shaderProgram));
+}
+
+//----------------------------------------------------------------------------
+bool vesKiwiViewerApp::isAnimating() const
+{
+  return this->Internal->IsAnimating;
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiViewerApp::setAnimating(bool animating)
+{
+  this->Internal->IsAnimating = animating;
 }
 
 //----------------------------------------------------------------------------
@@ -539,6 +553,14 @@ bool vesKiwiViewerApp::initClipShader(const std::string& vertexSource, const std
 }
 
 //----------------------------------------------------------------------------
+void vesKiwiViewerApp::resetScene()
+{
+  this->removeAllDataRepresentations();
+  this->setDefaultBackgroundColor();
+  this->setAnimating(false);
+}
+
+//----------------------------------------------------------------------------
 void vesKiwiViewerApp::removeAllDataRepresentations()
 {
   for (size_t i = 0; i < this->Internal->DataRepresentations.size(); ++i) {
@@ -659,6 +681,7 @@ bool vesKiwiViewerApp::loadCanSimulation(const std::string& filename)
   rep->loadData(filename);
   rep->addSelfToRenderer(this->renderer());
   this->Internal->DataRepresentations.push_back(rep);
+  this->setAnimating(true);
   return true;
 }
 
@@ -679,8 +702,7 @@ bool vesKiwiViewerApp::loadDatasetWithCustomBehavior(const std::string& filename
 //----------------------------------------------------------------------------
 bool vesKiwiViewerApp::loadDataset(const std::string& filename)
 {
-  this->removeAllDataRepresentations();
-  this->setDefaultBackgroundColor();
+  this->resetScene();
 
   // this is a hook that can be used to load certain datasets using custom logic
   if (this->loadDatasetWithCustomBehavior(filename)) {

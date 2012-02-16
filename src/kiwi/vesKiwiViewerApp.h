@@ -75,6 +75,7 @@ public:
   bool initGouraudTextureShader(const std::string& vertexSource, const std::string& fragmentSource);
   bool initClipShader(const std::string& vertexSource, const std::string& fragmentSource);
 
+  bool isAnimating() const;
   void setBackgroundTexture(const std::string& filename);
 
   virtual void handleSingleTouchPanGesture(double deltaX, double deltaY);
@@ -110,6 +111,10 @@ protected:
 
   void removeAllDataRepresentations();
   void addRepresentationsForDataSet(vtkDataSet* dataSet);
+
+  void setAnimating(bool animating);
+
+  void resetScene();
 
   vesKiwiPolyDataRepresentation* addPolyDataRepresentation(
     vtkPolyData* polyData, vesSharedPtr<vesShaderProgram> program);
