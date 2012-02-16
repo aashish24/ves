@@ -124,6 +124,10 @@ protected:
   bool loadCanSimulation(const std::string& filename);
   void setDefaultBackgroundColor();
 
+  void setErrorMessage(const std::string& errorTitle, const std::string& errorMessage);
+  void resetErrorMessage();
+  void handleLoadDatasetError();
+
 private:
 
   vesKiwiViewerApp(const vesKiwiViewerApp&); // Not implemented

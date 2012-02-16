@@ -111,6 +111,9 @@ public:
     vesSharedPtr<vesShaderProgram> shaderProgram);
 
   bool IsAnimating;
+  std::string ErrorTitle;
+  std::string ErrorMessage;
+
   vesSharedPtr<vesShaderProgram> ShaderProgram;
   vesSharedPtr<vesShaderProgram> TextureShader;
   vesSharedPtr<vesShaderProgram> GouraudTextureShader;
@@ -555,6 +558,7 @@ bool vesKiwiViewerApp::initClipShader(const std::string& vertexSource, const std
 //----------------------------------------------------------------------------
 void vesKiwiViewerApp::resetScene()
 {
+  this->resetErrorMessage();
   this->removeAllDataRepresentations();
   this->setDefaultBackgroundColor();
   this->setAnimating(false);
@@ -708,9 +712,13 @@ bool vesKiwiViewerApp::loadDataset(const std::string& filename)
   if (this->loadDatasetWithCustomBehavior(filename)) {
     return true;
   }
+  else if (!this->Internal->ErrorMessage.empty()) {
+    return false;
+  }
 
   vtkSmartPointer<vtkDataSet> dataSet = this->Internal->DataLoader.loadDataset(filename);
   if (!dataSet) {
+    this->handleLoadDatasetError();
     return false;
   }
 
@@ -719,15 +727,38 @@ bool vesKiwiViewerApp::loadDataset(const std::string& filename)
 }
 
 //----------------------------------------------------------------------------
+void vesKiwiViewerApp::setErrorMessage(const std::string& errorTitle, const std::string& errorMessage)
+{
+  if (this->Internal->ErrorMessage.empty()) {
+    this->Internal->ErrorTitle = errorTitle;
+    this->Internal->ErrorMessage = errorMessage;
+  }
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiViewerApp::resetErrorMessage()
+{
+  this->Internal->ErrorTitle.clear();
+  this->Internal->ErrorMessage.clear();
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiViewerApp::handleLoadDatasetError()
+{
+  this->setErrorMessage(this->Internal->DataLoader.errorTitle(),
+                        this->Internal->DataLoader.errorMessage());
+}
+
+//----------------------------------------------------------------------------
 std::string vesKiwiViewerApp::loadDatasetErrorTitle() const
 {
-  return this->Internal->DataLoader.errorTitle();
+  return this->Internal->ErrorTitle;
 }
 
 //----------------------------------------------------------------------------
 std::string vesKiwiViewerApp::loadDatasetErrorMessage() const
 {
-  return this->Internal->DataLoader.errorMessage();
+  return this->Internal->ErrorMessage;
 }
 
 //----------------------------------------------------------------------------
