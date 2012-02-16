@@ -89,6 +89,23 @@ public:
     vesSharedPtr<vesShaderProgram> ShaderProgram;
   };
 
+  struct vesCameraParameters
+  {
+    vesCameraParameters()
+    {
+      this->setParameters(vesVector3f(0.0, 0.0, -1.0), vesVector3f(0.0, 1.0, 0.0));
+    }
+
+    void setParameters(const vesVector3f& viewDirection, const vesVector3f& viewUp)
+    {
+      this->ViewDirection = viewDirection;
+      this->ViewUp = viewUp;
+    }
+
+    vesVector3f ViewDirection;
+    vesVector3f ViewUp;
+  };
+
   bool setShaderProgramOnRepresentations(
     vesSharedPtr<vesShaderProgram> shaderProgram);
 
@@ -104,6 +121,7 @@ public:
 
   std::vector<std::string> BuiltinDatasetNames;
   std::vector<std::string> BuiltinDatasetFilenames;
+  std::vector<vesCameraParameters> BuiltinDatasetCameraParameters;
 
   std::string CurrentShadingModel;
   std::vector<vesShaderProgramData> BuiltinShadingModels;
@@ -144,14 +162,22 @@ vesKiwiViewerApp::vesKiwiViewerApp()
   this->addBuiltinDataset("Utah Teapot", "teapot.vtp");
   this->addBuiltinDataset("Stanford Bunny", "bunny.vtp");
   this->addBuiltinDataset("NLM Visible Woman Hand", "visible-woman-hand.vtp");
-  this->addBuiltinDataset("NAMIC Knee Atlas", "AppendedKneeData.vtp");
+  this->addBuiltinDataset("NA-MIC Knee Atlas", "AppendedKneeData.vtp");
+
+  this->addBuiltinDataset("ROS C Turtle", "cturtle.vtp");
+  this->Internal->BuiltinDatasetCameraParameters.back().setParameters(
+    vesVector3f(0.,0.,1.), vesVector3f(0.,-1.,0.));
+
   this->addBuiltinDataset("Mount St. Helens", "MountStHelen.vtp");
   this->addBuiltinDataset("Space Shuttle", "shuttle.vtp");
   this->addBuiltinDataset("Buckyball", "Buckyball.vtp");
   this->addBuiltinDataset("Caffeine", "caffeine.pdb");
-  this->addBuiltinDataset("Head", "head.vti");
+
+  this->addBuiltinDataset("Head CT Image", "head.vti");
+  this->Internal->BuiltinDatasetCameraParameters.back().setParameters(
+    vesVector3f(1.,0.,0.), vesVector3f(0.,0.,-1.));
+
   this->addBuiltinDataset("KiwiViewer Logo", "kiwi.png");
-  this->addBuiltinDataset("ROS C Turtle", "cturtle.vtp");
 
   // These depend on external data, so are commented out for now.
   //this->addBuiltinDataset("SPL-PNL Brain Atlas", "model_info.txt");
@@ -229,6 +255,14 @@ void vesKiwiViewerApp::addBuiltinDataset(const std::string& name, const std::str
 {
   this->Internal->BuiltinDatasetNames.push_back(name);
   this->Internal->BuiltinDatasetFilenames.push_back(filename);
+  this->Internal->BuiltinDatasetCameraParameters.push_back(vesInternal::vesCameraParameters());
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiViewerApp::applyBuiltinDatasetCameraParameters(int index)
+{
+  this->resetView(this->Internal->BuiltinDatasetCameraParameters[index].ViewDirection,
+                  this->Internal->BuiltinDatasetCameraParameters[index].ViewUp);
 }
 
 //----------------------------------------------------------------------------

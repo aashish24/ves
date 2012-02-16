@@ -92,6 +92,8 @@ public:
 
   void checkForAdditionalData(const std::string& dirname);
 
+  void applyBuiltinDatasetCameraParameters(int index);
+
   const vesSharedPtr<vesShaderProgram> shaderProgram() const;
   vesSharedPtr<vesShaderProgram> shaderProgram();
 

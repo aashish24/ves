@@ -98,13 +98,7 @@ void LoadData(int index)
   std::string dataRoot = testHelper->sourceDirectory() + "/Apps/iOS/Kiwi/Kiwi/Data/";
   std::string filename = dataRoot + testHelper->app()->builtinDatasetFilename(index);
   testHelper->app()->loadDataset(filename);
-  testHelper->app()->resetView();
-}
-
-//----------------------------------------------------------------------------
-void LoadDefaultData()
-{
-  LoadData(testHelper->app()->defaultBuiltinDatasetIndex());
+  testHelper->app()->applyBuiltinDatasetCameraParameters(index);
 }
 
 //----------------------------------------------------------------------------
@@ -567,11 +561,12 @@ main(int argc, char *argv[])
 
 
   InitRendering();
-  LoadDefaultData();
+
+  LoadData(testHelper->app()->defaultBuiltinDatasetIndex());
 
   // render once
   testHelper->app()->resizeView(winWidth, winHeight);
-  testHelper->app()->resetView();
+  testHelper->app()->applyBuiltinDatasetCameraParameters(testHelper->app()->defaultBuiltinDatasetIndex());
   testHelper->app()->render();
   eglSwapBuffers(egl_dpy, egl_surf);
 
