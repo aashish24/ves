@@ -100,6 +100,12 @@ void vesKiwiBaseApp::resizeView(int width, int height)
 //----------------------------------------------------------------------------
 void vesKiwiBaseApp::resetView()
 {
+  this->resetView(vesVector3f(0.0, 0.0, -1.0), vesVector3f(0.0, 1.0, 0.0));
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiBaseApp::resetView(const vesVector3f& viewDirection, const vesVector3f& viewUp)
+{
   // this is just confusing...
   // We want to set the direction to look from and view up
   // then we want to dolly the camera so that the surface takes up
@@ -111,7 +117,7 @@ void vesKiwiBaseApp::resetView()
   // set direction to look from
   vesSharedPtr<vesRenderer> renderer = this->Internal->Renderer;
 
-  renderer->camera()->setViewPlaneNormal(vesVector3f(0.0, 0.0, 1.0));
+  renderer->camera()->setViewPlaneNormal(-viewDirection);
 
   // dolly so that scene fits window
   renderer->resetCamera();
@@ -122,7 +128,7 @@ void vesKiwiBaseApp::resetView()
   renderer->camera()->dolly(1.5);
 
   // now set the view plane normal
-  renderer->camera()->setViewUp(vesVector3f(0.0, 1.0, 0.0));
+  renderer->camera()->setViewUp(viewUp);
   renderer->camera()->orthogonalizeViewUp();
 }
 
