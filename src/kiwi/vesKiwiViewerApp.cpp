@@ -19,6 +19,7 @@
  ========================================================================*/
 
 #include "vesKiwiViewerApp.h"
+#include "vesKiwiDataConversionTools.h"
 #include "vesKiwiDataLoader.h"
 #include "vesKiwiDataRepresentation.h"
 #include "vesKiwiImagePlaneDataRepresentation.h"
@@ -48,7 +49,7 @@
 #include <vtkNew.h>
 #include <vtkPolyData.h>
 #include <vtkImageData.h>
-#include <vtkCellLocator.h>
+#include <vtkPointData.h>
 
 
 #include <vtksys/SystemTools.hxx>
@@ -175,6 +176,12 @@ vesKiwiViewerApp::vesKiwiViewerApp()
 
   this->addBuiltinDataset("Mount St. Helens", "MountStHelen.vtp");
   this->addBuiltinDataset("Space Shuttle", "shuttle.vtp");
+
+  //http://visibleearth.nasa.gov/view.php?id=57730
+  this->addBuiltinDataset("NASA Blue Marble", "textured_sphere.vtp");
+  this->Internal->BuiltinDatasetCameraParameters.back().setParameters(
+    vesVector3f(1.,0.,0.), vesVector3f(0.,0.,1.));
+
   this->addBuiltinDataset("Buckyball", "Buckyball.vtp");
   this->addBuiltinDataset("Caffeine", "caffeine.pdb");
 
@@ -690,6 +697,36 @@ bool vesKiwiViewerApp::loadCanSimulation(const std::string& filename)
 }
 
 //----------------------------------------------------------------------------
+bool vesKiwiViewerApp::loadBlueMarble(const std::string& filename)
+{
+  vtkSmartPointer<vtkPolyData> polyData = vtkPolyData::SafeDownCast(this->Internal->DataLoader.loadDataset(filename));
+  if (!polyData) {
+    this->handleLoadDatasetError();
+    return false;
+  }
+
+  std::string textureFilename = vtksys::SystemTools::GetFilenamePath(filename) + "/earth.jpg";
+  vtkSmartPointer<vtkImageData> image = vtkImageData::SafeDownCast(this->Internal->DataLoader.loadDataset(textureFilename));
+
+  if (!image) {
+    this->handleLoadDatasetError();
+    return false;
+  }
+
+  vesKiwiPolyDataRepresentation* rep = this->addPolyDataRepresentation(polyData, this->Internal->GouraudTextureShader);
+  vtkSmartPointer<vtkUnsignedCharArray> pixels = vtkUnsignedCharArray::SafeDownCast(image->GetPointData()->GetScalars());
+
+  int width = image->GetDimensions()[0];
+  int height = image->GetDimensions()[1];
+
+  vesTexture::Ptr texture = vesTexture::Ptr(new vesTexture());
+  vesKiwiDataConversionTools::SetTextureData(pixels, texture, width, height);
+  rep->setTexture(texture);
+
+  return true;
+}
+
+//----------------------------------------------------------------------------
 bool vesKiwiViewerApp::loadDatasetWithCustomBehavior(const std::string& filename)
 {
   // These demos are currently disabled because they depend on external data 
@@ -699,6 +736,9 @@ bool vesKiwiViewerApp::loadDatasetWithCustomBehavior(const std::string& filename
   //else if (vtksys::SystemTools::GetFilenameName(filename) == "can0000.vtp") {
   //  return loadCanSimulation(filename);
   //}
+  if (vtksys::SystemTools::GetFilenameName(filename) == "textured_sphere.vtp") {
+    return loadBlueMarble(filename);
+  }
 
   return false;
 }

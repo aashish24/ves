@@ -12,6 +12,8 @@ set(assets
   ${kiwi_data}/head.vti
   ${kiwi_data}/kiwi.png
   ${kiwi_data}/cturtle.vtp
+  ${kiwi_data}/textured_sphere.vtp
+  ${kiwi_data}/earth.jpg
   )
 
 foreach(f ${assets})

@@ -225,6 +225,11 @@ public class KiwiViewerActivity extends Activity {
     private class AssetCopier extends AsyncTask<String, Integer, String> {
 
       protected String doInBackground(String... filename) {
+
+        if (filename[0].equals("textured_sphere.vtp")) {
+          copyEarthAssets();
+        }
+
         return copyAssetFileToStorage(filename[0]);
       }
 
@@ -289,4 +294,10 @@ public class KiwiViewerActivity extends Activity {
 
       super.onActivityResult(requestCode, resultCode, data);
     }
+
+
+  protected void copyEarthAssets() {
+    copyAssetFileToStorage("earth.jpg");
+  }
+
 }
