@@ -50,6 +50,11 @@ struct vesVertexDataC3f
   vesVector3f m_color;
 };
 
+struct vesVertexDataC4f
+{
+  vesVector4f m_color;
+};
+
 struct vesVertexDataT2f
 {
   vesVector2f m_textureCoordinate;
@@ -449,6 +454,25 @@ public:
     this->setAttributeOffset(vesVertexAttributeKeys::Color, 0);
     this->setAttributeStride(vesVertexAttributeKeys::Color, stride);
     this->setNumberOfComponents(vesVertexAttributeKeys::Color, 3);
+    this->setSizeOfAttributeDataType(vesVertexAttributeKeys::Color, sizeof(float));
+    this->setIsAttributeNormalized(vesVertexAttributeKeys::Color, false);
+  }
+};
+
+class vesSourceDataC4f : public vesGenericSourceData<vesVertexDataC4f>
+{
+public:
+  vesTypeMacro(vesSourceDataC4f);
+
+  vesSourceDataC4f() : vesGenericSourceData<vesVertexDataC4f>()
+  {
+    const int totalNumberOfFloats = 4;
+    const int stride = sizeof(float) * totalNumberOfFloats;
+
+    this->setAttributeDataType(vesVertexAttributeKeys::Color, vesDataType::Float);
+    this->setAttributeOffset(vesVertexAttributeKeys::Color, 0);
+    this->setAttributeStride(vesVertexAttributeKeys::Color, stride);
+    this->setNumberOfComponents(vesVertexAttributeKeys::Color, 4);
     this->setSizeOfAttributeDataType(vesVertexAttributeKeys::Color, sizeof(float));
     this->setIsAttributeNormalized(vesVertexAttributeKeys::Color, false);
   }
