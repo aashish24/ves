@@ -60,6 +60,13 @@ public:
   /// \see vesCamera::resetCamera()
   virtual void resetView();
 
+  /// Reset the camera to a default position using the given view direction
+  /// and view up vector. The camera focal point is set to the center of
+  /// the bounds of all visible objects in the renderer and the camera is
+  /// dollied away from the focal point so that all objects are visible in the view.
+  /// \see vesCamera::resetCamera()
+  virtual void resetView(const vesVector3f& viewDirection, const vesVector3f& viewUp);
+
   /// Resizes the renderer to the given width and height.
   virtual void resizeView(int width, int height);
 
@@ -90,8 +97,14 @@ public:
   /// Handle a single touch up event.  The default implementation is a no-op.
   virtual void handleSingleTouchUp();
 
+  /// Handle a single touch tap event.  The default implementation is a no-op.
+  virtual void handleSingleTouchTap(int displayX, int displayY);
+
   /// Handle a double tap event.  The default implementation is a no-op.
-  virtual void handleDoubleTap();
+  virtual void handleDoubleTap(int displayX, int displayY);
+
+  /// Handle a long press event.  The default implementation is a no-op.
+  virtual void handleLongPress(int displayX, int displayY);
 
   /// Set the background color of the renderer.
   void setBackgroundColor(double r, double g, double b);

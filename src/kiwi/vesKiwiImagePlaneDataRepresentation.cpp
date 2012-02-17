@@ -121,15 +121,6 @@ void vesKiwiImagePlaneDataRepresentation::setShaderProgram(
 }
 
 //----------------------------------------------------------------------------
-vesSharedPtr<vesTexture>
-vesKiwiImagePlaneDataRepresentation::newTextureFromImage(vtkImageData* image)
-{
-  vesSharedPtr<vesTexture> texture (new vesTexture());
-  this->setTextureFromImage(texture, image);
-  return texture;
-}
-
-//----------------------------------------------------------------------------
 void vesKiwiImagePlaneDataRepresentation::setTextureFromImage(
   vesSharedPtr<vesTexture> texture, vtkImageData* image)
 {

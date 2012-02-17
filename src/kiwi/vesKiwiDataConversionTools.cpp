@@ -82,7 +82,6 @@ vtkDataArray* vesKiwiDataConversionTools::FindTextureCoordinatesArray(vtkDataSet
 //----------------------------------------------------------------------------
 vtkSmartPointer<vtkDiscretizableColorTransferFunction> vesKiwiDataConversionTools::GetBlackBodyRadiationColorMap(double scalarRange[2])
 {
-  //double range[2] = {-500, 6000};
   double length = scalarRange[1] - scalarRange[0];
   double points[4] = {0.0, 0.4, 0.75, 1.0};
 
@@ -218,13 +217,14 @@ void vesKiwiDataConversionTools::SetTextureData(vtkUnsignedCharArray* pixels,
 {
   assert(texture);
   assert(pixels);
-  assert(pixels->GetNumberOfComponents() == 4);
   assert(pixels->GetNumberOfTuples() == width*height);
 
   vesImage::Ptr image (new vesImage());
   image->setWidth(width);
   image->setHeight(height);
-  image->setPixelFormat(vesColorDataType::RGBA);
+  image->setPixelFormat(  pixels->GetNumberOfComponents() == 4 ? vesColorDataType::RGBA
+                        : pixels->GetNumberOfComponents() == 3 ? vesColorDataType::RGB
+                        : vesColorDataType::Luminance);
   image->setPixelDataType(vesColorDataType::UnsignedByte);
   image->setData(pixels->WriteVoidPointer(0, 0), pixels->GetSize());
 

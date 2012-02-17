@@ -58,8 +58,6 @@ public:
 
 protected:
 
-
-  vesSharedPtr<vesTexture> newTextureFromImage(vtkImageData* image);
   void setTextureFromImage(vesSharedPtr<vesTexture> texture, vtkImageData* image);
 
 private:

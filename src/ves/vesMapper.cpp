@@ -79,9 +79,7 @@ vesMapper::vesMapper() : vesBoundingObject(),
   m_internal   (0x0)
 {
   this->m_internal = new vesInternal();
-
-  // Default is almost white.
-  this->setColor(0.9, 0.9, 0.9, 1.0);
+  this->setColor(1.0, 1.0, 1.0, 1.0);
 }
 
 

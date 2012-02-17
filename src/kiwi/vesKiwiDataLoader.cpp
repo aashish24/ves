@@ -23,6 +23,7 @@
 #include <vtkSmartPointer.h>
 #include <vtkXMLPolyDataReader.h>
 #include <vtkXMLImageDataReader.h>
+#include <vtkXMLUnstructuredGridReader.h>
 #include <vtkPNGReader.h>
 #include <vtkJPEGReader.h>
 #include <vtkPolyDataReader.h>
@@ -30,14 +31,19 @@
 #include <vtkSTLReader.h>
 #include <vtkErrorCode.h>
 #include <vtkNew.h>
+#include <vtkDataSetReader.h>
 #include <vtkPolyData.h>
+#include <vtkImageData.h>
 #include <vtkBYUReader.h>
 #include <vtkPLYReader.h>
 #include <vtkSphereSource.h>
 #include <vtkPDBReader.h>
 #include <vtkGlyph3D.h>
 #include <vtkAppendPolyData.h>
+#include <vtkDataSetSurfaceFilter.h>
 #include <vtkMetaImageReader.h>
+
+#include <vtksys/SystemTools.hxx>
 
 #include <cassert>
 
@@ -111,6 +117,14 @@ vtkSmartPointer<vtkDataSet> vesKiwiDataLoader::datasetFromAlgorithm(vtkAlgorithm
   vtkDataSet* dataset = vtkDataSet::SafeDownCast(algorithm->GetOutputDataObject(0));
   assert(dataset);
 
+  // If the dataset is not vtkPolyData or vtkImageData
+  // then use the surface filter to convert it to vtkPolyData
+  if (!vtkPolyData::SafeDownCast(dataset) && !vtkImageData::SafeDownCast(dataset)) {
+    vtkSmartPointer<vtkDataSetSurfaceFilter> surfaceFilter = vtkSmartPointer<vtkDataSetSurfaceFilter>::New();
+    surfaceFilter->SetInputConnection(algorithm->GetOutputPort());
+    return datasetFromAlgorithm(surfaceFilter);
+  }
+
   // VES cannot handle too many points (if the dataset has non-vertex cells),
   // so handle the error at this point
   const vtkIdType maximumNumberOfPoints = 65536;
@@ -123,6 +137,13 @@ vtkSmartPointer<vtkDataSet> vesKiwiDataLoader::datasetFromAlgorithm(vtkAlgorithm
     return 0;
     }
 
+  if (!dataset->GetNumberOfPoints())
+    {
+    this->Internal->ErrorTitle = "Empty Data";
+    this->Internal->ErrorMessage = "Failed to load any data from file.";
+    return 0;
+    }
+
   return dataset;
 }
 
@@ -132,9 +153,16 @@ vtkSmartPointer<vtkDataSet> vesKiwiDataLoader::loadDataset(const std::string& fi
   this->Internal->ErrorTitle = std::string();
   this->Internal->ErrorMessage = std::string();
 
+  if (!vtksys::SystemTools::FileExists(filename.c_str(), true))
+    {
+    this->Internal->ErrorTitle = "File Not Found";
+    this->Internal->ErrorMessage = "The file does not exist: " + filename;
+    return 0;
+    }
+
   if (this->hasEnding(filename, "vtk"))
     {
-    vtkSmartPointer<vtkPolyDataReader> reader = vtkSmartPointer<vtkPolyDataReader>::New();
+    vtkSmartPointer<vtkDataSetReader> reader = vtkSmartPointer<vtkDataSetReader>::New();
     reader->SetFileName(filename.c_str());
     return this->datasetFromAlgorithm(reader);
     }
@@ -198,6 +226,12 @@ vtkSmartPointer<vtkDataSet> vesKiwiDataLoader::loadDataset(const std::string& fi
   else if (this->hasEnding(filename, "vti"))
     {
     vtkSmartPointer<vtkXMLImageDataReader> reader = vtkSmartPointer<vtkXMLImageDataReader>::New();
+    reader->SetFileName(filename.c_str());
+    return datasetFromAlgorithm(reader);
+    }
+  else if (this->hasEnding(filename, "vtu"))
+    {
+    vtkSmartPointer<vtkXMLUnstructuredGridReader> reader = vtkSmartPointer<vtkXMLUnstructuredGridReader>::New();
     reader->SetFileName(filename.c_str());
     return datasetFromAlgorithm(reader);
     }

@@ -27,6 +27,7 @@
 #include "vesKiwiDataLoader.h"
 #include "vesKiwiText2DRepresentation.h"
 #include "vesKiwiPolyDataRepresentation.h"
+#include "vesEigen.h"
 
 #include <vtkNew.h>
 #include <vtkBoundingBox.h>
@@ -54,6 +55,8 @@ public:
   {
     this->TextVisible = false;
     this->ActiveModel = -1;
+    this->SkinRepIndex = -1;
+    this->SkullRepIndex = -1;
     this->SkinOpacity = 1.0;
   }
 
@@ -67,19 +70,24 @@ public:
   vesSharedPtr<vesShaderProgram> TextureShader;
   vesSharedPtr<vesShaderProgram> ClipShader;
 
-  vesKiwiPolyDataRepresentation::Ptr SkinRep;
-  vesKiwiPolyDataRepresentation::Ptr SkullRep;
   vesKiwiText2DRepresentation::Ptr TextRep;
 
   bool TextVisible;
   int ActiveModel;
+  int SkinRepIndex;
+  int SkullRepIndex;
   double SkinOpacity;
+  vesKiwiPolyDataRepresentation::Ptr SkinRep;
+  std::vector<bool> ModelStatus;
+  std::vector<bool> ModelSceneStatus;
   std::vector<vtkSmartPointer<vtkCellLocator> > Locators;
   std::vector<std::string> AnatomicalNames;
   std::vector<vesKiwiPolyDataRepresentation::Ptr> AnatomicalModels;
   std::vector<vesVector3f> Colors;
   std::vector<vesVector3f> AnnotationAnchors;
   std::vector<double> AnchorOffsets;
+
+  vtkSmartPointer<vtkPlane> Plane;
 };
 
 //----------------------------------------------------------------------------
@@ -150,12 +158,9 @@ void vesKiwiBrainAtlasRepresentation::loadData(const std::string& filename)
 
     double opacity = 1.0;
     int binNumber = 2;
+
     if (anatomicalName == "Skin" || anatomicalName == "skull_bone") {
       shader = this->Internal->ClipShader;
-    }
-    if (anatomicalName == "Skin" || anatomicalName == "skull_bone") {
-      opacity = this->Internal->SkinOpacity;
-      binNumber = 5;
     }
 
     vesKiwiPolyDataRepresentation::Ptr rep = vesKiwiPolyDataRepresentation::Ptr(new vesKiwiPolyDataRepresentation);
@@ -165,34 +170,36 @@ void vesKiwiBrainAtlasRepresentation::loadData(const std::string& filename)
     rep->setBinNumber(binNumber);
     this->Internal->AllReps.push_back(rep);
 
-    if (anatomicalName != "Skin" && anatomicalName != "skull_bone") {
+    vtkSmartPointer<vtkCellLocator> locator = vtkSmartPointer<vtkCellLocator>::New();
+    locator->SetDataSet(polyData);
+    locator->BuildLocator();
+    this->Internal->Locators.push_back(locator);
+    this->Internal->AnatomicalNames.push_back(anatomicalName);
+    this->Internal->AnatomicalModels.push_back(rep);
+    this->Internal->ModelStatus.push_back(true);
+    this->Internal->ModelSceneStatus.push_back(true);
+    this->Internal->Colors.push_back(vesVector3f(color[0], color[1], color[2]));
 
-      vtkSmartPointer<vtkCellLocator> locator = vtkSmartPointer<vtkCellLocator>::New();
-      locator->SetDataSet(polyData);
-      locator->BuildLocator();
-      this->Internal->Locators.push_back(locator);
-      this->Internal->AnatomicalNames.push_back(anatomicalName);
-      this->Internal->AnatomicalModels.push_back(rep);
-      this->Internal->Colors.push_back(vesVector3f(color[0], color[1], color[2]));
 
+    double center[3];
+    vesVector3f anchor;
+    vtkBoundingBox bounds;
+    bounds.SetBounds(polyData->GetBounds());
+    bounds.GetCenter(center);
+    anchor[0] = center[0];
+    anchor[1] = center[1];
+    anchor[2] = center[2];
+    double modelRadius = bounds.GetDiagonalLength() / 2.0;
+    this->Internal->AnnotationAnchors.push_back(anchor);
+    this->Internal->AnchorOffsets.push_back(modelRadius);
 
-      double center[3];
-      vesVector3f anchor;
-      vtkBoundingBox bounds;
-      bounds.SetBounds(polyData->GetBounds());
-      bounds.GetCenter(center);
-      anchor[0] = center[0];
-      anchor[1] = center[1];
-      anchor[2] = center[2];
-      double modelRadius = bounds.GetDiagonalLength() / 2.0;
-      this->Internal->AnnotationAnchors.push_back(anchor);
-      this->Internal->AnchorOffsets.push_back(modelRadius);
-    }
     if (anatomicalName == "Skin") {
+      this->Internal->SkinRepIndex = this->Internal->AnatomicalModels.size() - 1;
       this->Internal->SkinRep = rep;
+      rep->setBinNumber(5);
     }
     else if (anatomicalName == "skull_bone") {
-      this->Internal->SkullRep = rep;
+      this->Internal->SkullRepIndex = this->Internal->AnatomicalModels.size() - 1;
     }
   }
 }
@@ -200,20 +207,17 @@ void vesKiwiBrainAtlasRepresentation::loadData(const std::string& filename)
 //----------------------------------------------------------------------------
 namespace {
 
-double PickDataSet(vtkCellLocator* locator, const vesVector3f& rayPoint0, const vesVector3f& rayPoint1)
+double PickDataSet(vtkCellLocator* locator, vesVector3d& rayPoint0, vesVector3d& rayPoint1)
 {
-  double p0[3] = {rayPoint0[0], rayPoint0[1], rayPoint0[2]};
-  double p1[3] = {rayPoint1[0], rayPoint1[1], rayPoint1[2]};
-
   double pickPoint[3];
   double t;
   double paramCoords[3];
   vtkIdType cellId = -1;
   int subId;
 
-  int result = locator->IntersectWithLine(p0, p1, 0.0, t, pickPoint, paramCoords, subId);//, cellId);
+  int result = locator->IntersectWithLine(rayPoint0.data(), rayPoint1.data(), 0.0, t, pickPoint, paramCoords, subId);
   if (result == 1) {
-      return t;
+      return t*vesVector3d(rayPoint1 - rayPoint0).norm();
   }
 
   return -1;
@@ -230,62 +234,171 @@ std::string GetHumanReadableName(std::string name)
 
 } //end namespace
 
+//----------------------------------------------------------------------------
+bool vesKiwiBrainAtlasRepresentation::handleLongPress(int displayX, int displayY)
+{
+  this->deselectModel();
+
+  // show all models
+  for (size_t i = 0; i < this->Internal->AnatomicalModels.size(); ++i) {
+    if (!this->Internal->ModelStatus[i]) {
+      this->Internal->AnatomicalModels[i]->addSelfToRenderer(this->renderer());
+      this->Internal->ModelStatus[i] = true;
+      this->Internal->ModelSceneStatus[i] = true;
+    }
+  }
+
+  return true;
+}
 
 //----------------------------------------------------------------------------
-bool vesKiwiBrainAtlasRepresentation::handleSingleTouchTap(int displayX, int displayY)
+bool vesKiwiBrainAtlasRepresentation::handleDoubleTap(int displayX, int displayY)
 {
+  if (this->Internal->ActiveModel == -1) {
+    return this->selectModel(displayX, displayY);
+  }
+  else {
+    this->deselectModel();
+    return true;
+  }
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiBrainAtlasRepresentation::setClipPlane(vtkPlane* plane)
+{
+  this->Internal->Plane = plane;
+}
+
+//----------------------------------------------------------------------------
+int vesKiwiBrainAtlasRepresentation::findTappedModel(int displayX, int displayY)
+{
+
   vesSharedPtr<vesRenderer> ren = this->renderer();
   displayY = ren->height() - displayY;
 
-  int cornerSize = 50;
-  if (displayX < cornerSize && displayY < cornerSize) {
-
-    if (!this->Internal->SkinRep) {
-      return false;
-    }
-
-    vesVector4f skinColor = this->Internal->SkinRep->color();
-    vesVector4f skullColor = this->Internal->SkullRep->color();
-    if (this->Internal->SkinOpacity == 1.0) {
-      this->Internal->SkinOpacity = 0.3;
-      this->Internal->SkinRep->setColor(skinColor[0], skinColor[1], skinColor[2], this->Internal->SkinOpacity);
-      this->Internal->SkullRep->setColor(skullColor[0], skullColor[1], skullColor[2], this->Internal->SkinOpacity);
-    }
-    else if (this->Internal->SkinOpacity == 0.3) {
-      this->Internal->SkinOpacity = 0.0;
-      this->Internal->SkinRep->removeSelfFromRenderer(this->renderer());
-      this->Internal->SkullRep->removeSelfFromRenderer(this->renderer());
-    }
-    else if (this->Internal->SkinOpacity == 0.0) {
-      this->Internal->SkinOpacity = 1.0;
-      this->Internal->SkinRep->setColor(skinColor[0], skinColor[1], skinColor[2], this->Internal->SkinOpacity);
-      this->Internal->SkullRep->setColor(skullColor[0], skullColor[1], skullColor[2], this->Internal->SkinOpacity);
-      this->Internal->SkinRep->addSelfToRenderer(this->renderer());
-      this->Internal->SkullRep->addSelfToRenderer(this->renderer());
-    }
-    return true;
-  }
-  else if (displayX < cornerSize && (ren->height() - displayY) < cornerSize) {
-    return false;
-  }
-
-  vesVector3f rayPoint0 = ren->computeDisplayToWorld(vesVector3f(displayX, displayY, /*focalDepth=*/0.0));
-  vesVector3f rayPoint1 = ren->computeDisplayToWorld(vesVector3f(displayX, displayY, /*focalDepth=*/1.0));
+  vesVector3d rayPoint0 = ren->computeDisplayToWorld(vesVector3f(displayX, displayY, /*focalDepth=*/0.0)).cast<double>();
+  vesVector3d rayPoint1 = ren->computeDisplayToWorld(vesVector3f(displayX, displayY, /*focalDepth=*/1.0)).cast<double>();
 
   int tappedModel = -1;
   double minDist = -1;
 
+  double extraDist = 0;
   for (size_t i = 0; i < this->Internal->Locators.size(); ++i) {
-    if (this->Internal->ActiveModel >= 0 && i != this->Internal->ActiveModel) {
+
+    if (!this->Internal->ModelStatus[i])
       continue;
+
+    vesVector3d pickRayPoint0 = rayPoint0;
+    extraDist = 0.0;
+
+    if (i == this->Internal->SkullRepIndex || i == this->Internal->SkinRepIndex) {
+
+      // set rayPoint0 to intersection of ray with plane so that the ray
+      // only intersects with the non-clipped portion of these models
+      if (this->Internal->Plane && this->Internal->Plane->EvaluateFunction (rayPoint0.data()) > 0) {
+        double t;
+        vesVector3d planeIntersection;
+        this->Internal->Plane->IntersectWithLine(rayPoint0.data(), rayPoint1.data(), t, planeIntersection.data());
+        pickRayPoint0 = planeIntersection;
+        vesVector3d rayToPlane = pickRayPoint0 - rayPoint0;
+        extraDist = rayToPlane.norm();
+      }
     }
 
-    double dist = PickDataSet(this->Internal->Locators[i], rayPoint0, rayPoint1);
+    double dist = PickDataSet(this->Internal->Locators[i], pickRayPoint0, rayPoint1);
+
+    if (dist >= 0)
+      dist += extraDist;
+
     if (dist >= 0 && (minDist == -1 || dist < minDist)) {
       tappedModel = i;
       minDist = dist;
     }
   }
+
+  return tappedModel;
+}
+
+//----------------------------------------------------------------------------
+bool vesKiwiBrainAtlasRepresentation::hideModel(int displayX, int displayY)
+{
+  int modelIndex = this->findTappedModel(displayX, displayY);
+
+  if (modelIndex >= 0) {
+    this->Internal->AnatomicalModels[modelIndex]->removeSelfFromRenderer(this->renderer());
+    this->Internal->ModelStatus[modelIndex] = false;
+    this->Internal->ModelSceneStatus[modelIndex] = false;
+    return true;
+  }
+
+  return false;
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiBrainAtlasRepresentation::showTextLabel(int modelIndex) {
+
+  std::string anatomicalName = this->Internal->AnatomicalNames[modelIndex];
+
+  anatomicalName = GetHumanReadableName(anatomicalName);
+
+  this->Internal->TextRep->setText(anatomicalName);
+  this->Internal->TextRep->addSelfToRenderer(this->renderer());
+
+  bool useWorldAnchor = true;
+
+  if (!useWorldAnchor) {
+    this->Internal->TextRep->actor()->setIsOverlayNode(true);
+    this->Internal->TextRep->setBinNumber(21);
+    vesVector2f displayPosition;
+    displayPosition[0] = (this->renderer()->width()/2.0) - (this->Internal->TextRep->textWidth()/2.0);
+    displayPosition[1] = 150;
+    this->Internal->TextRep->setDisplayPosition(displayPosition);
+    this->Internal->TextRep->setWorldAnchorPointEnabled(false);
+  }
+  else {
+
+    vesVector3f worldPoint = this->Internal->AnnotationAnchors[modelIndex];
+    double anchorOffset = this->Internal->AnchorOffsets[modelIndex];
+
+    this->Internal->TextRep->setWorldAnchorPoint(worldPoint);
+    this->Internal->TextRep->setAnchorOffset(anchorOffset);
+    this->Internal->TextRep->setWorldAnchorPointEnabled(true);
+  }
+
+
+  this->Internal->TextVisible = true;
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiBrainAtlasRepresentation::hideTextLabel() {
+  if (this->Internal->TextVisible) {
+    this->Internal->TextRep->removeSelfFromRenderer(this->renderer());
+    this->Internal->TextVisible = false;
+  }
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiBrainAtlasRepresentation::deselectModel()
+{
+  this->Internal->ActiveModel = -1;
+
+  // show the models
+  for (size_t i = 0; i < this->Internal->AnatomicalModels.size(); ++i) {
+    if (this->Internal->ModelSceneStatus[i]) {
+      this->Internal->AnatomicalModels[i]->addSelfToRenderer(this->renderer());
+      this->Internal->ModelStatus[i] = true;
+    }
+  }
+
+  // remove the text label
+  this->hideTextLabel();
+}
+
+//----------------------------------------------------------------------------
+bool vesKiwiBrainAtlasRepresentation::selectModel(int displayX, int displayY)
+{
+
+  int tappedModel = this->findTappedModel(displayX, displayY);
 
   if (this->Internal->ActiveModel == -1 && tappedModel == -1) {
     return false;
@@ -298,35 +411,66 @@ bool vesKiwiBrainAtlasRepresentation::handleSingleTouchTap(int displayX, int dis
   this->Internal->ActiveModel = tappedModel;
 
   if (tappedModel >= 0) {
+
+    // hide all models
     for (size_t i = 0; i < this->Internal->AnatomicalModels.size(); ++i) {
       this->Internal->AnatomicalModels[i]->removeSelfFromRenderer(this->renderer());
+      this->Internal->ModelStatus[i] = false;
     }
+
+    // show the tapped model
     this->Internal->AnatomicalModels[tappedModel]->addSelfToRenderer(this->renderer());
+    this->Internal->ModelStatus[tappedModel] = true;
 
-    std::string anatomicalName = this->Internal->AnatomicalNames[tappedModel];
-
-    anatomicalName = GetHumanReadableName(anatomicalName);
-
-    this->Internal->TextRep->setText(anatomicalName);
-    vesVector3f worldPoint = this->Internal->AnnotationAnchors[this->Internal->ActiveModel];
-    double anchorOffset = this->Internal->AnchorOffsets[this->Internal->ActiveModel];
-
-    this->Internal->TextRep->setWorldAnchorPoint(worldPoint);
-    this->Internal->TextRep->setAnchorOffset(anchorOffset);
-    this->Internal->TextRep->setWorldAnchorPointEnabled(true);
-    this->Internal->TextRep->addSelfToRenderer(this->renderer());
-    this->Internal->TextVisible = true;
+    // show the text label
+    this->showTextLabel(tappedModel);
 
   }
   else {
-    for (size_t i = 0; i < this->Internal->AnatomicalModels.size(); ++i) {
-      this->Internal->AnatomicalModels[i]->addSelfToRenderer(this->renderer());
-    }
-    this->Internal->TextRep->removeSelfFromRenderer(this->renderer());
-    this->Internal->TextVisible = false;
+    this->deselectModel();
   }
 
   return true;
+}
+
+
+//----------------------------------------------------------------------------
+bool vesKiwiBrainAtlasRepresentation::toggleSkinOpacity(int displayX, int displayY)
+{
+  if (!this->Internal->ModelStatus[this->Internal->SkinRepIndex]) {
+    return false;
+  }
+
+  vesSharedPtr<vesRenderer> ren = this->renderer();
+  displayY = ren->height() - displayY;
+
+  int cornerSize = 150;
+  if (displayX < cornerSize && displayY < cornerSize) {
+    vesVector4f skinColor = this->Internal->SkinRep->color();
+    if (this->Internal->SkinOpacity == 1.0) {
+      this->Internal->SkinOpacity = 0.3;
+      this->Internal->SkinRep->setColor(skinColor[0], skinColor[1], skinColor[2], this->Internal->SkinOpacity);
+    }
+    else if (this->Internal->SkinOpacity == 0.3) {
+      this->Internal->SkinOpacity = 1.0;
+      this->Internal->SkinRep->setColor(skinColor[0], skinColor[1], skinColor[2], this->Internal->SkinOpacity);
+    }
+    return true;
+  }
+
+  return false;
+}
+
+//----------------------------------------------------------------------------
+bool vesKiwiBrainAtlasRepresentation::handleSingleTouchTap(int displayX, int displayY)
+{
+  if (this->Internal->ActiveModel == -1) {
+    return this->hideModel(displayX, displayY);
+  }
+  else {
+    this->deselectModel();
+    return false;
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -362,8 +506,9 @@ void vesKiwiBrainAtlasRepresentation::removeSelfFromRenderer(vesSharedPtr<vesRen
 int vesKiwiBrainAtlasRepresentation::numberOfFacets()
 {
   int count = 0;
-  for (size_t i = 0; i < this->Internal->AllReps.size(); ++i)
-    count += this->Internal->AllReps[i]->numberOfFacets();
+  for (size_t i = 0; i < this->Internal->AnatomicalModels.size(); ++i)
+    if (this->Internal->ModelStatus[i])
+      count += this->Internal->AnatomicalModels[i]->numberOfFacets();
   return count;
 }
 
@@ -371,8 +516,9 @@ int vesKiwiBrainAtlasRepresentation::numberOfFacets()
 int vesKiwiBrainAtlasRepresentation::numberOfVertices()
 {
   int count = 0;
-  for (size_t i = 0; i < this->Internal->AllReps.size(); ++i)
-    count += this->Internal->AllReps[i]->numberOfVertices();
+  for (size_t i = 0; i < this->Internal->AnatomicalModels.size(); ++i)
+    if (this->Internal->ModelStatus[i])
+      count += this->Internal->AnatomicalModels[i]->numberOfVertices();
   return count;
 }
 
@@ -380,7 +526,8 @@ int vesKiwiBrainAtlasRepresentation::numberOfVertices()
 int vesKiwiBrainAtlasRepresentation::numberOfLines()
 {
   int count = 0;
-  for (size_t i = 0; i < this->Internal->AllReps.size(); ++i)
-    count += this->Internal->AllReps[i]->numberOfLines();
+  for (size_t i = 0; i < this->Internal->AnatomicalModels.size(); ++i)
+    if (this->Internal->ModelStatus[i])
+      count += this->Internal->AnatomicalModels[i]->numberOfLines();
   return count;
 }

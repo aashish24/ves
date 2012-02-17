@@ -67,7 +67,7 @@ void ConvertVertexArrays(vtkDataSet* dataSet, vesSharedPtr<vesGeometryData> geom
 
 vesSharedPtr<vesGeometryData> GeometryDataFromPolyData(vtkPolyData* polyData)
 {
-  if (!polyData->GetNumberOfPolys() && !polyData->GetNumberOfLines())
+  if (!polyData->GetNumberOfStrips() && !polyData->GetNumberOfPolys() && !polyData->GetNumberOfLines())
     {
     return vesKiwiDataConversionTools::ConvertPoints(polyData);
     }
@@ -80,6 +80,7 @@ vesSharedPtr<vesGeometryData> GeometryDataFromPolyData(vtkPolyData* polyData)
   triangleFilter->PassVertsOn();
   triangleFilter->SetInput(polyData);
   triangleFilter->Update();
+
   return vesKiwiDataConversionTools::Convert(triangleFilter->GetOutput());
 }
 
@@ -193,8 +194,6 @@ void vesKiwiPolyDataRepresentation::initializeWithShader(
   this->Internal->Actor->material()->addAttribute(shaderProgram);
   this->Internal->Actor->material()->addAttribute(this->Internal->Blend);
   this->Internal->Actor->material()->addAttribute(this->Internal->Depth);
-
-  this->Internal->Actor->mapper()->setColor(0.9, 0.9, 0.9, 1.0);
 }
 
 //----------------------------------------------------------------------------

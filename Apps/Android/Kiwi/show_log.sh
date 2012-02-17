@@ -2,4 +2,4 @@
 
 source tools.sh
 
-$ADB logcat KiwiViewer:I *:s
+$ADB logcat KiwiViewerActivity:D KiwiViewer:D *:s

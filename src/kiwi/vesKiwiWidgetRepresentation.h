@@ -35,7 +35,8 @@ public:
   virtual bool handleSingleTouchTap(int displayX, int displayY);
   virtual bool handleSingleTouchPanGesture(double deltaX, double deltaY);
   virtual bool handleSingleTouchUp();
-  virtual bool handleDoubleTap();
+  virtual bool handleDoubleTap(int displayX, int displayY);
+  virtual bool handleLongPress(int displayX, int displayY);
 
   bool interactionIsActive() const;
 

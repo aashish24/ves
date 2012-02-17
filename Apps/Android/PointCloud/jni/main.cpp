@@ -47,7 +47,7 @@
 #include <android_native_app_glue.h>
 #include <android/asset_manager.h>
 
-#include <vtkPolyDataReader.h>
+#include <vtkXMLPolyDataReader.h>
 #include <vtkSmartPointer.h>
 #include <vtkPolyData.h>
 #include <vtkNew.h>
@@ -86,7 +86,7 @@ public:
   {
     this->vesKiwiBaseApp::resetView();
 
-    // move the camera for a better default view of the cturtle.vtk dataset
+    // move the camera for a better default view of the cturtle.vtp dataset
     this->camera()->elevation(180);
     this->camera()->roll(180);
   }
@@ -114,7 +114,7 @@ public:
   {
     this->unloadData();
 
-    vtkSmartPointer<vtkPolyDataReader> reader = vtkSmartPointer<vtkPolyDataReader>::New();
+    vtkSmartPointer<vtkXMLPolyDataReader> reader = vtkSmartPointer<vtkXMLPolyDataReader>::New();
     reader->SetInputString(data, length);
     reader->ReadFromInputStringOn();
     reader->Update();
@@ -268,7 +268,7 @@ static int engine_init_display(struct engine* engine) {
 
 
     // read point cloud data
-    AAsset* asset = AAssetManager_open(assetManager, "cturtle.vtk", AASSET_MODE_UNKNOWN);
+    AAsset* asset = AAssetManager_open(assetManager, "cturtle.vtp", AASSET_MODE_UNKNOWN);
     const char* input_string = static_cast<const char*>(AAsset_getBuffer(asset));
 
     kiwiApp->loadData(input_string, AAsset_getLength(asset));

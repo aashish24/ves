@@ -233,6 +233,7 @@ void vesTexture::setup(const vesRenderState &renderState)
   vesNotUsed(renderState);
 
   if (this->dirtyState()) {
+    glDeleteTextures(1, &this->m_textureHandle);
     glGenTextures(1, &this->m_textureHandle);
     glBindTexture(GL_TEXTURE_2D, this->m_textureHandle);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -250,8 +251,7 @@ void vesTexture::setup(const vesRenderState &renderState)
                    this->m_pixelDataType ? this->m_pixelDataType : GL_UNSIGNED_BYTE, this->m_image->data());
     }
     else {
-      glTexImage2D(GL_TEXTURE_2D, 0, this->m_internalFormat, this->m_width,
-                   this->m_height, 0,
+      glTexImage2D(GL_TEXTURE_2D, 0, this->m_internalFormat, this->m_width, this->m_height, 0,
                    this->m_pixelFormat ? this->m_pixelFormat : this->m_internalFormat,
                    this->m_pixelDataType ? this->m_pixelDataType : GL_UNSIGNED_BYTE, NULL);
     }

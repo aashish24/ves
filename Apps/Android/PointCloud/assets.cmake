@@ -1,5 +1,5 @@
 set(assets
-  ../../iOS/Kiwi/Kiwi/Data/cturtle.vtk
+  ../../iOS/Kiwi/Kiwi/Data/cturtle.vtp
   ../../../src/shaders/vesShader_vert.glsl
   ../../../src/shaders/vesShader_frag.glsl
   )

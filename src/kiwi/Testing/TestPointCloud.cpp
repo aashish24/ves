@@ -39,7 +39,7 @@
 #include <vesVertexAttributeKeys.h>
 #include <vesBuiltinShaders.h>
 
-#include <vtkPolyDataReader.h>
+#include <vtkXMLPolyDataReader.h>
 #include <vtkPolyData.h>
 #include <vtkErrorCode.h>
 #include <vtkImageData.h>
@@ -78,7 +78,7 @@ public:
   {
     this->vesKiwiBaseApp::resetView();
 
-    // move the camera for a better default view of the cturtle.vtk dataset
+    // move the camera for a better default view of the cturtle.vtp dataset
     this->camera()->elevation(180);
     this->camera()->roll(180);
     this->camera()->dolly(2.5);
@@ -107,7 +107,7 @@ public:
   {
     this->unloadData();
 
-    vtkSmartPointer<vtkPolyDataReader> reader = vtkSmartPointer<vtkPolyDataReader>::New();
+    vtkSmartPointer<vtkXMLPolyDataReader> reader = vtkSmartPointer<vtkXMLPolyDataReader>::New();
     reader->SetFileName(filename.c_str());
     reader->Update();
     vtkSmartPointer<vtkPolyData> polyData = reader->GetOutput();
@@ -181,7 +181,7 @@ vesTestHelper* testHelper;
 void LoadData()
 {
   std::string filename = testHelper->sourceDirectory() +
-    std::string("/Apps/iOS/Kiwi/Kiwi/Data/cturtle.vtk");
+    std::string("/Apps/iOS/Kiwi/Kiwi/Data/cturtle.vtp");
 
   testHelper->app()->loadData(filename);
   testHelper->app()->resetView();

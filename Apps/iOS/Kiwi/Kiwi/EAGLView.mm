@@ -501,7 +501,8 @@
 
 - (IBAction)handleDoubleTapGesture:(UITapGestureRecognizer *)sender
 {
-  self->renderer.app->handleDoubleTap();
+  CGPoint currentLocation = [sender locationInView:self];
+  self->renderer.app->handleDoubleTap(currentLocation.x, currentLocation.y);
   [self scheduleRender];
 }
 

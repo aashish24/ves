@@ -53,7 +53,7 @@ public:
   bool handleSingleTouchDown(int displayX, int displayY);
   bool handleSingleTouchPanGesture(double deltaX, double deltaY);
   bool handleSingleTouchUp();
-  bool handleDoubleTap();
+  bool handleDoubleTap(int displayX, int displayY);
 
   virtual void willRender(vesSharedPtr<vesRenderer> renderer);
 

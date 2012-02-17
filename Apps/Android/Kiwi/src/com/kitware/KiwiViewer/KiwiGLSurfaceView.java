@@ -40,6 +40,10 @@ import org.metalev.multitouch.controller.MultiTouchController.MultiTouchObjectCa
 import org.metalev.multitouch.controller.MultiTouchController.PointInfo;
 import org.metalev.multitouch.controller.MultiTouchController.PositionAndScale;
 
+import android.view.GestureDetector.OnGestureListener;
+import android.view.GestureDetector.SimpleOnGestureListener;
+import android.view.GestureDetector;
+
 import android.content.Context;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
@@ -47,6 +51,16 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+
+import android.app.ProgressDialog;
+
+import java.util.ArrayList;
+
+import java.lang.Thread;
+import java.lang.InterruptedException;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.InvocationTargetException;
 
 import javax.microedition.khronos.egl.EGL10;
 import javax.microedition.khronos.egl.EGLConfig;
@@ -56,11 +70,13 @@ import javax.microedition.khronos.opengles.GL10;
 
 
 public class KiwiGLSurfaceView extends GLSurfaceView implements MultiTouchObjectCanvas<KiwiGLSurfaceView> {
-  
+
     private static String TAG = "KiwiViewer";
     private static final boolean DEBUG = false;
 
     private MyRenderer mRenderer;
+
+    private GestureDetector mGestureDetector;
 
     private MultiTouchController<KiwiGLSurfaceView> multiTouchController = new MultiTouchController<KiwiGLSurfaceView>(this);
 
@@ -96,38 +112,143 @@ public class KiwiGLSurfaceView extends GLSurfaceView implements MultiTouchObject
     }
 
 
+    public class MyGestureDetector extends SimpleOnGestureListener {
+        @Override
+        public boolean onDoubleTap(MotionEvent e) {
+
+          final float displayX = e.getX();
+          final float displayY = e.getY();
+
+          queueEvent(new Runnable() {
+                   public void run() {
+                      KiwiNative.handleDoubleTap(displayX, displayY);
+                      requestRender();
+                   }});
+
+          return true;
+        }
+
+        public void onLongPress(MotionEvent e) {
+
+          final float displayX = e.getX();
+          final float displayY = e.getY();
+
+          queueEvent(new Runnable() {
+                   public void run() {
+                      KiwiNative.handleLongPress(displayX, displayY);
+                      requestRender();
+                   }});
+
+        }
+
+        public boolean onSingleTapConfirmed(MotionEvent e) {
+
+
+          final float displayX = e.getX();
+          final float displayY = e.getY();
+
+          queueEvent(new Runnable() {
+                   public void run() {
+                      KiwiNative.handleSingleTouchTap(displayX, displayY);
+                      requestRender();
+                   }});
+
+          return true;
+        }
+
+    }
+
+
+
     public KiwiGLSurfaceView(Context context) {
       super(context);
-
-      // requires api level 11
-      //setPreserveEGLContextOnPause(true);
-
-      init(true, 8, 0);
+      init();
     }
 
 
     public KiwiGLSurfaceView(Context context, AttributeSet attrs) {
       super(context, attrs);
-      
-      // requires api level 11
-      //setPreserveEGLContextOnPause(true);
+      init();
+    }
 
-      init(true, 8, 0);
+    private void init() {
+      mGestureDetector = new GestureDetector(new MyGestureDetector());
+      tryPreserveEGLContext();
+      initEGL(true, 8, 0);
+    }
+
+
+    private void tryPreserveEGLContext() {
+
+      try {
+        Method preserveEGLContextMethod =
+          KiwiGLSurfaceView.class.getMethod("setPreserveEGLContextOnPause",
+                                            new Class[] {boolean.class});
+          try {
+            preserveEGLContextMethod.invoke(KiwiGLSurfaceView.this, true);
+           }
+          catch (InvocationTargetException ite) {
+            Log.i(TAG, String.format("exception invoking setPreserveEGLContextOnPause()"));
+          }
+          catch (IllegalAccessException ie) {
+            Log.i(TAG, String.format("exception accessing setPreserveEGLContextOnPause()"));
+          }
+      }
+      catch (NoSuchMethodException nsme) {
+        Log.i(TAG, String.format("api does not have setPreserveEGLContextOnPause()"));
+      }
     }
 
 
     @Override
+    public void onPause() {
+      stopRendering();
+      super.onPause();
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent event) {
+      mGestureDetector.onTouchEvent(event);
       return multiTouchController.onTouchEvent(event);
     }
 
+
+    @Override
+    public void queueEvent(Runnable r) {
+
+      if (mRenderer.isInitialized) {
+        super.queueEvent(r);
+      }
+      else {
+        mRenderer.queuePostInitEvent(r);
+      }
+    }
+
+    public void postLoadDefaultDataset(final KiwiViewerActivity loader, final String storageDir) {
+
+        this.queueEvent(new Runnable() {
+           public void run() {
+
+              KiwiNative.checkForAdditionalDatasets(storageDir);
+
+              if (!KiwiNative.getDatasetIsLoaded()) {
+                final int defaultDatasetIndex = KiwiNative.getDefaultBuiltinDatasetIndex();
+                KiwiGLSurfaceView.this.post(new Runnable() {
+                    public void run() {
+                      loader.loadDataset(defaultDatasetIndex);
+                    }
+                });
+              }
+
+           }});
+    }
 
     public void selectObject(KiwiGLSurfaceView obj, PointInfo touchPoint) {
 
       if (obj == null) {
         this.queueEvent(new Runnable() {
                  public void run() {
-                    mRenderer.handleSingleTouchUp();
+                    KiwiNative.handleSingleTouchUp();
                     requestRender();
                  }});
       }
@@ -141,7 +262,7 @@ public class KiwiGLSurfaceView extends GLSurfaceView implements MultiTouchObject
 
       this.queueEvent(new Runnable() {
                  public void run() {
-                    mRenderer.handleSingleTouchDown(x, y);
+                    KiwiNative.handleSingleTouchDown(x, y);
                     requestRender();
                  }});
 
@@ -212,27 +333,49 @@ public class KiwiGLSurfaceView extends GLSurfaceView implements MultiTouchObject
       return true;
     }
 
+    public void loadDataset(final String filename, final KiwiViewerActivity loader) {
+      int builtinDatasetIndex = -1;
+      loadDataset(filename, builtinDatasetIndex, loader);
+    }
 
-    public void loadDataset(final int datasetIndex) {
+    public void loadDataset(final String filename, final int builtinDatasetIndex, final KiwiViewerActivity loader) {
+
       queueEvent(new Runnable() {
-                 public void run() {
-                    KiwiNative.loadDataset(datasetIndex);
-                    mRenderer.resetCamera();
-                    requestRender();
-                 }});
+        public void run() {
+
+          final boolean result = KiwiNative.loadDataset(filename, builtinDatasetIndex);
+          final String errorTitle = KiwiNative.getLoadDatasetErrorTitle();
+          final String errorMessage = KiwiNative.getLoadDatasetErrorMessage();
+
+          requestRender();
+
+          KiwiGLSurfaceView.this.post(new Runnable() {
+            public void run() {
+              loader.postLoadDataset(filename, result, errorTitle, errorMessage);
+            }});
+        }});
     }
 
 
     public void resetCamera() {
       queueEvent(new Runnable() {
                    public void run() {
-                      mRenderer.resetCamera();
+                      KiwiNative.resetCamera();
                       requestRender();
                    }});
     }
 
+    public void stopRendering() {
+    
+      queueEvent(new Runnable() {
+                   public void run() {
+                      KiwiNative.stopInertialMotion();
+                      setRenderMode(RENDERMODE_WHEN_DIRTY);
+                   }});
+    }
 
-    private void init(boolean translucent, int depth, int stencil) {
+
+    private void initEGL(boolean translucent, int depth, int stencil) {
 
 
         /* By default, GLSurfaceView() creates a RGB_565 opaque surface.
@@ -260,8 +403,11 @@ public class KiwiGLSurfaceView extends GLSurfaceView implements MultiTouchObject
 
         /* Set the renderer responsible for frame rendering */
         mRenderer = new MyRenderer();
+        mRenderer.parentView = this;
         setRenderer(mRenderer);
-        //setRenderMode(RENDERMODE_WHEN_DIRTY);
+        setRenderMode(RENDERMODE_WHEN_DIRTY);
+
+        requestRender();
     }
 
     private static class ContextFactory implements GLSurfaceView.EGLContextFactory {
@@ -488,20 +634,32 @@ public class KiwiGLSurfaceView extends GLSurfaceView implements MultiTouchObject
 
 class MyRenderer implements GLSurfaceView.Renderer {
 
-  public void handleSingleTouchUp() {
-    KiwiNative.handleSingleTouchUp();
+  public GLSurfaceView parentView;
+  public boolean isInitialized = false;
+  public ArrayList<Runnable> mPostInitRunnables = new ArrayList<Runnable>();
+  public ArrayList<Runnable> mPreRenderRunnables = new ArrayList<Runnable>();
+
+  synchronized void queuePostInitEvent(Runnable runnable) {
+    mPostInitRunnables.add(runnable);
   }
 
-  public void handleSingleTouchDown(float x, float y) {
-    KiwiNative.handleSingleTouchDown(x, y);
-  }
-
-  public void resetCamera() {
-    KiwiNative.resetCamera();
+  synchronized void queuePreRenderEvent(Runnable runnable) {
+    mPreRenderRunnables.add(runnable);
   }
 
   public void onDrawFrame(GL10 gl) {
-      KiwiNative.render();
+
+      boolean result = KiwiNative.render();
+      if (result) {
+        parentView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
+      }
+      else {
+        parentView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+      }
+
+      while (mPreRenderRunnables.size() > 0) {
+        mPreRenderRunnables.remove(0).run();
+      }
   }
 
   public void onSurfaceChanged(GL10 gl, int width, int height) {
@@ -510,6 +668,12 @@ class MyRenderer implements GLSurfaceView.Renderer {
 
   public void onSurfaceCreated(GL10 gl, EGLConfig config) {
       KiwiNative.init(100, 100);
+      isInitialized = true;
+
+      while (mPostInitRunnables.size() > 0) {
+        mPostInitRunnables.remove(0).run();
+      }
+
   }
 }
 

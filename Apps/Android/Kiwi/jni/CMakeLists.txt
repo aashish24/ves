@@ -15,8 +15,6 @@ set(sources
 
 set(deps
   GLESv2
-  EGL
-  android
   log
   ${VES_LIBRARIES}
 )

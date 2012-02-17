@@ -28,19 +28,33 @@ public class KiwiNative {
          System.loadLibrary("KiwiNative");
      }
 
-     public static native void init(int width, int height);
-     public static native void reshape(int width, int height);
-     public static native void handleSingleTouchPanGesture(float dx, float dy);
-     public static native void handleTwoTouchPanGesture(float x0, float y0, float x1, float y1);
-     public static native void handleTwoTouchPinchGesture(float scale);
-     public static native void handleTwoTouchRotationGesture(float rotation);
-     public static native void handleSingleTouchUp();
-     public static native void handleSingleTouchDown(float x, float y);
-     public static native void render();
-     public static native void resetCamera();
-     public static native void loadAssets(AssetManager assetManager, String filename);
-     public static native String getDatasetName(int offset);
-     public static native String getDatasetFilename(int offset);
-     public static native int getNumberOfBuiltinDatasets();
-     public static native void loadDataset(int datasetIndex);
+     public static native synchronized void init(int width, int height);
+     public static native synchronized void reshape(int width, int height);
+     public static native synchronized void handleSingleTouchPanGesture(float dx, float dy);
+     public static native synchronized void handleTwoTouchPanGesture(float x0, float y0, float x1, float y1);
+     public static native synchronized void handleTwoTouchPinchGesture(float scale);
+     public static native synchronized void handleTwoTouchRotationGesture(float rotation);
+     public static native synchronized void handleSingleTouchUp();
+     public static native synchronized void handleSingleTouchDown(float x, float y);
+     public static native synchronized void handleSingleTouchTap(float x, float y);
+     public static native synchronized void handleDoubleTap(float x, float y);
+     public static native synchronized void handleLongPress(float x, float y);
+     public static native synchronized boolean render();
+     public static native synchronized void resetCamera();
+     public static native synchronized void stopInertialMotion();
+     public static native synchronized String getDatasetName(int offset);
+     public static native synchronized String getDatasetFilename(int offset);
+     public static native synchronized int getNumberOfBuiltinDatasets();
+     public static native synchronized int getDefaultBuiltinDatasetIndex();
+     public static native synchronized boolean getDatasetIsLoaded();
+     public static native synchronized void clearExistingDataset();
+     public static native synchronized boolean loadDataset(String filename, int builtinDatasetIndex);
+     public static native synchronized void checkForAdditionalDatasets(String storageDir);
+     public static native synchronized String getLoadDatasetErrorTitle();
+     public static native synchronized String getLoadDatasetErrorMessage();
+
+     public static native synchronized int getNumberOfTriangles();
+     public static native synchronized int getNumberOfLines();
+     public static native synchronized int getNumberOfVertices();
+     public static native synchronized int getFramesPerSecond();
 }
