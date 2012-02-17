@@ -31,6 +31,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+
 /**
  *
  *
@@ -53,7 +55,7 @@ public class DatasetListActivity extends Activity {
     setTitle("Open Data");
 
     this.setContentView(R.layout.datasetlistactivity);
-    String[] datasets = getIntent().getExtras().getStringArray("com.kitware.KiwiViewer.bundle.DatasetList");
+    ArrayList<String> datasets = getIntent().getExtras().getStringArrayList("com.kitware.KiwiViewer.bundle.DatasetList");
     ArrayAdapter<String> adapter = new ArrayAdapter<String>(getBaseContext(),android.R.layout.simple_list_item_1,datasets);
     mListView = (ListView) findViewById(R.id.listView);
     mListView.setAdapter(adapter);

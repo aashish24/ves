@@ -31,6 +31,7 @@ import android.view.WindowManager.LayoutParams;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.text.method.LinkMovementMethod;
 
 
 public class InfoActivity extends Activity {
@@ -47,7 +48,10 @@ public class InfoActivity extends Activity {
     // ...but notify us that it happened.
     getWindow().setFlags(LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH, LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH);
 
+    // fullscreen with no title bar
     requestWindowFeature(Window.FEATURE_NO_TITLE);
+    getWindow().setFlags(LayoutParams.FLAG_FULLSCREEN, LayoutParams.FLAG_FULLSCREEN);
+
 
     this.setContentView(R.layout.infoactivity);
 
@@ -59,6 +63,13 @@ public class InfoActivity extends Activity {
 
     TextView detailsText = (TextView) findViewById(R.id.detailsText);
     detailsText.setText(detailsStr);
+
+    TextView linkText = (TextView) findViewById(R.id.licenseLink);
+    linkText.setMovementMethod(LinkMovementMethod.getInstance());
+
+    TextView copyrightText = (TextView) findViewById(R.id.copyrightText);
+    copyrightText.setMovementMethod(LinkMovementMethod.getInstance());
+
 
   }
 

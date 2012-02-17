@@ -25,22 +25,35 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.res.Configuration;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnDismissListener;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.content.res.AssetManager;
 import android.os.Bundle;
+import android.os.Build;
 import android.os.Environment;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.text.InputType;
+import android.text.SpannableString;
+import android.text.util.Linkify;
+import android.text.method.LinkMovementMethod;
 import android.net.Uri;
 import android.view.View;
+import android.view.LayoutInflater;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.app.ProgressDialog;
 
@@ -54,34 +67,40 @@ public class KiwiViewerActivity extends Activity {
     protected ImageButton  mInfoButton;
     protected ImageButton  mResetViewButton;
 
-    protected ListView mDatasetList;
+    protected ArrayList<String> mBuiltinDatasetNames;
 
     protected String fileToOpen;
     protected int datasetToOpen = -1;
 
-    protected ProgressDialog mProgressDialog;
+    protected ProgressDialog mProgressDialog = null;
 
     public static final int DATASETTABLE_REQUEST_CODE = 1;
 
 
     protected void showProgressDialog() {
+      showProgressDialog("Opening data...");
+    }
+
+    protected void showProgressDialog(String message) {
       mProgressDialog = new ProgressDialog(this);
-      mProgressDialog.setMessage("Opening data...");
       mProgressDialog.setIndeterminate(true);
       mProgressDialog.setCancelable(false);
+      mProgressDialog.setMessage(message);
       mProgressDialog.show();
     }
 
 
     public void dismissProgressDialog() {
-      mProgressDialog.dismiss();
+      if (mProgressDialog != null) {
+        mProgressDialog.dismiss();
+      }
     }
 
 
     public void showErrorDialog(String title, String message) {
 
       AlertDialog dialog = new AlertDialog.Builder(this).create();
-      dialog.setIconAttribute(android.R.attr.alertDialogIcon);
+      dialog.setIcon(R.drawable.alert_dialog_icon);
       dialog.setTitle(title);
       dialog.setMessage(message);
       dialog.setButton("Ok",  new DialogInterface.OnClickListener() {
@@ -92,6 +111,114 @@ public class KiwiViewerActivity extends Activity {
     }
 
 
+    public void showWelcomeDialog() {
+
+      String title = getString(R.string.welcome_title);
+      String message = getString(R.string.welcome_message);
+
+      final SpannableString s = new SpannableString(message);
+      Linkify.addLinks(s, Linkify.WEB_URLS);
+
+      AlertDialog dialog = new AlertDialog.Builder(this).create();
+      dialog.setTitle(title);
+      dialog.setIcon(R.drawable.kiwi_small_icon);
+      dialog.setMessage(s);
+      dialog.setButton("Ok",  new DialogInterface.OnClickListener() {
+        public void onClick(DialogInterface dialog, int which) {
+        return;
+        }});
+
+      dialog.setOnDismissListener(new OnDismissListener() {
+        @Override
+        public void onDismiss(final DialogInterface iface) {
+           maybeLoadDefaultDataset();
+        }});
+
+      dialog.show();
+
+      ((TextView)dialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
+    }
+
+
+    public void showBrainAtlasDialog() {
+
+      String title = getString(R.string.brainatlas_title);
+      String message = getString(R.string.brainatlas_message);
+
+      final SpannableString s = new SpannableString(message);
+      Linkify.addLinks(s, Linkify.WEB_URLS);
+
+      AlertDialog dialog = new AlertDialog.Builder(this).create();
+      dialog.setIcon(R.drawable.info_icon);
+      dialog.setTitle(title);
+      dialog.setMessage(s);
+      dialog.setButton("Ok",  new DialogInterface.OnClickListener() {
+        public void onClick(DialogInterface dialog, int which) {
+        return;
+        }});
+
+      dialog.show();
+
+      ((TextView)dialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
+
+    }
+
+    public void showCanDialog() {
+
+      String title = getString(R.string.can_title);
+      String message = getString(R.string.can_message);
+
+      AlertDialog dialog = new AlertDialog.Builder(this).create();
+      dialog.setIcon(R.drawable.info_icon);
+      dialog.setTitle(title);
+      dialog.setMessage(message);
+      dialog.setButton("Ok",  new DialogInterface.OnClickListener() {
+        public void onClick(DialogInterface dialog, int which) {
+        return;
+        }});
+
+      dialog.show();
+    }
+
+    public void showHeadImageDialog() {
+
+      String title = getString(R.string.head_image_title);
+      String message = getString(R.string.head_image_message);
+
+      AlertDialog dialog = new AlertDialog.Builder(this).create();
+      dialog.setIcon(R.drawable.info_icon);
+      dialog.setTitle(title);
+      dialog.setMessage(message);
+      dialog.setButton("Ok",  new DialogInterface.OnClickListener() {
+        public void onClick(DialogInterface dialog, int which) {
+        return;
+        }});
+
+      dialog.show();
+    }
+
+    public void showCannotOpenAssetDialog() {
+
+      String title = getString(R.string.cannot_open_asset_title);
+      String message = getString(R.string.cannot_open_asset_message);
+
+      AlertDialog dialog = new AlertDialog.Builder(this).create();
+      dialog.setIcon(R.drawable.alert_dialog_icon);
+      dialog.setTitle(title);
+      dialog.setMessage(message);
+      dialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Ok",  new DialogInterface.OnClickListener() {
+        public void onClick(DialogInterface dialog, int which) {
+        return;
+        }});
+
+      dialog.setButton(AlertDialog.BUTTON_POSITIVE, "Open in Browser",  new DialogInterface.OnClickListener() {
+        public void onClick(DialogInterface dialog, int which) {
+          openUrlInBrowser(getString(R.string.external_data_url));
+        }});
+
+      dialog.show();
+    }
+
     protected void openUrlInBrowser(String url) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         startActivity(intent);
@@ -101,8 +228,7 @@ public class KiwiViewerActivity extends Activity {
     protected void handleUriFromIntent(Uri uri) {
       if (uri != null) {
         if (uri.getScheme().equals("file")) {
-          String filePath = uri.getPath();
-          fileToOpen = filePath;
+          fileToOpen = uri.getPath();
         }
       }
     }
@@ -114,17 +240,36 @@ public class KiwiViewerActivity extends Activity {
     }
 
 
-    /**
-     * @return a string array of available datasets
-     */
-    protected String[] createDatasetArray() {
-      int numberOfDatasets = KiwiNative.getNumberOfBuiltinDatasets();
-      String[] ret = new String[numberOfDatasets];
-      for(int i = 0; i < numberOfDatasets; ++i) {
-        ret[i] = KiwiNative.getDatasetName(i);
+
+    protected void initBuiltinDatasetNames() {
+
+      if (mBuiltinDatasetNames == null) {
+          int numberOfDatasets = KiwiNative.getNumberOfBuiltinDatasets();
+          mBuiltinDatasetNames = new ArrayList<String>();
+          for(int i = 0; i < numberOfDatasets; ++i) {
+            mBuiltinDatasetNames.add(KiwiNative.getDatasetName(i));
+          }
       }
-      return ret;
     }
+
+    void maybeLoadDefaultDataset() {
+
+      if (getIntent().getData() == null) {
+        String storageDir = getExternalFilesDir(null).getAbsolutePath();
+        mView.postLoadDefaultDataset(this, storageDir);
+      }
+      else {
+        KiwiNative.clearExistingDataset();
+      }
+    }
+
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+      super.onConfigurationChanged(newConfig);
+      mView.stopRendering();
+    }
+
 
     @Override
     protected void onCreate(Bundle bundle) {
@@ -136,13 +281,18 @@ public class KiwiViewerActivity extends Activity {
 
       mView = (KiwiGLSurfaceView) this.findViewById(R.id.glSurfaceView);
 
-      if (getIntent().getData() == null) {
-        String storageDir = getExternalFilesDir(null).getAbsolutePath();
-        mView.postLoadDefaultDataset(this, storageDir);
+
+      SharedPreferences prefs = getPreferences(MODE_PRIVATE);
+      String versionStr = getString(R.string.version_string);
+
+      if (!versionStr.equals(prefs.getString("version_string", ""))) {
+        prefs.edit().putString("version_string", versionStr).commit();
+        showWelcomeDialog();
       }
       else {
-        KiwiNative.clearExistingDataset();
+        maybeLoadDefaultDataset();
       }
+
 
       mLoadButton = (ImageButton) this.findViewById(R.id.loadDataButton);
       mInfoButton = (ImageButton) this.findViewById(R.id.infoButton);
@@ -153,8 +303,8 @@ public class KiwiViewerActivity extends Activity {
           public void onClick(View v) {
               Intent datasetTableIntent = new Intent();
               datasetTableIntent.setClass(KiwiViewerActivity.this, DatasetListActivity.class);
-              String[] datasets = createDatasetArray();
-              datasetTableIntent.putExtra("com.kitware.KiwiViewer.bundle.DatasetList", datasets);
+              initBuiltinDatasetNames();
+              datasetTableIntent.putExtra("com.kitware.KiwiViewer.bundle.DatasetList", mBuiltinDatasetNames);
               startActivityForResult(datasetTableIntent, DATASETTABLE_REQUEST_CODE);
           }
       });
@@ -196,11 +346,11 @@ public class KiwiViewerActivity extends Activity {
 
       String destFilename = storageDir + "/" + filename;
 
-
       File destFile = new File(destFilename);
       if (destFile.exists()) {
         return destFilename;
       }
+
 
       InputStream in = null;
       OutputStream out = null;
@@ -222,7 +372,13 @@ public class KiwiViewerActivity extends Activity {
     }
 
 
-    private class AssetCopier extends AsyncTask<String, Integer, String> {
+    private class BuiltinDataLoader extends AsyncTask<String, Integer, String> {
+
+      public int mBuiltinDatasetIndex;
+
+      BuiltinDataLoader(int builtinDatasetIndex) {
+        mBuiltinDatasetIndex = builtinDatasetIndex;
+      }
 
       protected String doInBackground(String... filename) {
 
@@ -238,20 +394,51 @@ public class KiwiViewerActivity extends Activity {
       }
 
       protected void onPostExecute(String filename) {
-        mView.loadDatasetPath(filename, KiwiViewerActivity.this);
+        mView.loadDataset(filename, mBuiltinDatasetIndex, KiwiViewerActivity.this);
       }
     }
 
 
-    public void loadDataset(int index) {
-      String filename = KiwiNative.getDatasetFilename(index);
-      new AssetCopier().execute(filename);
+    public void loadDataset(int builtinDatasetIndex) {
+
+      String filename = KiwiNative.getDatasetFilename(builtinDatasetIndex);
+
+      // don't attempt to open large asset files on android api 8
+      int sdkVersion = Build.VERSION.SDK_INT;
+      if (sdkVersion <= 8
+          && (filename.equals("visible-woman-hand.vtp")
+              || filename.equals("AppendedKneeData.vtp")
+              || filename.equals("cturtle.vtp")
+              || filename.equals("model_info.txt"))) {
+        showCannotOpenAssetDialog();
+        return;
+      }
+
+      new BuiltinDataLoader(builtinDatasetIndex).execute(filename);
     }
 
 
-    public void loadDatasetPath(String filename) {
+    public void loadDataset(String filename) {
       showProgressDialog();
-      mView.loadDatasetPath(filename, KiwiViewerActivity.this);
+      mView.loadDataset(filename, KiwiViewerActivity.this);
+    }
+
+    public void postLoadDataset(String filename, boolean result, String errorTitle, String errorMessage) {
+      dismissProgressDialog();
+      if (!result) {
+        showErrorDialog(errorTitle, errorMessage);
+      }
+      else {
+        if (filename.endsWith("model_info.txt")) {
+          showBrainAtlasDialog();
+        }
+        else if (filename.endsWith("can0000.vtp")) {
+          showCanDialog();
+        }
+        else if (filename.endsWith("head.vti")) {
+          showHeadImageDialog();
+        }
+      }
     }
 
 
@@ -265,7 +452,7 @@ public class KiwiViewerActivity extends Activity {
         mView.onResume();
 
         if (fileToOpen != null) {
-          loadDatasetPath(fileToOpen);
+          loadDataset(fileToOpen);
           fileToOpen = null;
         }
         else if (datasetToOpen >= 0) {

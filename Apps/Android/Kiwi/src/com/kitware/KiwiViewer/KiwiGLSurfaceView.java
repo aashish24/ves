@@ -56,6 +56,9 @@ import android.app.ProgressDialog;
 
 import java.util.ArrayList;
 
+import java.lang.Thread;
+import java.lang.InterruptedException;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationTargetException;
 
@@ -197,6 +200,11 @@ public class KiwiGLSurfaceView extends GLSurfaceView implements MultiTouchObject
     }
 
 
+    @Override
+    public void onPause() {
+      stopRendering();
+      super.onPause();
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -212,7 +220,7 @@ public class KiwiGLSurfaceView extends GLSurfaceView implements MultiTouchObject
         super.queueEvent(r);
       }
       else {
-        mRenderer.eventsToRun.add(r);
+        mRenderer.queuePostInitEvent(r);
       }
     }
 
@@ -240,7 +248,7 @@ public class KiwiGLSurfaceView extends GLSurfaceView implements MultiTouchObject
       if (obj == null) {
         this.queueEvent(new Runnable() {
                  public void run() {
-                    mRenderer.handleSingleTouchUp();
+                    KiwiNative.handleSingleTouchUp();
                     requestRender();
                  }});
       }
@@ -254,7 +262,7 @@ public class KiwiGLSurfaceView extends GLSurfaceView implements MultiTouchObject
 
       this.queueEvent(new Runnable() {
                  public void run() {
-                    mRenderer.handleSingleTouchDown(x, y);
+                    KiwiNative.handleSingleTouchDown(x, y);
                     requestRender();
                  }});
 
@@ -325,25 +333,25 @@ public class KiwiGLSurfaceView extends GLSurfaceView implements MultiTouchObject
       return true;
     }
 
+    public void loadDataset(final String filename, final KiwiViewerActivity loader) {
+      int builtinDatasetIndex = -1;
+      loadDataset(filename, builtinDatasetIndex, loader);
+    }
 
-    public void loadDatasetPath(final String filename, final KiwiViewerActivity loader) {
+    public void loadDataset(final String filename, final int builtinDatasetIndex, final KiwiViewerActivity loader) {
 
       queueEvent(new Runnable() {
         public void run() {
 
-          final boolean result = KiwiNative.loadDatasetPath(filename);
+          final boolean result = KiwiNative.loadDataset(filename, builtinDatasetIndex);
           final String errorTitle = KiwiNative.getLoadDatasetErrorTitle();
           final String errorMessage = KiwiNative.getLoadDatasetErrorMessage();
 
-          mRenderer.resetCamera();
           requestRender();
 
           KiwiGLSurfaceView.this.post(new Runnable() {
             public void run() {
-                loader.dismissProgressDialog();
-                if (!result) {
-                  loader.showErrorDialog(errorTitle, errorMessage);
-                }
+              loader.postLoadDataset(filename, result, errorTitle, errorMessage);
             }});
         }});
     }
@@ -352,8 +360,17 @@ public class KiwiGLSurfaceView extends GLSurfaceView implements MultiTouchObject
     public void resetCamera() {
       queueEvent(new Runnable() {
                    public void run() {
-                      mRenderer.resetCamera();
+                      KiwiNative.resetCamera();
                       requestRender();
+                   }});
+    }
+
+    public void stopRendering() {
+    
+      queueEvent(new Runnable() {
+                   public void run() {
+                      KiwiNative.stopInertialMotion();
+                      setRenderMode(RENDERMODE_WHEN_DIRTY);
                    }});
     }
 
@@ -386,8 +403,9 @@ public class KiwiGLSurfaceView extends GLSurfaceView implements MultiTouchObject
 
         /* Set the renderer responsible for frame rendering */
         mRenderer = new MyRenderer();
+        mRenderer.parentView = this;
         setRenderer(mRenderer);
-        //setRenderMode(RENDERMODE_WHEN_DIRTY);
+        setRenderMode(RENDERMODE_WHEN_DIRTY);
 
         requestRender();
     }
@@ -616,24 +634,32 @@ public class KiwiGLSurfaceView extends GLSurfaceView implements MultiTouchObject
 
 class MyRenderer implements GLSurfaceView.Renderer {
 
-
+  public GLSurfaceView parentView;
   public boolean isInitialized = false;
-  public ArrayList<Runnable> eventsToRun = new ArrayList<Runnable>();
+  public ArrayList<Runnable> mPostInitRunnables = new ArrayList<Runnable>();
+  public ArrayList<Runnable> mPreRenderRunnables = new ArrayList<Runnable>();
 
-  public void handleSingleTouchUp() {
-    KiwiNative.handleSingleTouchUp();
+  synchronized void queuePostInitEvent(Runnable runnable) {
+    mPostInitRunnables.add(runnable);
   }
 
-  public void handleSingleTouchDown(float x, float y) {
-    KiwiNative.handleSingleTouchDown(x, y);
-  }
-
-  public void resetCamera() {
-    KiwiNative.resetCamera();
+  synchronized void queuePreRenderEvent(Runnable runnable) {
+    mPreRenderRunnables.add(runnable);
   }
 
   public void onDrawFrame(GL10 gl) {
-      KiwiNative.render();
+
+      boolean result = KiwiNative.render();
+      if (result) {
+        parentView.setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
+      }
+      else {
+        parentView.setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
+      }
+
+      while (mPreRenderRunnables.size() > 0) {
+        mPreRenderRunnables.remove(0).run();
+      }
   }
 
   public void onSurfaceChanged(GL10 gl, int width, int height) {
@@ -644,8 +670,8 @@ class MyRenderer implements GLSurfaceView.Renderer {
       KiwiNative.init(100, 100);
       isInitialized = true;
 
-      while (eventsToRun.size() > 0) {
-        eventsToRun.remove(0).run();
+      while (mPostInitRunnables.size() > 0) {
+        mPostInitRunnables.remove(0).run();
       }
 
   }

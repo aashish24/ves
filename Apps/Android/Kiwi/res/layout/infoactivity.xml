@@ -40,7 +40,7 @@
 
       <TextView
         android:id="@+id/kiwiText"
-        android:text="version 0.2.0"
+        android:text="@string/version_string"
         android:textSize="14dp"
         android:textStyle="italic"
         android:layout_width="wrap_content"
@@ -63,27 +63,26 @@ android:layout_marginTop="1dp"/>
 
 
     <TextView
-android:id="@+id/kitwareLink"
-android:autoLink="web"
-android:text="www.kitware.com"
+android:id="@+id/licenseLink"
+android:text="@string/license_link"
 android:textSize="14dp"
 android:layout_width="wrap_content"
 android:layout_height="wrap_content"
 android:layout_above="@+id/copyrightText"
 android:layout_centerHorizontal="true"
-android:layout_marginBottom="1dp"
+android:layout_marginBottom="4dp"
 />
+
 
     <TextView
 android:id="@+id/copyrightText"
-android:autoLink="web"
-android:text="(c) 2011 Kitware, Inc."
+android:text="@string/copyright_text"
 android:textSize="14dp"
 android:layout_width="wrap_content"
 android:layout_height="wrap_content"
 android:layout_alignParentBottom="true"
 android:layout_centerHorizontal="true"
-android:layout_marginBottom="1dp"
+android:layout_marginBottom="4dp"
 />
 
 
