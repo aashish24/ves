@@ -10,7 +10,6 @@
 		1D60589B0D05DD56006BFB54 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; };
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
-		1FBD34E3132163C300738902 /* current.vtk in Resources */ = {isa = PBXBuildFile; fileRef = 1FBD34E2132163C300738902 /* current.vtk */; };
 		2514C27310084DB100A42282 /* ES2Renderer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2514C27010084DB100A42282 /* ES2Renderer.mm */; };
 		28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD733E0D9D9553002E5188 /* MainWindow.xib */; };
 		28FD14FE0DC6FC130079059D /* EAGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = 28FD14FD0DC6FC130079059D /* EAGLView.mm */; };
@@ -36,7 +35,6 @@
 		432DE16B13D15DFC000F8EC0 /* libvtkzlib.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 432DE15E13D15DFC000F8EC0 /* libvtkzlib.a */; };
 		432DE16D13D15E1C000F8EC0 /* libves.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 432DE16C13D15E1C000F8EC0 /* libves.a */; };
 		435026EF140E93C9000C315D /* caffeine.pdb in Resources */ = {isa = PBXBuildFile; fileRef = 435026ED140E93C9000C315D /* caffeine.pdb */; };
-		435026F0140E93C9000C315D /* motor.g in Resources */ = {isa = PBXBuildFile; fileRef = 435026EE140E93C9000C315D /* motor.g */; };
 		43554395144F22650040C85C /* libvtkFiltersGeneral.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43554394144F22650040C85C /* libvtkFiltersGeneral.a */; };
 		4356FCC814A01159008AF7D3 /* cturtle.vtk in Resources */ = {isa = PBXBuildFile; fileRef = 4356FCC714A01159008AF7D3 /* cturtle.vtk */; };
 		4356FCCB14A015B1008AF7D3 /* libvtkIOPLY.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4356FCCA14A015B1008AF7D3 /* libvtkIOPLY.a */; };
@@ -58,7 +56,6 @@
 		43EB039814105402002F463B /* libkiwi.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 43EB039714105402002F463B /* libkiwi.a */; };
 		43FA5BE4141705FD00ECC80E /* kiwiAppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 43FA5BE3141705FD00ECC80E /* kiwiAppDelegate.mm */; };
 		453036EB1406A298003A861A /* InfoView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 453036EA1406A298003A861A /* InfoView.xib */; };
-		6F25E721137DEA5400BF4BCA /* current.stl in Resources */ = {isa = PBXBuildFile; fileRef = 6F25E720137DEA5400BF4BCA /* current.stl */; };
 		6F41B5C01360C0CA00D0079D /* InfoView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F41B5BE1360C0CA00D0079D /* InfoView.m */; };
 		6F43A8AE138AC01D0053899E /* Kiwi_K.png in Resources */ = {isa = PBXBuildFile; fileRef = 6F43A8AD138AC01D0053899E /* Kiwi_K.png */; };
 		6F5CF7A313103D7700BB1195 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F5CF7A213103D7700BB1195 /* CoreGraphics.framework */; };
@@ -82,7 +79,6 @@
 		1D3623240D0F684500981E51 /* kiwiAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = kiwiAppDelegate.h; sourceTree = "<group>"; };
 		1D6058910D05DD3D006BFB54 /* kiwi.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = kiwi.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		1FBD34E2132163C300738902 /* current.vtk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = current.vtk; sourceTree = "<group>"; };
 		2514C26F10084DB100A42282 /* ES2Renderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ES2Renderer.h; sourceTree = "<group>"; };
 		2514C27010084DB100A42282 /* ES2Renderer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ES2Renderer.mm; sourceTree = "<group>"; };
 		28AD733E0D9D9553002E5188 /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
@@ -114,9 +110,7 @@
 		432DE15E13D15DFC000F8EC0 /* libvtkzlib.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkzlib.a; path = "../CMakeBuild/build/CMakeExternals/Build/vtkmodular-ios-device/lib/libvtkzlib.a"; sourceTree = "<group>"; };
 		432DE16C13D15E1C000F8EC0 /* libves.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libves.a; path = "../CMakeBuild/build/CMakeExternals/Build/ves-ios-device/lib/libves.a"; sourceTree = "<group>"; };
 		435026ED140E93C9000C315D /* caffeine.pdb */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = caffeine.pdb; sourceTree = "<group>"; };
-		435026EE140E93C9000C315D /* motor.g */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = motor.g; sourceTree = "<group>"; };
 		43554394144F22650040C85C /* libvtkFiltersGeneral.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkFiltersGeneral.a; path = "../../../../build/CMakeExternals/Build/vtkmodular-ios-device/lib/libvtkFiltersGeneral.a"; sourceTree = "<group>"; };
-		4356FCC714A01159008AF7D3 /* cturtle.vtk */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cturtle.vtk; sourceTree = "<group>"; };
 		4356FCCA14A015B1008AF7D3 /* libvtkIOPLY.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libvtkIOPLY.a; path = "../../../../build/CMakeExternals/Build/vtkmodular-ios-device/lib/libvtkIOPLY.a"; sourceTree = "<group>"; };
 		436B34AF13C802D500C5726C /* Default-Landscape~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Landscape~ipad.png"; sourceTree = "<group>"; };
 		436B34B013C802D500C5726C /* Default-Portrait~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-Portrait~ipad.png"; sourceTree = "<group>"; };
@@ -137,14 +131,12 @@
 		43F0A7A21448D1E500A8CE8D /* kiwi.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = kiwi.xcconfig; sourceTree = "<group>"; };
 		43FA5BE3141705FD00ECC80E /* kiwiAppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = kiwiAppDelegate.mm; sourceTree = "<group>"; };
 		453036EA1406A298003A861A /* InfoView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InfoView.xib; sourceTree = "<group>"; };
-		6F25E720137DEA5400BF4BCA /* current.stl */ = {isa = PBXFileReference; lastKnownFileType = file; path = current.stl; sourceTree = "<group>"; };
 		6F41B5BD1360C0C900D0079D /* InfoView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = InfoView.h; sourceTree = "<group>"; };
 		6F41B5BE1360C0CA00D0079D /* InfoView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = InfoView.m; sourceTree = "<group>"; };
 		6F43A8AD138AC01D0053899E /* Kiwi_K.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Kiwi_K.png; sourceTree = "<group>"; };
 		6F5CF7A213103D7700BB1195 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		7027670413EC41640089945A /* teapot.vtp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = teapot.vtp; sourceTree = "<group>"; };
 		7027670613EC41D30089945A /* bunny.vtp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bunny.vtp; sourceTree = "<group>"; };
-		7027670813EC425A0089945A /* old_well.vtp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = old_well.vtp; sourceTree = "<group>"; };
 		7027670A13EC439C0089945A /* visible-woman-hand.vtp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "visible-woman-hand.vtp"; sourceTree = "<group>"; };
 		7027670C13EC44DE0089945A /* AppendedKneeData.vtp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AppendedKneeData.vtp; sourceTree = "<group>"; };
 		7027670E13EC45590089945A /* shuttle.vtp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = shuttle.vtp; sourceTree = "<group>"; };
@@ -328,17 +320,13 @@
 				43E58D8F14299CC100D53D13 /* kiwi.png */,
 				43E0526D1424014300FC4F02 /* head.vti */,
 				435026ED140E93C9000C315D /* caffeine.pdb */,
-				435026EE140E93C9000C315D /* motor.g */,
 				7027671013EC46620089945A /* MountStHelen.vtp */,
 				7027670E13EC45590089945A /* shuttle.vtp */,
 				7027670C13EC44DE0089945A /* AppendedKneeData.vtp */,
 				7027670A13EC439C0089945A /* visible-woman-hand.vtp */,
-				7027670813EC425A0089945A /* old_well.vtp */,
 				7027670613EC41D30089945A /* bunny.vtp */,
 				7027670413EC41640089945A /* teapot.vtp */,
 				70BED44414082CF2004D2731 /* Buckyball.vtp */,
-				6F25E720137DEA5400BF4BCA /* current.stl */,
-				1FBD34E2132163C300738902 /* current.vtk */,
 			);
 			name = Data;
 			path = Kiwi/Data;
@@ -408,8 +396,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */,
-				1FBD34E3132163C300738902 /* current.vtk in Resources */,
-				6F25E721137DEA5400BF4BCA /* current.stl in Resources */,
 				6F43A8AE138AC01D0053899E /* Kiwi_K.png in Resources */,
 				706F0E4A138C691E00B575F4 /* fullscreen_32.png in Resources */,
 				706F0E4C138C693100B575F4 /* opendata_32.png in Resources */,
@@ -430,7 +416,6 @@
 				70BED44714082EB5004D2731 /* Kiwi_Splash_114.png in Resources */,
 				431FC64F1408B7A5006B9246 /* TitleBarViewContainer.xib in Resources */,
 				435026EF140E93C9000C315D /* caffeine.pdb in Resources */,
-				435026F0140E93C9000C315D /* motor.g in Resources */,
 				70F2731E140F099100D1677C /* Default@2x.png in Resources */,
 				43C1C1CE1410533A00A721F7 /* Default.png in Resources */,
 				43E0526E1424014300FC4F02 /* head.vti in Resources */,

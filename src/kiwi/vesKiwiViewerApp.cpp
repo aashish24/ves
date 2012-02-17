@@ -141,7 +141,6 @@ vesKiwiViewerApp::vesKiwiViewerApp()
   this->Internal = new vesInternal();
   this->setDefaultBackgroundColor();
 
-  this->addBuiltinDataset("Sphere", "current.stl");
   this->addBuiltinDataset("Utah Teapot", "teapot.vtp");
   this->addBuiltinDataset("Stanford Bunny", "bunny.vtp");
   this->addBuiltinDataset("NLM Visible Woman Hand", "visible-woman-hand.vtp");
@@ -149,7 +148,6 @@ vesKiwiViewerApp::vesKiwiViewerApp()
   this->addBuiltinDataset("Mount St. Helens", "MountStHelen.vtp");
   this->addBuiltinDataset("Space Shuttle", "shuttle.vtp");
   this->addBuiltinDataset("Buckyball", "Buckyball.vtp");
-  this->addBuiltinDataset("Motor", "motor.g");
   this->addBuiltinDataset("Caffeine", "caffeine.pdb");
   this->addBuiltinDataset("Head", "head.vti");
   this->addBuiltinDataset("KiwiViewer Logo", "kiwi.png");

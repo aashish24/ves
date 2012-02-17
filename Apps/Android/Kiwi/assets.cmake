@@ -6,8 +6,6 @@ set(assets
   ${kiwi_data}/MountStHelen.vtp
   ${kiwi_data}/bunny.vtp
   ${kiwi_data}/caffeine.pdb
-  ${kiwi_data}/current.stl
-  ${kiwi_data}/motor.g
   ${kiwi_data}/shuttle.vtp
   ${kiwi_data}/teapot.vtp
   ${kiwi_data}/visible-woman-hand.vtp
