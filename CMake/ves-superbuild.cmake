@@ -2,6 +2,8 @@ if(NOT VES_LINUX_SUPERBUILD AND NOT VES_ANDROID_SUPERBUILD AND NOT VES_IOS_SUPER
   return()
 endif()
 
+project(VES_SUPERBUILD)
+
 include(ExternalProject)
 
 set(base "${CMAKE_BINARY_DIR}/CMakeExternals")

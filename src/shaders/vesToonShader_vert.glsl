@@ -21,6 +21,10 @@
 ///
 /// \ingroup shaders
 
+#define mediump
+#define highp
+#define lowp
+
 // Uniforms.
 uniform bool  hasVertexColors;
 uniform mediump vec3 lightDirection;

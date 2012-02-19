@@ -21,12 +21,19 @@
 #define VESGL_H
 
 #ifdef ANDROID
-# include <GLES2/gl2.h>
-# include <GLES2/gl2ext.h>
+//# include <GLES2/gl2.h>
+//# include <GLES2/gl2ext.h>
+#define GL_GLEXT_PROTOTYPES
+#include <GL/gl.h>
+#include <GL/glext.h>
 #else
-# include <OpenGLES/ES2/gl.h>
-# include <OpenGLES/ES2/glext.h>
+//# include <OpenGLES/ES2/gl.h>
+//# include <OpenGLES/ES2/glext.h>
+# include <OpenGL/gl.h>
+# include <OpenGL/glext.h>
 #endif
+
+#define glClearDepthf glClearDepth
 
 #ifndef GL_SAMPLER_1D
     #define GL_SAMPLER_1D               0x8B5D

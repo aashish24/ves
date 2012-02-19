@@ -21,6 +21,10 @@
 ///
 /// \ingroup shaders
 
+#define mediump
+#define highp
+#define lowp
+
 // Uniforms.
 uniform lowp int primitiveType;
 

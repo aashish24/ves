@@ -21,6 +21,10 @@
 ///
 /// \ingroup shaders
 
+#define mediump
+#define highp
+#define lowp
+
 uniform highp mat4 modelViewMatrix;
 uniform highp mat4 projectionMatrix;
 

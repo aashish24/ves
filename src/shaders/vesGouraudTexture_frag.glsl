@@ -21,6 +21,10 @@
 ///
 /// \ingroup shaders
 
+#define mediump
+#define highp
+#define lowp
+
 varying mediump vec2 textureCoordinate;
 
 //varying mediump vec4 varColor;

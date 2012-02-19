@@ -39,14 +39,14 @@ vesRenderer::vesRenderer():
   m_height(100),
   m_camera(new vesCamera()),
   m_sceneRoot(new vesGroupNode()),
-  m_renderStage(new vesRenderStage()),
-  m_background (new vesBackground())
+  m_renderStage(new vesRenderStage())
+  //m_background (new vesBackground())
 {
   this->m_aspect[0] = this->m_aspect[1] = 1.0;
 
   this->m_camera->addChild(this->m_sceneRoot);
 
-  this->setupBackground();
+  //this->setupBackground();
 }
 
 
@@ -96,7 +96,7 @@ void vesRenderer::resize(int width, int height, float scale)
 
   this->m_camera->viewport()->setViewport(0, 0, this->m_width, this->m_height);
 
-  this->updateBackgroundViewport();
+  //this->updateBackgroundViewport();
 
   this->m_aspect[0] = this->m_camera->viewport()->inverseAspect();
   this->m_aspect[1] = this->m_camera->viewport()->aspect();

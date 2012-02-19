@@ -9,6 +9,9 @@ endif()
 find_package(Eigen REQUIRED)
 include_directories(${EIGEN_INCLUDE_DIRS})
 
+find_package(OpenGL REQUIRED)
+include_directories(${OPENGL_INCLUDE_DIRS})
+
 include(setup-headers.cmake)
 
 add_subdirectory(ves)
