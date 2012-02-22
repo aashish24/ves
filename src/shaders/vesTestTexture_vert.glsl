@@ -21,9 +21,18 @@
 ///
 /// \ingroup shaders
 
-#define mediump
-#define highp
-#define lowp
+#ifdef GL_ES_VERSION_2_0
+    #version 100
+#else
+    #version 120
+#endif
+
+#ifndef GL_ES_VERSION_2_0
+    // Ignore GLES 2 precision specifiers
+    #define lowp
+    #define mediump
+    #define highp
+#endif
 
 uniform highp mat4 modelViewMatrix;
 uniform highp mat4 projectionMatrix;
