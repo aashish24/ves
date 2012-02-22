@@ -48,11 +48,15 @@
 #include "vesVertexAttributeKeys.h"
 #include "vesOpenGLSupport.h"
 #include "vesBuiltinShaders.h"
+#include "vesOpenGLSupport.h"
 
 #include <vtkNew.h>
 #include <vtkPolyData.h>
 #include <vtkImageData.h>
 #include <vtkPointData.h>
+#include <vtkLookupTable.h>
+#include <vtkExtractPolyDataPiece.h>
+#include <vtkStreamingDemandDrivenPipeline.h>
 
 
 #include <vtksys/SystemTools.hxx>
@@ -686,16 +690,83 @@ void vesKiwiViewerApp::addRepresentationsForDataSet(vtkDataSet* dataSet)
   }
 }
 
+namespace {
+
+vtkSmartPointer<vtkPolyData> ExtractPolyDataPiece(vtkPolyData* polyData, int pieceIndex, int numberOfPieces)
+{
+  const int ghostLevel = 0;
+  vtkNew<vtkExtractPolyDataPiece> extractFilter;
+  extractFilter->SetInputData(polyData);
+  extractFilter->CreateGhostCellsOff();
+  extractFilter->GetOutputDataObject(0); //initialize the output information
+  vtkStreamingDemandDrivenPipeline::SetUpdateExtent(
+      extractFilter->GetOutputInformation(0),
+      pieceIndex, numberOfPieces, ghostLevel);
+  extractFilter->Update();
+  vtkSmartPointer<vtkPolyData> piece = vtkSmartPointer<vtkPolyData>::New();
+  piece->ShallowCopy(extractFilter->GetOutput());
+  return piece;
+}
+
+void RecursiveSplitMesh(vtkPolyData* polyData, std::vector<vtkSmartPointer<vtkPolyData> >& pieces)
+{
+  // base case
+  const vtkIdType maximumNumberOfPoints = 65536;
+  if (polyData->GetNumberOfPoints() < maximumNumberOfPoints) {
+    pieces.push_back(polyData);
+    return;
+  }
+
+  std::cout << "splitting mesh with " << polyData->GetNumberOfPoints() << " points" << std::endl;
+
+  // split the mesh in half and recurse with each half
+  const int numberOfPieces = 2;
+  for (int pieceIndex = 0; pieceIndex < numberOfPieces; ++pieceIndex) {
+    vtkSmartPointer<vtkPolyData> piece = ExtractPolyDataPiece(polyData, pieceIndex, numberOfPieces);
+    RecursiveSplitMesh(piece, pieces);
+  }
+}
+
+}
+
 //----------------------------------------------------------------------------
 vesKiwiPolyDataRepresentation* vesKiwiViewerApp::addPolyDataRepresentation(
   vtkPolyData* polyData, vesSharedPtr<vesShaderProgram> program)
 {
-  vesKiwiPolyDataRepresentation* rep = new vesKiwiPolyDataRepresentation();
-  rep->initializeWithShader(program);
-  rep->setPolyData(polyData);
-  rep->addSelfToRenderer(this->renderer());
-  this->Internal->DataRepresentations.push_back(rep);
-  return rep;
+  // create default color map if data has scalars
+  vtkSmartPointer<vtkScalarsToColors> colorMap;
+  vtkDataArray* scalars = vesKiwiDataConversionTools::FindScalarsArray(polyData);
+  if (scalars) {
+    colorMap = vesKiwiDataConversionTools::GetRedToBlueLookupTable(scalars->GetRange());
+  }
+
+  vesOpenGLSupport glSupport;
+  glSupport.initialize();
+  bool needToSplitMesh = glSupport.isSupportedIndexUnsignedInt();
+
+  // For testing, lets force needToSplitMesh to TRUE
+  needToSplitMesh = true;
+
+  std::vector<vtkSmartPointer<vtkPolyData> > pieces;
+  if (needToSplitMesh) {
+    RecursiveSplitMesh(polyData, pieces);
+  }
+  else {
+    pieces.push_back(polyData);
+  }
+
+  assert(pieces.size() >= 1);
+
+  for (size_t i = 0; i < pieces.size(); ++i) {
+    std::cout << "polydata piece has " << pieces[i]->GetNumberOfPoints() << " points" << std::endl;
+    vesKiwiPolyDataRepresentation* rep = new vesKiwiPolyDataRepresentation();
+    rep->initializeWithShader(program);
+    rep->setPolyData(pieces[i], colorMap);
+    rep->addSelfToRenderer(this->renderer());
+    this->Internal->DataRepresentations.push_back(rep);
+  }
+
+  return static_cast<vesKiwiPolyDataRepresentation*>(this->Internal->DataRepresentations.back());
 }
 
 //----------------------------------------------------------------------------
