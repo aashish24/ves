@@ -15,6 +15,7 @@ set(sources
   vesMapper.cpp
   vesMaterial.cpp
   vesNode.cpp
+  vesOpenGLSupport.cpp
   vesRenderer.cpp
   vesRenderStage.cpp
   vesRenderToTexture.cpp
