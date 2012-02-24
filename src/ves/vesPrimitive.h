@@ -27,37 +27,127 @@
 // C++ includes
 #include <vector>
 
+class vesBaseIndices
+{
+public:
+  vesTypeMacro(vesBaseIndices);
+
+  virtual void* dataPointer() const = 0;
+  virtual unsigned int sizeOfDataType() const = 0;
+  virtual unsigned int size() const = 0;
+};
+
+template<typename T>
+class vesIndices : public vesBaseIndices
+{
+public:
+  typedef std::vector<T> Indices;
+
+  vesTypeMacro(vesIndices);
+
+  vesIndices() :
+    m_dataTypeSize(sizeof(T))
+  {
+  }
+
+  virtual unsigned int dataTypeSize() const
+  {
+    return this->m_dataTypeSize;
+  }
+
+  virtual unsigned int size() const
+  {
+    return static_cast<unsigned int>(this->m_indices.size());
+  }
+
+  /// Helper functions
+  inline void pushBackIndices(T i1)
+  {
+    this->m_indices.push_back(i1);
+  }
+
+  inline void pushBackIndices(T i1, T i2)
+  {
+    this->m_indices.push_back(i1);
+    this->m_indices.push_back(i2);
+  }
+
+  inline void pushBackIndices(T i1, T i2, T i3)
+  {
+    this->m_indices.push_back(i1);
+    this->m_indices.push_back(i2);
+    this->m_indices.push_back(i3);
+  }
+
+  inline unsigned int sizeOfDataType() const
+  {
+    return this->m_dataTypeSize;
+  }
+
+  /// Use this method with caution
+  inline T* data()
+  {
+    return &this->m_indices.front();
+  }
+
+  virtual void* dataPointer() const
+  {
+    return (void*)&this->m_indices.front();
+  }
+
+  inline const T* data() const
+  {
+    return &this->m_indices.front();
+  }
+
+  inline T at(unsigned int index)
+  {
+    return this->m_indices[index];
+  }
+
+  inline const T& at(unsigned int index) const
+  {
+    return this->m_indices[index];
+  }
+
+  /// Use this method with caution
+  std::vector<T>* indices()
+  {
+    return &this->m_indices;
+  }
+
+  const std::vector<T>* indices() const
+  {
+    return &this->m_indices;
+  }
+
+private:
+  /// Size of indices data type
+  unsigned int m_dataTypeSize;
+
+  Indices m_indices;
+};
+
+
 class vesPrimitive
 {
 public:
-  typedef std::vector<unsigned short> Indices;
-
   vesTypeMacro(vesPrimitive);
 
   vesPrimitive() :
-    m_dataTypeSize(sizeof(unsigned short)),
     m_indexCount(0),
     m_primitiveType(0)
   {
   }
 
-  /// Helper functions
-  inline void pushBackIndices(unsigned short i1)
+  inline void setVesIndices(vesSharedPtr<vesBaseIndices> primIndices)
   {
-    this->m_indices.push_back(i1);
+    this->m_vesIndices = primIndices;
   }
 
-  inline void pushBackIndices(unsigned short i1, unsigned short i2)
+  inline vesSharedPtr<vesBaseIndices> getVesIndices()
   {
-    this->m_indices.push_back(i1);
-    this->m_indices.push_back(i2);
-  }
-
-  inline void pushBackIndices(unsigned short i1, unsigned short i2, unsigned short i3)
-  {
-    this->m_indices.push_back(i1);
-    this->m_indices.push_back(i2);
-    this->m_indices.push_back(i3);
+    return this->m_vesIndices;
   }
 
   inline unsigned int size() const
@@ -67,12 +157,17 @@ public:
 
   inline unsigned int sizeInBytes() const
   {
-    return this->m_dataTypeSize * this->m_indices.size();
+    return (this->m_vesIndices
+      ? (this->m_vesIndices->sizeOfDataType()
+         * this->m_vesIndices->size())
+      : 0);
   }
 
   inline unsigned int numberOfIndices() const
   {
-    return static_cast<unsigned int>(this->m_indices.size());
+    return (this->m_vesIndices
+      ? static_cast<unsigned int>(this->m_vesIndices->size())
+      : 0);
   }
 
   inline unsigned int primitiveType() const
@@ -98,47 +193,32 @@ public:
     return success;
   }
 
-  inline int sizeOfDataType() const
+  /// \NOTE Use this method with caution
+  inline void* data()
   {
-    return this->m_dataTypeSize;
+    return (this->m_vesIndices
+      ? (void*)(this->m_vesIndices->dataPointer())
+      : 0);
   }
 
   /// Use this method with caution
-  inline unsigned short* data()
+  inline const void* data() const
   {
-    return &this->m_indices.front();
-  }
-
-  inline const unsigned short* data() const
-  {
-    return &this->m_indices.front();
-  }
-
-  inline unsigned short at(unsigned int index)
-  {
-    return this->m_indices[index];
-  }
-
-  inline const unsigned short& at(unsigned int index) const
-  {
-    return this->m_indices[index];
+    return (this->m_vesIndices
+      ? (void*)(this->m_vesIndices->dataPointer())
+      : 0);
   }
 
   /// Use this method with caution
-  std::vector<unsigned short>* indices()
+  unsigned int sizeOfDataType() const
   {
-    return &this->m_indices;
+    return (this->m_vesIndices
+      ? this->m_vesIndices->sizeOfDataType()
+      : 0);
   }
 
-  const std::vector<unsigned short>* indices() const
-  {
-    return &this->m_indices;
-  }
 
 private:
-  /// Size of indices data type
-  int m_dataTypeSize;
-
   /// Number of indices used to draw elements
   int m_indexCount;
 
@@ -146,7 +226,7 @@ private:
   unsigned int m_primitiveType;
 
   /// Primitive indices
-  Indices m_indices;
+  vesSharedPtr<vesBaseIndices> m_vesIndices;
 };
 
 #endif // VESPRIMITIVE_H

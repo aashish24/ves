@@ -27,7 +27,7 @@
 #define vesNotUsed(x) (void)x
 
 #define vesTypeMacro(className) \
-  typedef vesSharedPtr<className> Ptr; \
-  typedef const vesSharedPtr<className> ConstPtr;
+  typedef vesSharedPtr< className > Ptr; \
+  typedef const vesSharedPtr< className > ConstPtr;
 
 #endif

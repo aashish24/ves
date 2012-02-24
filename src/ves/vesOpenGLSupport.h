@@ -10,7 +10,10 @@
 class vesOpenGLSupport
 {
 public:
-  static vesOpenGLSupport* instance();
+  vesTypeMacro(vesOpenGLSupport);
+
+  vesOpenGLSupport();
+  ~vesOpenGLSupport();
 
   void initialize();
 
@@ -26,12 +29,8 @@ public:
 
   bool isSupported(const std::string& ext) const;
 
-
 private:
-  vesOpenGLSupport();
-  ~vesOpenGLSupport();
 
-  static vesOpenGLSupport* m_instance;
 
   bool m_initialized;
 

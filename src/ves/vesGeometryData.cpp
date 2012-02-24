@@ -98,14 +98,17 @@ void vesGeometryData::computeNormals()
 
   unsigned int numberOfIndices = triangles->numberOfIndices();
   unsigned int indexCount = triangles->indexCount();
+  vesSharedPtr< vesIndices< unsigned short > > triangleIndices
+      = std::tr1::static_pointer_cast< vesIndices< unsigned short > >
+        (triangles->getVesIndices());
 
   assert(indexCount == 3);
 
   for (unsigned int i = 0; i < numberOfIndices; i=i+3) {
 
-    void* p1 = static_cast<char*>(data) + triangles->at(i+0) * stride;
-    void* p2 = static_cast<char*>(data) + triangles->at(i+1) * stride;
-    void* p3 = static_cast<char*>(data) + triangles->at(i+2) * stride;
+    void* p1 = static_cast<char*>(data) + triangleIndices->at(i+0) * stride;
+    void* p2 = static_cast<char*>(data) + triangleIndices->at(i+1) * stride;
+    void* p3 = static_cast<char*>(data) + triangleIndices->at(i+2) * stride;
 
     vesVector3f p1Vec3f;
     vesVector3f p2Vec3f;
@@ -132,11 +135,11 @@ void vesGeometryData::computeNormals()
     n[1] = u[2]*v[0] - u[0]*v[2];
     n[2] = u[0]*v[1] - u[1]*v[0];
 
-    this->addAndUpdateNormal(triangles->at(i+0), n[0], n[1], n[2],
+    this->addAndUpdateNormal(triangleIndices->at(i+0), n[0], n[1], n[2],
                             data, stride, offset, sizeOfDataType);
-    this->addAndUpdateNormal(triangles->at(i+1), n[0], n[1], n[2],
+    this->addAndUpdateNormal(triangleIndices->at(i+1), n[0], n[1], n[2],
                             data, stride, offset, sizeOfDataType);
-    this->addAndUpdateNormal(triangles->at(i+2), n[0], n[1], n[2],
+    this->addAndUpdateNormal(triangleIndices->at(i+2), n[0], n[1], n[2],
                             data, stride, offset, sizeOfDataType);
   }
 

@@ -68,7 +68,9 @@ void vesRenderer::render()
     // Cull traversal.
     this->cullTraverseScene();
 
+    // Create and initialize render state
     vesRenderState renderState;
+    renderState.initialize();
 
     // Clear all the previous render targets.
     this->m_camera->clearRenderTargets(renderState);

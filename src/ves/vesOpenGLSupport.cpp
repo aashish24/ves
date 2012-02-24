@@ -8,9 +8,6 @@
 #include <cassert>
 #include <sstream>
 
-vesOpenGLSupport* vesOpenGLSupport::m_instance = 0;
-
-
 //-----------------------------------------------------------------------------
 vesOpenGLSupport::vesOpenGLSupport() :
   m_initialized(false)
@@ -18,14 +15,9 @@ vesOpenGLSupport::vesOpenGLSupport() :
 }
 
 //-----------------------------------------------------------------------------
-vesOpenGLSupport* vesOpenGLSupport::instance()
+vesOpenGLSupport::~vesOpenGLSupport()
 {
-  if(m_instance != 0) {
-    return m_instance;
-  }
-
-  m_instance = new vesOpenGLSupport();
-  return m_instance;
+  this->m_extensionList.clear();
 }
 
 //-----------------------------------------------------------------------------
