@@ -58,7 +58,12 @@ by executing the command line:
 
 --Download the NDK
 
-I downloaded android-ndk-r6-darwin-x86.tar.bz2 from http://developer.android.com/sdk/ndk/index.html
+The NDK can be downloaded from http://developer.android.com/sdk/ndk/index.html
+
+Currently, ndk-r6 is the supported version.  It can be downloaded from:
+
+osx:   http://dl.google.com/android/ndk/android-ndk-r6-darwin-x86.tar.bz2
+linux: http://dl.google.com/android/ndk/android-ndk-r6-linux-x86.tar.bz2
 
 
 --Compiling code with toolchains and ant
