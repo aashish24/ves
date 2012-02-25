@@ -42,7 +42,7 @@ public:
 
   virtual void addSelfToRenderer(vesSharedPtr<vesRenderer> renderer) = 0;
   virtual void removeSelfFromRenderer(vesSharedPtr<vesRenderer> renderer) = 0;
-  virtual void willRender(vesSharedPtr<vesRenderer> renderer) { }
+  virtual void willRender(vesSharedPtr<vesRenderer> renderer);
 
   virtual int numberOfFacets() = 0;
   virtual int numberOfVertices() = 0;

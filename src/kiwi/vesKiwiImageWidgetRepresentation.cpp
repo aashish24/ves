@@ -105,6 +105,8 @@ vesKiwiImageWidgetRepresentation::~vesKiwiImageWidgetRepresentation()
 //----------------------------------------------------------------------------
 void vesKiwiImageWidgetRepresentation::willRender(vesSharedPtr<vesRenderer> renderer)
 {
+  vesNotUsed(renderer);
+
   if (this->Internal->TargetSliceIndex.size()) {
 
     std::map<int, int>::const_iterator itr;

@@ -666,6 +666,7 @@ void vesKiwiViewerApp::setDefaultBackgroundColor()
 //----------------------------------------------------------------------------
 void vesKiwiViewerApp::checkForAdditionalData(const std::string& dirname)
 {
+  vesNotUsed(dirname);
 }
 
 //----------------------------------------------------------------------------

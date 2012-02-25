@@ -20,13 +20,16 @@
 
 #include "vesKiwiDataRepresentation.h"
 #include "vesActor.h"
-#include "vesGMTL.h"
 
 #include <vtkTransform.h>
 
-#include <cassert>
-#include <cmath>
+//----------------------------------------------------------------------------
+void vesKiwiDataRepresentation::willRender(vesSharedPtr<vesRenderer> renderer)
+{
+  vesNotUsed(renderer);
+}
 
+//----------------------------------------------------------------------------
 void vesKiwiDataRepresentation::setTransformOnActor(vesSharedPtr<vesActor> actor, vtkTransform* transform)
 {
   assert(actor);
