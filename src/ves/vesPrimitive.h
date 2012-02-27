@@ -136,7 +136,8 @@ public:
 
   vesPrimitive() :
     m_indexCount(0),
-    m_primitiveType(0)
+    m_primitiveType(0),
+    m_indicesValueType(0)
   {
   }
 
@@ -178,6 +179,17 @@ public:
   bool setPrimitiveType(unsigned int type)
   {
     this->m_primitiveType = type;
+    return true;
+  }
+
+  inline unsigned int indicesValueType() const
+  {
+    return this->m_indicesValueType;
+  }
+
+  bool setIndicesValueType(unsigned int type)
+  {
+    this->m_indicesValueType = type;
     return true;
   }
 
@@ -224,6 +236,9 @@ private:
 
   /// Primitive type
   unsigned int m_primitiveType;
+
+  /// Primitive indices value type
+  unsigned int m_indicesValueType;
 
   /// Primitive indices
   vesSharedPtr<vesBaseIndices> m_vesIndices;

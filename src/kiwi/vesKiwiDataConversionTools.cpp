@@ -361,6 +361,8 @@ vesSharedPtr<vesGeometryData> vesKiwiDataConversionTools::Convert(vtkPolyData* i
     trianglesPrimitive = vesPrimitive::Ptr(new vesPrimitive());
     trianglesPrimitive->setIndexCount(3);
     trianglesPrimitive->setPrimitiveType(vesPrimitiveRenderType::Triangles);
+    trianglesPrimitive->setIndicesValueType(
+      vesPrimitiveIndicesValueType::UnsignedShort);
     trianglesPrimitive->setVesIndices(triangleIndices);
 
     output->addPrimitive(trianglesPrimitive);
@@ -387,6 +389,8 @@ vesSharedPtr<vesGeometryData> vesKiwiDataConversionTools::Convert(vtkPolyData* i
     triangleStripsPrimitive = vesPrimitive::Ptr(new vesPrimitive());
     triangleStripsPrimitive->setIndexCount(1);
     triangleStripsPrimitive->setPrimitiveType(vesPrimitiveRenderType::TriangleStrip);
+    triangleStripsPrimitive->setIndicesValueType(
+      vesPrimitiveIndicesValueType::UnsignedShort);
     triangleStripsPrimitive->setVesIndices(triangleIndices);
 
     output->addPrimitive(triangleStripsPrimitive);
@@ -417,6 +421,8 @@ vesSharedPtr<vesGeometryData> vesKiwiDataConversionTools::Convert(vtkPolyData* i
     linesPrimitive = vesPrimitive::Ptr(new vesPrimitive());
     linesPrimitive->setIndexCount(2);
     linesPrimitive->setPrimitiveType(vesPrimitiveRenderType::Lines);
+    linesPrimitive->setIndicesValueType(
+      vesPrimitiveIndicesValueType::UnsignedShort);
     linesPrimitive->setVesIndices(linesIndices);
 
     output->addPrimitive(linesPrimitive);
@@ -440,6 +446,8 @@ vesSharedPtr<vesGeometryData> vesKiwiDataConversionTools::Convert(vtkPolyData* i
     verticesPrimitive = vesPrimitive::Ptr(new vesPrimitive());
     verticesPrimitive->setIndexCount(1);
     verticesPrimitive->setPrimitiveType(vesPrimitiveRenderType::Points);
+    verticesPrimitive->setIndicesValueType(
+      vesPrimitiveIndicesValueType::UnsignedShort);
     verticesPrimitive->setVesIndices(verticesIndices);
 
     output->addPrimitive(verticesPrimitive);
