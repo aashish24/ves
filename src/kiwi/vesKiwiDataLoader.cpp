@@ -20,6 +20,8 @@
 
 #include "vesKiwiDataLoader.h"
 
+#include <vesOpenGLSupport.h>
+
 #include <vtkSmartPointer.h>
 #include <vtkXMLPolyDataReader.h>
 #include <vtkXMLImageDataReader.h>
@@ -46,6 +48,7 @@
 #include <vtksys/SystemTools.hxx>
 
 #include <cassert>
+#include <limits>
 
 //----------------------------------------------------------------------------
 class vesKiwiDataLoader::vesInternal
@@ -54,10 +57,12 @@ public:
 
   vesInternal()
   {
+    this->GLSupport = vesOpenGLSupport::Ptr(new vesOpenGLSupport());
   }
 
   std::string ErrorTitle;
   std::string ErrorMessage;
+  vesOpenGLSupport::Ptr GLSupport;
 
 };
 
@@ -126,8 +131,18 @@ vtkSmartPointer<vtkDataSet> vesKiwiDataLoader::datasetFromAlgorithm(vtkAlgorithm
   }
 
   // VES cannot handle too many points (if the dataset has non-vertex cells),
-  // so handle the error at this point
-  const vtkIdType maximumNumberOfPoints = 65536;
+  // so handle the error at this point.
+  vtkIdType maximumNumberOfPoints = 65536;
+
+  // Check if extension exists to support unsigned int
+  // value type for indices.
+  this->Internal->GLSupport->initialize();
+
+  if (this->Internal->GLSupport->isSupportedIndexUnsignedInt())
+    {
+    maximumNumberOfPoints = std::numeric_limits<unsigned int>::max();
+    }
+
   vtkPolyData* polyData = vtkPolyData::SafeDownCast(dataset);
   if (polyData
       && polyData->GetNumberOfPoints() > maximumNumberOfPoints
