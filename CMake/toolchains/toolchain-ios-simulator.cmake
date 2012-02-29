@@ -1,7 +1,16 @@
 set(CMAKE_SYSTEM_NAME Darwin)
 
-set(CMAKE_C_COMPILER /Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/gcc)
-set(CMAKE_CXX_COMPILER /Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/g++)
+find_program(CMAKE_C_COMPILER NAME gcc
+  PATHS
+  /Applications/XCode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/
+  /Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/
+  NO_DEFAULT_PATH)
+
+find_program(CMAKE_CXX_COMPILER NAME g++
+  PATHS
+  /Applications/XCode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/
+  /Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/
+  NO_DEFAULT_PATH)
 
 set(CMAKE_OSX_ARCHITECTURES i386)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0 -pipe")
@@ -17,11 +26,16 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__IPHONE_OS_VERSION_MIN_REQUIRED=40300
 
 # Set the CMAKE_OSX_SYSROOT to the latest SDK found
 set(CMAKE_OSX_SYSROOT)
-set(sdk_root /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs)
-foreach(sdk iPhoneSimulator4.3.sdk iPhoneSimulator5.0.sdk)
-  if (EXISTS ${sdk_root}/${sdk} AND IS_DIRECTORY ${sdk_root}/${sdk})
-    set(CMAKE_OSX_SYSROOT ${sdk_root}/${sdk})
-  endif()
+set(possible_sdk_roots
+  /Applications/XCode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs
+  /Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs
+  )
+foreach(sdk_root ${possible_sdk_roots})
+  foreach(sdk iPhoneOS4.3.sdk iPhoneOS5.0.sdk)
+    if (EXISTS ${sdk_root}/${sdk} AND IS_DIRECTORY ${sdk_root}/${sdk})
+      set(CMAKE_OSX_SYSROOT ${sdk_root}/${sdk})
+    endif()
+  endforeach()
 endforeach()
 if (NOT CMAKE_OSX_SYSROOT)
   message(FATAL_ERROR "Could not find a usable iOS SDK in ${sdk_root}")
