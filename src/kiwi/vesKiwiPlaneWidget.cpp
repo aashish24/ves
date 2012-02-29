@@ -189,6 +189,7 @@ void vesKiwiPlaneWidget::planeEquation(double equation[4])
 //----------------------------------------------------------------------------
 void vesKiwiPlaneWidget::willRender(vesSharedPtr<vesRenderer> renderer)
 {
+  vesNotUsed(renderer);
   assert(this->Internal->ClipUniform);
   double planeEquation[4];
   this->planeEquation(planeEquation);

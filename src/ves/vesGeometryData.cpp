@@ -97,9 +97,8 @@ void vesGeometryData::computeNormals()
   }
 
   unsigned int numberOfIndices = triangles->numberOfIndices();
-  unsigned int indexCount = triangles->indexCount();
 
-  assert(indexCount == 3);
+  assert(triangles->indexCount() == 3);
 
   for (unsigned int i = 0; i < numberOfIndices; i=i+3) {
 

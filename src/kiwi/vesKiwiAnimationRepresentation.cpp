@@ -200,6 +200,8 @@ void vesKiwiAnimationRepresentation::loadData(const std::string& filename)
 //----------------------------------------------------------------------------
 bool vesKiwiAnimationRepresentation::handleSingleTouchDown(int displayX, int displayY)
 {
+  vesNotUsed(displayY);
+
   int cornerSize = 50;
   if (displayX < cornerSize) {
 
@@ -262,6 +264,8 @@ bool vesKiwiAnimationRepresentation::handleSingleTouchTap(int displayX, int disp
 //----------------------------------------------------------------------------
 bool vesKiwiAnimationRepresentation::handleSingleTouchPanGesture(double deltaX, double deltaY)
 {
+  vesNotUsed(deltaX);
+
   if (!this->interactionIsActive()) {
     return false;
   }
@@ -309,6 +313,7 @@ bool vesKiwiAnimationRepresentation::handleSingleTouchPanGesture(double deltaX, 
 //----------------------------------------------------------------------------
 void vesKiwiAnimationRepresentation::willRender(vesSharedPtr<vesRenderer> renderer)
 {
+  vesNotUsed(renderer);
 
   if (this->Internal->PlayMode) {
 
