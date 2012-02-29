@@ -212,7 +212,6 @@ double PickDataSet(vtkCellLocator* locator, vesVector3d& rayPoint0, vesVector3d&
   double pickPoint[3];
   double t;
   double paramCoords[3];
-  vtkIdType cellId = -1;
   int subId;
 
   int result = locator->IntersectWithLine(rayPoint0.data(), rayPoint1.data(), 0.0, t, pickPoint, paramCoords, subId);
@@ -237,6 +236,9 @@ std::string GetHumanReadableName(std::string name)
 //----------------------------------------------------------------------------
 bool vesKiwiBrainAtlasRepresentation::handleLongPress(int displayX, int displayY)
 {
+  vesNotUsed(displayX);
+  vesNotUsed(displayY);
+
   this->deselectModel();
 
   // show all models
@@ -291,7 +293,8 @@ int vesKiwiBrainAtlasRepresentation::findTappedModel(int displayX, int displayY)
     vesVector3d pickRayPoint0 = rayPoint0;
     extraDist = 0.0;
 
-    if (i == this->Internal->SkullRepIndex || i == this->Internal->SkinRepIndex) {
+    if (static_cast<int>(i) == this->Internal->SkullRepIndex
+        || static_cast<int>(i) == this->Internal->SkinRepIndex) {
 
       // set rayPoint0 to intersection of ray with plane so that the ray
       // only intersects with the non-clipped portion of these models

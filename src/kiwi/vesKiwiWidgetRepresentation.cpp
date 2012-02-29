@@ -53,30 +53,40 @@ void vesKiwiWidgetRepresentation::interactionOff()
 //----------------------------------------------------------------------------
 bool vesKiwiWidgetRepresentation::handleSingleTouchPanGesture(double deltaX, double deltaY)
 {
+  vesNotUsed(deltaX);
+  vesNotUsed(deltaY);
   return false;
 }
 
 //----------------------------------------------------------------------------
 bool vesKiwiWidgetRepresentation::handleSingleTouchDown(int displayX, int displayY)
 {
+  vesNotUsed(displayX);
+  vesNotUsed(displayY);
   return false;
 }
 
 //----------------------------------------------------------------------------
 bool vesKiwiWidgetRepresentation::handleSingleTouchTap(int displayX, int displayY)
 {
+  vesNotUsed(displayX);
+  vesNotUsed(displayY);
   return false;
 }
 
 //----------------------------------------------------------------------------
 bool vesKiwiWidgetRepresentation::handleDoubleTap(int displayX, int displayY)
 {
+  vesNotUsed(displayX);
+  vesNotUsed(displayY);
   return false;
 }
 
 //----------------------------------------------------------------------------
 bool vesKiwiWidgetRepresentation::handleLongPress(int displayX, int displayY)
 {
+  vesNotUsed(displayX);
+  vesNotUsed(displayY);
   return false;
 }
 
@@ -95,5 +105,6 @@ void vesKiwiWidgetRepresentation::addSelfToRenderer(vesSharedPtr<vesRenderer> re
 //----------------------------------------------------------------------------
 void vesKiwiWidgetRepresentation::removeSelfFromRenderer(vesSharedPtr<vesRenderer> renderer)
 {
+  vesNotUsed(renderer);
   this->m_renderer.reset();
 }
