@@ -236,8 +236,7 @@ void vesKiwiDataConversionTools::SetTextureData(vtkUnsignedCharArray* pixels,
 void vesKiwiDataConversionTools::ConvertTriangles(
   vtkPolyData* input, vesSharedPtr<vesGeometryData> output)
 {
-  if (!input || !output)
-  {
+  if (!input || !output) {
     return;
   }
 
