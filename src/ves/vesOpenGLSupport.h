@@ -29,6 +29,8 @@ public:
 
   bool isSupported(const std::string& ext) const;
 
+  bool isSupportedIndexUnsignedInt() const;
+
 private:
 
 

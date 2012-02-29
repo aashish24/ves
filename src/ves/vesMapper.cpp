@@ -312,7 +312,7 @@ void vesMapper::drawPrimitive(const vesRenderState &renderState,
                  primitive->indicesValueType(),  (void*)0);
 }
 
-
+#include <iostream>
 void vesMapper::drawTriangles(const vesRenderState &renderState,
                               vesSharedPtr<vesPrimitive> triangles)
 {
@@ -337,6 +337,8 @@ void vesMapper::drawTriangles(const vesRenderState &renderState,
     // Send the primitive type information out
     renderState.m_material->bindRenderData(
       renderState, vesRenderData(triangles->primitiveType()));
+
+    std::cout << "triangles->indicesValueType() " << triangles->indicesValueType() << std::endl;
 
     // Now draw the elements
     glDrawElements(triangles->primitiveType(), numberOfIndicesToDraw,

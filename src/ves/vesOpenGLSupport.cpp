@@ -8,19 +8,18 @@
 #include <cassert>
 #include <sstream>
 
-//-----------------------------------------------------------------------------
 vesOpenGLSupport::vesOpenGLSupport() :
   m_initialized(false)
 {
 }
 
-//-----------------------------------------------------------------------------
+
 vesOpenGLSupport::~vesOpenGLSupport()
 {
   this->m_extensionList.clear();
 }
 
-//-----------------------------------------------------------------------------
+
 void vesOpenGLSupport::initialize()
 {
   if(this->m_initialized) {
@@ -54,7 +53,7 @@ void vesOpenGLSupport::initialize()
   this->m_initialized = true;
 }
 
-//-----------------------------------------------------------------------------
+
 bool vesOpenGLSupport::isSupported(const std::string &ext) const
 {
   if (this->m_extensionList.find(ext) == this->m_extensionList.end()) {
@@ -62,4 +61,10 @@ bool vesOpenGLSupport::isSupported(const std::string &ext) const
   }
 
   return true;
+}
+
+
+bool vesOpenGLSupport::isSupportedIndexUnsignedInt() const
+{
+  return this->isSupported("GL_OES_element_index_uint");
 }

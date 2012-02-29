@@ -41,6 +41,8 @@ class vesKiwiDataConversionTools
 {
 public:
   static vesSharedPtr<vesGeometryData> Convert(vtkPolyData* input);
+  template<typename T>
+  static vesSharedPtr<vesGeometryData> GenericConvert(vtkPolyData* input);
   static void Convert(vtkPolyData* input, vesSharedPtr<vesGeometryData> output);
 
   // This function is designed to be as fast as possible at the expense of
@@ -50,6 +52,9 @@ public:
   // Note: many of the optimizations here could be added to the Convert function
   //       this would be wortwhile future work.
   static void ConvertTriangles(vtkPolyData* input,
+    vesSharedPtr<vesGeometryData> output);
+  template<typename T>
+  static void GenericConvertTriangles(vtkPolyData* input,
     vesSharedPtr<vesGeometryData> output);
 
   /// Convert point and scalar data to VES format, it sacrifices generality for
@@ -73,7 +78,6 @@ public:
   static vtkSmartPointer<vtkUnsignedCharArray> MapScalars(vtkDataArray* scalars, vtkScalarsToColors* scalarsToColors);
   static void SetTextureData(vtkUnsignedCharArray* pixels,
     vesSharedPtr<vesTexture> texture, int width, int height);
-
 };
 
 #endif

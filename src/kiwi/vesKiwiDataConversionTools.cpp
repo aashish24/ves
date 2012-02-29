@@ -28,6 +28,7 @@
 #include "vtkLookupTable.h"
 #include "vesMath.h"
 #include "vtkNew.h"
+#include "vesOpenGLSupport.h"
 #include "vtkPointData.h"
 #include "vtkPolyData.h"
 #include "vesTexture.h"
@@ -240,6 +241,24 @@ void vesKiwiDataConversionTools::ConvertTriangles(
     return;
   }
 
+  vesOpenGLSupport::Ptr glSupport (new vesOpenGLSupport());
+  glSupport->initialize();
+
+  if (glSupport->isSupportedIndexUnsignedInt()) {
+    vesKiwiDataConversionTools::GenericConvertTriangles<unsigned int>(
+      input, output);
+  }
+  else {
+    return vesKiwiDataConversionTools::GenericConvertTriangles<unsigned short>(
+      input, output);
+  }
+}
+
+//----------------------------------------------------------------------------
+template<typename T>
+void vesKiwiDataConversionTools::GenericConvertTriangles(vtkPolyData* input,
+  vesSharedPtr<vesGeometryData> output)
+{
   vesSourceDataP3N3f::Ptr sourceData (new vesSourceDataP3N3f());
 
   double inPoint[3];
@@ -256,17 +275,17 @@ void vesKiwiDataConversionTools::ConvertTriangles(
   vtkIdType num;
   vtkIdType* vertices;
 
-  vesIndices<unsigned short>::Ptr indicesObj =
-      std::tr1::static_pointer_cast< vesIndices<unsigned short> >
-      (output->triangles()->getVesIndices());
+  vesSharedPtr< vesIndices<T> > indicesObj =
+    std::tr1::static_pointer_cast< vesIndices<T> >
+    (output->triangles()->getVesIndices());
 
-  vesIndices<unsigned short>::Indices* triangleIndices
+  typename vesIndices<T>::Indices* triangleIndices
     = indicesObj->indices();
 
   triangleIndices->clear();
   triangleIndices->resize(polys->GetNumberOfCells());
 
-  unsigned short* outIndex = &triangleIndices->front();
+  T* outIndex = &triangleIndices->front();
   for (int i = 0; i < polys->GetNumberOfCells(); ++i)
   {
     // there are 4 elements for each triangle cell in the array (count, i1, i2, i3)
@@ -288,13 +307,14 @@ void vesKiwiDataConversionTools::ConvertTriangles(
   }
   else
   {
-    output->computeNormals();
+    output->computeNormals<T>();
   }
 
   output->computeBounds();
   output->addSource(sourceData);
 }
 
+//-----------------------------------------------------------------------------
 vesSharedPtr<vesGeometryData> vesKiwiDataConversionTools::ConvertPoints(vtkPolyData* input)
 {
   vesSharedPtr<vesGeometryData> output(new vesGeometryData());
@@ -320,16 +340,44 @@ vesSharedPtr<vesGeometryData> vesKiwiDataConversionTools::ConvertPoints(vtkPolyD
   return output;
 }
 
-vesSharedPtr<vesGeometryData> vesKiwiDataConversionTools::Convert(vtkPolyData* input)
+//-----------------------------------------------------------------------------
+vesSharedPtr<vesGeometryData> vesKiwiDataConversionTools::Convert(
+  vtkPolyData* input)
 {
+  vesOpenGLSupport::Ptr glSupport (new vesOpenGLSupport());
+  glSupport->initialize();
+
+  if (glSupport->isSupportedIndexUnsignedInt()) {
+    return vesKiwiDataConversionTools::GenericConvert<unsigned int>(input);
+  }
+  else {
+    return vesKiwiDataConversionTools::GenericConvert<unsigned short>(input);
+  }
+}
+
+//-----------------------------------------------------------------------------
+template<typename T>
+  vesSharedPtr<vesGeometryData> vesKiwiDataConversionTools::GenericConvert(
+  vtkPolyData* input)
+{
+  unsigned int indicesValuesType;
+  if(typeid(T) == typeid(unsigned int)) {
+    indicesValuesType = vesPrimitiveIndicesValueType::UnsignedInt;
+    std::cout <<"UNSINGED INT" << indicesValuesType << std::endl;
+  }
+  // Default
+  else {
+    indicesValuesType = vesPrimitiveIndicesValueType::UnsignedShort;
+  }
+
   vesPrimitive::Ptr trianglesPrimitive;
-  vesIndices<unsigned short>::Ptr triangleIndices;
+  vesSharedPtr< vesIndices<T> > triangleIndices;
   vesPrimitive::Ptr triangleStripsPrimitive;
-  vesIndices<unsigned short>::Ptr triangleStripsIndices;
+  vesSharedPtr< vesIndices<T> > triangleStripsIndices;
   vesPrimitive::Ptr linesPrimitive;
-  vesIndices<unsigned short>::Ptr linesIndices;
+  vesSharedPtr< vesIndices<T> > linesIndices;
   vesPrimitive::Ptr verticesPrimitive;
-  vesIndices<unsigned short>::Ptr verticesIndices;
+  vesSharedPtr< vesIndices<T> > verticesIndices;
 
   vesSharedPtr<vesGeometryData> output =
     vesSharedPtr<vesGeometryData>(new vesGeometryData());
@@ -357,12 +405,11 @@ vesSharedPtr<vesGeometryData> vesKiwiDataConversionTools::Convert(vtkPolyData* i
   polys->InitTraversal();
 
   if (polys->GetNumberOfCells() > 0) {
-    triangleIndices = vesIndices<unsigned short>::Ptr(new vesIndices<unsigned short>());
+    triangleIndices = vesSharedPtr< vesIndices<T> >(new vesIndices<T>());
     trianglesPrimitive = vesPrimitive::Ptr(new vesPrimitive());
     trianglesPrimitive->setIndexCount(3);
+    trianglesPrimitive->setIndicesValueType(indicesValuesType);
     trianglesPrimitive->setPrimitiveType(vesPrimitiveRenderType::Triangles);
-    trianglesPrimitive->setIndicesValueType(
-      vesPrimitiveIndicesValueType::UnsignedShort);
     trianglesPrimitive->setVesIndices(triangleIndices);
 
     output->addPrimitive(trianglesPrimitive);
@@ -385,12 +432,11 @@ vesSharedPtr<vesGeometryData> vesKiwiDataConversionTools::Convert(vtkPolyData* i
 
   if (strips->GetNumberOfCells() > 0) {
     triangleStripsIndices
-      = vesIndices<unsigned short>::Ptr( new vesIndices<unsigned short>() );
+      = vesSharedPtr< vesIndices<T> >( new vesIndices<T>() );
     triangleStripsPrimitive = vesPrimitive::Ptr(new vesPrimitive());
     triangleStripsPrimitive->setIndexCount(1);
+    triangleStripsPrimitive->setIndicesValueType(indicesValuesType);
     triangleStripsPrimitive->setPrimitiveType(vesPrimitiveRenderType::TriangleStrip);
-    triangleStripsPrimitive->setIndicesValueType(
-      vesPrimitiveIndicesValueType::UnsignedShort);
     triangleStripsPrimitive->setVesIndices(triangleIndices);
 
     output->addPrimitive(triangleStripsPrimitive);
@@ -417,12 +463,11 @@ vesSharedPtr<vesGeometryData> vesKiwiDataConversionTools::Convert(vtkPolyData* i
 
   if (lines->GetNumberOfCells() > 0) {
     linesIndices
-      = vesIndices<unsigned short>::Ptr(new vesIndices<unsigned short>());
+      = vesSharedPtr< vesIndices<T> >(new vesIndices<T>());
     linesPrimitive = vesPrimitive::Ptr(new vesPrimitive());
     linesPrimitive->setIndexCount(2);
+    linesPrimitive->setIndicesValueType(indicesValuesType);
     linesPrimitive->setPrimitiveType(vesPrimitiveRenderType::Lines);
-    linesPrimitive->setIndicesValueType(
-      vesPrimitiveIndicesValueType::UnsignedShort);
     linesPrimitive->setVesIndices(linesIndices);
 
     output->addPrimitive(linesPrimitive);
@@ -442,12 +487,11 @@ vesSharedPtr<vesGeometryData> vesKiwiDataConversionTools::Convert(vtkPolyData* i
 
   if (verts->GetNumberOfCells() > 0) {
     verticesIndices
-    = vesIndices<unsigned short>::Ptr(new vesIndices<unsigned short>());
+    = vesSharedPtr< vesIndices<T> >(new vesIndices<T>());
     verticesPrimitive = vesPrimitive::Ptr(new vesPrimitive());
     verticesPrimitive->setIndexCount(1);
+    verticesPrimitive->setIndicesValueType(indicesValuesType);
     verticesPrimitive->setPrimitiveType(vesPrimitiveRenderType::Points);
-    verticesPrimitive->setIndicesValueType(
-      vesPrimitiveIndicesValueType::UnsignedShort);
     verticesPrimitive->setVesIndices(verticesIndices);
 
     output->addPrimitive(verticesPrimitive);
@@ -468,7 +512,7 @@ vesSharedPtr<vesGeometryData> vesKiwiDataConversionTools::Convert(vtkPolyData* i
   }
   else
   {
-    output->computeNormals();
+    output->computeNormals<T>();
   }
 
 #if 0

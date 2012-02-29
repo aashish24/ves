@@ -202,6 +202,7 @@ vesSharedPtr<vesGeometryData> vesBackground::vesInternal::createBackgroundPlane(
   triangles->setPrimitiveType(vesPrimitiveRenderType::Triangles);
   triangles->setIndicesValueType(vesPrimitiveIndicesValueType::UnsignedShort);
   triangles->setIndexCount(3);
+  triangles->setIndicesValueType(vesPrimitiveIndicesValueType::UnsignedShort);
 
   vesIndices<unsigned short>::Ptr triangleIndices  (new vesIndices<unsigned short>());
   triangleIndices->pushBackIndices(0, 3, 2);
