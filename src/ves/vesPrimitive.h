@@ -50,7 +50,12 @@ public:
   {
   }
 
-  virtual unsigned int dataTypeSize() const
+  virtual void* dataPointer() const
+  {
+    return (void*)&this->m_indices.front();
+  }
+
+  virtual unsigned int sizeOfDataType() const
   {
     return this->m_dataTypeSize;
   }
@@ -79,20 +84,10 @@ public:
     this->m_indices.push_back(i3);
   }
 
-  inline unsigned int sizeOfDataType() const
-  {
-    return this->m_dataTypeSize;
-  }
-
   /// Use this method with caution
   inline T* data()
   {
     return &this->m_indices.front();
-  }
-
-  virtual void* dataPointer() const
-  {
-    return (void*)&this->m_indices.front();
   }
 
   inline const T* data() const
@@ -111,12 +106,12 @@ public:
   }
 
   /// Use this method with caution
-  std::vector<T>* indices()
+  inline std::vector<T>* indices()
   {
     return &this->m_indices;
   }
 
-  const std::vector<T>* indices() const
+  inline const std::vector<T>* indices() const
   {
     return &this->m_indices;
   }
@@ -176,7 +171,7 @@ public:
     return this->m_primitiveType;
   }
 
-  bool setPrimitiveType(unsigned int type)
+  inline bool setPrimitiveType(unsigned int type)
   {
     this->m_primitiveType = type;
     return true;
@@ -187,7 +182,7 @@ public:
     return this->m_indicesValueType;
   }
 
-  bool setIndicesValueType(unsigned int type)
+  inline bool setIndicesValueType(unsigned int type)
   {
     this->m_indicesValueType = type;
     return true;
@@ -198,7 +193,7 @@ public:
     return this->m_indexCount;
   }
 
-  bool setIndexCount(unsigned int count)
+  inline bool setIndexCount(unsigned int count)
   {
     bool success = true;
     this->m_indexCount = count;
@@ -222,7 +217,7 @@ public:
   }
 
   /// Use this method with caution
-  unsigned int sizeOfDataType() const
+  inline unsigned int sizeOfDataType() const
   {
     return (this->m_vesIndices
       ? this->m_vesIndices->sizeOfDataType()
