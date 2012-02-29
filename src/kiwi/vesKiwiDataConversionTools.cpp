@@ -460,8 +460,7 @@ template<typename T>
   lines->InitTraversal();
 
   if (lines->GetNumberOfCells() > 0) {
-    linesIndices
-      = vesSharedPtr< vesIndices<T> >(new vesIndices<T>());
+    linesIndices = vesSharedPtr< vesIndices<T> >(new vesIndices<T>());
     linesPrimitive = vesPrimitive::Ptr(new vesPrimitive());
     linesPrimitive->setIndexCount(2);
     linesPrimitive->setIndicesValueType(indicesValuesType);
@@ -484,8 +483,7 @@ template<typename T>
   verts->InitTraversal();
 
   if (verts->GetNumberOfCells() > 0) {
-    verticesIndices
-    = vesSharedPtr< vesIndices<T> >(new vesIndices<T>());
+    verticesIndices = vesSharedPtr< vesIndices<T> >(new vesIndices<T>());
     verticesPrimitive = vesPrimitive::Ptr(new vesPrimitive());
     verticesPrimitive->setIndexCount(1);
     verticesPrimitive->setIndicesValueType(indicesValuesType);

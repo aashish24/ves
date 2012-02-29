@@ -5,8 +5,7 @@
 
 void vesGeometryData::computeBounds()
 {
-  if (!this->m_computeBounds)
-  {
+  if (!this->m_computeBounds) {
     return;
   }
 

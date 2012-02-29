@@ -256,8 +256,7 @@ vesSharedPtr<vesSourceData>  vesGeometryData::sourceData(int key)
 template<typename T>
 void vesGeometryData::computeNormals()
 {
-  if (!this->m_computeNormals)
-  {
+  if (!this->m_computeNormals) {
     return;
   }
 

@@ -312,7 +312,7 @@ void vesMapper::drawPrimitive(const vesRenderState &renderState,
                  primitive->indicesValueType(),  (void*)0);
 }
 
-#include <iostream>
+
 void vesMapper::drawTriangles(const vesRenderState &renderState,
                               vesSharedPtr<vesPrimitive> triangles)
 {
