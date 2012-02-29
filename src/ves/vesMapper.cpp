@@ -338,8 +338,6 @@ void vesMapper::drawTriangles(const vesRenderState &renderState,
     renderState.m_material->bindRenderData(
       renderState, vesRenderData(triangles->primitiveType()));
 
-    std::cout << "triangles->indicesValueType() " << triangles->indicesValueType() << std::endl;
-
     // Now draw the elements
     glDrawElements(triangles->primitiveType(), numberOfIndicesToDraw,
                    triangles->indicesValueType(), (void*)offset);

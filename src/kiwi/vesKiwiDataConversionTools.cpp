@@ -363,7 +363,6 @@ template<typename T>
   unsigned int indicesValuesType;
   if(typeid(T) == typeid(unsigned int)) {
     indicesValuesType = vesPrimitiveIndicesValueType::UnsignedInt;
-    std::cout <<"UNSINGED INT" << indicesValuesType << std::endl;
   }
   // Default
   else {
