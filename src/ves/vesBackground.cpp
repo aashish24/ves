@@ -62,19 +62,16 @@ public:
        uniform highp mat4 projectionMatrix;\n \
        attribute highp vec4 vertexPosition;\n \
        attribute mediump vec4 vertexColor;\n \
-       attribute mediump vec4 vertexTextureCoordinate;\n \
        varying mediump vec2 textureCoordinate;\n \
        varying mediump vec4 varColor;\n \
        void main()\n \
        {\n \
          gl_Position = vertexPosition;\n \
-         textureCoordinate = vertexTextureCoordinate.xy;\n \
          varColor = vertexColor;\n \
        }";
 
     const std::string fragmentShaderSource =
-      "varying mediump vec2 textureCoordinate;\n \
-       varying mediump vec4 varColor;\n \
+      "varying mediump vec4 varColor;\n \
        void main()\n \
        {\n \
          gl_FragColor = varColor;\n \
