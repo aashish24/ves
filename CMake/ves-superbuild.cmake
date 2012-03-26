@@ -20,6 +20,7 @@ find_package(PythonInterp REQUIRED)
 
 set(module_defaults
   -DModule_vtkFiltersCore:BOOL=ON
+  -DModule_vtkFiltersExtraction:BOOL=ON
   -DModule_vtkFiltersSources:BOOL=ON
   -DModule_vtkFiltersGeometry:BOOL=ON
   -DModule_vtkIOGeometry:BOOL=ON
@@ -27,6 +28,9 @@ set(module_defaults
   -DModule_vtkIOImage:BOOL=ON
   -DModule_vtkIOPLY:BOOL=ON
   -DModule_vtkImagingCore:BOOL=ON
+  -DModule_vtkParallelCore:BOOL=ON
+  -DModule_vtkRenderingCore:BOOL=ON
+  -DModule_vtkRenderingText:BOOL=ON
 )
 
 macro(force_build proj)
@@ -57,12 +61,13 @@ macro(compile_vtk proj)
     ${proj}
     SOURCE_DIR ${source_prefix}/vtkmodular
     GIT_REPOSITORY git://gitorious.org/~patmarion/kitware/patmarion-vtkmodular.git
-    GIT_TAG origin/kiwi-new
+    GIT_TAG origin/kiwi-fixes
     INSTALL_COMMAND ""
     CMAKE_ARGS
       -DCMAKE_INSTALL_PREFIX:PATH=${install_prefix}/${proj}
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
-      -DBUILD_SHARED_LIBS:BOOL=ON
+      -DBUILD_SHARED_LIBS:BOOL=OFF
+      -DBUILD_TESTING:BOOL=OFF
       ${module_defaults}
   )
 endmacro()
@@ -97,6 +102,7 @@ macro(crosscompile_vtk proj toolchain_file)
       -DCMAKE_INSTALL_PREFIX:PATH=${install_prefix}/${proj}
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
       -DBUILD_SHARED_LIBS:BOOL=OFF
+      -DBUILD_TESTING:BOOL=OFF
       -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${toolchain_dir}/${toolchain_file}
       -DVTKCompileTools_DIR:PATH=${build_prefix}/vtkmodular-host
       ${module_defaults}
