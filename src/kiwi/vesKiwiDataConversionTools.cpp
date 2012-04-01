@@ -346,7 +346,9 @@ vesSharedPtr<vesGeometryData> vesKiwiDataConversionTools::Convert(
   vesOpenGLSupport::Ptr glSupport (new vesOpenGLSupport());
   glSupport->initialize();
 
-  if (glSupport->isSupportedIndexUnsignedInt()) {
+  const vtkIdType maximumNumberOfPoints = 65536;
+
+  if (input->GetNumberOfPoints() > maximumNumberOfPoints && glSupport->isSupportedIndexUnsignedInt()) {
     return vesKiwiDataConversionTools::GenericConvert<unsigned int>(input);
   }
   else {
