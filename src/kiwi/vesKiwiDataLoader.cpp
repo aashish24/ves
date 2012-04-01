@@ -202,10 +202,11 @@ vtkSmartPointer<vtkDataSet> vesKiwiDataLoader::loadDataset(const std::string& fi
     sphere->SetRadius(1.0);
     sphere->SetThetaResolution(8);
     sphere->SetPhiResolution(8);
+    sphere->Update();
 
     vtkNew<vtkGlyph3D> glyph;
     glyph->SetInputConnection(reader->GetOutputPort());
-    glyph->SetSource(sphere->GetOutput());
+    glyph->SetSourceData(sphere->GetOutput());
     glyph->SetOrient(1);
     glyph->SetScaleMode(2);
     glyph->SetScaleFactor(0.25);
