@@ -130,23 +130,17 @@ vtkSmartPointer<vtkDataSet> vesKiwiDataLoader::datasetFromAlgorithm(vtkAlgorithm
     return datasetFromAlgorithm(surfaceFilter);
   }
 
-  // VES cannot handle too many points (if the dataset has non-vertex cells),
-  // so handle the error at this point.
-  vtkIdType maximumNumberOfPoints = 65536;
-
-  // Check if extension exists to support unsigned int
-  // value type for indices.
+  const vtkIdType maximumNumberOfPoints = 65536;
   this->Internal->GLSupport->initialize();
 
-  if (this->Internal->GLSupport->isSupportedIndexUnsignedInt())
-    {
-    maximumNumberOfPoints = std::numeric_limits<unsigned int>::max();
-    }
-
+  // If we have a polydata with elements other than vertices, and it has
+  // more than 65K points, then we require the opengl extension to support
+  // unsigned int element indices, otherwise we throw an error at this point.
   vtkPolyData* polyData = vtkPolyData::SafeDownCast(dataset);
   if (polyData
-      && polyData->GetNumberOfPoints() > maximumNumberOfPoints
-      && (polyData->GetNumberOfPolys() || polyData->GetNumberOfLines() || polyData->GetNumberOfStrips()))
+      && (polyData->GetNumberOfPoints() > maximumNumberOfPoints)
+      && (polyData->GetNumberOfPolys() || polyData->GetNumberOfLines() || polyData->GetNumberOfStrips())
+      && !this->Internal->GLSupport->isSupportedIndexUnsignedInt())
     {
     this->setMaximumNumberOfPointsErrorMessage();
     return 0;
