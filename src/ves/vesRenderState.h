@@ -25,7 +25,6 @@
 // VES includes
 #include "vesMaterial.h"
 #include "vesMath.h"
-#include "vesOpenGLSupport.h"
 #include "vesSetGet.h"
 
 // Forward declarations
@@ -39,8 +38,6 @@ public:
 
   vesRenderState()
   {
-    this->m_glSupport = vesOpenGLSupport::Ptr(new vesOpenGLSupport());
-
     this->m_identity = new vesMatrix4x4f;
     m_identity->setIdentity();
 
@@ -54,11 +51,6 @@ public:
     delete this->m_identity; this->m_identity = 0x0;
   }
 
-  /// \pre OpenGL context should be valid
-  void initialize()
-  {
-    this->m_glSupport->initialize();
-  }
 
   void applyMaterial(const vesSharedPtr<vesMaterial> &material)
   {
@@ -101,7 +93,6 @@ public:
 
   vesSharedPtr<vesMaterial> m_material;
   vesSharedPtr<vesMapper> m_mapper;
-  vesSharedPtr<vesOpenGLSupport> m_glSupport;
 
   vesMatrix4x4f *m_identity;
   vesMatrix4x4f *m_projectionMatrix;
