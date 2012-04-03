@@ -78,7 +78,7 @@ vesSharedPtr<vesGeometryData> GeometryDataFromPolyData(vtkPolyData* polyData)
   vtkNew<vtkTriangleFilter> triangleFilter;
   triangleFilter->PassLinesOn();
   triangleFilter->PassVertsOn();
-  triangleFilter->SetInput(polyData);
+  triangleFilter->SetInputData(polyData);
   triangleFilter->Update();
 
   return vesKiwiDataConversionTools::Convert(triangleFilter->GetOutput());

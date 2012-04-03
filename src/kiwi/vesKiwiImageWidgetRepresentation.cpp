@@ -135,20 +135,20 @@ void vesKiwiImageWidgetRepresentation::setImageData(vtkImageData* image)
   this->Internal->CurrentSliceIndices[2] = dimensions[2]/2;
 
   this->Internal->SliceFilter = vtkSmartPointer<vtkExtractVOI>::New();
-  this->Internal->SliceFilter->SetInput(image);
+  this->Internal->SliceFilter->SetInputData(image);
 
   for (int i = 0; i < 3; ++i)
     this->setSliceIndex(i, this->Internal->CurrentSliceIndices[i]);
 
   vtkNew<vtkOutlineFilter> outline;
-  outline->SetInput(image);
+  outline->SetInputData(image);
   outline->Update();
   this->Internal->OutlineRep->setPolyData(outline->GetOutput());
   this->Internal->OutlineRep->setColor(0.5, 0.5, 0.5, 0.5);
 
   if (image->GetNumberOfPoints() < 600000) {
     vtkNew<vtkContourFilter> contour;
-    contour->SetInput(image);
+    contour->SetInputData(image);
     // contour value hardcoded for head image dataset
     contour->SetValue(0, 1400);
     contour->ComputeScalarsOff();
@@ -185,7 +185,7 @@ void vesKiwiImageWidgetRepresentation::initializeWithShader(
     rep->setBinNumber(1);
     this->Internal->SliceReps.push_back(rep);
     this->Internal->AllReps.push_back(rep);
-    this->Internal->AppendFilter->AddInput(vtkSmartPointer<vtkPolyData>::New());
+    this->Internal->AppendFilter->AddInputData(vtkSmartPointer<vtkPolyData>::New());
   }
 
 }

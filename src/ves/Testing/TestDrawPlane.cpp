@@ -46,9 +46,6 @@
 #include <GLES2/gl2.h>
 #include <EGL/egl.h>
 
-#ifdef Bool
-#undef Bool
-#endif
 
 //----------------------------------------------------------------------------
 namespace {

@@ -28,19 +28,13 @@
 
 #include <vesKiwiBaseApp.h>
 #include <vesKiwiDataLoader.h>
+#include <vesKiwiBaselineImageTester.h>
 #include <vesKiwiPolyDataRepresentation.h>
 #include <vesShaderProgram.h>
 #include <vesUniform.h>
 #include <vesBuiltinShaders.h>
 
 #include <vtkPolyData.h>
-#include <vtkErrorCode.h>
-#include <vtkImageData.h>
-#include <vtkImageDifference.h>
-#include <vtkImageShiftScale.h>
-#include <vtkNew.h>
-#include <vtkPNGReader.h>
-#include <vtkPNGWriter.h>
 #include <vtkSmartPointer.h>
 
 #include <X11/Xlib.h>
@@ -49,9 +43,6 @@
 #include <GLES2/gl2.h>
 #include <EGL/egl.h>
 
-#ifdef Bool
-#undef Bool
-#endif
 
 //----------------------------------------------------------------------------
 namespace {
@@ -188,94 +179,15 @@ void LoadDefaultData()
 }
 
 //----------------------------------------------------------------------------
-vtkSmartPointer<vtkImageData> ImageFromFile(const std::string filename)
-{
-  vtkNew<vtkPNGReader> reader;
-  reader->SetFileName(filename.c_str());
-  reader->Update();
-
-  if (reader->GetErrorCode() != vtkErrorCode::NoError || reader->GetOutput()->GetNumberOfPoints() <= 1) {
-    return 0;
-  }
-
-  return reader->GetOutput();
-}
-
-//----------------------------------------------------------------------------
-vtkSmartPointer<vtkImageData> ImageFromRenderView()
-{
-  int width = testHelper->app()->viewWidth();
-  int height = testHelper->app()->viewHeight();
-
-  vtkSmartPointer<vtkImageData> image = vtkSmartPointer<vtkImageData>::New();
-  image->SetDimensions(width, height, 1);
-  image->SetScalarTypeToUnsignedChar();
-  image->SetNumberOfScalarComponents(3);
-  image->AllocateScalars();
-
-  unsigned char* outPtr = static_cast<unsigned char*>(image->GetScalarPointer(0, 0, 0));
-  glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, (void*)outPtr);
-  return image;
-}
-
-//----------------------------------------------------------------------------
-void WritePNG(vtkImageData* image, const std::string& filename)
-{
-  vtkNew<vtkPNGWriter> writer;
-  writer->SetInput(image);
-  writer->SetFileName(filename.c_str());
-  writer->Write();
-}
-
-//----------------------------------------------------------------------------
 bool DoTesting()
 {
   const double threshold = 10.0;
-  bool allTestsPassed = true;
+  const std::string testName = "Clipped Standford Bunny";
 
-    testHelper->app()->render();
-    std::string testName = "Clipped Standford Bunny";
-
-    std::string inFile = testHelper->dataDirectory() + "/" + testName + ".png";
-    std::string outFile = testName + ".png";
-
-    vtkSmartPointer<vtkImageData> baselineImage = ImageFromFile(inFile);
-    vtkSmartPointer<vtkImageData> image = ImageFromRenderView();
-
-    if (!baselineImage) {
-      std::cout << "Could not read baseline image: " << inFile << std::endl;
-      WritePNG(image, outFile.c_str());
-      allTestsPassed = false;
-    }
-    else {
-      vtkNew<vtkImageDifference> imageDiff;
-      imageDiff->SetInput(image);
-      imageDiff->SetImage(baselineImage);
-      imageDiff->Update();
-
-      double thresholdError = imageDiff->GetThresholdedError();
-
-      if (thresholdError > threshold) {
-
-        std::cout << "Test '" << testName << "' image difference test failed with thresholded error: "
-          << thresholdError << std::endl;
-
-        vtkNew<vtkImageShiftScale> gamma;
-        gamma->SetInputConnection(imageDiff->GetOutputPort());
-        gamma->SetShift(0);
-        gamma->SetScale(10);
-
-        WritePNG(gamma->GetOutput(), testName + ".diff.png");
-        WritePNG(image, outFile);
-        allTestsPassed = false;
-      }
-      else {
-        std::cout << "Dataset '" << testName << "' image difference test passed with thresholded error: "
-          << thresholdError << std::endl;
-      }
-  }
-
-  return allTestsPassed;
+  vesKiwiBaselineImageTester baselineTester;
+  baselineTester.setApp(testHelper->app());
+  baselineTester.setBaselineImageDirectory(testHelper->dataDirectory());
+  return baselineTester.performTest(testName, threshold);
 }
 
 //----------------------------------------------------------------------------
