@@ -1,5 +1,6 @@
 set(tests
   TestDrawPlane
+  TestMatrix
   )
 
 macro(ves_add_test name)

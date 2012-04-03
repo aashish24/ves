@@ -4,7 +4,6 @@ set(tests
   TestTexture
   TestGradientBackground
   TestPointCloud
-  TestMatrix
   )
 
 
