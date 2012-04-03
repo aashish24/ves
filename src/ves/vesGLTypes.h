@@ -17,6 +17,15 @@ struct vesPrimitiveRenderType
   };
 };
 
+struct vesPrimitiveIndicesValueType
+{
+  enum Type
+  {
+    UnsignedShort = GL_UNSIGNED_SHORT,
+    UnsignedInt = GL_UNSIGNED_INT
+  };
+};
+
 struct vesColorDataType
 {
   enum PixelFormat

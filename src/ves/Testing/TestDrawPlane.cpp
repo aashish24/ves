@@ -183,10 +183,13 @@ public:
 
     // Triangle cells.
     vesPrimitive::Ptr triangles (new vesPrimitive());
-    triangles->pushBackIndices(0, 3, 2);
-    triangles->pushBackIndices(1, 0, 2);
+    vesSharedPtr< vesIndices<unsigned short> > indices (new vesIndices<unsigned short>());
+    indices->pushBackIndices(0, 3, 2);
+    indices->pushBackIndices(1, 0, 2);
+    triangles->setVesIndices(indices);
     triangles->setPrimitiveType(vesPrimitiveRenderType::Triangles);
     triangles->setIndexCount(3);
+    triangles->setIndicesValueType(vesPrimitiveIndicesValueType::UnsignedShort);
 
     geometryData->setName("PlaneGeometryData");
     geometryData->addSource(sourceData);

@@ -1,10 +1,11 @@
+#ifndef VESOPENGLSUPPORT_H
+#define VESOPENGLSUPPORT_H
 /*========================================================================
   VES --- VTK OpenGL ES Rendering Toolkit
 
       http://www.kitware.com/ves
 
   Copyright 2011 Kitware, Inc.
-  Copyright 2012 Willow Garage, Inc.
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -19,15 +20,45 @@
   limitations under the License.
  ========================================================================*/
 
-#ifndef __vesSetGet_h
-#define __vesSetGet_h
+#include "vesSetGet.h"
 
-#include "vesSharedPtr.h"
+// C/C++ includes
+#include <set>
+#include <string>
 
-#define vesNotUsed(x) (void)x
+class vesOpenGLSupport
+{
+public:
+  vesTypeMacro(vesOpenGLSupport);
 
-#define vesTypeMacro(className) \
-  typedef vesSharedPtr< className > Ptr; \
-  typedef const vesSharedPtr< className > ConstPtr;
+  vesOpenGLSupport();
+  ~vesOpenGLSupport();
 
-#endif
+  void initialize();
+
+  const std::string& glVendor() const
+  {
+    return m_vendor;
+  }
+
+  const std::string& glVersion(void) const
+  {
+    return m_version;
+  }
+
+  bool isSupported(const std::string& ext) const;
+
+  bool isSupportedIndexUnsignedInt() const;
+
+private:
+
+
+  bool m_initialized;
+
+  std::string m_version;
+  std::string m_vendor;
+
+  std::set<std::string> m_extensionList;
+};
+
+#endif // VESOPENGLSUPPORT_H

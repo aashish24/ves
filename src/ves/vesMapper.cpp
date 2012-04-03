@@ -309,7 +309,7 @@ void vesMapper::drawPrimitive(const vesRenderState &renderState,
     renderState, vesRenderData(primitive->primitiveType()));
 
   glDrawElements(primitive->primitiveType(), primitive->numberOfIndices(),
-                 GL_UNSIGNED_SHORT,  (void*)0);
+                 primitive->indicesValueType(),  (void*)0);
 }
 
 
@@ -340,7 +340,7 @@ void vesMapper::drawTriangles(const vesRenderState &renderState,
 
     // Now draw the elements
     glDrawElements(triangles->primitiveType(), numberOfIndicesToDraw,
-                   GL_UNSIGNED_SHORT, (void*)offset);
+                   triangles->indicesValueType(), (void*)offset);
 
 
     drawnIndices += numberOfIndicesToDraw;

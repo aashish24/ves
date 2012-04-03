@@ -62,19 +62,16 @@ public:
        uniform highp mat4 projectionMatrix;\n \
        attribute highp vec4 vertexPosition;\n \
        attribute mediump vec4 vertexColor;\n \
-       attribute mediump vec4 vertexTextureCoordinate;\n \
        varying mediump vec2 textureCoordinate;\n \
        varying mediump vec4 varColor;\n \
        void main()\n \
        {\n \
          gl_Position = vertexPosition;\n \
-         textureCoordinate = vertexTextureCoordinate.xy;\n \
          varColor = vertexColor;\n \
        }";
 
     const std::string fragmentShaderSource =
-      "varying mediump vec2 textureCoordinate;\n \
-       varying mediump vec4 varColor;\n \
+      "varying mediump vec4 varColor;\n \
        void main()\n \
        {\n \
          gl_FragColor = varColor;\n \
@@ -199,10 +196,15 @@ vesSharedPtr<vesGeometryData> vesBackground::vesInternal::createBackgroundPlane(
 
   // Triangle cells.
   vesPrimitive::Ptr triangles (new vesPrimitive());
-  triangles->pushBackIndices(0, 3, 2);
-  triangles->pushBackIndices(1, 0, 2);
   triangles->setPrimitiveType(vesPrimitiveRenderType::Triangles);
+  triangles->setIndicesValueType(vesPrimitiveIndicesValueType::UnsignedShort);
   triangles->setIndexCount(3);
+  triangles->setIndicesValueType(vesPrimitiveIndicesValueType::UnsignedShort);
+
+  vesIndices<unsigned short>::Ptr triangleIndices  (new vesIndices<unsigned short>());
+  triangleIndices->pushBackIndices(0, 3, 2);
+  triangleIndices->pushBackIndices(1, 0, 2);
+  triangles->setVesIndices(triangleIndices);
 
   backgroundGeometryData->setName("BackgroundData");
   backgroundGeometryData->addSource(sourceData);
