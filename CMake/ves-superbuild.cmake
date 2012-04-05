@@ -2,11 +2,19 @@ if(NOT VES_LINUX_SUPERBUILD AND NOT VES_ANDROID_SUPERBUILD AND NOT VES_IOS_SUPER
   return()
 endif()
 
+project(VES_SUPERBUILD NONE)
+
 include(ExternalProject)
+
 
 set(base "${CMAKE_BINARY_DIR}/CMakeExternals")
 set_property(DIRECTORY PROPERTY EP_BASE ${base})
 
+# set a default build type if it is undefined, then make sure it goes in the cache
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release)
+endif()
+set(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING "Build configuration type" FORCE)
 set(build_type ${CMAKE_BUILD_TYPE})
 
 set(source_prefix ${base}/Source)
