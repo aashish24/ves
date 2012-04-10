@@ -51,6 +51,8 @@
 #include <vtkSmartPointer.h>
 #include <vtkPolyData.h>
 #include <vtkNew.h>
+#include <vtksys/SystemTools.hxx>
+
 
 #include <vesCamera.h>
 #include <vesShaderProgram.h>
@@ -110,13 +112,12 @@ public:
     }
   }
 
-  void loadData(const char* data, int length)
+  void loadData(const std::string& filename)
   {
     this->unloadData();
 
     vtkSmartPointer<vtkXMLPolyDataReader> reader = vtkSmartPointer<vtkXMLPolyDataReader>::New();
-    reader->SetInputString(data, length);
-    reader->ReadFromInputStringOn();
+    reader->SetFileName(filename.c_str());
     reader->Update();
     vtkPolyData *polyData = reader->GetOutput();
 
@@ -130,6 +131,49 @@ public:
   vesSharedPtr<vesShaderProgram> m_shader;
   vesSharedPtr<vesKiwiPolyDataRepresentation> m_dataRep;
 };
+
+//----------------------------------------------------------------------------
+std::string storageDir;
+AAssetManager* assetManager;
+
+//----------------------------------------------------------------------------
+std::string documentsDirectory()
+{
+  assert(storageDir.size());
+  return storageDir + "/PointCloudLibrary";
+}
+
+//----------------------------------------------------------------------------
+std::string copyAssetToExternalStorage(std::string filename)
+{
+  std::string destDirectory = documentsDirectory();
+  std::string destFilename = destDirectory + "/" + filename;
+
+  if (vtksys::SystemTools::FileExists(destFilename.c_str())) {
+    return destFilename;
+  }
+
+  vtksys::SystemTools::MakeDirectory(destDirectory.c_str());
+
+  LOGI("Reading asset file: %s", filename.c_str());
+  AAsset* asset = AAssetManager_open(assetManager, filename.c_str(), AASSET_MODE_UNKNOWN);
+  if (asset == NULL) {
+      LOGE("Could not open asset: %s", filename.c_str());
+      return std::string();
+  }
+
+  off_t len = AAsset_getLength(asset);
+  const char* input_string = static_cast<const char*>(AAsset_getBuffer(asset));
+  LOGI("Asset file is %u bytes", len);
+
+  LOGI("Writing to destination file: %s", destFilename.c_str());
+  std::ofstream outfile(destFilename.c_str(), std::ofstream::binary);
+  outfile.write(input_string, len);
+  outfile.close();
+  AAsset_close(asset);
+
+  return destFilename;
+}
 
 }
 
@@ -246,8 +290,8 @@ static int engine_init_display(struct engine* engine) {
 
     kiwiApp->resizeView(w, h);
 
-
-    AAssetManager* assetManager = engine->app->activity->assetManager;
+    storageDir = "/mnt/sdcard";
+    assetManager = engine->app->activity->assetManager;
 
 
     // initialize shaders
@@ -265,17 +309,9 @@ static int engine_init_display(struct engine* engine) {
 
     kiwiApp->initShader(vertex_source, fragment_source);
 
-
-
-    // read point cloud data
-    AAsset* asset = AAssetManager_open(assetManager, "cturtle.vtp", AASSET_MODE_UNKNOWN);
-    const char* input_string = static_cast<const char*>(AAsset_getBuffer(asset));
-
-    kiwiApp->loadData(input_string, AAsset_getLength(asset));
-
-    AAsset_close(asset);
-
-
+    std::string filename = "cturtle.vtp";
+    filename = copyAssetToExternalStorage(filename);
+    kiwiApp->loadData(filename);
     kiwiApp->resetView();
 
     return 0;
