@@ -17,6 +17,7 @@ set(toolchain_dir "${CMAKE_CURRENT_SOURCE_DIR}/CMake/toolchains")
 set(ves_src "${CMAKE_CURRENT_SOURCE_DIR}")
 
 find_package(PythonInterp REQUIRED)
+find_package(Git REQUIRED)
 
 set(module_defaults
   -DVTK_Group_Rendering:BOOL=OFF
