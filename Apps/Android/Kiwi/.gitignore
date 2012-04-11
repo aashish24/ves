@@ -3,6 +3,7 @@ bin
 build
 gen
 libs
+systemlibs
 build.xml
 default.properties
 project.properties
