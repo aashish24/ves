@@ -25,10 +25,12 @@ set(toolchain_dir "${CMAKE_CURRENT_SOURCE_DIR}/CMake/toolchains")
 set(ves_src "${CMAKE_CURRENT_SOURCE_DIR}")
 
 find_package(PythonInterp REQUIRED)
+find_package(Git REQUIRED)
 
 set(module_defaults
+  -DVTK_Group_Rendering:BOOL=OFF
   -DModule_vtkFiltersCore:BOOL=ON
-  -DModule_vtkFiltersExtraction:BOOL=ON
+  -DModule_vtkFiltersModeling:BOOL=ON
   -DModule_vtkFiltersSources:BOOL=ON
   -DModule_vtkFiltersGeometry:BOOL=ON
   -DModule_vtkIOGeometry:BOOL=ON
@@ -38,7 +40,7 @@ set(module_defaults
   -DModule_vtkImagingCore:BOOL=ON
   -DModule_vtkParallelCore:BOOL=ON
   -DModule_vtkRenderingCore:BOOL=ON
-  -DModule_vtkRenderingText:BOOL=ON
+  -DModule_vtkRenderingFreeType:BOOL=ON
 )
 
 macro(force_build proj)
@@ -67,14 +69,15 @@ endmacro()
 macro(compile_vtk proj)
   ExternalProject_Add(
     ${proj}
-    SOURCE_DIR ${source_prefix}/vtkmodular
-    GIT_REPOSITORY git://gitorious.org/~patmarion/kitware/patmarion-vtkmodular.git
-    GIT_TAG origin/kiwi-fixes
+    SOURCE_DIR ${source_prefix}/vtk
+    GIT_REPOSITORY git://vtk.org/VTK.git
+    GIT_TAG origin/master
+    UPDATE_COMMAND ${GIT_EXECUTABLE} fetch http://review.source.kitware.com/p/VTK refs/topics/43/343/2 && ${GIT_EXECUTABLE} checkout FETCH_HEAD
     INSTALL_COMMAND ""
     CMAKE_ARGS
       -DCMAKE_INSTALL_PREFIX:PATH=${install_prefix}/${proj}
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
-      -DBUILD_SHARED_LIBS:BOOL=OFF
+      -DBUILD_SHARED_LIBS:BOOL=ON
       -DBUILD_TESTING:BOOL=OFF
       ${module_defaults}
   )
@@ -85,14 +88,15 @@ macro(compile_ves proj)
     ${proj}
     SOURCE_DIR ${ves_src}
     DOWNLOAD_COMMAND ""
-    DEPENDS vtkmodular-host eigen
+    DEPENDS vtk-host eigen
     CMAKE_ARGS
       -DCMAKE_INSTALL_PREFIX:PATH=${install_prefix}/${proj}
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
-      -DVES_USE_VTK:BOOL=ON
-      -DVTK_DIR:PATH=${build_prefix}/vtkmodular-host
-      -DEIGEN_INCLUDE_DIR:PATH=${install_prefix}/eigen
       -DBUILD_TESTING:BOOL=ON
+      -DBUILD_SHARED_LIBS:BOOL=ON
+      -DVES_USE_VTK:BOOL=ON
+      -DVTK_DIR:PATH=${build_prefix}/vtk-host
+      -DEIGEN_INCLUDE_DIR:PATH=${install_prefix}/eigen
       -DCMAKE_CXX_FLAGS:STRING=${VES_CXX_FLAGS}
   )
 
@@ -102,17 +106,17 @@ endmacro()
 macro(crosscompile_vtk proj toolchain_file)
   ExternalProject_Add(
     ${proj}
-    SOURCE_DIR ${base}/Source/vtkmodular
+    SOURCE_DIR ${base}/Source/vtk
     DOWNLOAD_COMMAND ""
     INSTALL_COMMAND ""
-    DEPENDS vtkmodular-host
+    DEPENDS vtk-host
     CMAKE_ARGS
       -DCMAKE_INSTALL_PREFIX:PATH=${install_prefix}/${proj}
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
       -DBUILD_SHARED_LIBS:BOOL=OFF
       -DBUILD_TESTING:BOOL=OFF
       -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${toolchain_dir}/${toolchain_file}
-      -DVTKCompileTools_DIR:PATH=${build_prefix}/vtkmodular-host
+      -DVTKCompileTools_DIR:PATH=${build_prefix}/vtk-host
       ${module_defaults}
       -C ${toolchain_dir}/TryRunResults.cmake
   )
@@ -123,14 +127,15 @@ macro(crosscompile_ves proj tag toolchain_file)
     ${proj}
     SOURCE_DIR ${ves_src}
     DOWNLOAD_COMMAND ""
-    DEPENDS vtkmodular-${tag} eigen
+    DEPENDS vtk-${tag} eigen
     CMAKE_ARGS
       -DCMAKE_INSTALL_PREFIX:PATH=${install_prefix}/${proj}
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
       -DCMAKE_TOOLCHAIN_FILE:FILEPATH=${toolchain_dir}/${toolchain_file}
       -DCMAKE_CXX_FLAGS:STRING=${VES_CXX_FLAGS}
+      -DBUILD_SHARED_LIBS:BOOL=OFF
       -DVES_USE_VTK:BOOL=ON
-      -DVTK_DIR:PATH=${build_prefix}/vtkmodular-${tag}
+      -DVTK_DIR:PATH=${build_prefix}/vtk-${tag}
       -DEIGEN_INCLUDE_DIR:PATH=${install_prefix}/eigen
       -DPYTHON_EXECUTABLE:FILEPATH=${PYTHON_EXECUTABLE}
   )
@@ -139,17 +144,17 @@ macro(crosscompile_ves proj tag toolchain_file)
 endmacro()
 
 install_eigen()
-compile_vtk(vtkmodular-host)
+compile_vtk(vtk-host)
 
 if(VES_IOS_SUPERBUILD)
-  crosscompile_vtk(vtkmodular-ios-simulator toolchain-ios-simulator.cmake)
-  crosscompile_vtk(vtkmodular-ios-device toolchain-ios-device.cmake)
+  crosscompile_vtk(vtk-ios-simulator toolchain-ios-simulator.cmake)
+  crosscompile_vtk(vtk-ios-device toolchain-ios-device.cmake)
   crosscompile_ves(ves-ios-simulator ios-simulator toolchain-ios-simulator.cmake)
   crosscompile_ves(ves-ios-device ios-device toolchain-ios-device.cmake)
 endif()
 
 if(VES_ANDROID_SUPERBUILD)
-  crosscompile_vtk(vtkmodular-android android.toolchain.cmake)
+  crosscompile_vtk(vtk-android android.toolchain.cmake)
   crosscompile_ves(ves-android android android.toolchain.cmake)
 endif()
 

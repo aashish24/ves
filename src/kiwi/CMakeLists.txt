@@ -2,10 +2,6 @@
 find_package(VTK REQUIRED)
 include(${VTK_USE_FILE})
 
-# temporary workaround for vtkmodular missing include dirs
-include_directories("${VTK_SOURCE_DIR}/Filters/Core"
-                    "${VTK_SOURCE_DIR}/Filters/Sources")
-
 set(sources
   vesKiwiAnimationRepresentation.cpp
   vesKiwiBaseApp.cpp
@@ -33,9 +29,10 @@ set(deps
   vtkFiltersCore
   vtkFiltersSources
   vtkFiltersGeometry
+  vtkFiltersModeling
   vtkImagingCore
   vtkRenderingCore
-  vtkRenderingText
+  vtkRenderingFreeType
   )
 
 # Configure version file
