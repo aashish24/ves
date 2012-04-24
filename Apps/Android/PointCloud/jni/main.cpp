@@ -286,6 +286,7 @@ static int engine_init_display(struct engine* engine) {
 
 
     vesKiwiPointCloudApp::Ptr kiwiApp = vesKiwiPointCloudApp::Ptr(new vesKiwiPointCloudApp);
+    kiwiApp->initGL();
     engine->kiwiApp = kiwiApp;
 
     kiwiApp->resizeView(w, h);

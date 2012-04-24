@@ -35,6 +35,9 @@ public:
   vesKiwiDataLoader();
   ~vesKiwiDataLoader();
 
+  void setIsUnsignedIntIndicesSupported(bool supported);
+  bool isUnsignedIntIndicesSupported() const;
+
   vtkSmartPointer<vtkDataSet> loadDataset(const std::string& filename);
   std::string errorTitle() const;
   std::string errorMessage() const;

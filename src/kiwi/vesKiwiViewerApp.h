@@ -68,6 +68,12 @@ public:
   std::string getShadingModel(int index) const;
   bool setShadingModel(const std::string& name);
 
+  /// This method makes OpenGL calls to perform initializations that must
+  /// occur when there is a valid GL context.  Preferably, this method should
+  /// be called right after performing the platform specific initialization of
+  /// the GL context.
+  void initGL();
+
   bool initGouraudShader(const std::string& vertexSource, const std::string& fragmentSource);
   bool initBlinnPhongShader(const std::string& vertexSource, const std::string& fragmentSource);
   bool initToonShader(const std::string& vertexSource, const std::string& fragmentSource);

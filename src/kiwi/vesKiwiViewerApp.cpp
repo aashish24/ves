@@ -44,6 +44,7 @@
 #include "vesUniform.h"
 #include "vesVertexAttribute.h"
 #include "vesVertexAttributeKeys.h"
+#include "vesOpenGLSupport.h"
 #include "vesBuiltinShaders.h"
 
 #include <vtkNew.h>
@@ -69,6 +70,7 @@ public:
   vesInternal()
   {
     this->IsAnimating = false;
+    this->GLSupport = vesOpenGLSupport::Ptr(new vesOpenGLSupport());
   }
 
   ~vesInternal()
@@ -114,6 +116,8 @@ public:
   bool IsAnimating;
   std::string ErrorTitle;
   std::string ErrorMessage;
+
+  vesOpenGLSupport::Ptr GLSupport;
 
   vesSharedPtr<vesShaderProgram> ShaderProgram;
   vesSharedPtr<vesShaderProgram> TextureShader;
@@ -222,6 +226,13 @@ vesKiwiViewerApp::~vesKiwiViewerApp()
 {
   this->removeAllDataRepresentations();
   delete this->Internal;
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiViewerApp::initGL()
+{
+  this->Internal->GLSupport->initialize();
+  this->Internal->DataLoader.setIsUnsignedIntIndicesSupported(this->Internal->GLSupport->isSupportedIndexUnsignedInt());
 }
 
 //----------------------------------------------------------------------------
