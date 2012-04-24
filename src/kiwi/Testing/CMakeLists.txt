@@ -1,5 +1,6 @@
 set(tests
   TestKiwiViewer
+  TestCapping
   TestClipPlane
   TestTexture
   TestGradientBackground
