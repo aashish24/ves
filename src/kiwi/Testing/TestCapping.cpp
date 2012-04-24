@@ -182,7 +182,7 @@ void LoadDefaultData()
 bool DoTesting()
 {
   const double threshold = 10.0;
-  const std::string testName = "Clipped Standford Bunny";
+  const std::string testName = "Capped Standford Bunny";
 
   vesKiwiBaselineImageTester baselineTester;
   baselineTester.setApp(testHelper->app());
