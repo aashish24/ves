@@ -48,16 +48,16 @@
 namespace {
 
 
-class vesClipApp : public vesKiwiBaseApp {
+class vesCapApp : public vesKiwiBaseApp {
 public:
 
-  vesClipApp() : vesKiwiBaseApp()
+  vesCapApp() : vesKiwiBaseApp()
   {
     this->setBackgroundColor(63/255.0, 96/255.0, 144/255.0);
     this->DataRep = 0;
   }
 
-  ~vesClipApp()
+  ~vesCapApp()
   {
     this->unloadData();
   }
@@ -123,7 +123,7 @@ public:
   {
   }
 
-  vesClipApp* app() {
+  vesCapApp* app() {
     return &this->App;
   }
 
@@ -153,7 +153,7 @@ public:
 
 private:
 
-  vesClipApp        App;
+  vesCapApp        App;
   std::string       SourceDirectory;
   std::string       DataDirectory;
   bool              IsTesting;
