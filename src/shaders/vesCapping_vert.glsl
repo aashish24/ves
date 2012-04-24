@@ -44,6 +44,7 @@ varying highp float clipDistance;
 void main()
 {
   lowp vec4 diffuseColor = vec4(1.0, 1.0, 1.0, 1.0);
+  lowp vec4 ambientColor = vec4(0.1, 0.1, 0.1, 0.0);
 
   if (hasVertexColors) {
     frontfaceColor = vertexColor;
@@ -70,6 +71,7 @@ void main()
     // Front face lighting calculation
     lowp float nDotLFF = max(dot(normal, lightDirection), 0.0);
     frontfaceColor = vec4(frontfaceColor.xyz * nDotLFF, frontfaceColor.w);
+    frontfaceColor += ambientColor;
 
     // Back face lighting calculation
     // Backface lighting is calculated using clip plane equation
@@ -78,6 +80,7 @@ void main()
     planeNormal = normalize(normalMatrix * planeNormal);
     lowp float nDotLBF = max(dot(planeNormal, lightDirection), 0.0);
     backfaceColor = vec4(backfaceColor.xyz * nDotLBF, backfaceColor.w);
+    backfaceColor += ambientColor;
   }
 
   clipDistance = dot(vertexPosition.xyz, clipPlaneEquation.xyz) + clipPlaneEquation.w;
