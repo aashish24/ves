@@ -207,7 +207,7 @@ std::string GetFileContents(const std::string& filename)
 //----------------------------------------------------------------------------
 void InitRendering()
 {
-  testHelper->app()->initClipShader(vesBuiltinShaders::vesCapping_vert(), vesBuiltinShaders::vesCapping_frag());
+  testHelper->app()->initClipShader(vesBuiltinShaders::vesCap_vert(), vesBuiltinShaders::vesCap_frag());
 }
 
 //----------------------------------------------------------------------------
