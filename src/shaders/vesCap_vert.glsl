@@ -23,10 +23,8 @@
 
 // Uniforms.
 uniform bool         hasVertexColors;
-uniform mediump vec3 lightDirection;
 uniform highp mat4   modelViewMatrix;
 uniform mediump mat3 normalMatrix;
-uniform lowp int     primitiveType;
 uniform highp mat4   projectionMatrix;
 uniform highp vec4   clipPlaneEquation;
 
@@ -55,36 +53,33 @@ void main()
     backfaceColor = diffuseColor;
   }
 
-  // Save position for later use.
+  // Save position for later use
   highp vec4 position = projectionMatrix * modelViewMatrix * vec4(vertexPosition, 1.0);
 
-  // 3 is line
-  if (primitiveType != 3) {
+  // Transform vertex normal into eye space
+  mediump vec3 normal = normalize(normalMatrix * vertexNormal);
 
-    // Transform vertex normal into eye space.
-    mediump vec3 normal = normalize(normalMatrix * vertexNormal);
+  // Save light direction (direction light for now)
+  mediump vec4 lightSourcePos = vec4(-1000.0, 0.0, 0.650, 1.0);
+  mediump vec3 lightDirection = normalize(lightSourcePos.xyz);
 
-    // Save light direction (direction light for now)
-    mediump vec4 lightSourcePos = vec4(-1000.0, 0.0, 0.650, 1.0);
-    mediump vec3 lightDirection = normalize(lightSourcePos.xyz);
+  // Front face lighting calculation
+  lowp float nDotLFF = max(dot(normal, lightDirection), 0.0);
+  frontfaceColor = vec4(frontfaceColor.xyz * nDotLFF, frontfaceColor.w);
+  frontfaceColor += ambientColor;
 
-    // Front face lighting calculation
-    lowp float nDotLFF = max(dot(normal, lightDirection), 0.0);
-    frontfaceColor = vec4(frontfaceColor.xyz * nDotLFF, frontfaceColor.w);
-    frontfaceColor += ambientColor;
+  // Back face lighting calculation
+  // Backface lighting is calculated using clip plane normal
+  mediump vec3 planeNormal = -normalize(clipPlaneEquation.xyz);
+  // Transform plane normal into eye space.
+  planeNormal = normalize(normalMatrix * planeNormal);
+  lowp float nDotLBF = max(dot(planeNormal, lightDirection), 0.0);
+  backfaceColor = vec4(backfaceColor.xyz * nDotLBF, backfaceColor.w);
+  backfaceColor += ambientColor;
 
-    // Back face lighting calculation
-    // Backface lighting is calculated using clip plane equation
-    mediump vec3 planeNormal = -normalize(clipPlaneEquation.xyz);
-    // Transform plane normal into eye space.
-    planeNormal = normalize(normalMatrix * planeNormal);
-    lowp float nDotLBF = max(dot(planeNormal, lightDirection), 0.0);
-    backfaceColor = vec4(backfaceColor.xyz * nDotLBF, backfaceColor.w);
-    backfaceColor += ambientColor;
-  }
-
+  // Calculate clip distance
   clipDistance = dot(vertexPosition.xyz, clipPlaneEquation.xyz) + clipPlaneEquation.w;
 
-  // GLSL still requires this.
+  // GLSL still requires this
   gl_Position = position;
 }
