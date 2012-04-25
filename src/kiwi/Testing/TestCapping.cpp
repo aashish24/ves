@@ -26,13 +26,14 @@
 #include <cstdio>
 #include <cstring>
 
+#include <vesActor.h>
+#include <vesBuiltinShaders.h>
 #include <vesKiwiBaseApp.h>
 #include <vesKiwiDataLoader.h>
 #include <vesKiwiBaselineImageTester.h>
 #include <vesKiwiPolyDataRepresentation.h>
 #include <vesShaderProgram.h>
 #include <vesUniform.h>
-#include <vesBuiltinShaders.h>
 
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
@@ -101,6 +102,7 @@ public:
     vesKiwiPolyDataRepresentation* rep = new vesKiwiPolyDataRepresentation();
     rep->initializeWithShader(this->ClipShader);
     rep->setPolyData(polyData);
+    rep->actor()->setRotation(vesVector4f(0.0f, 1.0f, 0.0f, (-155.0f * M_PI/180.0f)));
     rep->addSelfToRenderer(this->renderer());
     this->DataRep = rep;
   }
