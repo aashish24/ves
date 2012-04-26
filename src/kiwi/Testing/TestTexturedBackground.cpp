@@ -39,7 +39,9 @@
 #include <vesUniform.h>
 #include <vesBuiltinShaders.h>
 
-#include <vtkLookupTable.h>
+#include <vtkImageData.h>
+#include <vtkPNGReader.h>
+#include <vtkPointData.h>
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
 
@@ -54,15 +56,15 @@
 //----------------------------------------------------------------------------
 namespace {
 
-class vesTexturedPlaneApp : public vesKiwiBaseApp {
+class vesTexturedBackgroundApp : public vesKiwiBaseApp {
 public:
 
-  vesTexturedPlaneApp() : vesKiwiBaseApp()
+  vesTexturedBackgroundApp() : vesKiwiBaseApp()
   {
     this->DataRep = 0x0;
   }
 
-  ~vesTexturedPlaneApp()
+  ~vesTexturedBackgroundApp()
   {
     this->unloadData();
   }
@@ -80,25 +82,31 @@ public:
     this->ShaderProgram = shaderProgram;
   }
 
-  void create1DTexture()
+  bool setBackgroundImage(const std::string &filename)
   {
+    vtkSmartPointer<vtkPNGReader> reader = vtkSmartPointer<vtkPNGReader>::New();
+    reader->SetFileName(filename.c_str());
+    reader->Update();
+    vtkSmartPointer<vtkImageData> image = reader->GetOutput();
+
+    assert(image);
+
+    vtkSmartPointer<vtkUnsignedCharArray> pixels
+      = vtkUnsignedCharArray::SafeDownCast(image->GetPointData()->GetScalars());
+    int width = image->GetDimensions()[0];
+    int height = image->GetDimensions()[1];
+
+    assert(pixels);
+    assert(pixels->GetNumberOfTuples() == width*height);
+
     this->Image = vesImage::Ptr(new vesImage());
-    this->LookupTable = vtkSmartPointer<vtkLookupTable>::New();
-    this->LookupTable->Build();
-
-    /// RGBA
-    int numberOfColorComponents = 4;
-    this->Image->setData(this->LookupTable->GetPointer(0),
-                         this->LookupTable->GetNumberOfTableValues()
-                         * numberOfColorComponents);
-    this->Image->setWidth(this->LookupTable->GetNumberOfTableValues());
-    this->Image->setHeight(1);
+    this->Image->setWidth(width);
+    this->Image->setHeight(height);
+    this->Image->setPixelFormat(pixels->GetNumberOfComponents() == 4 ? vesColorDataType::RGBA
+                                : pixels->GetNumberOfComponents() == 3 ? vesColorDataType::RGB
+                                : vesColorDataType::Luminance);
     this->Image->setPixelDataType(vesColorDataType::UnsignedByte);
-    this->Image->setPixelFormat(vesColorDataType::RGBA);
-
-    this->Texture = vesSharedPtr<vesTexture>(new vesTexture());
-    this->Texture->setImage(this->Image);
-    this->DataRep->setTexture(this->Texture);
+    this->Image->setData(pixels->WriteVoidPointer(0, 0), pixels->GetSize());
 
     this->renderer()->background()->setImage(this->Image);
   }
@@ -112,7 +120,7 @@ public:
     }
   }
 
-  void loadData(const std::string& filename)
+  void loadData(const std::string &filename, const std::string &imageFilename)
   {
     this->unloadData();
 
@@ -127,7 +135,7 @@ public:
     rep->addSelfToRenderer(this->renderer());
     this->DataRep = rep;
 
-    this->create1DTexture();
+    this->setBackgroundImage(imageFilename);
   }
 
   vesSharedPtr<vesImage> Image;
@@ -149,7 +157,7 @@ public:
   {
   }
 
-  vesTexturedPlaneApp* app() {
+  vesTexturedBackgroundApp* app() {
     return &this->App;
   }
 
@@ -179,7 +187,7 @@ public:
 
 private:
 
-  vesTexturedPlaneApp     App;
+  vesTexturedBackgroundApp     App;
   std::string       SourceDirectory;
   std::string       DataDirectory;
   bool              IsTesting;
@@ -194,7 +202,10 @@ void LoadData()
   std::string filename = testHelper->sourceDirectory() +
     std::string("/Apps/iOS/Kiwi/Kiwi/Data/bunny.vtp");
 
-  testHelper->app()->loadData(filename);
+  const std::string imageFilename = testHelper->sourceDirectory() +
+    std::string("/Apps/iOS/Kiwi/Kiwi/Data/kiwi_opaque.png");
+
+  testHelper->app()->loadData(filename, imageFilename);
   testHelper->app()->resetView();
 }
 
