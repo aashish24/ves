@@ -50,8 +50,11 @@ public:
   virtual void setGradientColor(const vesVector4f &topColor,
                                 const vesVector4f &bottomColor);
 
-  /// Set image to be used for the background.
+  /// Set image for the background
   virtual void setImage(const vesSharedPtr<vesImage> image);
+
+  /// Get image for the background
+  vesSharedPtr<vesImage> image() const;
 
   /// \copydoc vesCamera::modelViewMatrix()
   virtual vesMatrix4x4f modelViewMatrix();

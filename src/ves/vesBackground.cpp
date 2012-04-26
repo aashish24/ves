@@ -308,6 +308,12 @@ void vesBackground::setImage(const vesSharedPtr<vesImage> image)
 }
 
 
+vesSharedPtr<vesImage> vesBackground::image() const
+{
+  return this->m_internal->m_image;
+}
+
+
 vesMatrix4x4f vesBackground::modelViewMatrix()
 {
   return vesMatrix4x4f::Identity();
