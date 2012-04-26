@@ -1,4 +1,5 @@
 set(tests
+  TestCap
   TestClipPlane
   TestGradientBackground
   TestKiwiViewer
