@@ -1,9 +1,10 @@
 set(tests
-  TestKiwiViewer
   TestClipPlane
-  TestTexture
   TestGradientBackground
+  TestKiwiViewer
   TestPointCloud
+  TestTexture
+  TestTexturedBackground
   )
 
 

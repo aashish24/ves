@@ -77,6 +77,8 @@ protected:
 class vesGenericVertexAttribute : public vesVertexAttribute
 {
 public:
+  vesTypeMacro(vesGenericVertexAttribute);
+
   vesGenericVertexAttribute(const std::string &name="vertexGeneric") :
     vesVertexAttribute(name)
   {
@@ -119,6 +121,8 @@ public:
 class vesPositionVertexAttribute : public vesGenericVertexAttribute
 {
 public:
+  vesTypeMacro(vesPositionVertexAttribute);
+
   vesPositionVertexAttribute(const std::string &name="vertexPosition") :
     vesGenericVertexAttribute(name)
   {
@@ -129,6 +133,8 @@ public:
 class vesNormalVertexAttribute : public vesGenericVertexAttribute
 {
 public:
+  vesTypeMacro(vesNormalVertexAttribute);
+
   vesNormalVertexAttribute(const std::string &name="vertexNormal") :
     vesGenericVertexAttribute(name)
   {
@@ -139,6 +145,8 @@ public:
 class vesColorVertexAttribute : public vesGenericVertexAttribute
 {
 public:
+  vesTypeMacro(vesColorVertexAttribute);
+
   vesColorVertexAttribute(const std::string &name="vertexColor") :
     vesGenericVertexAttribute(name)
   {
@@ -149,6 +157,8 @@ public:
 class vesTextureCoordinateVertexAttribute : public vesGenericVertexAttribute
 {
 public:
+  vesTypeMacro(vesTextureCoordinateVertexAttribute);
+
   vesTextureCoordinateVertexAttribute(const std::string &name="vertexTextureCoordinate") :
     vesGenericVertexAttribute(name)
   {

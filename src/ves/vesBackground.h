@@ -32,6 +32,7 @@
 // Forward declarations.
 class vesActor;
 class vesDepth;
+class vesImage;
 class vesMapper;
 
 class vesBackground : public vesCamera
@@ -48,6 +49,9 @@ public:
   /// Set two colors for the gradient background.
   virtual void setGradientColor(const vesVector4f &topColor,
                                 const vesVector4f &bottomColor);
+
+  /// Set image to be used for the background.
+  virtual void setImage(const vesSharedPtr<vesImage> image);
 
   /// \copydoc vesCamera::modelViewMatrix()
   virtual vesMatrix4x4f modelViewMatrix();
