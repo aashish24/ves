@@ -82,7 +82,7 @@ public:
     this->ShaderProgram = shaderProgram;
   }
 
-  bool setBackgroundImage(const std::string &filename)
+  void setBackgroundImage(const std::string &filename)
   {
     vtkSmartPointer<vtkPNGReader> reader = vtkSmartPointer<vtkPNGReader>::New();
     reader->SetFileName(filename.c_str());
