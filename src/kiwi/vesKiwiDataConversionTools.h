@@ -25,12 +25,14 @@
 class vtkPolyData;
 class vtkDataSet;
 class vtkDiscretizableColorTransferFunction;
+class vtkImageData;
 class vtkLookupTable;
 class vtkUnsignedCharArray;
 class vtkDataArray;
 class vtkScalarsToColors;
 
 class vesGeometryData;
+class vesImage;
 class vesTexture;
 
 #include <vesSharedPtr.h>
@@ -76,6 +78,10 @@ public:
     vtkDataArray* tcoords, vesSharedPtr<vesGeometryData> triangleData);
 
   static vtkSmartPointer<vtkUnsignedCharArray> MapScalars(vtkDataArray* scalars, vtkScalarsToColors* scalarsToColors);
+
+  static vesSharedPtr<vesImage> ImageFromPixels(vtkUnsignedCharArray* pixels, int width, int height);
+  static vesSharedPtr<vesImage> ConvertImage(vtkImageData* imageData);
+
   static void SetTextureData(vtkUnsignedCharArray* pixels,
     vesSharedPtr<vesTexture> texture, int width, int height);
 };
