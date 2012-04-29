@@ -70,7 +70,6 @@ public:
   vesInternal()
   {
     this->IsAnimating = false;
-    this->GLSupport = vesOpenGLSupport::Ptr(new vesOpenGLSupport());
   }
 
   ~vesInternal()
@@ -116,8 +115,6 @@ public:
   bool IsAnimating;
   std::string ErrorTitle;
   std::string ErrorMessage;
-
-  vesOpenGLSupport::Ptr GLSupport;
 
   vesSharedPtr<vesShaderProgram> ShaderProgram;
   vesSharedPtr<vesShaderProgram> TextureShader;
@@ -231,8 +228,8 @@ vesKiwiViewerApp::~vesKiwiViewerApp()
 //----------------------------------------------------------------------------
 void vesKiwiViewerApp::initGL()
 {
-  this->Internal->GLSupport->initialize();
-  this->Internal->DataLoader.setIsUnsignedIntIndicesSupported(this->Internal->GLSupport->isSupportedIndexUnsignedInt());
+  this->vesKiwiBaseApp::initGL();
+  this->Internal->DataLoader.setErrorOnMoreThan65kVertices(this->glSupport()->isSupportedIndexUnsignedInt());
 }
 
 //----------------------------------------------------------------------------

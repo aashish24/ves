@@ -33,6 +33,7 @@
 #include <string>
 
 class vesCamera;
+class vesOpenGLSupport;
 class vesRenderer;
 class vesShader;
 class vesShaderProgram;
@@ -45,6 +46,13 @@ public:
 
   vesKiwiBaseApp();
   virtual ~vesKiwiBaseApp();
+
+  /// This method makes OpenGL calls to perform initializations that must
+  /// occur while there is a valid GL context.  This method initilizes the
+  /// instance of vesOpenGLSupport returned glSupport().  Preferably, this
+  /// method should be called right after performing the platform specific
+  /// initialization of the GL context.
+  virtual void initGL();
 
   /// Call vesRenderer::render() on the vesRenderer owned by this app object.
   /// willRender() is called at the start of this method, and didRender() is called
@@ -134,6 +142,11 @@ public:
 
   /// Set the camera view up direction.
   void setCameraViewUp(const vesVector3f& viewUp);
+
+  /// Return a vesOpenGLSupport instance.  This instance is initialized
+  /// during the call to initGL() and it is an error to call this method
+  /// before initGL().
+  vesSharedPtr<vesOpenGLSupport> glSupport();
 
 protected:
 

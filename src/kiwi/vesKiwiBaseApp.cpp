@@ -20,6 +20,7 @@
 
 #include <vesKiwiBaseApp.h>
 #include <vesCamera.h>
+#include <vesOpenGLSupport.h>
 #include <vesRenderer.h>
 #include <vesSetGet.h>
 #include <vesUniform.h>
@@ -34,6 +35,7 @@
 #include <cassert>
 #include <cmath>
 #include <vector>
+#include <iostream>
 
 //----------------------------------------------------------------------------
 class vesKiwiBaseApp::vesInternal
@@ -42,13 +44,15 @@ public:
 
   vesInternal()
   {
+    this->GLSupport = vesOpenGLSupport::Ptr(new vesOpenGLSupport());
   }
 
   ~vesInternal()
   {
   }
 
-  vesSharedPtr<vesRenderer> Renderer;
+  vesOpenGLSupport::Ptr GLSupport;
+  vesRenderer::Ptr Renderer;
 
   std::vector< vesSharedPtr<vesShaderProgram> > ShaderPrograms;
   std::vector< vesSharedPtr<vesShader> > Shaders;
@@ -67,6 +71,25 @@ vesKiwiBaseApp::vesKiwiBaseApp()
 vesKiwiBaseApp::~vesKiwiBaseApp()
 {
   delete this->Internal;
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiBaseApp::initGL()
+{
+  if (this->Internal->GLSupport->isInitialized()) {
+    std::cerr << "error: initGL() has already been called" << std::endl;
+    return;
+  }
+  this->Internal->GLSupport->initialize();
+}
+
+//----------------------------------------------------------------------------
+vesOpenGLSupport::Ptr vesKiwiBaseApp::glSupport()
+{
+  if (!this->Internal->GLSupport->isInitialized()) {
+    std::cerr << "error: glSupport() called before initGL()" << std::endl;
+  }
+  return this->Internal->GLSupport;
 }
 
 //----------------------------------------------------------------------------

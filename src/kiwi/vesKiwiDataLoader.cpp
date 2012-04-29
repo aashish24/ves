@@ -55,10 +55,10 @@ public:
 
   vesInternal()
   {
-    this->IsUnsignedIntIndicesSupported = false;
+    this->IsErrorOnMoreThan65kVertices = true;
   }
 
-  bool IsUnsignedIntIndicesSupported;
+  bool IsErrorOnMoreThan65kVertices;
   std::string ErrorTitle;
   std::string ErrorMessage;
 };
@@ -76,15 +76,15 @@ vesKiwiDataLoader::~vesKiwiDataLoader()
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiDataLoader::setIsUnsignedIntIndicesSupported(bool supported)
+void vesKiwiDataLoader::setErrorOnMoreThan65kVertices(bool isEnabled)
 {
-  this->Internal->IsUnsignedIntIndicesSupported = supported;
+  this->Internal->IsErrorOnMoreThan65kVertices = isEnabled;
 }
 
 //----------------------------------------------------------------------------
-bool vesKiwiDataLoader::isUnsignedIntIndicesSupported() const
+bool vesKiwiDataLoader::isErrorOnMoreThan65kVertices() const
 {
-  return this->Internal->IsUnsignedIntIndicesSupported;
+  return this->Internal->IsErrorOnMoreThan65kVertices;
 }
 
 //----------------------------------------------------------------------------
@@ -148,7 +148,7 @@ vtkSmartPointer<vtkDataSet> vesKiwiDataLoader::datasetFromAlgorithm(vtkAlgorithm
   if (polyData
       && (polyData->GetNumberOfPoints() > maximumNumberOfPoints)
       && (polyData->GetNumberOfPolys() || polyData->GetNumberOfLines() || polyData->GetNumberOfStrips())
-      && !this->isUnsignedIntIndicesSupported())
+      && this->isErrorOnMoreThan65kVertices())
     {
     this->setMaximumNumberOfPointsErrorMessage();
     return 0;
