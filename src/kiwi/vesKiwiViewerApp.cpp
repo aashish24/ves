@@ -229,7 +229,7 @@ vesKiwiViewerApp::~vesKiwiViewerApp()
 void vesKiwiViewerApp::initGL()
 {
   this->vesKiwiBaseApp::initGL();
-  this->Internal->DataLoader.setErrorOnMoreThan65kVertices(this->glSupport()->isSupportedIndexUnsignedInt());
+  this->Internal->DataLoader.setErrorOnMoreThan65kVertices(!this->glSupport()->isSupportedIndexUnsignedInt());
 }
 
 //----------------------------------------------------------------------------
