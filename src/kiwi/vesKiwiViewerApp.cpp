@@ -19,6 +19,7 @@
  ========================================================================*/
 
 #include "vesKiwiViewerApp.h"
+#include "vesKiwiCameraSpinner.h"
 #include "vesKiwiDataConversionTools.h"
 #include "vesKiwiDataLoader.h"
 #include "vesKiwiDataRepresentation.h"
@@ -70,6 +71,8 @@ public:
   vesInternal()
   {
     this->IsAnimating = false;
+    this->CameraRotationInertiaIsEnabled = true;
+    this->CameraSpinner = vesKiwiCameraSpinner::Ptr(new vesKiwiCameraSpinner);
   }
 
   ~vesInternal()
@@ -113,6 +116,7 @@ public:
     vesSharedPtr<vesShaderProgram> shaderProgram);
 
   bool IsAnimating;
+  bool CameraRotationInertiaIsEnabled;
   std::string ErrorTitle;
   std::string ErrorMessage;
 
@@ -124,6 +128,7 @@ public:
 
   std::vector<vesKiwiDataRepresentation*> DataRepresentations;
 
+  vesKiwiCameraSpinner::Ptr CameraSpinner;
   vesKiwiDataLoader DataLoader;
 
   std::vector<std::string> BuiltinDatasetNames;
@@ -164,6 +169,7 @@ bool vesKiwiViewerApp::vesInternal::setShaderProgramOnRepresentations(
 vesKiwiViewerApp::vesKiwiViewerApp()
 {
   this->Internal = new vesInternal();
+  this->Internal->CameraSpinner->setInteractor(this->cameraInteractor());
   this->resetScene();
 
   this->addBuiltinDataset("Utah Teapot", "teapot.vtp");
@@ -281,7 +287,8 @@ void vesKiwiViewerApp::addBuiltinDataset(const std::string& name, const std::str
 //----------------------------------------------------------------------------
 void vesKiwiViewerApp::applyBuiltinDatasetCameraParameters(int index)
 {
-  this->resetView(this->Internal->BuiltinDatasetCameraParameters[index].ViewDirection,
+  this->Internal->CameraSpinner->disable();
+  this->Superclass::resetView(this->Internal->BuiltinDatasetCameraParameters[index].ViewDirection,
                   this->Internal->BuiltinDatasetCameraParameters[index].ViewUp);
 }
 
@@ -325,11 +332,15 @@ void vesKiwiViewerApp::willRender()
   for (size_t i = 0; i < this->Internal->DataRepresentations.size(); ++i) {
     this->Internal->DataRepresentations[i]->willRender(this->renderer());
   }
+  this->Internal->CameraSpinner->updateSpin();
 }
 
 //----------------------------------------------------------------------------
 void vesKiwiViewerApp::handleSingleTouchPanGesture(double deltaX, double deltaY)
 {
+  this->Internal->CameraSpinner->disable();
+  this->Internal->CameraSpinner->handlePanGesture(vesVector2d(deltaX, deltaY));
+
   for (size_t i = 0; i < this->Internal->DataRepresentations.size(); ++i) {
     vesKiwiWidgetRepresentation* rep = dynamic_cast<vesKiwiWidgetRepresentation*>(this->Internal->DataRepresentations[i]);
     if (rep) {
@@ -343,34 +354,18 @@ void vesKiwiViewerApp::handleSingleTouchPanGesture(double deltaX, double deltaY)
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiViewerApp::handleDoubleTap(int displayX, int displayY)
-{
-  for (size_t i = 0; i < this->Internal->DataRepresentations.size(); ++i) {
-    vesKiwiWidgetRepresentation* rep = dynamic_cast<vesKiwiWidgetRepresentation*>(this->Internal->DataRepresentations[i]);
-    if (rep) {
-      if (rep->handleDoubleTap(displayX, displayY)) {
-        return;
-      }
-    }
-  }
-}
-
-//----------------------------------------------------------------------------
-void vesKiwiViewerApp::handleLongPress(int displayX, int displayY)
-{
-  for (size_t i = 0; i < this->Internal->DataRepresentations.size(); ++i) {
-    vesKiwiWidgetRepresentation* rep = dynamic_cast<vesKiwiWidgetRepresentation*>(this->Internal->DataRepresentations[i]);
-    if (rep) {
-      if (rep->handleLongPress(displayX, displayY)) {
-        return;
-      }
-    }
-  }
-}
-
-//----------------------------------------------------------------------------
 void vesKiwiViewerApp::handleSingleTouchUp()
 {
+
+  if (!this->widgetInteractionIsActive()
+      && this->Internal->CameraRotationInertiaIsEnabled
+      && this->Internal->CameraSpinner->currentMagnitude() > 4.0) {
+    this->Internal->CameraSpinner->enable();
+  }
+  else {
+    this->Internal->CameraSpinner->disable();
+  }
+
   for (size_t i = 0; i < this->Internal->DataRepresentations.size(); ++i) {
     vesKiwiWidgetRepresentation* rep = dynamic_cast<vesKiwiWidgetRepresentation*>(this->Internal->DataRepresentations[i]);
     if (rep) {
@@ -384,6 +379,9 @@ void vesKiwiViewerApp::handleSingleTouchUp()
 //----------------------------------------------------------------------------
 void vesKiwiViewerApp::handleSingleTouchTap(int displayX, int displayY)
 {
+  this->Internal->CameraSpinner->disable();
+
+  this->Superclass::handleSingleTouchTap(displayX, displayY);
   for (size_t i = 0; i < this->Internal->DataRepresentations.size(); ++i) {
     vesKiwiWidgetRepresentation* rep = dynamic_cast<vesKiwiWidgetRepresentation*>(this->Internal->DataRepresentations[i]);
     if (rep) {
@@ -397,10 +395,64 @@ void vesKiwiViewerApp::handleSingleTouchTap(int displayX, int displayY)
 //----------------------------------------------------------------------------
 void vesKiwiViewerApp::handleSingleTouchDown(int displayX, int displayY)
 {
+  this->Internal->CameraSpinner->disable();
+
+  this->Superclass::handleSingleTouchDown(displayX, displayY);
   for (size_t i = 0; i < this->Internal->DataRepresentations.size(); ++i) {
     vesKiwiWidgetRepresentation* rep = dynamic_cast<vesKiwiWidgetRepresentation*>(this->Internal->DataRepresentations[i]);
     if (rep) {
       if (rep->handleSingleTouchDown(displayX, displayY)) {
+        return;
+      }
+    }
+  }
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiViewerApp::handleTwoTouchPanGesture(double x0, double y0, double x1, double y1)
+{
+  this->Internal->CameraSpinner->disable();
+  this->Superclass::handleTwoTouchPanGesture(x0, y0, x1, y1);
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiViewerApp::handleTwoTouchPinchGesture(double scale)
+{
+  this->Internal->CameraSpinner->disable();
+  this->Superclass::handleTwoTouchPinchGesture(scale);
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiViewerApp::handleTwoTouchRotationGesture(double rotation)
+{
+  this->Internal->CameraSpinner->disable();
+  this->Superclass::handleTwoTouchRotationGesture(rotation);
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiViewerApp::handleDoubleTap(int displayX, int displayY)
+{
+  this->Internal->CameraSpinner->disable();
+
+  for (size_t i = 0; i < this->Internal->DataRepresentations.size(); ++i) {
+    vesKiwiWidgetRepresentation* rep = dynamic_cast<vesKiwiWidgetRepresentation*>(this->Internal->DataRepresentations[i]);
+    if (rep) {
+      if (rep->handleDoubleTap(displayX, displayY)) {
+        return;
+      }
+    }
+  }
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiViewerApp::handleLongPress(int displayX, int displayY)
+{
+  this->Internal->CameraSpinner->disable();
+
+  for (size_t i = 0; i < this->Internal->DataRepresentations.size(); ++i) {
+    vesKiwiWidgetRepresentation* rep = dynamic_cast<vesKiwiWidgetRepresentation*>(this->Internal->DataRepresentations[i]);
+    if (rep) {
+      if (rep->handleLongPress(displayX, displayY)) {
         return;
       }
     }
@@ -419,6 +471,13 @@ bool vesKiwiViewerApp::widgetInteractionIsActive() const
     }
   }
   return false;
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiViewerApp::resetView()
+{
+  this->Superclass::resetView();
+  this->Internal->CameraSpinner->disable();
 }
 
 //----------------------------------------------------------------------------
@@ -577,6 +636,7 @@ void vesKiwiViewerApp::resetScene()
   this->removeAllDataRepresentations();
   this->setDefaultBackgroundColor();
   this->setAnimating(false);
+  this->Internal->CameraSpinner->disable();
 }
 
 //----------------------------------------------------------------------------
@@ -808,6 +868,30 @@ std::string vesKiwiViewerApp::loadDatasetErrorTitle() const
 std::string vesKiwiViewerApp::loadDatasetErrorMessage() const
 {
   return this->Internal->ErrorMessage;
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiViewerApp::setCameraRotationInertiaIsEnabled(bool enabled)
+{
+  this->Internal->CameraRotationInertiaIsEnabled = enabled;
+}
+
+//----------------------------------------------------------------------------
+bool vesKiwiViewerApp::cameraRotationInertiaIsEnabled() const
+{
+  return this->Internal->CameraRotationInertiaIsEnabled;
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiViewerApp::haltCameraRotationInertia()
+{
+  this->Internal->CameraSpinner->disable();
+}
+
+//----------------------------------------------------------------------------
+vesKiwiCameraSpinner::Ptr vesKiwiViewerApp::cameraSpinner() const
+{
+  return this->Internal->CameraSpinner;
 }
 
 //----------------------------------------------------------------------------

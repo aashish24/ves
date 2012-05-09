@@ -39,6 +39,7 @@ class vesShader;
 class vesShaderProgram;
 class vesUniform;
 class vesVertexAttribute;
+class vesKiwiCameraInteractor;
 
 class vesKiwiBaseApp
 {
@@ -147,6 +148,10 @@ public:
   /// during the call to initGL() and it is an error to call this method
   /// before initGL().
   vesSharedPtr<vesOpenGLSupport> glSupport();
+
+  /// Return the camera interactor used by the app instance for handling
+  /// touch gestures.
+  vesSharedPtr<vesKiwiCameraInteractor> cameraInteractor() const;
 
 protected:
 

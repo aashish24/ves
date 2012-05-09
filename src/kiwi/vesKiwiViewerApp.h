@@ -32,6 +32,7 @@
 
 // Forward declarations
 class vesCamera;
+class vesKiwiCameraSpinner;
 class vesKiwiDataRepresentation;
 class vesKiwiPolyDataRepresentation;
 class vesKiwiImagePlaneDataRepresentation;
@@ -88,6 +89,9 @@ public:
   virtual void handleSingleTouchDown(int displayX, int displayY);
   virtual void handleSingleTouchTap(int displayX, int displayY);
   virtual void handleSingleTouchUp();
+  virtual void handleTwoTouchPanGesture(double x0, double y0, double x1, double y1);
+  virtual void handleTwoTouchPinchGesture(double scale);
+  virtual void handleTwoTouchRotationGesture(double rotation);
   virtual void handleDoubleTap(int displayX, int displayY);
   virtual void handleLongPress(int displayX, int displayY);
 
@@ -104,6 +108,19 @@ public:
   const vesSharedPtr<vesShaderProgram> shaderProgram() const;
   vesSharedPtr<vesShaderProgram> shaderProgram();
 
+  /// Override superclass method in order to stop the camera spinner if needed.
+  virtual void resetView();
+
+  /// Set/Get whether or not the app should use camera rotation inertia at the
+  /// end of single touch pan gestures.
+  void setCameraRotationInertiaIsEnabled(bool enabled);
+  bool cameraRotationInertiaIsEnabled() const;
+
+  /// Halt camera rotation inertia if the camera is currently rotating.
+  void haltCameraRotationInertia();
+
+  /// Return the spinner instance used to implement camera rotation inertia.
+  vesSharedPtr<vesKiwiCameraSpinner> cameraSpinner() const;
 
 protected:
 
