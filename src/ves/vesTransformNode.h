@@ -52,12 +52,12 @@ public:
   /// Get center of transformations
   const vesVector3f& center() const;
 
-  /// Set rotation as described by angle and axis
-  /// ( angle, axis(x, y, z) )
+  /// Set rotation as described by angle (in radians) and axis
+  /// ( axis(x, y, z), angle )
   void setRotation(const vesVector4f &rotation);
 
-  /// Get rotation as described by angle and axis
-  /// ( angle, axis(x, y, z) )
+  /// Get rotation as described by angle (in radians) and axis
+  /// ( axis(x, y, z), angle )
   const vesVector4f& rotation() const;
 
   /// Set scale in x, y and z directions

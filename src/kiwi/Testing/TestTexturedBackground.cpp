@@ -39,7 +39,9 @@
 #include <vesUniform.h>
 #include <vesBuiltinShaders.h>
 
-#include <vtkLookupTable.h>
+#include <vtkImageData.h>
+#include <vtkPNGReader.h>
+#include <vtkPointData.h>
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
 
@@ -54,51 +56,59 @@
 //----------------------------------------------------------------------------
 namespace {
 
-class vesTextureApp : public vesKiwiBaseApp {
+class vesTexturedBackgroundApp : public vesKiwiBaseApp {
 public:
 
-  vesTextureApp() : vesKiwiBaseApp()
+  vesTexturedBackgroundApp() : vesKiwiBaseApp()
   {
-    this->setBackgroundColor(63/255.0, 96/255.0, 144/255.0);
-
     this->DataRep = 0x0;
   }
 
-  ~vesTextureApp()
+  ~vesTexturedBackgroundApp()
   {
     this->unloadData();
   }
 
-  void initTextureShader(const std::string& vertexSource, const std::string fragmentSource)
+  void initShader(const std::string& vertexSource, const std::string fragmentSource)
   {
     vesSharedPtr<vesShaderProgram> shaderProgram
       = this->addShaderProgram(vertexSource, fragmentSource);
     this->addModelViewMatrixUniform(shaderProgram);
     this->addProjectionMatrixUniform(shaderProgram);
+    this->addNormalMatrixUniform(shaderProgram);
     this->addVertexPositionAttribute(shaderProgram);
-    this->addVertexTextureCoordinateAttribute(shaderProgram);
-    this->TextureShader = shaderProgram;
+    this->addVertexNormalAttribute(shaderProgram);
+    this->addVertexColorAttribute(shaderProgram);
+    this->ShaderProgram = shaderProgram;
   }
 
-  void create1DTexture()
+  void setBackgroundImage(const std::string &filename)
   {
+    vtkSmartPointer<vtkPNGReader> reader = vtkSmartPointer<vtkPNGReader>::New();
+    reader->SetFileName(filename.c_str());
+    reader->Update();
+    vtkSmartPointer<vtkImageData> image = reader->GetOutput();
+
+    assert(image);
+
+    vtkSmartPointer<vtkUnsignedCharArray> pixels
+      = vtkUnsignedCharArray::SafeDownCast(image->GetPointData()->GetScalars());
+    int width = image->GetDimensions()[0];
+    int height = image->GetDimensions()[1];
+
+    assert(pixels);
+    assert(pixels->GetNumberOfTuples() == width*height);
+
     this->Image = vesImage::Ptr(new vesImage());
-    this->LookupTable = vtkSmartPointer<vtkLookupTable>::New();
-    this->LookupTable->Build();
-
-    /// RGBA
-    int numberOfColorComponents = 4;
-    this->Image->setData(this->LookupTable->GetPointer(0),
-                         this->LookupTable->GetNumberOfTableValues()
-                         * numberOfColorComponents);
-    this->Image->setWidth(this->LookupTable->GetNumberOfTableValues());
-    this->Image->setHeight(1);
+    this->Image->setWidth(width);
+    this->Image->setHeight(height);
+    this->Image->setPixelFormat(pixels->GetNumberOfComponents() == 4 ? vesColorDataType::RGBA
+                                : pixels->GetNumberOfComponents() == 3 ? vesColorDataType::RGB
+                                : vesColorDataType::Luminance);
     this->Image->setPixelDataType(vesColorDataType::UnsignedByte);
-    this->Image->setPixelFormat(vesColorDataType::RGBA);
+    this->Image->setData(pixels->WriteVoidPointer(0, 0), pixels->GetSize());
 
-    this->Texture = vesSharedPtr<vesTexture>(new vesTexture());
-    this->Texture->setImage(this->Image);
-    this->DataRep->setTexture(this->Texture);
+    this->renderer()->background()->setImage(this->Image);
   }
 
   void unloadData()
@@ -110,7 +120,7 @@ public:
     }
   }
 
-  void loadData(const std::string& filename)
+  void loadData(const std::string &filename, const std::string &imageFilename)
   {
     this->unloadData();
 
@@ -120,18 +130,18 @@ public:
     assert(polyData.GetPointer());
 
     vesKiwiPolyDataRepresentation* rep = new vesKiwiPolyDataRepresentation();
-    rep->initializeWithShader(this->TextureShader);
+    rep->initializeWithShader(this->ShaderProgram);
     rep->setPolyData(polyData);
     rep->addSelfToRenderer(this->renderer());
     this->DataRep = rep;
 
-    this->create1DTexture();
+    this->setBackgroundImage(imageFilename);
   }
 
   vesSharedPtr<vesImage> Image;
   vesSharedPtr<vesTexture> Texture;
   vtkSmartPointer<vtkLookupTable> LookupTable;
-  vesSharedPtr<vesShaderProgram> TextureShader;
+  vesSharedPtr<vesShaderProgram> ShaderProgram;
   vesKiwiPolyDataRepresentation* DataRep;
 };
 
@@ -147,7 +157,7 @@ public:
   {
   }
 
-  vesTextureApp* app() {
+  vesTexturedBackgroundApp* app() {
     return &this->App;
   }
 
@@ -177,7 +187,7 @@ public:
 
 private:
 
-  vesTextureApp     App;
+  vesTexturedBackgroundApp     App;
   std::string       SourceDirectory;
   std::string       DataDirectory;
   bool              IsTesting;
@@ -190,9 +200,12 @@ vesTestHelper* testHelper;
 void LoadData()
 {
   std::string filename = testHelper->sourceDirectory() +
-    std::string("/Apps/iOS/Kiwi/Kiwi/Data/plane.vtp");
+    std::string("/Apps/iOS/Kiwi/Kiwi/Data/bunny.vtp");
 
-  testHelper->app()->loadData(filename);
+  const std::string imageFilename = testHelper->sourceDirectory() +
+    std::string("/Apps/iOS/Kiwi/Kiwi/Data/kiwi_opaque.png");
+
+  testHelper->app()->loadData(filename, imageFilename);
   testHelper->app()->resetView();
 }
 
@@ -206,7 +219,7 @@ void LoadDefaultData()
 bool DoTesting()
 {
   const double threshold = 10.0;
-  const std::string testName = "Textured Plane";
+  const std::string testName = "Textured Background";
 
   vesKiwiBaselineImageTester baselineTester;
   baselineTester.setApp(testHelper->app());
@@ -230,9 +243,9 @@ std::string GetFileContents(const std::string& filename)
 void InitRendering()
 {
   std::cout << "Init rendering " << std::endl;
-  testHelper->app()->initTextureShader(
-    vesBuiltinShaders::vesTestTexture_vert(),
-    vesBuiltinShaders::vesTestTexture_frag());
+  testHelper->app()->initShader(
+    vesBuiltinShaders::vesShader_vert(),
+    vesBuiltinShaders::vesShader_frag());
 }
 
 //----------------------------------------------------------------------------

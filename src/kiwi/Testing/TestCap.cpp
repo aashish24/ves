@@ -26,27 +26,21 @@
 #include <cstdio>
 #include <cstring>
 
-#include <vesBackground.h>
-#include <vesImage.h>
+#include <vesActor.h>
+#include <vesBuiltinShaders.h>
 #include <vesKiwiBaseApp.h>
 #include <vesKiwiDataLoader.h>
 #include <vesKiwiBaselineImageTester.h>
 #include <vesKiwiPolyDataRepresentation.h>
-#include <vesRenderer.h>
-#include <vesSetGet.h>
 #include <vesShaderProgram.h>
-#include <vesTexture.h>
 #include <vesUniform.h>
-#include <vesBuiltinShaders.h>
 
-#include <vtkLookupTable.h>
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 #include <X11/keysym.h>
-
 #include <GLES2/gl2.h>
 #include <EGL/egl.h>
 
@@ -54,51 +48,37 @@
 //----------------------------------------------------------------------------
 namespace {
 
-class vesTextureApp : public vesKiwiBaseApp {
+
+class vesCapApp : public vesKiwiBaseApp {
 public:
 
-  vesTextureApp() : vesKiwiBaseApp()
+  vesCapApp() : vesKiwiBaseApp()
   {
     this->setBackgroundColor(63/255.0, 96/255.0, 144/255.0);
-
-    this->DataRep = 0x0;
+    this->DataRep = 0;
   }
 
-  ~vesTextureApp()
+  ~vesCapApp()
   {
     this->unloadData();
   }
 
-  void initTextureShader(const std::string& vertexSource, const std::string fragmentSource)
+  void initClipShader(const std::string& vertexSource, const std::string fragmentSource)
   {
     vesSharedPtr<vesShaderProgram> shaderProgram
       = this->addShaderProgram(vertexSource, fragmentSource);
     this->addModelViewMatrixUniform(shaderProgram);
     this->addProjectionMatrixUniform(shaderProgram);
+    this->addNormalMatrixUniform(shaderProgram);
     this->addVertexPositionAttribute(shaderProgram);
+    this->addVertexNormalAttribute(shaderProgram);
+    this->addVertexColorAttribute(shaderProgram);
     this->addVertexTextureCoordinateAttribute(shaderProgram);
-    this->TextureShader = shaderProgram;
-  }
+    this->ClipShader = shaderProgram;
 
-  void create1DTexture()
-  {
-    this->Image = vesImage::Ptr(new vesImage());
-    this->LookupTable = vtkSmartPointer<vtkLookupTable>::New();
-    this->LookupTable->Build();
-
-    /// RGBA
-    int numberOfColorComponents = 4;
-    this->Image->setData(this->LookupTable->GetPointer(0),
-                         this->LookupTable->GetNumberOfTableValues()
-                         * numberOfColorComponents);
-    this->Image->setWidth(this->LookupTable->GetNumberOfTableValues());
-    this->Image->setHeight(1);
-    this->Image->setPixelDataType(vesColorDataType::UnsignedByte);
-    this->Image->setPixelFormat(vesColorDataType::RGBA);
-
-    this->Texture = vesSharedPtr<vesTexture>(new vesTexture());
-    this->Texture->setImage(this->Image);
-    this->DataRep->setTexture(this->Texture);
+    this->ClipUniform = vesSharedPtr<vesUniform>(
+      new vesUniform("clipPlaneEquation", vesVector4f(-1.0f, 0.0f, 0.0f, 0.0f)));
+    this->ClipShader->addUniform(this->ClipUniform);
   }
 
   void unloadData()
@@ -115,23 +95,21 @@ public:
     this->unloadData();
 
     vesKiwiDataLoader loader;
-    vtkSmartPointer<vtkPolyData> polyData =
-      vtkPolyData::SafeDownCast(loader.loadDataset(filename));
+    vtkSmartPointer<vtkPolyData> polyData
+      = vtkPolyData::SafeDownCast(loader.loadDataset(filename));
     assert(polyData.GetPointer());
 
     vesKiwiPolyDataRepresentation* rep = new vesKiwiPolyDataRepresentation();
-    rep->initializeWithShader(this->TextureShader);
+    rep->initializeWithShader(this->ClipShader);
     rep->setPolyData(polyData);
+    rep->actor()->setRotation(vesVector4f(0.0f, 1.0f, 0.0f, (-155.0f * M_PI/180.0f)));
     rep->addSelfToRenderer(this->renderer());
     this->DataRep = rep;
-
-    this->create1DTexture();
   }
 
-  vesSharedPtr<vesImage> Image;
-  vesSharedPtr<vesTexture> Texture;
-  vtkSmartPointer<vtkLookupTable> LookupTable;
-  vesSharedPtr<vesShaderProgram> TextureShader;
+
+  vesSharedPtr<vesUniform> ClipUniform;
+  vesSharedPtr<vesShaderProgram> ClipShader;
   vesKiwiPolyDataRepresentation* DataRep;
 };
 
@@ -147,7 +125,7 @@ public:
   {
   }
 
-  vesTextureApp* app() {
+  vesCapApp* app() {
     return &this->App;
   }
 
@@ -177,7 +155,7 @@ public:
 
 private:
 
-  vesTextureApp     App;
+  vesCapApp        App;
   std::string       SourceDirectory;
   std::string       DataDirectory;
   bool              IsTesting;
@@ -190,7 +168,7 @@ vesTestHelper* testHelper;
 void LoadData()
 {
   std::string filename = testHelper->sourceDirectory() +
-    std::string("/Apps/iOS/Kiwi/Kiwi/Data/plane.vtp");
+    std::string("/Apps/iOS/Kiwi/Kiwi/Data/bunny.vtp");
 
   testHelper->app()->loadData(filename);
   testHelper->app()->resetView();
@@ -206,7 +184,7 @@ void LoadDefaultData()
 bool DoTesting()
 {
   const double threshold = 10.0;
-  const std::string testName = "Textured Plane";
+  const std::string testName = "Capped Standford Bunny";
 
   vesKiwiBaselineImageTester baselineTester;
   baselineTester.setApp(testHelper->app());
@@ -229,10 +207,7 @@ std::string GetFileContents(const std::string& filename)
 //----------------------------------------------------------------------------
 void InitRendering()
 {
-  std::cout << "Init rendering " << std::endl;
-  testHelper->app()->initTextureShader(
-    vesBuiltinShaders::vesTestTexture_vert(),
-    vesBuiltinShaders::vesTestTexture_frag());
+  testHelper->app()->initClipShader(vesBuiltinShaders::vesCap_vert(), vesBuiltinShaders::vesCap_frag());
 }
 
 //----------------------------------------------------------------------------
