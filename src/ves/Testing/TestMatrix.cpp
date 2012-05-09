@@ -196,7 +196,7 @@ int main(int, char *[])
     success = false;
 
   // Point translation.
-  vtkPoint3f point = transformPoint3f(trans, vtkPoint3f(1, 3, 5));
+  vesVector3f point = transformPoint3f(trans, vesVector3f(1, 3, 5));
   float pointArray[] = { 2, 5, 8 };
   cout << "Point comparison: ";
   for (int i = 0; i < 3; ++i) {

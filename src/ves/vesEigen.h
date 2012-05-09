@@ -33,7 +33,6 @@ typedef Eigen::Vector3f vesVector3f;
 typedef Eigen::Vector4f vesVector4f;
 typedef Eigen::Vector2d vesVector2d;
 typedef Eigen::Vector3d vesVector3d;
-typedef Eigen::Vector3f vtkPoint3f;
 typedef Eigen::Vector4d vesVector4d;
 typedef Eigen::Matrix<unsigned short, 3, 1> vesVector3us;
 typedef Eigen::Matrix<unsigned short, 2, 1> vesVector2us;
@@ -61,7 +60,7 @@ vesMatrix4x4f vesFrustum(float left,
 
 vesMatrix3x3f makeNormalMatrix3x3f(vesMatrix4x4f matrix);
 vesMatrix4x4f makeNormalizedMatrix4x4(vesMatrix4x4f matrix);
-vtkPoint3f transformPoint3f(vesMatrix4x4f matrix, vtkPoint3f vec);
+vesVector3f transformPoint3f(vesMatrix4x4f matrix, vesVector3f vec);
 float deg2Rad(float degree);
 vesMatrix4x4f vesLookAt( vesVector3f position,
                          vesVector3f focalPoint,
