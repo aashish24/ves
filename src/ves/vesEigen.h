@@ -31,8 +31,10 @@ typedef Eigen::Affine3f vesAffine3f;
 typedef Eigen::Vector2f vesVector2f;
 typedef Eigen::Vector3f vesVector3f;
 typedef Eigen::Vector4f vesVector4f;
+typedef Eigen::Vector2d vesVector2d;
 typedef Eigen::Vector3d vesVector3d;
 typedef Eigen::Vector3f vtkPoint3f;
+typedef Eigen::Vector4d vesVector4d;
 typedef Eigen::Matrix<unsigned short, 3, 1> vesVector3us;
 typedef Eigen::Matrix<unsigned short, 2, 1> vesVector2us;
 
