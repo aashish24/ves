@@ -20,8 +20,6 @@
 
 #include "vesKiwiDataLoader.h"
 
-#include <vesOpenGLSupport.h>
-
 #include <vtkSmartPointer.h>
 #include <vtkXMLPolyDataReader.h>
 #include <vtkXMLImageDataReader.h>
@@ -57,13 +55,12 @@ public:
 
   vesInternal()
   {
-    this->GLSupport = vesOpenGLSupport::Ptr(new vesOpenGLSupport());
+    this->IsErrorOnMoreThan65kVertices = true;
   }
 
+  bool IsErrorOnMoreThan65kVertices;
   std::string ErrorTitle;
   std::string ErrorMessage;
-  vesOpenGLSupport::Ptr GLSupport;
-
 };
 
 //----------------------------------------------------------------------------
@@ -76,6 +73,18 @@ vesKiwiDataLoader::vesKiwiDataLoader()
 vesKiwiDataLoader::~vesKiwiDataLoader()
 {
   delete this->Internal;
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiDataLoader::setErrorOnMoreThan65kVertices(bool isEnabled)
+{
+  this->Internal->IsErrorOnMoreThan65kVertices = isEnabled;
+}
+
+//----------------------------------------------------------------------------
+bool vesKiwiDataLoader::isErrorOnMoreThan65kVertices() const
+{
+  return this->Internal->IsErrorOnMoreThan65kVertices;
 }
 
 //----------------------------------------------------------------------------
@@ -131,7 +140,6 @@ vtkSmartPointer<vtkDataSet> vesKiwiDataLoader::datasetFromAlgorithm(vtkAlgorithm
   }
 
   const vtkIdType maximumNumberOfPoints = 65536;
-  this->Internal->GLSupport->initialize();
 
   // If we have a polydata with elements other than vertices, and it has
   // more than 65K points, then we require the opengl extension to support
@@ -140,7 +148,7 @@ vtkSmartPointer<vtkDataSet> vesKiwiDataLoader::datasetFromAlgorithm(vtkAlgorithm
   if (polyData
       && (polyData->GetNumberOfPoints() > maximumNumberOfPoints)
       && (polyData->GetNumberOfPolys() || polyData->GetNumberOfLines() || polyData->GetNumberOfStrips())
-      && !this->Internal->GLSupport->isSupportedIndexUnsignedInt())
+      && this->isErrorOnMoreThan65kVertices())
     {
     this->setMaximumNumberOfPointsErrorMessage();
     return 0;

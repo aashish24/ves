@@ -36,6 +36,11 @@ public:
 
   void initialize();
 
+  bool isInitialized()
+  {
+    return m_initialized;
+  }
+
   const std::string& glVendor() const
   {
     return m_vendor;

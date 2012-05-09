@@ -44,6 +44,7 @@
 #include "vesUniform.h"
 #include "vesVertexAttribute.h"
 #include "vesVertexAttributeKeys.h"
+#include "vesOpenGLSupport.h"
 #include "vesBuiltinShaders.h"
 
 #include <vtkNew.h>
@@ -222,6 +223,13 @@ vesKiwiViewerApp::~vesKiwiViewerApp()
 {
   this->removeAllDataRepresentations();
   delete this->Internal;
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiViewerApp::initGL()
+{
+  this->vesKiwiBaseApp::initGL();
+  this->Internal->DataLoader.setErrorOnMoreThan65kVertices(!this->glSupport()->isSupportedIndexUnsignedInt());
 }
 
 //----------------------------------------------------------------------------

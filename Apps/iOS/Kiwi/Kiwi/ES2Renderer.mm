@@ -40,6 +40,7 @@
   if (self)
   {
     self->mApp = new vesKiwiViewerApp;
+    self->mApp->initGL();
   }
 
   return self;

@@ -35,6 +35,15 @@ public:
   vesKiwiDataLoader();
   ~vesKiwiDataLoader();
 
+  /// Set/get whether or not this class should throw an error when loading
+  /// datasets with more than 65k vertices.  Note, if the loaded data contains
+  /// only vertices and no primitives (lines, triangles, etc), than no error
+  /// will be thrown even if this setting is enabled.  The default setting is
+  /// enabled- an error will be thrown.  If the GL context has support for the
+  /// GL_OES_element_index_uint extension, then it is safe to disable this error.
+  void setErrorOnMoreThan65kVertices(bool isEnabled);
+  bool isErrorOnMoreThan65kVertices() const;
+
   vtkSmartPointer<vtkDataSet> loadDataset(const std::string& filename);
   std::string errorTitle() const;
   std::string errorMessage() const;

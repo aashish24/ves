@@ -68,6 +68,12 @@ public:
   std::string getShadingModel(int index) const;
   bool setShadingModel(const std::string& name);
 
+  /// This method is overridden to check support for GL extensions.  The
+  /// GL_OES_element_index_uint extension is querried and used to determine
+  /// whether or not the data loader should throw an error on datasets with
+  /// more than 65k vertices.
+  virtual void initGL();
+
   bool initGouraudShader(const std::string& vertexSource, const std::string& fragmentSource);
   bool initBlinnPhongShader(const std::string& vertexSource, const std::string& fragmentSource);
   bool initToonShader(const std::string& vertexSource, const std::string& fragmentSource);

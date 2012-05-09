@@ -208,8 +208,9 @@ bool setupGraphics(int w, int h)
   vtkAndroidOutputWindow::Install();
 
   app = new vesKiwiViewerApp();
-  cameraSpinner.setApp(app);
+  app->initGL();
   app->resizeView(w, h);
+  cameraSpinner.setApp(app);
 
   if (isResume && !appState.currentDataset.empty()) {
     app->loadDataset(appState.currentDataset);

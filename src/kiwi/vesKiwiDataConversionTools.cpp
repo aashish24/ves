@@ -28,7 +28,6 @@
 #include "vtkLookupTable.h"
 #include "vesMath.h"
 #include "vtkNew.h"
-#include "vesOpenGLSupport.h"
 #include "vtkPointData.h"
 #include "vtkPolyData.h"
 #include "vesTexture.h"
@@ -240,16 +239,13 @@ void vesKiwiDataConversionTools::ConvertTriangles(
     return;
   }
 
-  vesOpenGLSupport::Ptr glSupport (new vesOpenGLSupport());
-  glSupport->initialize();
+  const vtkIdType maximumNumberOfPoints = 65536;
 
-  if (glSupport->isSupportedIndexUnsignedInt()) {
-    vesKiwiDataConversionTools::GenericConvertTriangles<unsigned int>(
-      input, output);
+  if (input->GetNumberOfPoints() > maximumNumberOfPoints) {
+    vesKiwiDataConversionTools::GenericConvertTriangles<unsigned int>(input, output);
   }
   else {
-    return vesKiwiDataConversionTools::GenericConvertTriangles<unsigned short>(
-      input, output);
+    vesKiwiDataConversionTools::GenericConvertTriangles<unsigned short>(input, output);
   }
 }
 
@@ -343,12 +339,9 @@ vesSharedPtr<vesGeometryData> vesKiwiDataConversionTools::ConvertPoints(vtkPolyD
 vesSharedPtr<vesGeometryData> vesKiwiDataConversionTools::Convert(
   vtkPolyData* input)
 {
-  vesOpenGLSupport::Ptr glSupport (new vesOpenGLSupport());
-  glSupport->initialize();
-
   const vtkIdType maximumNumberOfPoints = 65536;
 
-  if (input->GetNumberOfPoints() > maximumNumberOfPoints && glSupport->isSupportedIndexUnsignedInt()) {
+  if (input->GetNumberOfPoints() > maximumNumberOfPoints) {
     return vesKiwiDataConversionTools::GenericConvert<unsigned int>(input);
   }
   else {
