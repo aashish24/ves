@@ -42,7 +42,6 @@
 		436C94631533E5BA00682255 /* libvtkIOGeometry-6.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436C94411533E5BA00682255 /* libvtkIOGeometry-6.0.a */; };
 		436C94641533E5BA00682255 /* libvtkImagingCore-6.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436C94421533E5BA00682255 /* libvtkImagingCore-6.0.a */; };
 		436C94651533E5BA00682255 /* libvtkIOCore-6.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436C94431533E5BA00682255 /* libvtkIOCore-6.0.a */; };
-		436C94661533E5BA00682255 /* libvtkImagingMath-6.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436C94441533E5BA00682255 /* libvtkImagingMath-6.0.a */; };
 		436C94671533E5BA00682255 /* libvtkCommonExecutionModel-6.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436C94451533E5BA00682255 /* libvtkCommonExecutionModel-6.0.a */; };
 		436C94681533E5BA00682255 /* libvtkCommonComputationalGeometry-6.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436C94461533E5BA00682255 /* libvtkCommonComputationalGeometry-6.0.a */; };
 		436C94691533E5BA00682255 /* libvtkCommonDataModel-6.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436C94471533E5BA00682255 /* libvtkCommonDataModel-6.0.a */; };
@@ -130,7 +129,6 @@
 		436C94411533E5BA00682255 /* libvtkIOGeometry-6.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkIOGeometry-6.0.a"; path = "../../../../build/CMakeExternals/Build/vtk-ios-device/lib/libvtkIOGeometry-6.0.a"; sourceTree = "<group>"; };
 		436C94421533E5BA00682255 /* libvtkImagingCore-6.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkImagingCore-6.0.a"; path = "../../../../build/CMakeExternals/Build/vtk-ios-device/lib/libvtkImagingCore-6.0.a"; sourceTree = "<group>"; };
 		436C94431533E5BA00682255 /* libvtkIOCore-6.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkIOCore-6.0.a"; path = "../../../../build/CMakeExternals/Build/vtk-ios-device/lib/libvtkIOCore-6.0.a"; sourceTree = "<group>"; };
-		436C94441533E5BA00682255 /* libvtkImagingMath-6.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkImagingMath-6.0.a"; path = "../../../../build/CMakeExternals/Build/vtk-ios-device/lib/libvtkImagingMath-6.0.a"; sourceTree = "<group>"; };
 		436C94451533E5BA00682255 /* libvtkCommonExecutionModel-6.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkCommonExecutionModel-6.0.a"; path = "../../../../build/CMakeExternals/Build/vtk-ios-device/lib/libvtkCommonExecutionModel-6.0.a"; sourceTree = "<group>"; };
 		436C94461533E5BA00682255 /* libvtkCommonComputationalGeometry-6.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkCommonComputationalGeometry-6.0.a"; path = "../../../../build/CMakeExternals/Build/vtk-ios-device/lib/libvtkCommonComputationalGeometry-6.0.a"; sourceTree = "<group>"; };
 		436C94471533E5BA00682255 /* libvtkCommonDataModel-6.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkCommonDataModel-6.0.a"; path = "../../../../build/CMakeExternals/Build/vtk-ios-device/lib/libvtkCommonDataModel-6.0.a"; sourceTree = "<group>"; };
@@ -208,7 +206,6 @@
 				436C94631533E5BA00682255 /* libvtkIOGeometry-6.0.a in Frameworks */,
 				436C94641533E5BA00682255 /* libvtkImagingCore-6.0.a in Frameworks */,
 				436C94651533E5BA00682255 /* libvtkIOCore-6.0.a in Frameworks */,
-				436C94661533E5BA00682255 /* libvtkImagingMath-6.0.a in Frameworks */,
 				436C94671533E5BA00682255 /* libvtkCommonExecutionModel-6.0.a in Frameworks */,
 				436C94681533E5BA00682255 /* libvtkCommonComputationalGeometry-6.0.a in Frameworks */,
 				436C94691533E5BA00682255 /* libvtkCommonDataModel-6.0.a in Frameworks */,
@@ -310,7 +307,6 @@
 				436C94411533E5BA00682255 /* libvtkIOGeometry-6.0.a */,
 				436C94421533E5BA00682255 /* libvtkImagingCore-6.0.a */,
 				436C94431533E5BA00682255 /* libvtkIOCore-6.0.a */,
-				436C94441533E5BA00682255 /* libvtkImagingMath-6.0.a */,
 				436C94451533E5BA00682255 /* libvtkCommonExecutionModel-6.0.a */,
 				436C94461533E5BA00682255 /* libvtkCommonComputationalGeometry-6.0.a */,
 				436C94471533E5BA00682255 /* libvtkCommonDataModel-6.0.a */,
