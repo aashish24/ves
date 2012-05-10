@@ -53,11 +53,13 @@
 
 - (void) render
 {
+  printf("render()\n");
   self->mApp->render();
 }
 
 - (BOOL) resizeFromLayer:(int) w height:(int) h
 {
+  printf("resize(%d, %d\n", w, h);
   self->mApp->resizeView(w, h);
   return YES;
 }
@@ -70,51 +72,9 @@
 
 - (void)resetView
 {
+  printf("resetView()\n");
   self->mApp->resetView();
-}
-
-- (void) setFilePath :(NSString *) fpath
-{
-  UIAlertView *readerAlert = [[[UIAlertView alloc]
-    initWithTitle:@"Reading File\nPlease Wait..." message:nil
-    delegate:self cancelButtonTitle:nil otherButtonTitles: nil] autorelease];
-  [readerAlert show];
-  UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc]
-    initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-  // Adjust the indicator so it is up a few pixels from the bottom of the alert
-  indicator.center = CGPointMake(readerAlert.bounds.size.width / 2, readerAlert.bounds.size.height - 50);
-  [indicator startAnimating];
-  [readerAlert addSubview:indicator];
-  [indicator release];
-
-  // 250ms pause for the dialog to become active...
-  int n=0;
-  while(n < 250)
-    {
-    [[NSRunLoop currentRunLoop] limitDateForMode:NSDefaultRunLoopMode];
-    [NSThread sleepForTimeInterval:.001];
-    n++;
-    }
-
-  NSLog(@"Opening path: %@", fpath);
-
-  bool loadSuccess = self->mApp->loadDataset([fpath UTF8String]);
-
-  if (!loadSuccess)
-  {
-    [readerAlert dismissWithClickedButtonIndex:0 animated:YES];
-    UIAlertView *alert = [[UIAlertView alloc]
-      initWithTitle:[NSString stringWithUTF8String:self->mApp->loadDatasetErrorTitle().c_str()]
-      message:[NSString stringWithUTF8String:self->mApp->loadDatasetErrorMessage().c_str()]
-      delegate:self
-      cancelButtonTitle:NSLocalizedStringFromTable(@"OK", @"Localized", nil)
-      otherButtonTitles: nil, nil];
-    [alert show];
-    [alert release];
-    return;
-    }
-
-  [readerAlert dismissWithClickedButtonIndex:0 animated:YES];
+  [[NSNotificationCenter defaultCenter] postNotificationName:@"scheduleRender" object:nil];
 }
 
 -(int) getNumberOfFacetsForCurrentModel

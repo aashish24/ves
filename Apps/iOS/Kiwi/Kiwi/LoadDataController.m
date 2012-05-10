@@ -61,8 +61,8 @@
   self.contentSizeForViewInPopover = CGSizeMake(275.0, 570.0);
 
   self.helpStrings = [NSMutableArray array];
-  // not ready for prime time...
-  //[_helpStrings addObject:@"from the web."];
+
+
   [_helpStrings addObject:@"from DropBox."];
   [_helpStrings addObject:@"from email."];
 

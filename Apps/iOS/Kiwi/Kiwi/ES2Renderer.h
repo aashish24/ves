@@ -22,15 +22,17 @@ struct vesKiwiViewerApp;
 
 @interface ES2Renderer : NSObject
 {
+@public
+
 @private
 
   vesKiwiViewerApp* mApp;
+
 }
 
 - (void)render;
 - (void)resetView;
 - (BOOL)resizeFromLayer:(int)w height:(int) h;
-- (void)setFilePath:(NSString*)fpath;
 
 - (int)getNumberOfFacetsForCurrentModel;
 - (int)getNumberOfLinesForCurrentModel;

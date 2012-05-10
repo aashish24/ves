@@ -34,6 +34,10 @@ struct vesKiwiViewerApp;
 // Note that setting the view non-opaque will only work if the EAGL surface has an alpha channel.
 @interface EAGLView : UIView
 {
+@public
+
+  int builtinDatasetIndex;
+
 @private
   EAGLContext *context;
   // The pixel dimensions of the CAEAGLLayer
@@ -57,10 +61,9 @@ struct vesKiwiViewerApp;
   CGPoint lastMovementXYUnitDelta;
   float lastRotationMotionNorm;
   NSThread* inertialRotationThread;
-
-  CGPoint accumulatedRotationDelta;
-  NSLock* rotationDataLock;
 }
+
+@property (nonatomic, retain) EAGLContext *context;
 
 // animation loop
 - (void)drawView:(id)sender;
@@ -72,7 +75,6 @@ struct vesKiwiViewerApp;
 -(struct vesKiwiViewerApp*) getApp;
 
 - (void)resetView;
-- (void)setFilePath:(NSString*)fpath;
 
 // Touch handling
 - (void) createGestureRecognizers;
@@ -81,13 +83,6 @@ struct vesKiwiViewerApp;
 - (IBAction)handlePinchGesture:(UIPinchGestureRecognizer *)sender;
 - (IBAction)handle2DRotationGesture:(UIRotationGestureRecognizer *)sender;
 - (IBAction)handleTapGesture:(UITapGestureRecognizer *)sender;
-
-- (void)scheduleRotate:(CGPoint)delta;
-- (void)rotate;
-
-// inertia handling
-- (void)handleInertialRotation;
-- (void)stopInertialMotion;
 
 // model information
 - (int)getNumberOfFacetsForCurrentModel;

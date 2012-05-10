@@ -36,9 +36,12 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+  self->waitDialog = nil;
+  self->myQueue = dispatch_queue_create("com.kitware.KiwiViewer.myqueue", 0);
+
   self.window.rootViewController = self.viewController;
   NSURL *url = (NSURL *)[launchOptions valueForKey:UIApplicationLaunchOptionsURLKey];
-  [self handleCustomURLScheme:url];
+  [self handleUrl:url];
   return YES;
 }
 
@@ -70,7 +73,6 @@
   [glView resetView];
 }
 
-
 -(IBAction)information:(UIButton*)sender
 {
   InfoView *infoView = [[[InfoView alloc] initWithFrame:CGRectMake(0,0,320,260)] autorelease];
@@ -95,7 +97,7 @@
 
     self.viewController.infoPopover = popover;
     }
-  // need to get the info from the renderer
+
   [infoView updateModelInfoLabelWithNumFacets:[self.glView getNumberOfFacetsForCurrentModel]
                                  withNumLines:[self.glView getNumberOfLinesForCurrentModel]
                               withNumVertices:[self.glView getNumberOfVerticesForCurrentModel]
@@ -104,13 +106,7 @@
 
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
 {
-  if (url != nil)
-    {
-    isHandlingCustomURLVTKDownload = YES;
-    }
-  // Handle the VTKs custom URL scheme
-  [self handleCustomURLScheme:url];
-  return YES;
+  return [self handleUrl:url];
 }
 
 -(NSString*) documentsDirectory
@@ -124,222 +120,146 @@
   return [[self documentsDirectory] stringByAppendingPathComponent:fileName];
 }
 
+-(void)showHeadImageDialog
+{
+  NSString* title = @"CT Image";
+  NSString* message = @"About the CT image";
+  [self showAlertDialogWithTitle:title message:message];
+}
+
+-(void) showErrorDialog
+{
+  vesKiwiViewerApp* app = [glView getApp];
+  NSString* errorTitle = [NSString stringWithUTF8String:app->loadDatasetErrorTitle().c_str()];
+  NSString* errorMessage = [NSString stringWithUTF8String:app->loadDatasetErrorMessage().c_str()];
+  [self showAlertDialogWithTitle:errorTitle message:errorMessage];
+}
+
+-(void) showWaitDialogWithMessage:(NSString*) message
+{
+  if (self->waitDialog != nil) {
+    self->waitDialog.title = message;
+    return;
+  }
+
+  self->waitDialog = [[UIAlertView alloc]
+    initWithTitle:message message:nil
+    delegate:self cancelButtonTitle:nil otherButtonTitles: nil];
+  [self->waitDialog show];
+}
+
+-(void) showWaitDialog
+{
+  [self showWaitDialogWithMessage:@"Opening data..."];
+}
+
+-(void) dismissWaitDialog
+{
+  if (self->waitDialog == nil) {
+    return;
+  }
+  [self->waitDialog dismissWithClickedButtonIndex:0 animated:YES];
+  [self->waitDialog release];
+  self->waitDialog = nil;
+}
+
+-(void) postLoadDataset:(NSString*)filename result:(BOOL)result
+{
+  [self dismissWaitDialog];
+  if (!result) {
+    [self showErrorDialog];
+    }
+}
+
+-(BOOL) loadDatasetWithPath:(NSString*)path builtinIndex:(int) index
+{
+  NSLog(@"load dataset: %@", path);
+
+  self.glView->builtinDatasetIndex = index;
+
+  [self showWaitDialog];
+
+   dispatch_async(self->myQueue, ^{
+
+      [EAGLContext setCurrentContext:glView.context];
+      bool result = [glView getApp]->loadDataset([path UTF8String]);
+      [self.glView resetView];
+
+       dispatch_async(dispatch_get_main_queue(), ^{
+        [self postLoadDataset:path result:result];
+       });
+   });
+
+  return YES;
+}
+
+-(BOOL) loadDatasetWithPath:(NSString*) path
+{
+  return [self loadDatasetWithPath:path builtinIndex:-1];
+}
+
 -(void) loadBuiltinDatasetWithIndex:(int)index
 {
   vesKiwiViewerApp* app = [self.glView getApp];
-  NSString* datasetFilename = [NSString stringWithUTF8String:app->builtinDatasetFilename(index).c_str()];
-  NSString* absolutePath = [[NSBundle mainBundle] pathForResource:datasetFilename ofType:nil];
+  NSString* datasetName = [NSString stringWithUTF8String:app->builtinDatasetFilename(index).c_str()];
+
+  NSString* absolutePath = [[NSBundle mainBundle] pathForResource:datasetName ofType:nil];
   if (absolutePath == nil)
     {
-    absolutePath = [self pathInDocumentsDirectoryForFileName:datasetFilename];
+    absolutePath = [self pathInDocumentsDirectoryForFileName:datasetName];
     }
 
-  NSURL* url = [NSURL fileURLWithPath:absolutePath];
-  [self handleCustomURLScheme:url];
+  [self loadDatasetWithPath:absolutePath builtinIndex:index];
 }
 
-- (BOOL)handleCustomURLScheme:(NSURL *)url;
+- (void)willPresentAlertView:(UIAlertView *)alertView
 {
-  //
-  // if viewer is not available: bail out
-  if (!glView)
-    {
-    return NO;
-    }
+  if (alertView == self->waitDialog) {
+   UIActivityIndicatorView *indicator = [[[UIActivityIndicatorView alloc]
+    initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge] autorelease];
+  indicator.center = CGPointMake(alertView.bounds.size.width / 2, alertView.bounds.size.height - 50);
+  [alertView addSubview:indicator];
+  [indicator startAnimating];
+  }
+}
 
-  //
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+
+}
+
+- (BOOL)handleUrl:(NSURL *)url;
+{
   // no url; go with the default dataset
   if (!url)
     {
-    NSLog(@"Null url; opening default data file");
     vesKiwiViewerApp* app = [self.glView getApp];
     [self loadBuiltinDatasetWithIndex:app->defaultBuiltinDatasetIndex()];
     return YES;
     }
 
-  NSLog(@"Opening URL: %@", url);
-
-  //
-  // we already have a file on the device (e.g., from dropbox); use it
   if ([url isFileURL])
     {
-    [glView setFilePath:[url path]];
-    return YES;
+    return [self loadDatasetWithPath:[url path]];
     }
 
-  isHandlingCustomURLVTKDownload = YES;
-
-  downloadAlert = [[[UIAlertView alloc] initWithTitle:@"Downloading File\nPlease Wait..." message:nil delegate:self cancelButtonTitle:nil otherButtonTitles: nil] autorelease];
-  [downloadAlert show];
-  UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
-  // Adjust the indicator so it is up a few pixels from the bottom of the alert
-  indicator.center = CGPointMake(downloadAlert.bounds.size.width / 2, downloadAlert.bounds.size.height - 50);
-  [indicator startAnimating];
-  [downloadAlert addSubview:indicator];
-  [indicator release];
-
-  NSString *pathComponentForCustomURL = [[url host] stringByAppendingString:[url path]];
-  NSString *locationOfRemoteVTKFile = [NSString stringWithFormat:@"http://%@", pathComponentForCustomURL];
-  //nameOfDownloadedVTK = @"current.vtk";//[[pathComponentForCustomURL lastPathComponent] retain];
-  nameOfDownloadedVTK = [[pathComponentForCustomURL lastPathComponent] retain];
-
-  // Check to make sure that the file has not already been downloaded, if so, just switch to it
-  NSString *documentsDirectory = [self documentsDirectory];
-
-  NSLog(@"path = %@",pathComponentForCustomURL);
-  NSLog(@"loc = %@",locationOfRemoteVTKFile);
-  NSLog(@"name = %@",nameOfDownloadedVTK);
-  NSLog(@"docDir = %@",documentsDirectory);
-
-  downloadCancelled = NO;
-
-  // Start download of new file
-  [self showDownloadIndicator];
-
-  [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
-  //filename = [documentsDirectory stringByAppendingPathComponent:nameOfDownloadedVTK];
-
-  NSURLRequest *theRequest=[NSURLRequest requestWithURL:[NSURL URLWithString:locationOfRemoteVTKFile]
-                                            cachePolicy:NSURLRequestUseProtocolCachePolicy
-                                        timeoutInterval:60.0f];
-
-
-  downloadConnection = [[NSURLConnection alloc] initWithRequest:theRequest delegate:self];
-  if (downloadConnection)
-    {
-    downloadedFileContents = [[NSMutableData data] retain];
-    }
-  else
-    {
-    // inform the user that the download could not be made
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedStringFromTable(@"Could not open connection", @"Localized", nil) message:[NSString stringWithFormat:NSLocalizedStringFromTable(@"Could not open connection to: %@", @"Localized", nil), nameOfDownloadedVTK]
-      delegate:self cancelButtonTitle:NSLocalizedStringFromTable(@"OK", @"Localized", nil) otherButtonTitles: nil, nil];
-    [alert show];
-    [alert release];
-    return NO;
-    }
-
-  return YES;
+  return NO;
 }
 
-#pragma mark -
-#pragma mark URL connection delegate methods
-
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error;
+- (void)showAlertDialogWithTitle:(NSString *)alertTitle message:(NSString *)alertMessage;
 {
-  UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedStringFromTable(@"Connection failed", @"Localized", nil) message:NSLocalizedStringFromTable(@"Could not download file", @"Localized", nil)
-    delegate:self cancelButtonTitle:NSLocalizedStringFromTable(@"OK", @"Localized", nil) otherButtonTitles: nil, nil];
+
+  UIAlertView *alert = [[UIAlertView alloc]
+                        initWithTitle:alertTitle
+                        message:alertMessage
+                        delegate:self
+                        cancelButtonTitle:@"Ok"
+                        otherButtonTitles: nil, nil];
   [alert show];
   [alert release];
-
-  [self downloadCompleted];
 }
 
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data;
-{
-  // Concatenate the new data with the existing data to build up the downloaded file
-  // Update the status of the download
-
-  if (downloadCancelled)
-    {
-    [connection cancel];
-    [self downloadCompleted];
-    downloadCancelled = NO;
-    return;
-    }
-  [downloadedFileContents appendData:data];
-}
-
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response;
-{
-  // This extra check was causing some files from the web not to be loaded.
-  /*
-  // Stop the spinning wheel and start the status bar for download
-  if ([response textEncodingName] != nil)
-    {
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedStringFromTable(@"Could not find file", @"Localized", nil) message:[NSString stringWithFormat:NSLocalizedStringFromTable(@"No such file exists on the server: %@", @"Localized", nil), nameOfDownloadedVTK]
-                                                   delegate:self cancelButtonTitle:NSLocalizedStringFromTable(@"OK", @"Localized", nil) otherButtonTitles: nil, nil];
-    [alert show];
-    [alert release];
-    [connection cancel];
-    [self downloadCompleted];
-    return;
-    }
-  */
-}
-
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection;
-{
-  // Close off the file and write it to disk
-  [self saveFileWithData:downloadedFileContents toFilename:nameOfDownloadedVTK];
-  [self downloadCompleted];
-}
-
-- (void)saveFileWithData:(NSData *)fileData toFilename:(NSString *)filename;
-{
-  if (fileData != nil)
-    {
-    NSString *documentsDirectory = [self documentsDirectory];
-
-    NSError *error = nil;
-    BOOL writeStatus;
-    writeStatus = [fileData writeToFile:[documentsDirectory stringByAppendingPathComponent:filename] options:NSAtomicWrite error:&error];
-
-    if (!writeStatus)
-      {
-      UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedStringFromTable(@"Could not write file", @"Localized", nil) message:[NSString stringWithFormat:NSLocalizedStringFromTable(@"Could not write file: %@", @"Localized", nil), nameOfDownloadedVTK]
-        delegate:self cancelButtonTitle:NSLocalizedStringFromTable(@"OK", @"Localized", nil) otherButtonTitles: nil, nil];
-      [alert show];
-      [alert release];
-      return;
-      }
-
-    NSString *filePath = [documentsDirectory stringByAppendingPathComponent:filename];
-    if(glView)
-      {
-      [glView setFilePath:filePath];
-      }
-    }
-}
-
-- (void)downloadCompleted;
-{
-  [downloadConnection release];
-  downloadConnection = nil;
-  [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
-
-  [downloadedFileContents release];
-  downloadedFileContents = nil;
-  [self hideStatusIndicator];
-  [downloadAlert dismissWithClickedButtonIndex:0 animated:YES];
-  [nameOfDownloadedVTK release];
-  nameOfDownloadedVTK = nil;
-}
-
-#pragma mark -
-#pragma mark Status update methods
-
-- (void)showStatusIndicator;
-{
-  [[NSNotificationCenter defaultCenter] postNotificationName:@"FileLoadingStarted" object:NSLocalizedStringFromTable(@"Initializing database...", @"Localized", nil)];
-}
-
-- (void)showDownloadIndicator;
-{
-  [[NSNotificationCenter defaultCenter] postNotificationName:@"FileLoadingStarted" object:NSLocalizedStringFromTable(@"Downloading vtk file...", @"Localized", nil)];
-}
-
-- (void)updateStatusIndicator;
-{
-
-}
-
-- (void)hideStatusIndicator;
-{
-  [[NSNotificationCenter defaultCenter] postNotificationName:@"FileLoadingEnded" object:nil];
-}
-
--(void)dataSelected:(int)index
+-(void)dismissLoadDataView
 {
   if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
     {
@@ -349,7 +269,11 @@
     {
     [self.loadDataPopover dismissPopoverAnimated:YES];
     }
+}
 
+-(void)dataSelected:(int)index
+{
+  [self dismissLoadDataView];
   [self loadBuiltinDatasetWithIndex:index];
 }
 
