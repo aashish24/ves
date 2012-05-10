@@ -58,7 +58,7 @@
 #include <vesShaderProgram.h>
 #include <vesSetGet.h>
 #include <vesKiwiPolyDataRepresentation.h>
-#include <vesKiwiBaseApp.h>
+#include <vesKiwiViewerApp.h>
 
 
 #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "PointCloud", __VA_ARGS__))
@@ -69,12 +69,12 @@
 //----------------------------------------------------------------------------
 namespace {
 
-class vesKiwiPointCloudApp : public vesKiwiBaseApp {
+class vesKiwiPointCloudApp : public vesKiwiViewerApp {
 public:
 
   vesTypeMacro(vesKiwiPointCloudApp);
 
-  vesKiwiPointCloudApp() : vesKiwiBaseApp()
+  vesKiwiPointCloudApp() : vesKiwiViewerApp()
   {
     this->setBackgroundColor(0.0, 0.0, 0.0);
   }
@@ -86,7 +86,7 @@ public:
 
   void resetView()
   {
-    this->vesKiwiBaseApp::resetView();
+    this->vesKiwiViewerApp::resetView();
 
     // move the camera for a better default view of the cturtle.vtp dataset
     this->camera()->elevation(180);
@@ -360,6 +360,11 @@ static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) 
             return 1;
         }
 
+        if (AMotionEvent_getAction(event) == AMOTION_EVENT_ACTION_UP
+            && (AMotionEvent_getPointerCount(event) == 1)) {
+            engine->kiwiApp->handleSingleTouchUp();
+            return 1;
+        }
 
         // When transitioning from one touch to two touches, we record the position
         // of of the new touch and return.  When transitioning from two touches to
@@ -432,11 +437,6 @@ static int32_t engine_handle_input(struct android_app* app, AInputEvent* event) 
           double factor = pow(1.1, dyf);
 
           engine->kiwiApp->handleTwoTouchPinchGesture(factor);
-
-          //
-          // Roll camera.
-          // Implemented based on vkInteractorStyleTrackballCamera::Spin().
-          //
 
           double pi = 3.14159265358979;
           double newAngle = atan2(y0 - y1,
