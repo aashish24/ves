@@ -26,7 +26,7 @@
 #define USE_DEPTH_BUFFER 1
 
 @interface kwGestureDelegate : NSObject <UIGestureRecognizerDelegate>{
-  
+
 }
 @end
 
@@ -39,19 +39,19 @@
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
 {
-  BOOL rotating2D = 
+  BOOL rotating2D =
   [gestureRecognizer isMemberOfClass:[UIRotationGestureRecognizer class]] ||
   [otherGestureRecognizer isMemberOfClass:[UIRotationGestureRecognizer class]];
-  
-  BOOL pinching = 
+
+  BOOL pinching =
   [gestureRecognizer isMemberOfClass:[UIPinchGestureRecognizer class]] ||
   [otherGestureRecognizer isMemberOfClass:[UIPinchGestureRecognizer class]];
-  
-  BOOL panning = 
+
+  BOOL panning =
   [gestureRecognizer numberOfTouches] == 2 &&
   ([gestureRecognizer isMemberOfClass:[UIPanGestureRecognizer class]] ||
    [otherGestureRecognizer isMemberOfClass:[UIPanGestureRecognizer class]]);
-  
+
   if ((pinching && panning) ||
       (pinching && rotating2D) ||
       (panning && rotating2D))
@@ -86,13 +86,13 @@
 
 //The EAGL view is stored in the nib file. When it's unarchived it's sent -initWithCoder:
 - (id)initWithCoder:(NSCoder*)coder
-{    
+{
   self = [super initWithCoder:coder];
   if (self)
     {
     // Get the layer
     CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
-    
+
     eaglLayer.opaque = TRUE;
     eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
                                     [NSNumber numberWithBool:FALSE], kEAGLDrawablePropertyRetainedBacking, kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat, nil];
@@ -102,26 +102,26 @@
       [self release];
       return nil;
       }
-    
+
     renderer = [[ES2Renderer alloc] init];
-    
+
     if (!renderer)
       {
-			[self release];
-			return nil;
+      [self release];
+      return nil;
       }
 
     [self createGestureRecognizers];
     self.multipleTouchEnabled = YES;
-    
+
     self->rotationDataLock = [NSLock new];
     self->accumulatedRotationDelta.x = 0.0;
     self->accumulatedRotationDelta.y = 0.0;
     }
-  
+
   self->shouldRender = NO;
   self->recentRenderFPS = [NSMutableArray new];
-  
+
   return self;
 }
 
@@ -130,10 +130,10 @@
   return self->renderer.app;
 }
 
-- (void)layoutSubviews 
+- (void)layoutSubviews
 {
   [EAGLContext setCurrentContext:context];
-  
+
   if (self->displayLink)
   {
     [self->displayLink invalidate];
@@ -164,23 +164,23 @@
   self->displayLink = [self.window.screen displayLinkWithTarget:self selector:@selector(drawView:)];
   [self->displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(rotate) name:@"willRender" object:nil];
-  
+
   [self forceRender];
 }
 
-- (BOOL)createFramebuffer 
-{  
+- (BOOL)createFramebuffer
+{
   glGenFramebuffers(1, &viewFramebuffer);
   glGenRenderbuffers(1, &viewRenderbuffer);
-  
+
   glBindFramebuffer(GL_FRAMEBUFFER, viewFramebuffer);
   glBindRenderbuffer(GL_RENDERBUFFER, viewRenderbuffer);
   [context renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer*)self.layer];
   glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, viewRenderbuffer);
-  
+
   glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &backingWidth);
   glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &backingHeight);
-  
+
   if (USE_DEPTH_BUFFER)
     {
     glGenRenderbuffers(1, &depthRenderbuffer);
@@ -188,7 +188,7 @@
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, backingWidth, backingHeight);
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderbuffer);
     }
-  
+
   if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
     {
     NSLog(@"failed to make complete framebuffer object %x", glCheckFramebufferStatus(GL_FRAMEBUFFER));
@@ -198,13 +198,13 @@
   return YES;
 }
 
-- (void)destroyFramebuffer 
-{  
+- (void)destroyFramebuffer
+{
   glDeleteFramebuffers(1, &viewFramebuffer);
   viewFramebuffer = 0;
   glDeleteRenderbuffers(1, &viewRenderbuffer);
   viewRenderbuffer = 0;
-  
+
   if(depthRenderbuffer)
     {
     glDeleteRenderbuffers(1, &depthRenderbuffer);
@@ -220,7 +220,7 @@
     {
     return;
     }
-  
+
   //
   // keep track of the last few rendering speeds
   const unsigned int maxWindowSize = 20;
@@ -244,7 +244,7 @@
   //
   // clamp to 10Hz or higher
   desiredFrameInterval = desiredFrameInterval > 6 ? 6 : desiredFrameInterval;
-  
+
   if (desiredFrameInterval != self->displayLink.frameInterval)
     {
     //NSLog(@"Changing frame interval to %d", desiredFrameInterval);
@@ -273,7 +273,7 @@
 }
 
 - (void)drawView:(id) sender
-{    
+{
   if (TRUE || self->shouldRender)
     {
     NSDate* startRenderTotalDate = [NSDate date];
@@ -309,18 +309,18 @@
 
 - (void)resetView
 {
-  [self stopInertialMotion]; 
+  [self stopInertialMotion];
   [renderer resetView];
   [self scheduleRender];
 }
 
 - (void) setFilePath :(NSString *) fpath
 {
-	if(renderer)
+  if(renderer)
     {
-		[renderer setFilePath:fpath];
+    [renderer setFilePath:fpath];
     [self resetView];
-	  }
+    }
 }
 
 
@@ -335,28 +335,28 @@
   [singleFingerPanGesture setMaximumNumberOfTouches:1];
   [self addGestureRecognizer:singleFingerPanGesture];
   [singleFingerPanGesture release];
-  
+
   UIPanGestureRecognizer *doubleFingerPanGesture = [[UIPanGestureRecognizer alloc]
                                                     initWithTarget:self action:@selector(handleDoubleFingerPanGesture:)];
   [doubleFingerPanGesture setMinimumNumberOfTouches:2];
   [doubleFingerPanGesture setMaximumNumberOfTouches:2];
   [self addGestureRecognizer:doubleFingerPanGesture];
   [doubleFingerPanGesture release];
-  
+
   UIPinchGestureRecognizer *pinchGesture = [[UIPinchGestureRecognizer alloc]
                                             initWithTarget:self action:@selector(handlePinchGesture:)];
   [self addGestureRecognizer:pinchGesture];
   [pinchGesture release];
-  
+
   UIRotationGestureRecognizer *rotate2DGesture = [[UIRotationGestureRecognizer alloc]
                                                   initWithTarget:self action:@selector(handle2DRotationGesture:)];
   [self addGestureRecognizer:rotate2DGesture];
   [rotate2DGesture release];
-  
+
   UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc]
                                              initWithTarget:self action:@selector(handleTapGesture:)];
-  // this is needed so that the buttons on top of the render view will 
-  // work since this is the first responder---is this the best way to 
+  // this is needed so that the buttons on top of the render view will
+  // work since this is the first responder---is this the best way to
   // fix this problem?
   tapGesture.cancelsTouchesInView = NO;
   [self addGestureRecognizer:tapGesture];
@@ -384,39 +384,39 @@
     // start inertial pan?
     return;
     }
-  
+
   [self stopInertialMotion];
-    
+
   //
   // get current translation and (then zero it out so it won't accumulate)
   CGPoint currentLocation = [sender locationInView:self];
   CGPoint currentTranslation = [sender translationInView:self];
   [sender setTranslation:CGPointZero inView:self];
-  
+
   //
   // compute the previous location (have to flip y)
   CGPoint previousLocation;
   previousLocation.x = currentLocation.x - currentTranslation.x;
   previousLocation.y = currentLocation.y + currentTranslation.y;
-  
+
   self->renderer.app->handleTwoTouchPanGesture(previousLocation.x, previousLocation.y, currentLocation.x, currentLocation.y);
 
   [self scheduleRender];
 }
 
 - (IBAction)handleSingleFingerPanGesture:(UIPanGestureRecognizer *)sender
-{ 
+{
   if (sender.state == UIGestureRecognizerStateEnded ||
       sender.state == UIGestureRecognizerStateCancelled)
     {
     bool widgetInteractionActive = self->renderer.app->widgetInteractionIsActive();
 
     self->renderer.app->handleSingleTouchUp();
-    
+
     // clear any pending rotation events
     self->accumulatedRotationDelta.x = 0.0;
     self->accumulatedRotationDelta.y = 0.0;
-    
+
     [self scheduleRender];
     if (!widgetInteractionActive && lastRotationMotionNorm > 4.0f)
       {
@@ -425,9 +425,9 @@
       }
     return;
     }
-  
+
   [self stopInertialMotion];
-  
+
   //
   // get current translation and (then zero it out so it won't accumulate)
   CGPoint currentTranslation = [sender translationInView:self];
@@ -439,16 +439,16 @@
     self->renderer.app->handleSingleTouchDown(currentLocation.x, currentLocation.y);
     [self scheduleRender];
     }
-  
-  // 
+
+  //
   // update data for inertial rotation
-  self->lastRotationMotionNorm = sqrtf(currentTranslation.x*currentTranslation.x + 
+  self->lastRotationMotionNorm = sqrtf(currentTranslation.x*currentTranslation.x +
                                        currentTranslation.y*currentTranslation.y);
   if (self->lastRotationMotionNorm > 0)
     {
     self->lastMovementXYUnitDelta.x = currentTranslation.x / lastRotationMotionNorm;
     self->lastMovementXYUnitDelta.y = currentTranslation.y / lastRotationMotionNorm;
-    
+
     //
     // apply the rotation and rerender
     [self scheduleRotate:currentTranslation];
@@ -462,26 +462,26 @@
 }
 
 - (IBAction)handlePinchGesture:(UIPinchGestureRecognizer *)sender
-{  
+{
   if (sender.state == UIGestureRecognizerStateEnded ||
       sender.state == UIGestureRecognizerStateCancelled)
     {
     return;
     }
-  
+
   [self stopInertialMotion];
-  
+
   self->renderer.app->handleTwoTouchPinchGesture(sender.scale);
-  
+
   //
   // reset scale so it won't accumulate
   sender.scale = 1.0;
-  
+
   [self scheduleRender];
 }
 
 - (IBAction)handle2DRotationGesture:(UIRotationGestureRecognizer *)sender
-{  
+{
   if (sender.state == UIGestureRecognizerStateEnded ||
       sender.state == UIGestureRecognizerStateCancelled)
     {
@@ -491,11 +491,11 @@
     [self stopInertialMotion];
 
   self->renderer.app->handleTwoTouchRotationGesture(sender.rotation);
-  
+
   //
   // reset rotation so it won't accumulate
   [sender setRotation:0.0];
-  
+
   [self scheduleRender];
 }
 
@@ -528,8 +528,8 @@
   if (self->accumulatedRotationDelta.x != 0.0 ||
       self->accumulatedRotationDelta.y != 0.0)
   {
-    self->renderer.app->handleSingleTouchPanGesture(self->accumulatedRotationDelta.x, 
-                                                    self->accumulatedRotationDelta.y); 
+    self->renderer.app->handleSingleTouchPanGesture(self->accumulatedRotationDelta.x,
+                                                    self->accumulatedRotationDelta.y);
     self->accumulatedRotationDelta.x = 0.0;
     self->accumulatedRotationDelta.y = 0.0;
   }
@@ -543,16 +543,16 @@
   while (lastRotationMotionNorm > 0.5)
     {
     [NSThread sleepForTimeInterval:1/30.0];
-    
+
     if ([[NSThread currentThread] isCancelled])
       {
       break;
       }
-    
+
     delta.x = lastRotationMotionNorm*lastMovementXYUnitDelta.x;
     delta.y = lastRotationMotionNorm*lastMovementXYUnitDelta.y;
     [self scheduleRotate:delta];
-    
+
     [self scheduleRender];
     lastRotationMotionNorm *= 0.9;
     }
@@ -567,10 +567,10 @@
     {
     [inertialRotationThread setThreadPriority:1.0f];
     [inertialRotationThread cancel];
-    
-    // TODO: something is wrong with this implementation so there is a hack here. 
-    // This busy wait is causing a jerky stop to the inertial rotation so I'm setting the 
-    // priorty of the inertia thread up high and pausing here a bit so that it can finish 
+
+    // TODO: something is wrong with this implementation so there is a hack here.
+    // This busy wait is causing a jerky stop to the inertial rotation so I'm setting the
+    // priorty of the inertia thread up high and pausing here a bit so that it can finish
     // its render.  The priority and sleep should be removed when the wait is improved
     [NSThread sleepForTimeInterval:1/20.0];
     while (![inertialRotationThread isFinished])

@@ -34,11 +34,11 @@
 @synthesize dataLoader = _dataLoader;
 @synthesize loadDataPopover = _loadDataPopover;
 
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions   
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   self.window.rootViewController = self.viewController;
-	NSURL *url = (NSURL *)[launchOptions valueForKey:UIApplicationLaunchOptionsURLKey];
-	[self handleCustomURLScheme:url];
+  NSURL *url = (NSURL *)[launchOptions valueForKey:UIApplicationLaunchOptionsURLKey];
+  [self handleCustomURLScheme:url];
   return YES;
 }
 
@@ -80,7 +80,7 @@
     TitleBarViewContainer* container = [TitleBarViewContainer new];
     infoView.contentView.backgroundColor = [UIColor colorWithWhite:1.0 alpha:0.0];
     [container addViewToContainer:infoView];
-    container.previousViewController = self.window.rootViewController;    
+    container.previousViewController = self.window.rootViewController;
     [self.viewController presentModalViewController:container animated:YES];
     }
   else
@@ -89,10 +89,10 @@
     newController.view = infoView;
     UIPopoverController *popover = [[UIPopoverController alloc] initWithContentViewController:newController];
     [popover setPopoverContentSize:CGSizeMake(320,260) animated:NO];
-    [popover presentPopoverFromRect:[(UIButton*)sender frame] inView:self.glView 
+    [popover presentPopoverFromRect:[(UIButton*)sender frame] inView:self.glView
            permittedArrowDirections:(UIPopoverArrowDirectionDown)
                            animated:NO];
-                           
+
     self.viewController.infoPopover = popover;
     }
   // need to get the info from the renderer
@@ -104,13 +104,13 @@
 
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
 {
-	if (url != nil)
-	  {
+  if (url != nil)
+    {
     isHandlingCustomURLVTKDownload = YES;
-	  }
-	// Handle the VTKs custom URL scheme
-	[self handleCustomURLScheme:url];
-	return YES;
+    }
+  // Handle the VTKs custom URL scheme
+  [self handleCustomURLScheme:url];
+  return YES;
 }
 
 -(NSString*) documentsDirectory
@@ -127,7 +127,7 @@
 -(void) loadBuiltinDatasetWithIndex:(int)index
 {
   vesKiwiViewerApp* app = [self.glView getApp];
-  NSString* datasetFilename = [NSString stringWithUTF8String:app->builtinDatasetFilename(index).c_str()];  
+  NSString* datasetFilename = [NSString stringWithUTF8String:app->builtinDatasetFilename(index).c_str()];
   NSString* absolutePath = [[NSBundle mainBundle] pathForResource:datasetFilename ofType:nil];
   if (absolutePath == nil)
     {
@@ -135,7 +135,7 @@
     }
 
   NSURL* url = [NSURL fileURLWithPath:absolutePath];
-  [self handleCustomURLScheme:url];    
+  [self handleCustomURLScheme:url];
 }
 
 - (BOOL)handleCustomURLScheme:(NSURL *)url;
@@ -202,8 +202,8 @@
   NSURLRequest *theRequest=[NSURLRequest requestWithURL:[NSURL URLWithString:locationOfRemoteVTKFile]
                                             cachePolicy:NSURLRequestUseProtocolCachePolicy
                                         timeoutInterval:60.0f];
-  
-  
+
+
   downloadConnection = [[NSURLConnection alloc] initWithRequest:theRequest delegate:self];
   if (downloadConnection)
     {
@@ -215,11 +215,11 @@
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedStringFromTable(@"Could not open connection", @"Localized", nil) message:[NSString stringWithFormat:NSLocalizedStringFromTable(@"Could not open connection to: %@", @"Localized", nil), nameOfDownloadedVTK]
       delegate:self cancelButtonTitle:NSLocalizedStringFromTable(@"OK", @"Localized", nil) otherButtonTitles: nil, nil];
     [alert show];
-    [alert release];		
+    [alert release];
     return NO;
     }
-  
-	return YES;
+
+  return YES;
 }
 
 #pragma mark -
@@ -227,57 +227,57 @@
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error;
 {
-	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedStringFromTable(@"Connection failed", @"Localized", nil) message:NSLocalizedStringFromTable(@"Could not download file", @"Localized", nil)
+  UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedStringFromTable(@"Connection failed", @"Localized", nil) message:NSLocalizedStringFromTable(@"Could not download file", @"Localized", nil)
     delegate:self cancelButtonTitle:NSLocalizedStringFromTable(@"OK", @"Localized", nil) otherButtonTitles: nil, nil];
-	[alert show];
-	[alert release];
-	
-	[self downloadCompleted];
+  [alert show];
+  [alert release];
+
+  [self downloadCompleted];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data;
 {
-	// Concatenate the new data with the existing data to build up the downloaded file
-	// Update the status of the download
-	
-	if (downloadCancelled)
-	  {
-		[connection cancel];
-		[self downloadCompleted];
-		downloadCancelled = NO;
-		return;
-	  }
-	[downloadedFileContents appendData:data];
+  // Concatenate the new data with the existing data to build up the downloaded file
+  // Update the status of the download
+
+  if (downloadCancelled)
+    {
+    [connection cancel];
+    [self downloadCompleted];
+    downloadCancelled = NO;
+    return;
+    }
+  [downloadedFileContents appendData:data];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response;
 {
   // This extra check was causing some files from the web not to be loaded.
   /*
-	// Stop the spinning wheel and start the status bar for download
-	if ([response textEncodingName] != nil)
-	  {
-		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedStringFromTable(@"Could not find file", @"Localized", nil) message:[NSString stringWithFormat:NSLocalizedStringFromTable(@"No such file exists on the server: %@", @"Localized", nil), nameOfDownloadedVTK]
+  // Stop the spinning wheel and start the status bar for download
+  if ([response textEncodingName] != nil)
+    {
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedStringFromTable(@"Could not find file", @"Localized", nil) message:[NSString stringWithFormat:NSLocalizedStringFromTable(@"No such file exists on the server: %@", @"Localized", nil), nameOfDownloadedVTK]
                                                    delegate:self cancelButtonTitle:NSLocalizedStringFromTable(@"OK", @"Localized", nil) otherButtonTitles: nil, nil];
-		[alert show];
-		[alert release];		
-		[connection cancel];
-		[self downloadCompleted];
-		return;
-	  }
+    [alert show];
+    [alert release];
+    [connection cancel];
+    [self downloadCompleted];
+    return;
+    }
   */
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection;
 {
-	// Close off the file and write it to disk
-	[self saveFileWithData:downloadedFileContents toFilename:nameOfDownloadedVTK];
-	[self downloadCompleted];
+  // Close off the file and write it to disk
+  [self saveFileWithData:downloadedFileContents toFilename:nameOfDownloadedVTK];
+  [self downloadCompleted];
 }
 
 - (void)saveFileWithData:(NSData *)fileData toFilename:(NSString *)filename;
 {
-	if (fileData != nil)
+  if (fileData != nil)
     {
     NSString *documentsDirectory = [self documentsDirectory];
 
@@ -290,7 +290,7 @@
       UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedStringFromTable(@"Could not write file", @"Localized", nil) message:[NSString stringWithFormat:NSLocalizedStringFromTable(@"Could not write file: %@", @"Localized", nil), nameOfDownloadedVTK]
         delegate:self cancelButtonTitle:NSLocalizedStringFromTable(@"OK", @"Localized", nil) otherButtonTitles: nil, nil];
       [alert show];
-      [alert release];		
+      [alert release];
       return;
       }
 
@@ -304,16 +304,16 @@
 
 - (void)downloadCompleted;
 {
-	[downloadConnection release];
-	downloadConnection = nil;
-	[[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+  [downloadConnection release];
+  downloadConnection = nil;
+  [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
 
-	[downloadedFileContents release];
-	downloadedFileContents = nil;
-	[self hideStatusIndicator];
+  [downloadedFileContents release];
+  downloadedFileContents = nil;
+  [self hideStatusIndicator];
   [downloadAlert dismissWithClickedButtonIndex:0 animated:YES];
-	[nameOfDownloadedVTK release];
-	nameOfDownloadedVTK = nil;
+  [nameOfDownloadedVTK release];
+  nameOfDownloadedVTK = nil;
 }
 
 #pragma mark -
@@ -321,22 +321,22 @@
 
 - (void)showStatusIndicator;
 {
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"FileLoadingStarted" object:NSLocalizedStringFromTable(@"Initializing database...", @"Localized", nil)];
+  [[NSNotificationCenter defaultCenter] postNotificationName:@"FileLoadingStarted" object:NSLocalizedStringFromTable(@"Initializing database...", @"Localized", nil)];
 }
 
 - (void)showDownloadIndicator;
 {
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"FileLoadingStarted" object:NSLocalizedStringFromTable(@"Downloading vtk file...", @"Localized", nil)];
+  [[NSNotificationCenter defaultCenter] postNotificationName:@"FileLoadingStarted" object:NSLocalizedStringFromTable(@"Downloading vtk file...", @"Localized", nil)];
 }
 
 - (void)updateStatusIndicator;
 {
-	
+
 }
 
 - (void)hideStatusIndicator;
 {
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"FileLoadingEnded" object:nil];
+  [[NSNotificationCenter defaultCenter] postNotificationName:@"FileLoadingEnded" object:nil];
 }
 
 -(void)dataSelected:(int)index
@@ -387,8 +387,8 @@
     TitleBarViewContainer* container = [TitleBarViewContainer new];
     [container addViewToContainer:_dataLoader.view];
     [container setTitle:@"Load Data"];
-    container.previousViewController = self.window.rootViewController;    
-    [self.viewController presentModalViewController:container animated:YES];    
+    container.previousViewController = self.window.rootViewController;
+    [self.viewController presentModalViewController:container animated:YES];
     }
   else
     {

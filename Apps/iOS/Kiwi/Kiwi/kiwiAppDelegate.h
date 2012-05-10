@@ -30,13 +30,13 @@
 
   LoadDataController *_dataLoader;
   UIPopoverController *_loadDataPopover;
-  
-	BOOL isHandlingCustomURLVTKDownload;
+
+  BOOL isHandlingCustomURLVTKDownload;
   NSURLConnection *downloadConnection;
   NSMutableData *downloadedFileContents;
   BOOL downloadCancelled;
   NSString *nameOfDownloadedVTK;
-	NSFileHandle *file;
+  NSFileHandle *file;
   UIAlertView *downloadAlert;
 }
 @property (nonatomic, retain) IBOutlet UIWindow *window;

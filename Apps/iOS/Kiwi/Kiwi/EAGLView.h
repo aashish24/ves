@@ -33,31 +33,31 @@ struct vesKiwiViewerApp;
 // The view content is basically an EAGL surface you render your OpenGL scene into.
 // Note that setting the view non-opaque will only work if the EAGL surface has an alpha channel.
 @interface EAGLView : UIView
-{    
+{
 @private
-  EAGLContext *context;	
+  EAGLContext *context;
   // The pixel dimensions of the CAEAGLLayer
   GLint backingWidth;
   GLint backingHeight;
-  
+
   /* OpenGL names for the renderbuffer, framebuffers used to render to this view */
   GLuint viewRenderbuffer;
   GLuint depthRenderbuffer;
   GLuint viewFramebuffer;
-  
+
   // animation loop
   BOOL shouldRender;
   CADisplayLink* displayLink;
   NSMutableArray* recentRenderFPS;
-  
+
   ES2Renderer* renderer;
   NSString *filePath;
-	
-	// inertia handling 
+
+  // inertia handling
   CGPoint lastMovementXYUnitDelta;
-  float lastRotationMotionNorm;  
+  float lastRotationMotionNorm;
   NSThread* inertialRotationThread;
-  
+
   CGPoint accumulatedRotationDelta;
   NSLock* rotationDataLock;
 }
