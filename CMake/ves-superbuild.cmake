@@ -28,6 +28,7 @@ find_package(PythonInterp REQUIRED)
 find_package(Git REQUIRED)
 
 set(module_defaults
+  -DVTK_Group_StandAlone:BOOL=OFF
   -DVTK_Group_Rendering:BOOL=OFF
   -DModule_vtkFiltersCore:BOOL=ON
   -DModule_vtkFiltersModeling:BOOL=ON
@@ -70,9 +71,8 @@ macro(compile_vtk proj)
   ExternalProject_Add(
     ${proj}
     SOURCE_DIR ${source_prefix}/vtk
-    GIT_REPOSITORY git://vtk.org/VTK.git
-    GIT_TAG origin/master
-    UPDATE_COMMAND ${GIT_EXECUTABLE} fetch http://review.source.kitware.com/p/VTK refs/topics/43/343/2 && ${GIT_EXECUTABLE} checkout FETCH_HEAD
+    GIT_REPOSITORY git://github.com/patmarion/VTK.git
+    GIT_TAG origin/kiwi-fixes
     INSTALL_COMMAND ""
     CMAKE_ARGS
       -DCMAKE_INSTALL_PREFIX:PATH=${install_prefix}/${proj}
