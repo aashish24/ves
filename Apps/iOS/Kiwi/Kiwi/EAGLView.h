@@ -33,34 +33,37 @@ struct vesKiwiViewerApp;
 // The view content is basically an EAGL surface you render your OpenGL scene into.
 // Note that setting the view non-opaque will only work if the EAGL surface has an alpha channel.
 @interface EAGLView : UIView
-{    
+{
+@public
+
+  int builtinDatasetIndex;
+
 @private
-  EAGLContext *context;	
+  EAGLContext *context;
   // The pixel dimensions of the CAEAGLLayer
   GLint backingWidth;
   GLint backingHeight;
-  
+
   /* OpenGL names for the renderbuffer, framebuffers used to render to this view */
   GLuint viewRenderbuffer;
   GLuint depthRenderbuffer;
   GLuint viewFramebuffer;
-  
+
   // animation loop
   BOOL shouldRender;
   CADisplayLink* displayLink;
   NSMutableArray* recentRenderFPS;
-  
+
   ES2Renderer* renderer;
   NSString *filePath;
-	
-	// inertia handling 
+
+  // inertia handling
   CGPoint lastMovementXYUnitDelta;
-  float lastRotationMotionNorm;  
+  float lastRotationMotionNorm;
   NSThread* inertialRotationThread;
-  
-  CGPoint accumulatedRotationDelta;
-  NSLock* rotationDataLock;
 }
+
+@property (nonatomic, retain) EAGLContext *context;
 
 // animation loop
 - (void)drawView:(id)sender;
@@ -72,7 +75,6 @@ struct vesKiwiViewerApp;
 -(struct vesKiwiViewerApp*) getApp;
 
 - (void)resetView;
-- (void)setFilePath:(NSString*)fpath;
 
 // Touch handling
 - (void) createGestureRecognizers;
@@ -81,13 +83,6 @@ struct vesKiwiViewerApp;
 - (IBAction)handlePinchGesture:(UIPinchGestureRecognizer *)sender;
 - (IBAction)handle2DRotationGesture:(UIRotationGestureRecognizer *)sender;
 - (IBAction)handleTapGesture:(UITapGestureRecognizer *)sender;
-
-- (void)scheduleRotate:(CGPoint)delta;
-- (void)rotate;
-
-// inertia handling
-- (void)handleInertialRotation;
-- (void)stopInertialMotion;
 
 // model information
 - (int)getNumberOfFacetsForCurrentModel;

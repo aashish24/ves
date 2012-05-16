@@ -7,6 +7,8 @@ set(sources
   vesKiwiBaseApp.cpp
   vesKiwiBaselineImageTester.cpp
   vesKiwiBrainAtlasRepresentation.cpp
+  vesKiwiCameraSpinner.cpp
+  vesKiwiCameraInteractor.cpp
   vesKiwiDataConversionTools.cpp
   vesKiwiDataLoader.cpp
   vesKiwiDataRepresentation.cpp

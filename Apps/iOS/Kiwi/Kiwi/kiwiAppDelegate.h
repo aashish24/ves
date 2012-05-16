@@ -28,17 +28,15 @@
   UIWindow *window;
   EAGLView *glView;
 
+  UIAlertView* waitDialog;
+
+  dispatch_queue_t myQueue;
+
+
   LoadDataController *_dataLoader;
   UIPopoverController *_loadDataPopover;
-  
-	BOOL isHandlingCustomURLVTKDownload;
-  NSURLConnection *downloadConnection;
-  NSMutableData *downloadedFileContents;
-  BOOL downloadCancelled;
-  NSString *nameOfDownloadedVTK;
-	NSFileHandle *file;
-  UIAlertView *downloadAlert;
 }
+
 @property (nonatomic, retain) IBOutlet UIWindow *window;
 @property (nonatomic, retain) IBOutlet EAGLView *glView;
 @property (nonatomic, retain) IBOutlet GLViewController *viewController;
@@ -49,15 +47,10 @@
 -(IBAction)information:(UIButton*)sender;
 -(IBAction)setLoadDataButtonTapped:(id)sender;
 
-// Custom file download methods
-- (BOOL)handleCustomURLScheme:(NSURL *)url;
-- (void)downloadCompleted;
-- (void)saveFileWithData:(NSData *)fileData toFilename:(NSString *)filename;
+- (void)showAlertDialogWithTitle:(NSString *)alertTitle message:(NSString *)alertMessage;
 
-// Status update methods
-- (void)showStatusIndicator;
-- (void)showDownloadIndicator;
-- (void)updateStatusIndicator;
-- (void)hideStatusIndicator;
+-(void)dismissLoadDataView;
+
+- (BOOL)handleUrl:(NSURL *)url;
 
 @end

@@ -122,7 +122,7 @@ vesMatrix4x4f makeNormalizedMatrix4x4(vesMatrix4x4f matrix)
   return mat;
 }
 
-vtkPoint3f transformPoint3f(vesMatrix4x4f matrix, vtkPoint3f vec)
+vesVector3f transformPoint3f(vesMatrix4x4f matrix, vesVector3f vec)
 {
   return Eigen::Affine3f(matrix) * vec;
 }

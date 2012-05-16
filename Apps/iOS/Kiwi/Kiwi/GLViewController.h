@@ -23,7 +23,7 @@
 @class UIPopoverController;
 
 @interface GLViewController : UIViewController {
-    
+
 }
 
 @property (nonatomic, retain) IBOutlet UIButton *infoButton;

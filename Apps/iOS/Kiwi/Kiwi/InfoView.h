@@ -28,7 +28,7 @@
 @property (nonatomic, retain) IBOutlet UIView *contentView;
 
 
--(void)updateModelInfoLabelWithNumFacets:(int)numFacets 
+-(void)updateModelInfoLabelWithNumFacets:(int)numFacets
                             withNumLines:(int)numLines
                          withNumVertices:(int)numVertices
                   withCurrentRefreshRate:(int)refreshRate;

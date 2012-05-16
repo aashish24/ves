@@ -50,7 +50,7 @@
 -(IBAction)kitwareDotCom:(UIButton*)sender
 {
   [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.kitware.com"]];
-  
+
 }
 
 - (void)updateModelInfoLabelWithNumFacets:(int)numFacets withNumLines:(int)numLines withNumVertices:(int)numVertices withCurrentRefreshRate:(int)refreshRate

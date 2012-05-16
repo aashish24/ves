@@ -48,7 +48,7 @@
 {
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
-    
+
     // Release any cached data, images, etc that aren't in use.
 }
 
@@ -59,10 +59,10 @@
   [super viewDidLoad];
   self.clearsSelectionOnViewWillAppear = YES;
   self.contentSizeForViewInPopover = CGSizeMake(275.0, 570.0);
-  
+
   self.helpStrings = [NSMutableArray array];
-  // not ready for prime time...
-  //[_helpStrings addObject:@"from the web."];
+
+
   [_helpStrings addObject:@"from DropBox."];
   [_helpStrings addObject:@"from email."];
 
@@ -98,7 +98,7 @@
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations
-	return YES;
+  return YES;
 }
 
 #pragma mark - Table view data source
@@ -132,18 +132,18 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Cell";
-    
+
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     }
-    
+
     // Configure the cell...
   if (indexPath.section == 0) {
     NSString *label = [_exampleData objectAtIndex:indexPath.row];
     cell.textLabel.text = label;
   }
-  
+
   if (indexPath.section == 1) {
     NSString *label = [_helpStrings objectAtIndex:indexPath.row];
     cell.textLabel.text = label;

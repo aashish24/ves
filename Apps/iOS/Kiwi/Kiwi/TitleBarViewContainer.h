@@ -21,7 +21,7 @@
 #import <UIKit/UIKit.h>
 
 @interface TitleBarViewContainer : UIViewController {
-    
+
 }
 
 @property (nonatomic, retain) IBOutlet UIView *containerView;

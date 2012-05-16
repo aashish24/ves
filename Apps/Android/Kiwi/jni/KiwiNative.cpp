@@ -23,6 +23,7 @@
 #include <android/log.h>
 
 #include <vesKiwiViewerApp.h>
+#include <vesKiwiCameraSpinner.h>
 
 #include <vtksys/SystemTools.hxx>
 #include <vtkTimerLog.h>
@@ -53,84 +54,8 @@ public:
   vesVector3f cameraViewUp;
 };
 
-
-class vesCameraSpinner {
-public:
-
-  vesCameraSpinner()
-  {
-    this->reset();
-  }
-
-  void reset()
-  {
-    mSpinIsActive = false;
-    mLastPanDirection = vesVector2f(0, 0);
-    mLastPanDistance = 0;
-  }
-
-  void handlePan(const vesVector2f& pan)
-  {
-    mLastPanDistance = pan.norm();
-    if (mLastPanDistance > 0) {
-      mLastPanDirection = pan / mLastPanDistance;
-    }
-    else {
-      mLastPanDirection = vesVector2f(0, 0);
-    }
-  }
-
-  bool spinIsActive()
-  {
-    return mSpinIsActive;
-  }
-
-  void start()
-  {
-    mSpinIsActive = true;
-  }
-
-  void stop()
-  {
-    mSpinIsActive = false;
-    mLastPanDistance = 0;
-  }
-
-  void updateSpin()
-  {
-    if (!mSpinIsActive) {
-      return;
-    }
-
-    vesVector2f panDelta;
-
-    if (mLastPanDistance > 1.0) {
-      panDelta = mLastPanDirection * mLastPanDistance;
-      mApp->handleSingleTouchPanGesture(panDelta[0], panDelta[1]);
-      mLastPanDistance *= 0.95;
-    }
-    else {
-      this->stop();
-    }
-  }
-
-  void setApp(vesKiwiBaseApp* app)
-  {
-    this->mApp = app;
-  }
-
-private:
-
-  vesKiwiBaseApp* mApp;
-
-  bool  mSpinIsActive;
-  double mLastPanDistance;
-  vesVector2f mLastPanDirection;
-};
-
 //----------------------------------------------------------------------------
 vesKiwiViewerApp* app;
-vesCameraSpinner cameraSpinner;
 AndroidAppState appState;
 
 int lastFps;
@@ -140,8 +65,6 @@ double fpsT0;
 //----------------------------------------------------------------------------
 void resetView()
 {
-  cameraSpinner.stop();
-
   if (appState.builtinDatasetIndex >= 0) {
     app->applyBuiltinDatasetCameraParameters(appState.builtinDatasetIndex);
   }
@@ -155,9 +78,9 @@ bool loadDataset(const std::string& filename, int builtinDatasetIndex)
 {
   LOGI("loadDataset(%s)", filename.c_str());
 
-  cameraSpinner.stop();
   appState.currentDataset = filename;
   appState.builtinDatasetIndex = builtinDatasetIndex;
+
   bool result = app->loadDataset(filename);
   if (result) {
     resetView();
@@ -210,7 +133,6 @@ bool setupGraphics(int w, int h)
   app = new vesKiwiViewerApp();
   app->initGL();
   app->resizeView(w, h);
-  cameraSpinner.setApp(app);
 
   if (isResume && !appState.currentDataset.empty()) {
     app->loadDataset(appState.currentDataset);
@@ -275,65 +197,46 @@ JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_reshape(JNIEnv * e
 
 JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_handleSingleTouchPanGesture(JNIEnv * env, jobject obj,  jfloat dx, jfloat dy)
 {
-  cameraSpinner.stop();
-  cameraSpinner.handlePan(vesVector2f(dx, dy));
-
   app->handleSingleTouchPanGesture(dx, dy);
 }
 
 JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_handleTwoTouchPanGesture(JNIEnv * env, jobject obj,  jfloat x0, jfloat y0, jfloat x1, jfloat y1)
 {
-  cameraSpinner.stop();
-
   app->handleTwoTouchPanGesture(x0, y0, x1, y1);
 }
 
 JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_handleTwoTouchPinchGesture(JNIEnv * env, jobject obj,  jfloat scale)
 {
-  cameraSpinner.stop();
-
   app->handleTwoTouchPinchGesture(scale);
 }
 
 JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_handleTwoTouchRotationGesture(JNIEnv * env, jobject obj,  jfloat rotation)
 {
-  cameraSpinner.stop();
-
   app->handleTwoTouchRotationGesture(rotation);
 }
 
 JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_handleSingleTouchDown(JNIEnv * env, jobject obj,  jfloat x, jfloat y)
 {
-  cameraSpinner.stop();
   app->handleSingleTouchDown(x, y);
 }
 
 JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_handleSingleTouchUp(JNIEnv * env, jobject obj)
 {
-  if (!app->widgetInteractionIsActive()) {
-    cameraSpinner.start();
-  }
-  else {
-    cameraSpinner.stop();
-  }
   app->handleSingleTouchUp();
 }
 
 JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_handleSingleTouchTap(JNIEnv * env, jobject obj,  jfloat x, jfloat y)
 {
-  cameraSpinner.stop();
   app->handleSingleTouchTap(x, y);
 }
 
 JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_handleDoubleTap(JNIEnv * env, jobject obj,  jfloat x, jfloat y)
 {
-  cameraSpinner.stop();
   app->handleDoubleTap(x, y);
 }
 
 JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_handleLongPress(JNIEnv * env, jobject obj,  jfloat x, jfloat y)
 {
-  cameraSpinner.stop();
   app->handleLongPress(x, y);
 }
 
@@ -348,14 +251,12 @@ JNIEXPORT jboolean JNICALL Java_com_kitware_KiwiViewer_KiwiNative_render(JNIEnv 
     //LOGI("fps: %d", lastFps);
   }
 
-  cameraSpinner.updateSpin();
-
   //LOGI("render");
   app->render();
 
   fpsFrames++;
 
-  return cameraSpinner.spinIsActive() || app->isAnimating();
+  return app->cameraSpinner()->isEnabled() || app->isAnimating();
 }
 
 JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_resetCamera(JNIEnv * env, jobject obj)
@@ -365,7 +266,7 @@ JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_resetCamera(JNIEnv
 
 JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_stopInertialMotion(JNIEnv * env, jobject obj)
 {
-  cameraSpinner.stop();
+  app->haltCameraRotationInertia();
 }
 
 JNIEXPORT jstring JNICALL Java_com_kitware_KiwiViewer_KiwiNative_getDatasetName(JNIEnv* env, jobject obj, jint offset)

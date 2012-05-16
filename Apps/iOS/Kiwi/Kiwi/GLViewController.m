@@ -41,7 +41,7 @@
 {
     // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
-    
+
     // Release any cached data, images, etc that aren't in use.
 }
 
@@ -70,7 +70,7 @@
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
-	return YES;
+  return YES;
 }
 
 
@@ -85,14 +85,14 @@
 {
   if (self->infoPopover && self->infoPopover.popoverVisible)
     {
-    [self->infoPopover presentPopoverFromRect:[self.infoButton frame] 
-      inView:self.view permittedArrowDirections:UIPopoverArrowDirectionDown animated:YES];    
+    [self->infoPopover presentPopoverFromRect:[self.infoButton frame]
+      inView:self.view permittedArrowDirections:UIPopoverArrowDirectionDown animated:YES];
     }
 
   if (self->loadPopover && self->loadPopover.popoverVisible)
     {
-    [self->loadPopover presentPopoverFromRect:[self.loadButton frame] 
-      inView:self.view permittedArrowDirections:UIPopoverArrowDirectionDown animated:YES];    
+    [self->loadPopover presentPopoverFromRect:[self.loadButton frame]
+      inView:self.view permittedArrowDirections:UIPopoverArrowDirectionDown animated:YES];
     }
 
   [super didRotateFromInterfaceOrientation:fromInterfaceOrientation];
