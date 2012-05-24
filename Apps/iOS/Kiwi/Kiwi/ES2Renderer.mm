@@ -59,7 +59,7 @@
 
 - (BOOL) resizeFromLayer:(int) w height:(int) h
 {
-  printf("resize(%d, %d\n", w, h);
+  printf("resize(%d, %d)\n", w, h);
   self->mApp->resizeView(w, h);
   return YES;
 }

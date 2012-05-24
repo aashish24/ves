@@ -53,14 +53,10 @@ struct vesKiwiViewerApp;
   BOOL shouldRender;
   CADisplayLink* displayLink;
   NSMutableArray* recentRenderFPS;
+  NSRecursiveLock* renderDataMutex;
 
   ES2Renderer* renderer;
   NSString *filePath;
-
-  // inertia handling
-  CGPoint lastMovementXYUnitDelta;
-  float lastRotationMotionNorm;
-  NSThread* inertialRotationThread;
 }
 
 @property (nonatomic, retain) EAGLContext *context;
@@ -75,6 +71,10 @@ struct vesKiwiViewerApp;
 -(struct vesKiwiViewerApp*) getApp;
 
 - (void)resetView;
+
+// resource protection
+-(void)disableRendering;
+-(void)enableRendering;
 
 // Touch handling
 - (void) createGestureRecognizers;
