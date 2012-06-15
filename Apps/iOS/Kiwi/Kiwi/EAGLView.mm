@@ -115,11 +115,14 @@
 
     [self createGestureRecognizers];
     self.multipleTouchEnabled = YES;
+
+    self->renderDataMutex = [[NSRecursiveLock alloc] init];
+    [self->renderDataMutex setName:@"RenderDataMutex"];
+    self->shouldRender = NO;
+    self->recentRenderFPS = [NSMutableArray new];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scheduleRender) name:@"scheduleRender" object:nil];
     }
 
-  self->shouldRender = NO;
-  self->recentRenderFPS = [NSMutableArray new];
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(scheduleRender) name:@"scheduleRender" object:nil];
   return self;
 }
 
@@ -205,6 +208,16 @@
     }
 }
 
+-(void) disableRendering
+{
+  [self->renderDataMutex lock];
+}
+
+-(void) enableRendering
+{
+  [self->renderDataMutex unlock];
+}
+
 - (void) updateRefreshRate:(float)lastRenderFPS
 {
   //
@@ -267,6 +280,11 @@
 
 - (void)drawView:(id) sender
 {
+  if (![self->renderDataMutex tryLock])
+    {
+    return;
+    }
+
   if (self->shouldRender || self->renderer.app->cameraSpinner()->isEnabled() || self->renderer.app->isAnimating())
     {
     NSDate* startRenderDate = [NSDate date];
@@ -280,6 +298,8 @@
     //NSLog(@"Render @ %4.1f fps", currentFPS);
     [self updateRefreshRate:currentFPS];
     }
+
+  [self->renderDataMutex unlock];
 }
 
 - (void)dealloc
@@ -291,6 +311,7 @@
   [context release];
   context = nil;
   [renderer release];
+  [renderDataMutex release];
   [super dealloc];
 }
 

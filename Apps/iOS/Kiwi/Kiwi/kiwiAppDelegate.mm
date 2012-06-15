@@ -179,16 +179,17 @@
 
   [self showWaitDialog];
 
-   dispatch_async(self->myQueue, ^{
+  dispatch_async(self->myQueue, ^{
 
-      [EAGLContext setCurrentContext:glView.context];
-      bool result = [glView getApp]->loadDataset([path UTF8String]);
-      [self.glView resetView];
+    [self->glView disableRendering];
+    bool result = [glView getApp]->loadDataset([path UTF8String]);
+    [self->glView resetView];
+    [self->glView enableRendering];
 
-       dispatch_async(dispatch_get_main_queue(), ^{
-        [self postLoadDataset:path result:result];
-       });
-   });
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [self postLoadDataset:path result:result];
+    });
+  });
 
   return YES;
 }
