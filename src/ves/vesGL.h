@@ -20,12 +20,12 @@
 #ifndef VESGL_H
 #define VESGL_H
 
-#ifdef ANDROID
-# include <GLES2/gl2.h>
-# include <GLES2/gl2ext.h>
-#else
+#ifdef __APPLE__
 # include <OpenGLES/ES2/gl.h>
 # include <OpenGLES/ES2/glext.h>
+#else
+# include <GLES2/gl2.h>
+# include <GLES2/gl2ext.h>
 #endif
 
 #ifndef GL_SAMPLER_1D
