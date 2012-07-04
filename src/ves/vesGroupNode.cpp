@@ -181,9 +181,6 @@ void vesGroupNode::updateBounds(vesNode &child)
     return;
   }
 
-  // Make sure that child bounds are upto date
-  child.computeBounds();
-
   vesVector3f min = child.boundsMinimum();
   vesVector3f max = child.boundsMaximum();
 
@@ -199,6 +196,4 @@ void vesGroupNode::updateBounds(vesNode &child)
 
   // Now update the bounds, bounds size and center.
   this->setBounds(this->m_boundsMinimum, this->m_boundsMaximum);
-  this->setBoundsDirty(false);
-  this->setParentBoundsDirty(true);
 }

@@ -30,8 +30,7 @@
 #ifndef VESACTOR_H
 #define VESACTOR_H
 
-#include "vesNode.h"
-#include "vesTransformInterface.h"
+#include "vesTransformNode.h"
 
 // VES includes
 #include "vesSetGet.h"
@@ -39,10 +38,9 @@
 // Forward declarations
 class vesMapper;
 class vesMaterial;
-class vesTransformPrivate;
 class vesVisitor;
 
-class vesActor : public vesNode, public vesTransformInterface
+class vesActor : public vesTransformNode
 {
 public:
   vesTypeMacro(vesActor);
@@ -50,53 +48,9 @@ public:
   vesActor();
   ~vesActor();
 
-  /// Set center of transformations
-  void setCenter(const vesVector3f &center);
-  /// Get center of transformations
-  const vesVector3f& center() const;
-
-  /// Set rotation as described by angle (in radians) and axis
-  /// ( axis(x, y, z), angle )
-  void setRotation(const vesVector4f &rotation);
-
-  /// Get rotation as described by angle (in radians) and axis
-  /// ( axis(x, y, z), angle )
-  const vesVector4f& rotation() const;
-
-  /// Set scale in x, y and z directions
-  void setScale(const vesVector3f &scale);
-
-  /// Get scale in x, y and z directions
-  const vesVector3f& scale() const;
-
-  /// Set scale orientation (rotation) defined by angle and axis
-  /// ( angle, axis(x, y, z) )
-  void setScaleOrientation(const vesVector4f &scaleOrientation);
-
-  /// Get scale orientation (rotation) defined by angle and axis
-  /// ( angle, axis(x, y, z) )
-  const vesVector4f& scaleOrientation() const;
-
-  /// Set translation in x, y and z directions
-  void setTranslation(const vesVector3f &translation);
-
-  /// Get translation in x, y and z directions
-  const vesVector3f& translation() const;
-
-  /// Set reference frame for the transformations. Possible values
-  /// are Absolute and Relative.
-  bool setReferenceFrame(ReferenceFrame referenceFrame);
-
-  /// Get reference frame for the transformations. Possible values
-  /// are Absolute and Relative.
-  ReferenceFrame referenceFrame() const;
-
   /// Evaluate the transform associated with the vtkActor.
   /// Return affine transformation for the actor.
   vesMatrix4x4f modelViewMatrix();
-
-  /// \copydoc vesTransformInterace::matrix
-  virtual vesMatrix4x4f matrix() { return this->modelViewMatrix(); }
 
   /// Set mapper for the actor
   /// \see vesMapper
@@ -106,37 +60,26 @@ public:
   vesSharedPtr<vesMapper> mapper() { return this->m_mapper; }
   const vesSharedPtr<vesMapper> mapper() const { return this->m_mapper; }
 
-  /// \copydoc vesNode::accept()
+  /// \copydoc vesTransformNode::accept()
   virtual void accept(vesVisitor &visitor);
 
-  /// \copydoc vesNode::ascend()
+  /// \copydoc vesTransformNode::ascend()
   virtual void ascend(vesVisitor &visitor);
 
-  /// \copydoc vesTransformInterace::computeLocalToWorldMatrix()
+  /// \copydoc vesTransformNode::computeLocalToWorldMatrix()
   virtual bool computeLocalToWorldMatrix(vesMatrix4x4f &matrix,
                                          vesVisitor &visitor);
 
-  /// \copydoc vesTransformInterace::computeWorldToLocalMatrix()
+  /// \copydoc vesTransformNode::computeWorldToLocalMatrix()
   virtual bool computeWorldToLocalMatrix(vesMatrix4x4f& matrix,
                                          vesVisitor& visitor);
 
-  virtual void computeBounds();
-
 protected:
-  void setInternals();
-
-  vesVector3f m_center;
-  vesVector4f m_rotation;
-  vesVector3f m_scale;
-  vesVector4f m_scaleOrientation;
-  vesVector3f m_translation;
-
-  ReferenceFrame m_referenceFrame;
+  virtual void computeBounds();
 
   vesSharedPtr<vesMapper> m_mapper;
 
 private:
-  vesTransformPrivate *m_implementation;
 };
 
 #endif // VESACTOR_H

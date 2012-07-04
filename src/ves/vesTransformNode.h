@@ -29,17 +29,20 @@
 #define __VESTRANSFORMNODE_H
 
 #include "vesGroupNode.h"
-#include "vesTransformInterface.h"
 
 // VES includes
 #include "vesSetGet.h"
 
-class vesTransformPrivate;
-
-class vesTransformNode : public vesGroupNode, public vesTransformInterface
+class vesTransformNode : public vesGroupNode
 {
 public:
   vesTypeMacro(vesTransformNode);
+
+  enum ReferenceFrame
+  {
+    Relative = 0,
+    Absolute = 1
+  };
 
   vesTransformNode();
   virtual ~vesTransformNode();
@@ -85,8 +88,8 @@ public:
   /// are Absolute and Relative.
   ReferenceFrame referenceFrame() const;
 
-  /// \copydoc vesTransformInterace::matrix
-  virtual vesMatrix4x4f matrix();
+  /// Return affine transformation matrix
+  vesMatrix4x4f matrix();
 
   /// \copydoc vesNode::asTransformNode()
   virtual vesTransformNode* asTransformNode() { return this; }
@@ -95,11 +98,11 @@ public:
   /// \copydoc vesNode::accept(vesVisitor&)
   virtual void accept(vesVisitor &visitor);
 
-  /// \copydoc vesTransformInterace::computeLocalToWorldMatrix
+  /// Compute local to world matrix transformation
   virtual bool computeLocalToWorldMatrix(vesMatrix4x4f& matrix,
                                          vesVisitor& visitor);
 
-  /// \copydoc vesTransformInterace::computeWorldToLocalMatrix
+  /// Compute world to local matrix transformation
   virtual bool computeWorldToLocalMatrix(vesMatrix4x4f& matrix,
                                          vesVisitor& visitor);
 
@@ -107,6 +110,8 @@ protected:
   void updateBounds(vesNode &child);
 
   void setInternals();
+
+  vesMatrix4x4f computeTransform();
 
   vesVector3f m_center;
   vesVector4f m_rotation;
@@ -117,7 +122,8 @@ protected:
   ReferenceFrame m_referenceFrame;
 
 private:
-  vesTransformPrivate *m_implementation;
+  class vesInternal;
+  vesInternal *m_internal;
 };
 
 #endif // __VESTRANSFORMNODE_H

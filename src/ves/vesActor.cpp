@@ -24,128 +24,48 @@
 // VES includes
 #include "vesMapper.h"
 #include "vesMaterial.h"
-#include "vesTransformNode.h"
-#include "vesTransformImplementationPrivate.h"
 #include "vesVisitor.h"
 
-vesActor::vesActor() : vesNode()
+vesActor::vesActor() : vesTransformNode()
 {
   // \todo: Create a default apperance.
-  this->m_implementation = new vesTransformPrivate();
-  this->m_center = vesVector3f (0,0,0);
-  this->m_rotation = vesVector4f(0,0,1,0);
-  this->m_scale = vesVector3f(1,1,1);
-  this->m_scaleOrientation = vesVector4f(0,0,1,0);
-  this->m_translation = vesVector3f(0,0,0);
-  this->m_referenceFrame = Relative;
 }
 
 
 vesActor::~vesActor()
 {
-  delete this->m_implementation;
 }
 
 
 vesMatrix4x4f vesActor::modelViewMatrix()
 {
-  this->setInternals();
-  return this->m_implementation->Eval();
+  return this->vesTransformNode::matrix();
 }
 
 
-void vesActor::setCenter(const vesVector3f &center)
+void vesActor::setMapper(vesSharedPtr<vesMapper> mapper)
 {
-  this->m_center = center;
-  this->setBoundsDirty(true);
-}
-
-
-const vesVector3f& vesActor::center() const
-{
-  return this->m_center;
-}
-
-
-void vesActor::setRotation(const vesVector4f &rotation)
-{
-  this->m_rotation = rotation;
-  this->setBoundsDirty(true);
-}
-
-
-const vesVector4f& vesActor::rotation() const
-{
-  return this->m_rotation;
-}
-
-
-void vesActor::setScale(const vesVector3f &scale)
-{
-  this->m_scale = scale;
-  this->setBoundsDirty(true);
-}
-
-
-const vesVector3f& vesActor::scale() const
-{
-  return this->m_scale;
-}
-
-
-void vesActor::setScaleOrientation(const vesVector4f &scaleOrientation)
-{
-  this->m_scaleOrientation = scaleOrientation;
-  this->setBoundsDirty(true);
-}
-
-
-const vesVector4f& vesActor::scaleOrientation() const
-{
-  return this->m_scaleOrientation;
-}
-
-
-void vesActor::setTranslation(const vesVector3f &translation)
-{
-  this->m_translation = translation;
-  this->setBoundsDirty(true);
-}
-
-
-const vesVector3f& vesActor::translation() const
-{
-  return this->m_translation;
-}
-
-
-bool vesActor::setReferenceFrame(ReferenceFrame referenceFrame)
-{
-  bool success = true;
-
-  if (this->m_referenceFrame != referenceFrame) {
+  if (mapper && mapper != this->m_mapper) {
+    this->m_mapper = mapper;
     this->setBoundsDirty(true);
-    this->m_referenceFrame = referenceFrame;
-    return success;
   }
-
-  return !success;
 }
 
 
-vesTransformNode::ReferenceFrame vesActor::referenceFrame() const
+void vesActor::accept(vesVisitor &visitor)
 {
-  return this->m_referenceFrame;
+  assert(this->m_mapper);
+
+  visitor.visit(*this);
 }
 
 
-void vesActor::setInternals()
+void vesActor::ascend(vesVisitor &visitor)
 {
-  m_implementation->SetTranslation(m_translation);
-  m_implementation->SetCenter(m_center);
-  m_implementation->SetRotation(m_rotation);
-  m_implementation->SetScaleOrientation(m_scaleOrientation);
-  m_implementation->SetScale(m_scale);
+  assert(this->m_mapper);
+
+  // \todo: Implement this.
+  vesNotUsed(visitor);
 }
 
 
@@ -183,32 +103,6 @@ bool vesActor::computeWorldToLocalMatrix(vesMatrix4x4f &matrix,
 }
 
 
-void vesActor::setMapper(vesSharedPtr<vesMapper> mapper)
-{
-  if (mapper && mapper != this->m_mapper) {
-    this->m_mapper = mapper;
-    this->setBoundsDirty(true);
-  }
-}
-
-
-void vesActor::accept(vesVisitor &visitor)
-{
-  assert(this->m_mapper);
-
-  visitor.visit(*this);
-}
-
-
-void vesActor::ascend(vesVisitor &visitor)
-{
-  assert(this->m_mapper);
-
-  // \todo: Implement this.
-  vesNotUsed(visitor);
-}
-
-
 void vesActor::computeBounds()
 {
   assert(this->m_mapper);
@@ -224,8 +118,6 @@ void vesActor::computeBounds()
     // Since now we have new internal bounds, we would have to
     // calculate whole bounds for this actor once again.
     this->setBoundsDirty(true);
-    this->setBoundsDirty(false);
-    this->setParentBoundsDirty(true);
   }
   else if (!this->m_mapper && this->boundsDirty()) {
     this->resetBounds();

@@ -72,11 +72,6 @@ public:
   /// Get parent of the node
   vesGroupNode* parent(){ return this->m_parent; }
 
-  /// Mark parent bounds dirty or not dirty
-  void setParentBoundsDirty(bool value);
-  /// Return if parent bounds are dirty or not
-  bool parentBoundsDirty();
-
   /// Set if this node is an overlay node. Overlay nodes are drawn
   /// on top of scene nodes.
   inline void setIsOverlayNode(bool value) { this->m_isOverlayNode = value; }
@@ -114,10 +109,8 @@ public:
   virtual void traverse(vesVisitor &visitor)
     { vesNotUsed(visitor); }
 
-  /// Force computation of bounds
-  virtual void computeBounds();
-
 protected:
+  virtual void computeBounds();
   virtual void updateBounds(vesNode &child)
     { vesNotUsed(child); }
 
