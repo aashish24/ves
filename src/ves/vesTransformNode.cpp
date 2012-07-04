@@ -45,7 +45,7 @@ vesTransformNode::~vesTransformNode()
 vesMatrix4x4f vesTransformNode::matrix()
 {
   this->setInternals();
-  return m_implementation->eval();
+  return m_implementation->Eval();
 }
 
 
@@ -136,11 +136,11 @@ vesTransformNode::ReferenceFrame vesTransformNode::referenceFrame() const
 
 void vesTransformNode::setInternals()
 {
-  m_implementation->setTranslation(m_translation);
-  m_implementation->setCenter(m_center);
-  m_implementation->setRotation(m_rotation);
-  m_implementation->setScaleOrientation(m_scaleOrientation);
-  m_implementation->setScale(m_scale);
+  m_implementation->SetTranslation(m_translation);
+  m_implementation->SetCenter(m_center);
+  m_implementation->SetRotation(m_rotation);
+  m_implementation->SetScaleOrientation(m_scaleOrientation);
+  m_implementation->SetScale(m_scale);
 }
 
 
