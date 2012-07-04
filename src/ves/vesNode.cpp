@@ -71,6 +71,7 @@ void vesNode::setParentBoundsDirty(bool value)
   }
 }
 
+
 bool vesNode::parentBoundsDirty()
 {
   if(this->m_parent) {
