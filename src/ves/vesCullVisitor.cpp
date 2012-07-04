@@ -64,7 +64,6 @@ void vesCullVisitor::visit(vesTransformNode &transformNode)
   this->popModelViewMatrix();
 }
 
-
 void vesCullVisitor::visit(vesActor &actor)
 {
   vesMatrix4x4f matrix = this->modelViewMatrix();

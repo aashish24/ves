@@ -64,6 +64,22 @@ bool vesNode::setParent(vesGroupNode *parent)
 }
 
 
+void vesNode::setParentBoundsDirty(bool value)
+{
+  if(this->m_parent) {
+    this->parent()->setBoundsDirty(value);
+  }
+}
+
+bool vesNode::parentBoundsDirty()
+{
+  if(this->m_parent) {
+    return this->parent()->boundsDirty();
+  }
+
+  return false;
+}
+
 void vesNode::computeBounds()
 {
   if (this->boundsDirty()) {
