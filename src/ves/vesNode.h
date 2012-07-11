@@ -29,7 +29,6 @@
 #define __VESNODE_H
 
 #include "vesBoundingObject.h"
-#include "vesObject.h"
 
 // VES includes
 #include "vesSetGet.h"
@@ -42,7 +41,7 @@ class vesMaterial;
 class vesTransformNode;
 class vesVisitor;
 
-class vesNode : public vesObject, public vesBoundingObject
+class vesNode : public vesBoundingObject
 {
 public:
   vesTypeMacro(vesNode);

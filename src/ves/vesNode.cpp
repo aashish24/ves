@@ -24,7 +24,7 @@
 #include  "vesGroupNode.h"
 #include "vesVisitor.h"
 
-vesNode::vesNode() : vesObject(),
+vesNode::vesNode() : vesBoundingObject(),
   m_visible (true),
   m_isOverlayNode(false),
   m_parent(0x0)
