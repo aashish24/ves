@@ -22,7 +22,7 @@
 
 // VES includes
 #include "vesVisitor.h"
-#include "vesTransformImplementationPrivate.h"
+#include "vesTransformPrivate.h"
 
 vesTransformNode::vesTransformNode() : vesGroupNode()
 {

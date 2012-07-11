@@ -25,7 +25,7 @@
 #include "vesMapper.h"
 #include "vesMaterial.h"
 #include "vesTransformNode.h"
-#include "vesTransformImplementationPrivate.h"
+#include "vesTransformPrivate.h"
 #include "vesVisitor.h"
 
 vesActor::vesActor() : vesNode()
