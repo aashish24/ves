@@ -210,7 +210,6 @@ bool vesKiwiPlaneWidget::handleSingleTouchPanGesture(double deltaX, double delta
   int width = ren->width();
   int height = ren->height();
   vesVector3f viewFocus = camera->focalPoint();
-  vesVector3f viewPoint = camera->position();
   vesVector3f viewPlaneNormal = camera->viewPlaneNormal();
   vesVector3f viewFocusDisplay = ren->computeWorldToDisplay(viewFocus);
   float focalDepth = viewFocusDisplay[2];
