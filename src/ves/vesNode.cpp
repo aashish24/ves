@@ -84,6 +84,8 @@ bool vesNode::parentBoundsDirty()
 
 bool vesNode::setVisible(bool value)
 {
+  // If node has a parent and if parent is not visible then at least now
+  // this node cannot be made visible (visibilty is forced inherited).
   if(this->m_parent && !this->m_parent->isVisible() && value) {
     return false;
   }
