@@ -33,6 +33,16 @@ vesGroupNode::~vesGroupNode()
 }
 
 
+bool vesGroupNode::setVisible(bool value)
+{
+  Children::iterator itr = this->m_children.begin();
+  for (; itr != this->m_children.end(); ++itr) {
+
+    (*itr)->setVisible(value);
+  }
+}
+
+
 bool vesGroupNode::addChild(vesSharedPtr<vesNode> child)
 {
   if (!child) {

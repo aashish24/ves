@@ -81,6 +81,19 @@ bool vesNode::parentBoundsDirty()
   return false;
 }
 
+
+bool vesNode::setVisible(bool value)
+{
+  if(this->m_parent && !this->m_parent->isVisible() && value) {
+    return false;
+  }
+
+  this->m_visible = value;
+
+  return true;
+}
+
+
 void vesNode::computeBounds()
 {
   if (this->boundsDirty()) {

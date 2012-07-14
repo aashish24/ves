@@ -49,6 +49,9 @@ public:
 
   typedef std::list< vesSharedPtr<vesNode> > Children;
 
+  /// \copydoc vesNode::setVisible
+  bool setVisible(bool value);
+
   /// Add a node as a child node
   bool addChild(vesSharedPtr<vesNode> child);
 
