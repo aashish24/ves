@@ -143,7 +143,7 @@ void vesVisitor::visit(vesTransformNode &transformNode)
 
 void vesVisitor::visit(vesActor &actor)
 {
-  this->visit(static_cast<vesTransformNode&>(actor));
+  this->visit(static_cast<vesNode&>(actor));
 }
 
 

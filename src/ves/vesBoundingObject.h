@@ -24,11 +24,13 @@
 #ifndef __vesBoundingObject_h
 #define __vesBoundingObject_h
 
+#include "vesObject.h"
+
 // VES includes
 #include "vesMath.h"
 #include "vesSetGet.h"
 
-class vesBoundingObject
+class vesBoundingObject : public vesObject
 {
 public:
   vesTypeMacro(vesBoundingObject);

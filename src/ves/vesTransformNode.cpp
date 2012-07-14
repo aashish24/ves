@@ -22,50 +22,11 @@
 
 // VES includes
 #include "vesVisitor.h"
-
-class vesTransformNode::vesInternal
-{
-private:
-  vesMatrix4x4f T,C,R,SR,S,SRinv,Cinv;
-
-public:
-  vesMatrix4x4f Eval()
-  {
-    return T * C * R * SR * S * SRinv * Cinv;
-  }
-
-  void SetTranslation(vesVector3f trans)
-  {
-    T = makeTranslationMatrix4x4(trans);
-  }
-
-  void SetCenter(vesVector3f center)
-  {
-    C = makeTranslationMatrix4x4(center);
-    Cinv = makeInverseMatrix4x4(C);
-  }
-
-  void SetRotation(vesVector4f rot)
-  {
-    R = makeRotationMatrix4x4(rot[3], rot[0], rot[1], rot[2]);
-  }
-
-  void SetScaleOrientation(vesVector4f sr)
-  {
-    SR = makeRotationMatrix4x4(sr[3], sr[0], sr[1], sr[2]);
-    SRinv = makeInverseMatrix4x4(SR);
-  }
-
-  void SetScale(vesVector3f scale)
-  {
-    S = makeScaleMatrix4x4(scale[0],scale[1],scale[2]);
-  }
-};
-
+#include "vesTransformPrivate.h"
 
 vesTransformNode::vesTransformNode() : vesGroupNode()
 {
-  this->m_internal = new vesInternal();
+  this->m_implementation = new vesTransformPrivate();
   this->m_center = vesVector3f (0,0,0);
   this->m_rotation = vesVector4f(0,0,1,0);
   this->m_scale = vesVector3f(1,1,1);
@@ -77,14 +38,14 @@ vesTransformNode::vesTransformNode() : vesGroupNode()
 
 vesTransformNode::~vesTransformNode()
 {
-  delete this->m_internal;
+  delete this->m_implementation;
 }
 
 
 vesMatrix4x4f vesTransformNode::matrix()
 {
   this->setInternals();
-  return m_internal->Eval();
+  return m_implementation->eval();
 }
 
 
@@ -175,17 +136,11 @@ vesTransformNode::ReferenceFrame vesTransformNode::referenceFrame() const
 
 void vesTransformNode::setInternals()
 {
-  m_internal->SetTranslation(m_translation);
-  m_internal->SetCenter(m_center);
-  m_internal->SetRotation(m_rotation);
-  m_internal->SetScaleOrientation(m_scaleOrientation);
-  m_internal->SetScale(m_scale);
-}
-
-vesMatrix4x4f vesTransformNode::computeTransform()
-{
-  setInternals();
-  return m_internal->Eval();
+  m_implementation->setTranslation(m_translation);
+  m_implementation->setCenter(m_center);
+  m_implementation->setRotation(m_rotation);
+  m_implementation->setScaleOrientation(m_scaleOrientation);
+  m_implementation->setScale(m_scale);
 }
 
 
@@ -245,6 +200,9 @@ void vesTransformNode::updateBounds(vesNode &child)
     return;
   }
 
+  // Make sure that child bounds are upto date
+  child.computeBounds();
+
   vesVector3f min = child.boundsMinimum();
   vesVector3f max = child.boundsMaximum();
 
@@ -265,4 +223,6 @@ void vesTransformNode::updateBounds(vesNode &child)
 
   // Now update the bounds, bounds size and center.
   this->setBounds(this->m_boundsMinimum, this->m_boundsMaximum);
+  this->setBoundsDirty(false);
+  this->setParentBoundsDirty(true);
 }

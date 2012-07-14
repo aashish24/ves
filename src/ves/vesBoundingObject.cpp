@@ -23,11 +23,12 @@
 // C/C++ includes
 #include <limits>
 
-vesBoundingObject::vesBoundingObject() :
+vesBoundingObject::vesBoundingObject() : vesObject(),
   m_boundsDirty(true)
 {
   this->resetBounds();
 }
+
 
 vesBoundingObject::~vesBoundingObject()
 {
