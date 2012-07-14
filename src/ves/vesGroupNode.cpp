@@ -35,6 +35,9 @@ vesGroupNode::~vesGroupNode()
 
 bool vesGroupNode::setVisible(bool value)
 {
+  // Make sure to call base class implementation first
+  vesNode::setVisible(value);
+
   Children::iterator itr = this->m_children.begin();
   for (; itr != this->m_children.end(); ++itr) {
 
