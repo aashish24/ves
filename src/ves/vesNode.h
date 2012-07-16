@@ -84,7 +84,7 @@ public:
   inline bool isOverlayNode() const { return this->m_isOverlayNode; }
 
   /// Set if this node should be visible
-  void setVisible(bool value);
+  bool setVisible(bool value);
 
   /// Return if node is visible
   bool isVisible() const { return this->m_visible; }

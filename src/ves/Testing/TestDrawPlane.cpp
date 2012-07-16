@@ -210,6 +210,12 @@ public:
     this->m_renderer->resetCamera();
   }
 
+  void toggleVisibility()
+  {
+    this->m_actor->setVisible(!this->m_actor->isVisible());
+    this->render();
+  }
+
 
 private:
 
@@ -433,7 +439,7 @@ event_loop(Display *dpy, Window win,
          break;
 
       case ButtonPress:
-        // Do nothing
+        testDrawPlane->toggleVisibility();
         break;
 
       case ButtonRelease:
