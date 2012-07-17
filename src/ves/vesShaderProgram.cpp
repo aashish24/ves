@@ -163,6 +163,17 @@ bool vesShaderProgram::addVertexAttribute(
 }
 
 
+vesSharedPtr<vesVertexAttribute> vesShaderProgram::attribute(int key)
+{
+  if (this->m_internal->m_vertexAttributes.find(key)
+      != this->m_internal->m_vertexAttributes.end()) {
+    return this->m_internal->m_vertexAttributes[key];
+  }
+
+  return vesSharedPtr<vesVertexAttribute>();
+}
+
+
 bool vesShaderProgram::addBindAttributeLocation(const std::string &name,
                                                 int location)
 {
@@ -286,6 +297,7 @@ void vesShaderProgram::bindAttributes()
   }
 }
 
+
 void vesShaderProgram::bindUniforms()
 {
   std::vector< vesSharedPtr<vesUniform> >::const_iterator constItr =
@@ -329,7 +341,6 @@ const unsigned int& vesShaderProgram::programHandle() const
 {
   return this->m_internal->m_programHandle;
 }
-
 
 
 vesSharedPtr<vesUniform> vesShaderProgram::uniform(const std::string &name)
@@ -434,7 +445,6 @@ void vesShaderProgram::bind(const vesRenderState &renderState)
   // Now update values to GL.
   this->updateUniforms();
 }
-
 
 
 void vesShaderProgram::unbind(const vesRenderState &renderState)

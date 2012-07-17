@@ -49,7 +49,9 @@ public:
 
   bool addShader(vesSharedPtr<vesShader> shader);
   bool addUniform(vesSharedPtr<vesUniform> uniform);
+
   bool addVertexAttribute(vesSharedPtr<vesVertexAttribute> attribute, int key);
+  vesSharedPtr<vesVertexAttribute> attribute(int key);
 
   bool addBindAttributeLocation(const std::string &name, int location);
 
