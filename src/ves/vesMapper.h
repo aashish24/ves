@@ -72,6 +72,11 @@ public:
   float* color();
   const float* color() const;
 
+  /// Enable / Disable wireframe rendering
+  void enableWireframe(bool value);
+  /// Check whether or not wireframe rendering is enabled
+  bool isEnabledWireframe() const;
+
   /// Render the geometry
   virtual void render(const vesRenderState &renderState);
 
@@ -94,6 +99,7 @@ protected:
                   vesSharedPtr<vesPrimitive> points);
 
   bool m_initialized;
+  bool m_enableWireframe;
 
   const int m_maximumTriangleIndicesPerDraw;
 
