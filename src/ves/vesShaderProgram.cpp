@@ -62,6 +62,7 @@ public:
   std::vector< vesSharedPtr<vesShader> > m_shaders;
   std::vector< vesSharedPtr<vesUniform> > m_uniforms;
   std::map<int, vesSharedPtr<vesVertexAttribute> >  m_vertexAttributes;
+  std::map<int, bool> m_enabledVertexAttributes;
 
   UniformNameToLocation m_uniformNameToLocation;
   VertexAttributeNameToLocation m_vertexAttributeNameToLocation;
@@ -156,6 +157,7 @@ bool vesShaderProgram::addVertexAttribute(
   }
 
   this->m_internal->m_vertexAttributes[key] = attribute;
+  this->m_internal->m_enabledVertexAttributes[key] = true;
 
   this->setDirtyStateOn();
 
@@ -171,6 +173,29 @@ vesSharedPtr<vesVertexAttribute> vesShaderProgram::attribute(int key)
   }
 
   return vesSharedPtr<vesVertexAttribute>();
+}
+
+
+bool vesShaderProgram::enableVertexAttribute(int key, bool value)
+{
+  if(this->m_internal->m_vertexAttributes.find(key)
+     != this->m_internal->m_vertexAttributes.end()) {
+    this->m_internal->m_enabledVertexAttributes[key] = value;
+    return true;
+  }
+
+  return false;
+}
+
+
+bool vesShaderProgram::isEnabledVertexAttribute(int key) const
+{
+  if(this->m_internal->m_enabledVertexAttributes.find(key)
+     != this->m_internal->m_enabledVertexAttributes.end()) {
+    return this->m_internal->m_enabledVertexAttributes[key];
+  }
+
+  return false;
 }
 
 
@@ -471,7 +496,9 @@ void vesShaderProgram::bindVertexData(const vesRenderState &renderState, int key
     this->m_internal->m_vertexAttributes.find(key);
 
   if (constItr != this->m_internal->m_vertexAttributes.end()) {
-    this->m_internal->m_vertexAttributes[key]->bindVertexData(renderState, key);
+    if (this->isEnabledVertexAttribute(key)) {
+      this->m_internal->m_vertexAttributes[key]->bindVertexData(renderState, key);
+    }
   }
 }
 

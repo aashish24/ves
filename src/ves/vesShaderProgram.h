@@ -52,6 +52,8 @@ public:
 
   bool addVertexAttribute(vesSharedPtr<vesVertexAttribute> attribute, int key);
   vesSharedPtr<vesVertexAttribute> attribute(int key);
+  bool enableVertexAttribute(int key, bool value);
+  bool isEnabledVertexAttribute(int key) const;
 
   bool addBindAttributeLocation(const std::string &name, int location);
 

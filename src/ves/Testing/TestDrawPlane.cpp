@@ -140,6 +140,7 @@ public:
     this->m_renderer->addActor(this->m_actor);
 
     this->m_renderer->camera()->setParallelProjection(false);
+    this->m_renderer->setBackgroundColor(0.0, 0.2, 0.8);
   }
 
   vesSharedPtr<vesGeometryData> createPlane()
@@ -150,7 +151,6 @@ public:
     vesVector4f topLeftColor = vesVector4f(0.5f, 0.0f, 0.0f, 1.0f);
     vesVector4f bottomRightColor = vesVector4f(0.0f, 0.0f, 0.5f, 1.0f);
     vesVector4f color = vesVector4f(0.5f, 0.5f, 0.5f, 1.0f);
-
 
     // Points.
     vesVertexDataP3N3C3f v1;
@@ -213,6 +213,12 @@ public:
   void toggleVisibility()
   {
     this->m_actor->setVisible(!this->m_actor->isVisible());
+    this->render();
+  }
+
+  void toggleColorVisibility()
+  {
+    this->m_material->enableVertexColor(!this->m_material->isEnabledVertexColor());
     this->render();
   }
 
@@ -451,7 +457,7 @@ event_loop(Display *dpy, Window win,
         break;
 
       case KeyPress:
-        // Do nothing
+        testDrawPlane->toggleColorVisibility();
         break;
 
       default:

@@ -91,6 +91,11 @@ public:
   const vesSharedPtr<vesShaderProgram> shaderProgram() const
     { return this->m_shaderProgram; }
 
+  /// Set whether or not use vertex colors
+  bool enableVertexColor(bool value);
+  /// Get current state of vertex color flag
+  bool isEnabledVertexColor() const;
+
   /// Render the material
   virtual void render(const vesRenderState &renderState);
 
