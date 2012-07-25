@@ -24,6 +24,7 @@
 #include "vesRenderData.h"
 #include "vesShaderProgram.h"
 #include "vesTexture.h"
+#include "vesVertexAttributeKeys.h"
 
 // C++ includes
 #include <map>
@@ -171,6 +172,32 @@ const vesSharedPtr<vesMaterialAttribute>
   vesMaterial::attribute(vesMaterialAttribute::AttributeType type) const
 {
   return (this->m_internal->findAttribute(type));
+}
+
+
+bool vesMaterial::enableVertexColor(bool value)
+{
+  vesShaderProgram::Ptr shaderProgram = this->shaderProgram();
+
+  if (shaderProgram) {
+    return shaderProgram->enableVertexAttribute(vesVertexAttributeKeys::Color,
+                                                value);
+  }
+
+  return false;
+}
+
+
+bool vesMaterial::isEnabledVertexColor() const
+{
+  vesShaderProgram::Ptr shaderProgram = this->shaderProgram();
+
+  if (shaderProgram) {
+    return shaderProgram->isEnabledVertexAttribute(
+      vesVertexAttributeKeys::Color);
+  }
+
+  return false;
 }
 
 

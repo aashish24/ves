@@ -99,10 +99,10 @@ public:
   virtual vesMatrix4x4f matrix() { return this->modelViewMatrix(); }
 
   /// Set mapper for the actor
-  /// \see vesMapper
+  /// \sa vesMapper
   void setMapper(vesSharedPtr<vesMapper> mapper);
   /// Get mapper of the actor
-  /// \see vesMapper
+  /// \sa vesMapper
   vesSharedPtr<vesMapper> mapper() { return this->m_mapper; }
   const vesSharedPtr<vesMapper> mapper() const { return this->m_mapper; }
 

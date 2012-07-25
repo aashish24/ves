@@ -74,9 +74,9 @@ public:
 
 vesMapper::vesMapper() : vesBoundingObject(),
   m_initialized(false),
-  m_maximumTriangleIndicesPerDraw
-               (65535),
-  m_internal   (0x0)
+  m_enableWireframe(false),
+  m_maximumTriangleIndicesPerDraw(65535),
+  m_internal(0x0)
 {
   this->m_internal = new vesInternal();
   this->setColor(1.0, 1.0, 1.0, 1.0);
@@ -165,6 +165,18 @@ float* vesMapper::color()
 const float* vesMapper::color() const
 {
   return this->m_internal->color();
+}
+
+
+void vesMapper::enableWireframe(bool value)
+{
+  this->m_enableWireframe = value;
+}
+
+
+bool vesMapper::isEnabledWireframe() const
+{
+  return this->m_enableWireframe;
 }
 
 
@@ -330,18 +342,27 @@ void vesMapper::drawTriangles(const vesRenderState &renderState,
       numberOfIndicesToDraw = this->m_maximumTriangleIndicesPerDraw;
     }
 
-    unsigned int offset
-      = triangles->sizeOfDataType()
-        * drawnIndices;
+    unsigned int offset = 0;
 
     // Send the primitive type information out
     renderState.m_material->bindRenderData(
       renderState, vesRenderData(triangles->primitiveType()));
 
-    // Now draw the elements
-    glDrawElements(triangles->primitiveType(), numberOfIndicesToDraw,
-                   triangles->indicesValueType(), (void*)offset);
+    if (!this->m_enableWireframe) {
+      offset = triangles->sizeOfDataType() * drawnIndices;
 
+      glDrawElements(triangles->primitiveType(), numberOfIndicesToDraw,
+                     triangles->indicesValueType(), (void*)offset);
+    }
+    else {
+      for(int i = 0; i < numberOfIndicesToDraw; i += 3)
+      {
+          offset = triangles->sizeOfDataType() * i + triangles->sizeOfDataType()
+                   * drawnIndices;
+          glDrawElements(GL_LINE_LOOP, 3,
+                         triangles->indicesValueType(), (void*)offset);
+      }
+    }
 
     drawnIndices += numberOfIndicesToDraw;
   }
