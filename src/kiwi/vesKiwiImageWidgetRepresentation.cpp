@@ -223,7 +223,6 @@ void vesKiwiImageWidgetRepresentation::scrollImageSlice(double deltaX, double de
   vesSharedPtr<vesRenderer> ren = this->renderer();
   vesSharedPtr<vesCamera> camera = ren->camera();
   vesVector3f viewFocus = camera->focalPoint();
-  vesVector3f viewPoint = camera->position();
   vesVector3f viewFocusDisplay = ren->computeWorldToDisplay(viewFocus);
   float focalDepth = viewFocusDisplay[2];
 

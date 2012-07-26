@@ -34,6 +34,7 @@
 // C++ includes
 #include <cassert>
 #include <string>
+#include <stdint.h>
 
 class vesVertexAttribute
 {
@@ -101,7 +102,7 @@ public:
                           sourceData->attributeDataType(key),
                           sourceData->isAttributeNormalized(key),
                           sourceData->attributeStride(key),
-                          (void*)sourceData->attributeOffset(key));
+                          (void*)static_cast<intptr_t>(sourceData->attributeOffset(key)));
 
     glEnableVertexAttribArray(renderState.m_material->shaderProgram()->
                               attributeLocation(this->m_name));

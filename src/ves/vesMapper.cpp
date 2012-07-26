@@ -36,6 +36,7 @@
 #include <map>
 #include <vector>
 #include <cstdio>
+#include <stdint.h>
 
 class vesMapper::vesInternal
 {
@@ -342,7 +343,7 @@ void vesMapper::drawTriangles(const vesRenderState &renderState,
       numberOfIndicesToDraw = this->m_maximumTriangleIndicesPerDraw;
     }
 
-    unsigned int offset = 0;
+    uintptr_t offset = 0;
 
     // Send the primitive type information out
     renderState.m_material->bindRenderData(
