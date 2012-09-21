@@ -184,6 +184,9 @@ void vesGroupNode::traverseChildrenAndUpdateBounds(vesVisitor &visitor)
     // Flag parents bounds dirty.
     this->m_parent->setBoundsDirty(true);
   }
+
+  // Since by now, we have updated the node bounds it is
+  // safe to mark that bounds are no longer dirty anymore
   this->setBoundsDirty(false);
 }
 
@@ -194,6 +197,7 @@ void vesGroupNode::updateBounds(vesNode &child)
     return;
   }
 
+  // FIXME: This check should not be required and possibly is incorrect
   if (child.isOverlayNode()) {
     return;
   }
@@ -216,6 +220,4 @@ void vesGroupNode::updateBounds(vesNode &child)
 
   // Now update the bounds, bounds size and center.
   this->setBounds(this->m_boundsMinimum, this->m_boundsMaximum);
-  this->setBoundsDirty(false);
-  this->setParentBoundsDirty(true);
 }
