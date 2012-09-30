@@ -531,6 +531,7 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
 				VALIDATE_PRODUCT = YES;
+				VALID_ARCHS = armv7;
 				ves_source = "$(SRCROOT)/../../..";
 			};
 			name = Debug;
@@ -572,6 +573,7 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
 				VALIDATE_PRODUCT = YES;
+				VALID_ARCHS = armv7;
 				ves_source = "$(SRCROOT)/../../..";
 			};
 			name = Release;
@@ -637,6 +639,7 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
 				VALIDATE_PRODUCT = YES;
+				VALID_ARCHS = armv7;
 				ves_source = "$(SRCROOT)/../../..";
 			};
 			name = AppStoreDistributionConfiguration;
@@ -699,6 +702,7 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
 				VALIDATE_PRODUCT = YES;
+				VALID_ARCHS = armv7;
 				ves_source = "$(SRCROOT)/../../..";
 			};
 			name = RelWithDebug;
