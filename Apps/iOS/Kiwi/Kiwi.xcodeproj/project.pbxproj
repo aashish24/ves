@@ -52,13 +52,14 @@
 		436C946E1533E5BA00682255 /* libvtkCommonCore-6.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436C944C1533E5BA00682255 /* libvtkCommonCore-6.0.a */; };
 		436C946F1533E5BA00682255 /* libvtkfreetype-6.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436C944D1533E5BA00682255 /* libvtkfreetype-6.0.a */; };
 		436C94701533E5BA00682255 /* libvtkexpat-6.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436C944E1533E5BA00682255 /* libvtkexpat-6.0.a */; };
-		436C94711533E5BA00682255 /* libvtkoggtheora-6.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436C944F1533E5BA00682255 /* libvtkoggtheora-6.0.a */; };
 		436C94721533E5BA00682255 /* libvtkpng-6.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436C94501533E5BA00682255 /* libvtkpng-6.0.a */; };
 		436C94731533E5BA00682255 /* libvtkmetaio-6.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436C94511533E5BA00682255 /* libvtkmetaio-6.0.a */; };
 		436C94741533E5BA00682255 /* libvtkjpeg-6.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436C94521533E5BA00682255 /* libvtkjpeg-6.0.a */; };
 		436C94751533E5BA00682255 /* libvtkzlib-6.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436C94531533E5BA00682255 /* libvtkzlib-6.0.a */; };
 		436C94761533E5BA00682255 /* libvtksys-6.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436C94541533E5BA00682255 /* libvtksys-6.0.a */; };
 		436C94771533E5BA00682255 /* libvtkDICOMParser-6.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 436C94551533E5BA00682255 /* libvtkDICOMParser-6.0.a */; };
+		437239F51618F08400F99013 /* libvtkIOLegacy-6.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 437239F41618F08400F99013 /* libvtkIOLegacy-6.0.a */; };
+		437239F71618F0B900F99013 /* libvtkIOXMLParser-6.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 437239F61618F0B900F99013 /* libvtkIOXMLParser-6.0.a */; };
 		437813A714E70DFC003E7931 /* cturtle.vtp in Resources */ = {isa = PBXBuildFile; fileRef = 437813A314E70DFC003E7931 /* cturtle.vtp */; };
 		437813A814E70DFC003E7931 /* earth.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 437813A414E70DFC003E7931 /* earth.jpg */; };
 		437813AA14E70DFC003E7931 /* textured_sphere.vtp in Resources */ = {isa = PBXBuildFile; fileRef = 437813A614E70DFC003E7931 /* textured_sphere.vtp */; };
@@ -139,13 +140,14 @@
 		436C944C1533E5BA00682255 /* libvtkCommonCore-6.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkCommonCore-6.0.a"; path = "../../../../build/CMakeExternals/Build/vtk-ios-device/lib/libvtkCommonCore-6.0.a"; sourceTree = "<group>"; };
 		436C944D1533E5BA00682255 /* libvtkfreetype-6.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkfreetype-6.0.a"; path = "../../../../build/CMakeExternals/Build/vtk-ios-device/lib/libvtkfreetype-6.0.a"; sourceTree = "<group>"; };
 		436C944E1533E5BA00682255 /* libvtkexpat-6.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkexpat-6.0.a"; path = "../../../../build/CMakeExternals/Build/vtk-ios-device/lib/libvtkexpat-6.0.a"; sourceTree = "<group>"; };
-		436C944F1533E5BA00682255 /* libvtkoggtheora-6.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkoggtheora-6.0.a"; path = "../../../../build/CMakeExternals/Build/vtk-ios-device/lib/libvtkoggtheora-6.0.a"; sourceTree = "<group>"; };
 		436C94501533E5BA00682255 /* libvtkpng-6.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkpng-6.0.a"; path = "../../../../build/CMakeExternals/Build/vtk-ios-device/lib/libvtkpng-6.0.a"; sourceTree = "<group>"; };
 		436C94511533E5BA00682255 /* libvtkmetaio-6.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkmetaio-6.0.a"; path = "../../../../build/CMakeExternals/Build/vtk-ios-device/lib/libvtkmetaio-6.0.a"; sourceTree = "<group>"; };
 		436C94521533E5BA00682255 /* libvtkjpeg-6.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkjpeg-6.0.a"; path = "../../../../build/CMakeExternals/Build/vtk-ios-device/lib/libvtkjpeg-6.0.a"; sourceTree = "<group>"; };
 		436C94531533E5BA00682255 /* libvtkzlib-6.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkzlib-6.0.a"; path = "../../../../build/CMakeExternals/Build/vtk-ios-device/lib/libvtkzlib-6.0.a"; sourceTree = "<group>"; };
 		436C94541533E5BA00682255 /* libvtksys-6.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtksys-6.0.a"; path = "../../../../build/CMakeExternals/Build/vtk-ios-device/lib/libvtksys-6.0.a"; sourceTree = "<group>"; };
 		436C94551533E5BA00682255 /* libvtkDICOMParser-6.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkDICOMParser-6.0.a"; path = "../../../../build/CMakeExternals/Build/vtk-ios-device/lib/libvtkDICOMParser-6.0.a"; sourceTree = "<group>"; };
+		437239F41618F08400F99013 /* libvtkIOLegacy-6.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkIOLegacy-6.0.a"; path = "../../../../build/CMakeExternals/Build/vtk-ios-device/lib/libvtkIOLegacy-6.0.a"; sourceTree = "<group>"; };
+		437239F61618F0B900F99013 /* libvtkIOXMLParser-6.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libvtkIOXMLParser-6.0.a"; path = "../../../../build/CMakeExternals/Build/vtk-ios-device/lib/libvtkIOXMLParser-6.0.a"; sourceTree = "<group>"; };
 		437813A314E70DFC003E7931 /* cturtle.vtp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = cturtle.vtp; sourceTree = "<group>"; };
 		437813A414E70DFC003E7931 /* earth.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = earth.jpg; sourceTree = "<group>"; };
 		437813A614E70DFC003E7931 /* textured_sphere.vtp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = textured_sphere.vtp; sourceTree = "<group>"; };
@@ -216,13 +218,14 @@
 				436C946E1533E5BA00682255 /* libvtkCommonCore-6.0.a in Frameworks */,
 				436C946F1533E5BA00682255 /* libvtkfreetype-6.0.a in Frameworks */,
 				436C94701533E5BA00682255 /* libvtkexpat-6.0.a in Frameworks */,
-				436C94711533E5BA00682255 /* libvtkoggtheora-6.0.a in Frameworks */,
 				436C94721533E5BA00682255 /* libvtkpng-6.0.a in Frameworks */,
 				436C94731533E5BA00682255 /* libvtkmetaio-6.0.a in Frameworks */,
 				436C94741533E5BA00682255 /* libvtkjpeg-6.0.a in Frameworks */,
 				436C94751533E5BA00682255 /* libvtkzlib-6.0.a in Frameworks */,
 				436C94761533E5BA00682255 /* libvtksys-6.0.a in Frameworks */,
 				436C94771533E5BA00682255 /* libvtkDICOMParser-6.0.a in Frameworks */,
+				437239F51618F08400F99013 /* libvtkIOLegacy-6.0.a in Frameworks */,
+				437239F71618F0B900F99013 /* libvtkIOXMLParser-6.0.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -291,6 +294,8 @@
 		432DE16E13D15E8C000F8EC0 /* vtk libs */ = {
 			isa = PBXGroup;
 			children = (
+				437239F61618F0B900F99013 /* libvtkIOXMLParser-6.0.a */,
+				437239F41618F08400F99013 /* libvtkIOLegacy-6.0.a */,
 				436C94341533E5BA00682255 /* libvtkParallelCore-6.0.a */,
 				436C94351533E5BA00682255 /* libvtktiff-6.0.a */,
 				436C94361533E5BA00682255 /* libvtkRenderingFreeType-6.0.a */,
@@ -317,7 +322,6 @@
 				436C944C1533E5BA00682255 /* libvtkCommonCore-6.0.a */,
 				436C944D1533E5BA00682255 /* libvtkfreetype-6.0.a */,
 				436C944E1533E5BA00682255 /* libvtkexpat-6.0.a */,
-				436C944F1533E5BA00682255 /* libvtkoggtheora-6.0.a */,
 				436C94501533E5BA00682255 /* libvtkpng-6.0.a */,
 				436C94511533E5BA00682255 /* libvtkmetaio-6.0.a */,
 				436C94521533E5BA00682255 /* libvtkjpeg-6.0.a */,
