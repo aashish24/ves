@@ -28,6 +28,7 @@ set(deps
   vtkIOGeometry
   vtkIOXML
   vtkIOImage
+  vtkIOLegacy
   vtkIOPLY
   vtkFiltersCore
   vtkFiltersSources
