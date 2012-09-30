@@ -1,4 +1,4 @@
-if(NOT VES_LINUX_SUPERBUILD AND NOT VES_ANDROID_SUPERBUILD AND NOT VES_IOS_SUPERBUILD)
+if(NOT VES_HOST_SUPERBUILD AND NOT VES_ANDROID_SUPERBUILD AND NOT VES_IOS_SUPERBUILD)
   return()
 endif()
 
@@ -158,7 +158,7 @@ if(VES_ANDROID_SUPERBUILD)
   crosscompile_ves(ves-android android android.toolchain.cmake)
 endif()
 
-if(VES_LINUX_SUPERBUILD)
+if(VES_HOST_SUPERBUILD)
   compile_ves(ves-host)
 endif()
 
