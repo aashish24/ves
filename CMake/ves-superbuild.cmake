@@ -1,4 +1,4 @@
-if(NOT VES_LINUX_SUPERBUILD AND NOT VES_ANDROID_SUPERBUILD AND NOT VES_IOS_SUPERBUILD)
+if(NOT VES_HOST_SUPERBUILD AND NOT VES_ANDROID_SUPERBUILD AND NOT VES_IOS_SUPERBUILD)
   return()
 endif()
 
@@ -35,6 +35,7 @@ set(module_defaults
   -DModule_vtkFiltersSources:BOOL=ON
   -DModule_vtkFiltersGeometry:BOOL=ON
   -DModule_vtkIOGeometry:BOOL=ON
+  -DModule_vtkIOLegacy:BOOL=ON
   -DModule_vtkIOXML:BOOL=ON
   -DModule_vtkIOImage:BOOL=ON
   -DModule_vtkIOPLY:BOOL=ON
@@ -72,7 +73,7 @@ macro(compile_vtk proj)
     ${proj}
     SOURCE_DIR ${source_prefix}/vtk
     GIT_REPOSITORY git://github.com/patmarion/VTK.git
-    GIT_TAG origin/kiwi-fixes
+    GIT_TAG 96af1b5
     INSTALL_COMMAND ""
     CMAKE_ARGS
       -DCMAKE_INSTALL_PREFIX:PATH=${install_prefix}/${proj}
@@ -158,7 +159,7 @@ if(VES_ANDROID_SUPERBUILD)
   crosscompile_ves(ves-android android android.toolchain.cmake)
 endif()
 
-if(VES_LINUX_SUPERBUILD)
+if(VES_HOST_SUPERBUILD)
   compile_ves(ves-host)
 endif()
 
