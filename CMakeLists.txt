@@ -22,6 +22,7 @@ set(LIBRARY_OUTPUT_PATH "${CMAKE_BINARY_DIR}/lib")
 option(BUILD_SHARED_LIBS "Build VES with shared libraries." OFF)
 option(BUILD_TESTING "Build VES with tests enabled." OFF)
 option(VES_USE_VTK "Build the kiwi library.  Requires VTK." OFF)
+option(VES_USE_DESKTOP_GL "Build VES using desktop OpenGL instead of OpenGL ES." OFF)
 
 # include cmake scripts
 include(CMake/ves-macros.cmake)

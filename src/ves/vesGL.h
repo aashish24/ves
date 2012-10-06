@@ -20,12 +20,26 @@
 #ifndef VESGL_H
 #define VESGL_H
 
-#ifdef __APPLE__
-# include <OpenGLES/ES2/gl.h>
-# include <OpenGLES/ES2/glext.h>
+#ifdef VES_USE_DESKTOP_GL
+  // Setup for desktop GL
+  #ifdef __APPLE__
+    #include <OpenGL/gl.h>
+    #include <OpenGL/glext.h>
+  #else
+    #define GL_GLEXT_PROTOTYPES
+    #include <GL/gl.h>
+    #include <GL/glext.h>
+  #endif
+  #define glClearDepthf glClearDepth
 #else
-# include <GLES2/gl2.h>
-# include <GLES2/gl2ext.h>
+  // Setup for OpenGL ES
+  #ifdef __APPLE__
+    #include <OpenGLES/ES2/gl.h>
+    #include <OpenGLES/ES2/glext.h>
+  #else
+    #include <GLES2/gl2.h>
+    #include <GLES2/gl2ext.h>
+  #endif
 #endif
 
 #ifndef GL_SAMPLER_1D

@@ -69,12 +69,16 @@ macro(install_eigen)
 endmacro()
 
 macro(compile_vtk proj)
+  if(NOT VES_HOST_SUPERBUILD)
+    set(vtk_host_build_command BUILD_COMMAND make vtkCompileTools)
+  endif()
   ExternalProject_Add(
     ${proj}
     SOURCE_DIR ${source_prefix}/vtk
     GIT_REPOSITORY git://github.com/patmarion/VTK.git
     GIT_TAG ce4a267
     INSTALL_COMMAND ""
+    ${vtk_host_build_command}
     CMAKE_ARGS
       -DCMAKE_INSTALL_PREFIX:PATH=${install_prefix}/${proj}
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
@@ -96,6 +100,7 @@ macro(compile_ves proj)
       -DBUILD_TESTING:BOOL=ON
       -DBUILD_SHARED_LIBS:BOOL=ON
       -DVES_USE_VTK:BOOL=ON
+      -DVES_USE_DESKTOP_GL:BOOL=ON
       -DVTK_DIR:PATH=${build_prefix}/vtk-host
       -DEIGEN_INCLUDE_DIR:PATH=${install_prefix}/eigen
       -DCMAKE_CXX_FLAGS:STRING=${VES_CXX_FLAGS}
@@ -109,7 +114,6 @@ macro(crosscompile_vtk proj toolchain_file)
     ${proj}
     SOURCE_DIR ${base}/Source/vtk
     DOWNLOAD_COMMAND ""
-    INSTALL_COMMAND ""
     DEPENDS vtk-host
     CMAKE_ARGS
       -DCMAKE_INSTALL_PREFIX:PATH=${install_prefix}/${proj}

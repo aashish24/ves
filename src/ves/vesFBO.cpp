@@ -203,9 +203,9 @@ void vesFBO::render(vesRenderState &renderState)
     case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:
       std::cerr << "GL ERROR: GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT " << status << std::endl;
       break;
-    case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS:
-      std::cerr << "GL ERROR: GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS " << status << std::endl;
-      break;
+//    case GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS:
+//      std::cerr << "GL ERROR: GL_FRAMEBUFFER_INCOMPLETE_DIMENSIONS " << status << std::endl;
+//      break;
     case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT:
       std::cerr << "GL ERROR: GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT " << status << std::endl;
       break;
@@ -240,9 +240,9 @@ void vesFBO::createFBO(vesRenderState &renderState)
     unsigned int colorBufferHandle;
     glGenRenderbuffers(1, &colorBufferHandle);
     glBindRenderbuffer(GL_RENDERBUFFER, colorBufferHandle);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_RGB565,
-                          this->m_internal->m_width,
-                          this->m_internal->m_height);
+//    glRenderbufferStorage(GL_RENDERBUFFER, GL_RGB565,
+//                          this->m_internal->m_width,
+//                          this->m_internal->m_height);
 
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, ColorAttachment0,
                               GL_RENDERBUFFER, colorBufferHandle);
