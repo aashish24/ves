@@ -176,6 +176,21 @@ if(VES_HOST_SUPERBUILD)
   compile_ves(ves-host)
 endif()
 
+# create frameworks for OSX
+if(VES_IOS_SUPERBUILD)
+    add_custom_target(vesFramework ALL
+      COMMAND ${CMAKE_SOURCE_DIR}/CMake/makeFramework.sh ves
+      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+      DEPENDS ves-ios-device ves-ios-simulator
+      COMMENT "Creating ves.framework")
+
+    add_custom_target(vtkFramework ALL
+      COMMAND ${CMAKE_SOURCE_DIR}/CMake/makeFramework.sh vtk
+      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+      DEPENDS vtk-ios-device vtk-ios-simulator
+      COMMENT "Creating vtk.framework")
+endif()
+
 
 # CTestCustom.cmake needs to be placed at the top level build directory
 configure_file(${CMAKE_SOURCE_DIR}/CMake/CTestCustom.cmake.in
