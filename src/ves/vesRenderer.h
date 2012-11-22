@@ -39,6 +39,7 @@
 
 // C++ includes
 #include <string>
+#include <vector>
 
 // Forward declarations
 class vesActor;
@@ -86,6 +87,11 @@ public:
   /// Remove the actor from the collection.This method will
   /// not trigger reset camera.
   virtual void removeActor(vesSharedPtr<vesActor> actor);
+
+  /// Returns a vector containing all actors in the scene.  The vector is created
+  /// by performing a depth first traversal starting at the scene root and adding
+  /// actor nodes to the vector as they are visited.
+  std::vector<vesSharedPtr<vesActor> > sceneActors() const;
 
   /// Get scene root. Do not change scene root or its data unless
   /// required in some special circumstances.
