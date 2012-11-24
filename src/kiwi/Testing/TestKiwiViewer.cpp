@@ -110,12 +110,6 @@ bool DoTesting()
   for (int i = 0; i < testHelper->app()->numberOfBuiltinDatasets(); ++i) {
     LoadData(i);
 
-    // Enable the background image for the final image regression test
-    if (i == testHelper->app()->numberOfBuiltinDatasets()-1)
-      {
-      testHelper->app()->setBackgroundTexture(testHelper->sourceDirectory() + "/Apps/iOS/Kiwi/Kiwi/Data/kiwi.png");
-      }
-
     // call the info methods, this helps coverage, though we're not testing the return values
     testHelper->app()->numberOfModelFacets();
     testHelper->app()->numberOfModelVertices();

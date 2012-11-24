@@ -31,6 +31,7 @@
 #include "vesKiwiPlaneWidget.h"
 #include "vesKiwiPolyDataRepresentation.h"
 
+#include "vesBackground.h"
 #include "vesCamera.h"
 #include "vesColorUniform.h"
 #include "vesMath.h"
@@ -718,11 +719,9 @@ vesKiwiPlaneWidget* vesKiwiViewerApp::addPlaneWidget()
 //----------------------------------------------------------------------------
 void vesKiwiViewerApp::setBackgroundTexture(const std::string& filename)
 {
-  vesNotUsed(filename);
-  //vtkSmartPointer<vtkImageData> image =
-  // vtkImageData::SafeDownCast(this->Internal->DataLoader.loadDataset(filename));
-  //vesTexture* backgroundTexture = this->newTextureFromImage(image);
-  //this->renderer()->SetBackground(backgroundTexture);
+  vtkSmartPointer<vtkImageData> vtkimage = vtkImageData::SafeDownCast(this->Internal->DataLoader.loadDataset(filename));
+  vesImage::Ptr image = vesKiwiDataConversionTools::ConvertImage(vtkimage);
+  this->renderer()->background()->setImage(image);
 }
 
 //----------------------------------------------------------------------------

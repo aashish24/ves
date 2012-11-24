@@ -25,12 +25,14 @@
 #include "vtkDiscretizableColorTransferFunction.h"
 #include "vesGeometryData.h"
 #include "vesGLTypes.h"
+#include "vesImage.h"
+#include "vesTexture.h"
+#include "vtkImageData.h"
 #include "vtkLookupTable.h"
 #include "vesMath.h"
 #include "vtkNew.h"
 #include "vtkPointData.h"
 #include "vtkPolyData.h"
-#include "vesTexture.h"
 #include "vtkUnsignedCharArray.h"
 
 // C/C++ includes
@@ -212,10 +214,23 @@ vtkDataArray* scalars, vtkScalarsToColors* scalarsToColors)
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiDataConversionTools::SetTextureData(vtkUnsignedCharArray* pixels,
-  vesSharedPtr<vesTexture> texture, int width, int height)
+vesImage::Ptr vesKiwiDataConversionTools::ConvertImage(vtkImageData* imageData)
 {
-  assert(texture);
+  assert(imageData);
+  vtkSmartPointer<vtkUnsignedCharArray> pixels = vtkUnsignedCharArray::SafeDownCast(imageData->GetPointData()->GetScalars());
+  if (!pixels) {
+    return vesImage::Ptr();
+  }
+
+  const int width = imageData->GetDimensions()[0];
+  const int height = imageData->GetDimensions()[1];
+
+  return vesKiwiDataConversionTools::ImageFromPixels(pixels, width, height);
+}
+
+//----------------------------------------------------------------------------
+vesImage::Ptr vesKiwiDataConversionTools::ImageFromPixels(vtkUnsignedCharArray* pixels, int width, int height)
+{
   assert(pixels);
   assert(pixels->GetNumberOfTuples() == width*height);
 
@@ -226,8 +241,17 @@ void vesKiwiDataConversionTools::SetTextureData(vtkUnsignedCharArray* pixels,
                         : pixels->GetNumberOfComponents() == 3 ? vesColorDataType::RGB
                         : vesColorDataType::Luminance);
   image->setPixelDataType(vesColorDataType::UnsignedByte);
-  image->setData(pixels->WriteVoidPointer(0, 0), pixels->GetSize());
+  image->setData(pixels->GetPointer(0), pixels->GetSize());
+  return image;
+}
 
+
+//----------------------------------------------------------------------------
+void vesKiwiDataConversionTools::SetTextureData(vtkUnsignedCharArray* pixels,
+  vesSharedPtr<vesTexture> texture, int width, int height)
+{
+  assert(texture);
+  vesImage::Ptr image = vesKiwiDataConversionTools::ImageFromPixels(pixels, width, height);
   texture->setImage(image);
 }
 

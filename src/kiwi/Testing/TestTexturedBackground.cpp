@@ -31,6 +31,7 @@
 #include <vesKiwiBaseApp.h>
 #include <vesKiwiDataLoader.h>
 #include <vesKiwiBaselineImageTester.h>
+#include <vesKiwiDataConversionTools.h>
 #include <vesKiwiPolyDataRepresentation.h>
 #include <vesRenderer.h>
 #include <vesSetGet.h>
@@ -87,28 +88,9 @@ public:
     vtkSmartPointer<vtkPNGReader> reader = vtkSmartPointer<vtkPNGReader>::New();
     reader->SetFileName(filename.c_str());
     reader->Update();
-    vtkSmartPointer<vtkImageData> image = reader->GetOutput();
 
-    assert(image);
-
-    vtkSmartPointer<vtkUnsignedCharArray> pixels
-      = vtkUnsignedCharArray::SafeDownCast(image->GetPointData()->GetScalars());
-    int width = image->GetDimensions()[0];
-    int height = image->GetDimensions()[1];
-
-    assert(pixels);
-    assert(pixels->GetNumberOfTuples() == width*height);
-
-    this->Image = vesImage::Ptr(new vesImage());
-    this->Image->setWidth(width);
-    this->Image->setHeight(height);
-    this->Image->setPixelFormat(pixels->GetNumberOfComponents() == 4 ? vesColorDataType::RGBA
-                                : pixels->GetNumberOfComponents() == 3 ? vesColorDataType::RGB
-                                : vesColorDataType::Luminance);
-    this->Image->setPixelDataType(vesColorDataType::UnsignedByte);
-    this->Image->setData(pixels->WriteVoidPointer(0, 0), pixels->GetSize());
-
-    this->renderer()->background()->setImage(this->Image);
+    vesImage::Ptr image = vesKiwiDataConversionTools::ConvertImage(reader->GetOutput());
+    this->renderer()->background()->setImage(image);
   }
 
   void unloadData()
@@ -138,9 +120,6 @@ public:
     this->setBackgroundImage(imageFilename);
   }
 
-  vesSharedPtr<vesImage> Image;
-  vesSharedPtr<vesTexture> Texture;
-  vtkSmartPointer<vtkLookupTable> LookupTable;
   vesSharedPtr<vesShaderProgram> ShaderProgram;
   vesKiwiPolyDataRepresentation* DataRep;
 };
