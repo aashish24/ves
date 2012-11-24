@@ -73,7 +73,7 @@ macro(compile_vtk proj)
     ${proj}
     SOURCE_DIR ${source_prefix}/vtk
     GIT_REPOSITORY git://github.com/patmarion/VTK.git
-    GIT_TAG 96af1b5
+    GIT_TAG ce4a267
     INSTALL_COMMAND ""
     CMAKE_ARGS
       -DCMAKE_INSTALL_PREFIX:PATH=${install_prefix}/${proj}
