@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8.5)
-include(CMake/ves-superbuild.cmake)
-if(ves_superbuild_enabled)
+if(NOT VES_NO_SUPERBUILD)
+  include(CMake/ves-superbuild.cmake)
   return()
 endif()
 
