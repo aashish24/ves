@@ -47,10 +47,6 @@ public:
   virtual void removeSelfFromRenderer(vesSharedPtr<vesRenderer> renderer);
   virtual void willRender(vesSharedPtr<vesRenderer> renderer);
 
-  virtual int numberOfFacets();
-  virtual int numberOfVertices();
-  virtual int numberOfLines();
-
   virtual void showTextLabel(int modelIndex);
   virtual void hideTextLabel();
   virtual int findTappedModel(int displayX, int displayY);

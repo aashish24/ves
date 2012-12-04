@@ -504,33 +504,3 @@ void vesKiwiBrainAtlasRepresentation::removeSelfFromRenderer(vesSharedPtr<vesRen
     this->Internal->AllReps[i]->removeSelfFromRenderer(renderer);
   }
 }
-
-//----------------------------------------------------------------------------
-int vesKiwiBrainAtlasRepresentation::numberOfFacets()
-{
-  int count = 0;
-  for (size_t i = 0; i < this->Internal->AnatomicalModels.size(); ++i)
-    if (this->Internal->ModelStatus[i])
-      count += this->Internal->AnatomicalModels[i]->numberOfFacets();
-  return count;
-}
-
-//----------------------------------------------------------------------------
-int vesKiwiBrainAtlasRepresentation::numberOfVertices()
-{
-  int count = 0;
-  for (size_t i = 0; i < this->Internal->AnatomicalModels.size(); ++i)
-    if (this->Internal->ModelStatus[i])
-      count += this->Internal->AnatomicalModels[i]->numberOfVertices();
-  return count;
-}
-
-//----------------------------------------------------------------------------
-int vesKiwiBrainAtlasRepresentation::numberOfLines()
-{
-  int count = 0;
-  for (size_t i = 0; i < this->Internal->AnatomicalModels.size(); ++i)
-    if (this->Internal->ModelStatus[i])
-      count += this->Internal->AnatomicalModels[i]->numberOfLines();
-  return count;
-}

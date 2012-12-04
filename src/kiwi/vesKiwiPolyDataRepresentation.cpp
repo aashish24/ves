@@ -258,24 +258,3 @@ vesSharedPtr<vesMapper> vesKiwiPolyDataRepresentation::mapper() const
 {
   return this->Internal->Mapper;
 }
-
-//----------------------------------------------------------------------------
-int vesKiwiPolyDataRepresentation::numberOfFacets()
-{
-  vesPrimitive::Ptr tris = this->geometryData()->triangles();
-  return tris ? static_cast<int>(tris->size()) : 0;
-}
-
-//----------------------------------------------------------------------------
-int vesKiwiPolyDataRepresentation::numberOfVertices()
-{
-  vesSourceData::Ptr points = this->geometryData()->sourceData(vesVertexAttributeKeys::Position);
-  return points ? static_cast<int>(points->sizeOfArray()) : 0;
-}
-
-//----------------------------------------------------------------------------
-int vesKiwiPolyDataRepresentation::numberOfLines()
-{
-  vesPrimitive::Ptr lines = this->geometryData()->lines();
-  return lines ? static_cast<int>(lines->size()) : 0;
-}

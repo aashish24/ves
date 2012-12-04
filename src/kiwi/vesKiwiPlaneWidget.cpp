@@ -378,30 +378,3 @@ void vesKiwiPlaneWidget::removeSelfFromRenderer(vesSharedPtr<vesRenderer> render
     this->Internal->AllReps[i]->removeSelfFromRenderer(renderer);
   }
 }
-
-//----------------------------------------------------------------------------
-int vesKiwiPlaneWidget::numberOfFacets()
-{
-  int count = 0;
-  for (size_t i = 0; i < this->Internal->AllReps.size(); ++i)
-    count += this->Internal->AllReps[i]->numberOfFacets();
-  return count;
-}
-
-//----------------------------------------------------------------------------
-int vesKiwiPlaneWidget::numberOfVertices()
-{
-  int count = 0;
-  for (size_t i = 0; i < this->Internal->AllReps.size(); ++i)
-    count += this->Internal->AllReps[i]->numberOfVertices();
-  return count;
-}
-
-//----------------------------------------------------------------------------
-int vesKiwiPlaneWidget::numberOfLines()
-{
-  int count = 0;
-  for (size_t i = 0; i < this->Internal->AllReps.size(); ++i)
-    count += this->Internal->AllReps[i]->numberOfLines();
-  return count;
-}

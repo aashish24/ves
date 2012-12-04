@@ -278,30 +278,3 @@ void vesKiwiStreamingDataRepresentation::removeSelfFromRenderer(vesSharedPtr<ves
     this->Internal->PolyDataRep->removeSelfFromRenderer(renderer);
   }
 }
-
-//----------------------------------------------------------------------------
-int vesKiwiStreamingDataRepresentation::numberOfFacets()
-{
-  if (this->Internal->PolyDataRep) {
-    return this->Internal->PolyDataRep->numberOfFacets();
-  }
-  return 0;
-}
-
-//----------------------------------------------------------------------------
-int vesKiwiStreamingDataRepresentation::numberOfVertices()
-{
-  if (this->Internal->PolyDataRep) {
-    return this->Internal->PolyDataRep->numberOfVertices();
-  }
-  return 0;
-}
-
-//----------------------------------------------------------------------------
-int vesKiwiStreamingDataRepresentation::numberOfLines()
-{
-  if (this->Internal->PolyDataRep) {
-    return this->Internal->PolyDataRep->numberOfLines();
-  }
-  return 0;
-}

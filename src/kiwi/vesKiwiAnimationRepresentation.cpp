@@ -382,30 +382,3 @@ void vesKiwiAnimationRepresentation::removeSelfFromRenderer(vesSharedPtr<vesRend
   this->Internal->TextRep->removeSelfFromRenderer(renderer);
   this->Internal->PlayRep->removeSelfFromRenderer(renderer);
 }
-
-//----------------------------------------------------------------------------
-int vesKiwiAnimationRepresentation::numberOfFacets()
-{
-  if (this->currentFrameRepresentation()) {
-    return this->currentFrameRepresentation()->numberOfFacets();
-  }
-  return 0;
-}
-
-//----------------------------------------------------------------------------
-int vesKiwiAnimationRepresentation::numberOfVertices()
-{
-  if (this->currentFrameRepresentation()) {
-    return this->currentFrameRepresentation()->numberOfVertices();
-  }
-  return 0;
-}
-
-//----------------------------------------------------------------------------
-int vesKiwiAnimationRepresentation::numberOfLines()
-{
-  if (this->currentFrameRepresentation()) {
-    return this->currentFrameRepresentation()->numberOfLines();
-  }
-  return 0;
-}
