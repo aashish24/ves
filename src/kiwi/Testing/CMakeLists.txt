@@ -3,6 +3,7 @@ set(tests
   TestClipPlane
   TestGradientBackground
   TestKiwiViewer
+  TestNoContext
   TestPointCloud
   TestTexture
   TestTexturedBackground
