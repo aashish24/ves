@@ -351,7 +351,9 @@ void vesShaderProgram::deleteVertexAndFragment()
   std::vector< vesSharedPtr<vesShader> >::iterator itr
     = this->m_internal->m_shaders.begin();
   for (; itr != this->m_internal->m_shaders.end(); ++itr) {
-    glDeleteShader((*itr)->shaderHandle());
+    if ((*itr)->shaderHandle()) {
+      glDeleteShader((*itr)->shaderHandle());
+    }
   }
 }
 

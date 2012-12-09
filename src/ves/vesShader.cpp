@@ -29,14 +29,14 @@
 
 vesShader::vesShader(ShaderType type) :
   m_type          (type),
-  m_shaderHandle  (std::numeric_limits<unsigned>::max())
+  m_shaderHandle  (0)
 {
 }
 
 
 vesShader::vesShader(ShaderType type, const std::string &source) :
   m_type        (type),
-  m_shaderHandle(std::numeric_limits<unsigned>::max()),
+  m_shaderHandle(0),
   m_shaderSource(source)
 {
 }
