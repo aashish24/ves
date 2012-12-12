@@ -5,9 +5,11 @@ set(headers
   vesKiwiBrainAtlasRepresentation.h
   vesKiwiCameraInteractor.h
   vesKiwiCameraSpinner.h
+  vesKiwiColorMapCollection.h
   vesKiwiDataConversionTools.h
   vesKiwiDataLoader.h
   vesKiwiDataRepresentation.h
+  vesKiwiFPSCounter.h
   vesKiwiImagePlaneDataRepresentation.h
   vesKiwiImageWidgetRepresentation.h
   vesKiwiPlaneWidget.h
@@ -16,6 +18,7 @@ set(headers
   vesKiwiTestHelper.h
   vesKiwiText2DRepresentation.h
   vesKiwiViewerApp.h
+  vesKiwiWidgetInteractionDelegate.h
   vesKiwiWidgetRepresentation.h
   )
 

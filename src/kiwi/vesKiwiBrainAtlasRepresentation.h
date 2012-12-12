@@ -31,6 +31,8 @@ class vesKiwiBrainAtlasRepresentation : public vesKiwiWidgetRepresentation
 {
 public:
 
+  vesTypeMacro(vesKiwiBrainAtlasRepresentation);
+
   typedef vesKiwiWidgetRepresentation Superclass;
   vesKiwiBrainAtlasRepresentation();
   ~vesKiwiBrainAtlasRepresentation();
@@ -58,6 +60,12 @@ public:
   virtual bool handleSingleTouchTap(int displayX, int displayY);
   virtual bool handleDoubleTap(int displayX, int displayY);
   virtual bool handleLongPress(int displayX, int displayY);
+
+  virtual std::vector<std::string> actions() const;
+  virtual bool handleAction(const std::string& action);
+
+  // show all models again
+  virtual void showHiddenModels();
 
 protected:
 

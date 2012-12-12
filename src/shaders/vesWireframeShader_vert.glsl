@@ -17,8 +17,9 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
-/// \file vesShader_vert.glsl
+/// \file vesWireframeShader_vert.glsl
 ///
+/// Implementation based on demo code from http://www2.imm.dtu.dk/~janba/Wireframe/
 /// \ingroup shaders
 
 // Uniforms.
@@ -29,20 +30,25 @@ uniform lowp int     primitiveType;
 uniform lowp int     pointSize;
 uniform lowp float   vertexOpacity;
 uniform highp mat4 projectionMatrix;
+uniform mediump vec2 windowSize;
 
 // Vertex attributes.
 attribute highp vec3   vertexPosition;
 attribute mediump vec3 vertexNormal;
 attribute lowp vec3    vertexColor;
 
+attribute highp vec3 tri_p1;
+attribute highp vec3 tri_p2;
+//attribute highp vec3 tri_point_indices;
+attribute lowp float tri_point_index;
+
 
 // Varying attributes.
 varying lowp vec4 varColor;
+varying vec3 dist;
 
 void main()
 {
-  // Save position for shading later.
-  highp vec4 position = projectionMatrix * modelViewMatrix * vec4(vertexPosition, 1.0);
 
   varColor = vec4(vertexColor, vertexOpacity);
 
@@ -63,5 +69,51 @@ void main()
   }
 
   gl_PointSize = float(pointSize);
-  gl_Position = position;
+
+
+
+  highp vec4 p1_3d = vec4(tri_p1, 1.0);
+  highp vec4 p2_3d = vec4(tri_p2, 1.0);
+
+
+
+  // Compute the vertex position in the usual fashion.
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(vertexPosition, 1.0);
+
+
+  // p0 is the 2D position of the current vertex.
+  highp vec2 p0 = gl_Position.xy/gl_Position.w;
+
+  // Project p1 and p2 and compute the vectors v1 = p1-p0
+  // and v2 = p2-p0
+  highp vec4 p1_3d_ = projectionMatrix * modelViewMatrix * p1_3d;
+  highp vec2 v1 = windowSize*(p1_3d_.xy / p1_3d_.w - p0);
+
+  highp vec4 p2_3d_ = projectionMatrix * modelViewMatrix * p2_3d;
+  highp vec2 v2 = windowSize*(p2_3d_.xy / p2_3d_.w - p0);
+
+  // Compute 2D area of triangle.
+  highp float area2 = abs(v1.x*v2.y - v1.y * v2.x);
+
+  // Compute distance from vertex to line in 2D coords
+  highp float h = area2/length(v1-v2);
+
+  // ---
+  // The selfIndex variable tells us which of the three vertices
+  // we are dealing with. The ugly comparisons would not be needed if
+  // selfIndex was an int.
+
+  //dist = vec3(0.0, 0.0, 0.0);
+  //dist[tri_point_index] = h;
+  if(tri_point_index < 0.1)
+    dist = vec3(h,0,0);
+  else if(tri_point_index < 1.1)
+    dist = vec3(0,h,0);
+  else
+    dist = vec3(0,0,h);
+
+  // ----
+  // Quick fix to defy perspective correction
+
+  dist *= gl_Position.w;
 }

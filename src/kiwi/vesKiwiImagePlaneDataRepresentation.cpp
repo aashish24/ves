@@ -19,6 +19,7 @@
  ========================================================================*/
 
 #include "vesKiwiImagePlaneDataRepresentation.h"
+#include "vesKiwiColorMapCollection.h"
 #include "vesKiwiDataConversionTools.h"
 #include "vesSetGet.h"
 #include "vesTexture.h"
@@ -51,6 +52,8 @@ public:
   vtkSmartPointer<vtkScalarsToColors> ColorMap;
   vtkSmartPointer<vtkUnsignedCharArray> TextureData;
   vtkSmartPointer<vtkPolyData> ImagePlane;
+
+  vtkSmartPointer<vtkImageData> ImageData;
 };
 
 //----------------------------------------------------------------------------
@@ -66,11 +69,18 @@ vesKiwiImagePlaneDataRepresentation::~vesKiwiImagePlaneDataRepresentation()
 }
 
 //----------------------------------------------------------------------------
+vtkImageData* vesKiwiImagePlaneDataRepresentation::imageData() const
+{
+  return this->Internal->ImageData;
+}
+
+//----------------------------------------------------------------------------
 void vesKiwiImagePlaneDataRepresentation::setImageData(vtkImageData* imageData)
 {
   vtkSmartPointer<vtkPolyData> imagePlane = this->polyDataForImagePlane(imageData);
   this->setPolyData(imagePlane);
   this->Internal->ImagePlane = imagePlane;
+  this->Internal->ImageData = imageData;
 
   vesSharedPtr<vesTexture> texture = this->texture();
   if (!texture) {
@@ -95,32 +105,6 @@ vtkPolyData* vesKiwiImagePlaneDataRepresentation::imagePlanePolyData()
 }
 
 //----------------------------------------------------------------------------
-vtkScalarsToColors* vesKiwiImagePlaneDataRepresentation::colorMap()
-{
-  return this->Internal->ColorMap;
-}
-
-//----------------------------------------------------------------------------
-void vesKiwiImagePlaneDataRepresentation::setColorMap(vtkScalarsToColors* map)
-{
-  this->Internal->ColorMap = map;
-}
-
-//----------------------------------------------------------------------------
-void vesKiwiImagePlaneDataRepresentation::setGrayscaleColorMap(double scalarRange[2])
-{
-  this->setColorMap(vesKiwiDataConversionTools::GetGrayscaleLookupTable(scalarRange));
-}
-
-//----------------------------------------------------------------------------
-void vesKiwiImagePlaneDataRepresentation::setShaderProgram(
-  vesSharedPtr<vesShaderProgram> shaderProgram)
-{
-  // Do nothing.
-  vesNotUsed(shaderProgram);
-}
-
-//----------------------------------------------------------------------------
 void vesKiwiImagePlaneDataRepresentation::setTextureFromImage(
   vesSharedPtr<vesTexture> texture, vtkImageData* image)
 {
@@ -131,9 +115,14 @@ void vesKiwiImagePlaneDataRepresentation::setTextureFromImage(
   vtkSmartPointer<vtkUnsignedCharArray> pixels = vtkUnsignedCharArray::SafeDownCast(image->GetPointData()->GetScalars());
 
   if (!pixels) {
-    vtkScalarsToColors* map = this->colorMap();
-    assert(map);
-    pixels = vesKiwiDataConversionTools::MapScalars(image->GetPointData()->GetScalars(), map);
+
+    vtkDataArray* imageScalars = image->GetPointData()->GetScalars();
+    vtkSmartPointer<vtkScalarsToColors> cmap = this->colorMapCollection()->colorMapForArray(imageScalars);
+    if (!cmap) {
+      cmap = vesKiwiDataConversionTools::GetGrayscaleLookupTable(imageScalars->GetRange());
+    }
+
+    pixels = vesKiwiDataConversionTools::MapScalars(image->GetPointData()->GetScalars(), cmap);
   }
 
   int dimensions[3];

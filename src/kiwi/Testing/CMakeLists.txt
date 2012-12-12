@@ -5,6 +5,7 @@ set(tests
   TestKiwiViewer
   TestNoContext
   TestPointCloud
+  TestStreamingDataRepresentation
   TestTexture
   TestTexturedBackground
   TestWireframe

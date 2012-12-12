@@ -22,6 +22,10 @@
 #ifndef __vesKiwiDataConversionTools_h
 #define __vesKiwiDataConversionTools_h
 
+#include <vesSharedPtr.h>
+#include <vtkSmartPointer.h>
+#include <vector>
+
 class vtkPolyData;
 class vtkDataSet;
 class vtkDiscretizableColorTransferFunction;
@@ -31,13 +35,17 @@ class vtkUnsignedCharArray;
 class vtkDataArray;
 class vtkScalarsToColors;
 
+class vesPVWebDataSet;
 class vesGeometryData;
 class vesImage;
 class vesTexture;
 
-#include <vesSharedPtr.h>
+class vesSourceData;
+class vesSourceDataC3f;
+class vesSourceDataC4f;
+class vesSourceDataT2f;
 
-#include <vtkSmartPointer.h>
+class vesShaderProgram;
 
 class vesKiwiDataConversionTools
 {
@@ -63,18 +71,36 @@ public:
   /// speed and conversion of specific types useful for point clouds.
   static vesSharedPtr<vesGeometryData> ConvertPoints(vtkPolyData* input);
 
+  static vesSharedPtr<vesGeometryData> ConvertPVWebData(vesSharedPtr<vesPVWebDataSet> dataset);
+
+  static void ComputeWireframeVertexArrays(vesSharedPtr<vesGeometryData> geometryData);
+
+  static void RemoveSharedTriangleVertices(vesSharedPtr<vesGeometryData> geometryData, const std::vector<vesSharedPtr<vesSourceData> >& sourceData);
+
+  static vtkSmartPointer<vtkPolyData> TriangulatePolyData(vtkPolyData* polyData, bool computeNormals, bool duplicateVertices);
+
   static vtkUnsignedCharArray* FindRGBColorsArray(vtkDataSet* dataSet);
   static vtkDataArray* FindScalarsArray(vtkDataSet* dataSet);
+  static std::vector<vtkDataArray*> FindScalarArrays(vtkDataSet* dataSet);
   static vtkDataArray* FindTextureCoordinatesArray(vtkDataSet* dataSet);
 
   static vtkSmartPointer<vtkDiscretizableColorTransferFunction> GetBlackBodyRadiationColorMap(double scalarRange[2]);
+  static vtkSmartPointer<vtkDiscretizableColorTransferFunction> GetCoolToWarmLookupTable(double scalarRange[2]);
   static vtkSmartPointer<vtkLookupTable> GetRedToBlueLookupTable(double scalarRange[2]);
   static vtkSmartPointer<vtkLookupTable> GetBlueToRedLookupTable(double scalarRange[2]);
   static vtkSmartPointer<vtkLookupTable> GetGrayscaleLookupTable(double scalarRange[2]);
+  static vtkSmartPointer<vtkScalarsToColors> GetPresetColorMap(const std::string& colorMapName, double scalarRange[2]);
+
   static void SetVertexColors(vtkUnsignedCharArray* colors,
     vesSharedPtr<vesGeometryData> triangleData);
   static void SetVertexColors(vtkDataArray* scalars, vtkScalarsToColors* scalarsToColors,
     vesSharedPtr<vesGeometryData> triangleData);
+
+  static vesSharedPtr<vesSourceData> ConvertColors(vtkUnsignedCharArray* colors);
+  static vesSharedPtr<vesSourceData> ConvertScalarsToColors(vtkDataArray* array, vtkScalarsToColors* scalarsToColors);
+  static vesSharedPtr<vesSourceDataT2f> ConvertTCoords(vtkDataArray* tcoords);
+
+
   static void SetTextureCoordinates(
     vtkDataArray* tcoords, vesSharedPtr<vesGeometryData> triangleData);
 

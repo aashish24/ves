@@ -19,7 +19,8 @@
  ========================================================================*/
 
 #include "vesKiwiPolyDataRepresentation.h"
-
+#include "vesKiwiColorMapCollection.h"
+#include "vesKiwiDataConversionTools.h"
 #include "vesActor.h"
 #include "vesBlend.h"
 #include "vesDepth.h"
@@ -30,61 +31,19 @@
 #include "vesShaderProgram.h"
 #include "vesTexture.h"
 
-#include "vesKiwiDataConversionTools.h"
+#include "vesGL.h"
+
+#include "vesVertexAttribute.h"
+#include "vesSourceData.h"
+#include "vesPrimitive.h"
+#include "vesUniform.h"
 
 #include <vtkNew.h>
 #include <vtkTriangleFilter.h>
 #include <vtkLookupTable.h>
+#include <vtkDiscretizableColorTransferFunction.h>
 
 #include <cassert>
-
-//----------------------------------------------------------------------------
-namespace {
-
-void ConvertVertexArrays(vtkDataSet* dataSet, vesSharedPtr<vesGeometryData> geometryData, vtkScalarsToColors* scalarsToColors=NULL)
-{
-  vtkUnsignedCharArray* colors = vesKiwiDataConversionTools::FindRGBColorsArray(dataSet);
-  vtkDataArray* scalars = vesKiwiDataConversionTools::FindScalarsArray(dataSet);
-  vtkDataArray* tcoords = vesKiwiDataConversionTools::FindTextureCoordinatesArray(dataSet);
-  if (colors)
-    {
-    vesKiwiDataConversionTools::SetVertexColors(colors, geometryData);
-    }
-  else if (scalars)
-    {
-    vtkSmartPointer<vtkScalarsToColors> colorMap = scalarsToColors;
-    if (!colorMap)
-      {
-      colorMap = vesKiwiDataConversionTools::GetRedToBlueLookupTable(scalars->GetRange());
-      }
-    vesKiwiDataConversionTools::SetVertexColors(scalars, colorMap, geometryData);
-    }
-  else if (tcoords)
-    {
-    vesKiwiDataConversionTools::SetTextureCoordinates(tcoords, geometryData);
-    }
-}
-
-vesSharedPtr<vesGeometryData> GeometryDataFromPolyData(vtkPolyData* polyData)
-{
-  if (!polyData->GetNumberOfStrips() && !polyData->GetNumberOfPolys() && !polyData->GetNumberOfLines())
-    {
-    return vesKiwiDataConversionTools::ConvertPoints(polyData);
-    }
-
-  // Use triangle filter for now to ensure that models containing
-  // polygons other than tris and quads will be rendered correctly.
-
-  vtkNew<vtkTriangleFilter> triangleFilter;
-  triangleFilter->PassLinesOn();
-  triangleFilter->PassVertsOn();
-  triangleFilter->SetInputData(polyData);
-  triangleFilter->Update();
-
-  return vesKiwiDataConversionTools::Convert(triangleFilter->GetOutput());
-}
-
-}
 
 //----------------------------------------------------------------------------
 class vesKiwiPolyDataRepresentation::vesInternal
@@ -93,11 +52,14 @@ public:
 
   vesInternal()
   {
+    this->GeometryMode = SURFACE_MODE;
   }
 
   ~vesInternal()
   {
   }
+
+  int GeometryMode;
 
   vesSharedPtr<vesActor>     Actor;
   vesSharedPtr<vesMapper>    Mapper;
@@ -105,6 +67,24 @@ public:
   vesSharedPtr<vesTexture>   Texture;
   vesSharedPtr<vesBlend>     Blend;
   vesSharedPtr<vesDepth>     Depth;
+
+  vesShaderProgram::Ptr WireframeShader;
+  vesShaderProgram::Ptr SurfaceWithEdgesShader;
+  vesShaderProgram::Ptr SurfaceShader;
+  vesShaderProgram::Ptr TextureSurfaceShader;
+
+  vesPrimitive::Ptr Triangles;
+  vesPrimitive::Ptr Lines;
+  vesPrimitive::Ptr Points;
+
+  vesSourceData::Ptr Colors;
+  vesSourceData::Ptr ScalarColors;
+  vesSourceDataT2f::Ptr TCoords;
+
+  std::vector<std::string> ScalarArrayNames;
+  std::vector<vesSourceData::Ptr> ScalarArrays;
+
+  vesSourceData::Ptr WireframeSources[3];
 };
 
 //----------------------------------------------------------------------------
@@ -120,14 +100,31 @@ vesKiwiPolyDataRepresentation::~vesKiwiPolyDataRepresentation()
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiPolyDataRepresentation::setPolyData(vtkPolyData* polyData, vtkScalarsToColors* scalarsToColors)
+void vesKiwiPolyDataRepresentation::setPolyData(vtkPolyData* input)
 {
-  assert(polyData);
+  assert(input);
   assert(this->Internal->Mapper);
 
-  vesSharedPtr<vesGeometryData> geometryData = GeometryDataFromPolyData(polyData);
-  ConvertVertexArrays(polyData, geometryData, scalarsToColors);
+  vesGeometryData::Ptr geometryData;
+  vtkSmartPointer<vtkPolyData> polyData = input;
+
+
+  if (!polyData->GetNumberOfStrips() && !polyData->GetNumberOfPolys() && !polyData->GetNumberOfLines()) {
+
+    geometryData = vesKiwiDataConversionTools::ConvertPoints(polyData);
+
+  }
+  else {
+
+    bool addNormals = true;
+    bool duplicateVerts = false;
+    polyData = vesKiwiDataConversionTools::TriangulatePolyData(polyData, addNormals, duplicateVerts);
+    geometryData =  vesKiwiDataConversionTools::Convert(polyData);
+  }
+
   this->Internal->Mapper->setGeometryData(geometryData);
+  this->convertVertexArrays(polyData);
+  this->colorByDefault();
 }
 
 //----------------------------------------------------------------------------
@@ -137,6 +134,158 @@ vesSharedPtr<vesGeometryData> vesKiwiPolyDataRepresentation::geometryData() cons
     return this->Internal->Mapper->geometryData();
   }
   return vesSharedPtr<vesGeometryData>();
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiPolyDataRepresentation::surfaceOn()
+{
+
+  // restore primitives
+  if (this->Internal->Triangles) {
+    this->geometryData()->addPrimitive(this->Internal->Triangles);
+  }
+  if (this->Internal->Lines) {
+    this->geometryData()->addPrimitive(this->Internal->Lines);
+  }
+  if (this->Internal->Points) {
+    this->geometryData()->removePrimitive(this->Internal->Points);
+  }
+
+  this->Internal->Triangles.reset();
+  this->Internal->Lines.reset();
+
+
+  // disable wireframe mode
+  for (int i = 0; i < 3; ++i) {
+    this->geometryData()->removeSource(this->Internal->WireframeSources[i]);
+  }
+
+  // reset VBO
+  vesGeometryData::Ptr geometryData = this->geometryData();
+  this->mapper()->setGeometryData(vesGeometryData::Ptr(new vesGeometryData));
+  this->mapper()->setGeometryData(geometryData);
+
+  this->setShaderProgram(this->Internal->SurfaceShader);
+
+  this->Internal->GeometryMode = SURFACE_MODE;
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiPolyDataRepresentation::surfaceWithEdgesOn()
+{
+  this->wireframeOn();
+  this->setShaderProgram(this->Internal->SurfaceWithEdgesShader);
+  this->Internal->GeometryMode = SURFACE_WITH_EDGES_MODE;
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiPolyDataRepresentation::wireframeOn()
+{
+
+  // restore primitives
+  if (this->Internal->Triangles) {
+    this->geometryData()->addPrimitive(this->Internal->Triangles);
+  }
+  if (this->Internal->Lines) {
+    this->geometryData()->addPrimitive(this->Internal->Lines);
+  }
+  if (this->Internal->Points) {
+    this->geometryData()->removePrimitive(this->Internal->Points);
+  }
+
+  this->Internal->Triangles.reset();
+  this->Internal->Lines.reset();
+
+  // enable wireframe mode
+  if (!this->Internal->WireframeSources[0]) {
+
+    std::vector<vesSourceData::Ptr> sourceData = this->Internal->ScalarArrays;
+    if (this->Internal->Colors) {
+      sourceData.push_back(this->Internal->Colors);
+    }
+    if (this->Internal->TCoords) {
+      sourceData.push_back(this->Internal->TCoords);
+    }
+
+    vesKiwiDataConversionTools::RemoveSharedTriangleVertices(this->geometryData(), sourceData);
+    vesKiwiDataConversionTools::ComputeWireframeVertexArrays(this->geometryData());
+    this->Internal->WireframeSources[0] = this->geometryData()->sourceData(10);
+    this->Internal->WireframeSources[1] = this->geometryData()->sourceData(11);
+    this->Internal->WireframeSources[2] = this->geometryData()->sourceData(12);
+  }
+  else {
+    for (int i = 0; i < 3; ++i) {
+      this->geometryData()->addSource(this->Internal->WireframeSources[i]);
+    }
+  }
+
+  // reset VBO
+  vesGeometryData::Ptr geometryData = this->geometryData();
+  this->mapper()->setGeometryData(vesGeometryData::Ptr(new vesGeometryData));
+  this->mapper()->setGeometryData(geometryData);
+
+
+  this->setShaderProgram(this->Internal->WireframeShader);
+
+  this->Internal->GeometryMode = WIREFRAME_MODE;
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiPolyDataRepresentation::pointsOn()
+{
+  this->setShaderProgram(this->Internal->SurfaceShader);
+
+  for (int i = 0; i < 3; ++i) {
+    this->geometryData()->removeSource(this->Internal->WireframeSources[i]);
+  }
+
+  if (this->geometryData()->triangles()) {
+    this->Internal->Triangles = this->geometryData()->triangles();
+  }
+
+  if (this->geometryData()->lines()) {
+    this->Internal->Lines = this->geometryData()->lines();
+  }
+
+  this->geometryData()->removePrimitive(this->Internal->Triangles);
+  this->geometryData()->removePrimitive(this->Internal->Lines);
+  this->geometryData()->removePrimitive(this->Internal->Points);
+
+  // disable wireframe mode
+  for (int i = 0; i < 3; ++i) {
+    this->geometryData()->removeSource(this->Internal->WireframeSources[i]);
+  }
+
+  // reset VBO
+  vesGeometryData::Ptr geometryData = this->geometryData();
+  this->mapper()->setGeometryData(vesGeometryData::Ptr(new vesGeometryData));
+  this->mapper()->setGeometryData(geometryData);
+
+  vesPrimitive::Ptr pointPrimitive (new vesPrimitive());
+  pointPrimitive->setPrimitiveType(vesPrimitiveRenderType::Points);
+  pointPrimitive->setIndexCount(1);
+  this->geometryData()->addPrimitive(pointPrimitive);
+  this->Internal->Points = pointPrimitive;
+
+  this->Internal->GeometryMode = POINTS_MODE;
+}
+
+//----------------------------------------------------------------------------
+int vesKiwiPolyDataRepresentation::geometryMode() const
+{
+  return this->Internal->GeometryMode;
+}
+
+//----------------------------------------------------------------------------
+const std::string& vesKiwiPolyDataRepresentation::name() const
+{
+  return this->geometryData()->name();
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiPolyDataRepresentation::setName(const std::string& name)
+{
+  this->geometryData()->setName(name);
 }
 
 //----------------------------------------------------------------------------
@@ -174,12 +323,37 @@ vesSharedPtr<vesShaderProgram> vesKiwiPolyDataRepresentation::shaderProgram() co
 }
 
 //----------------------------------------------------------------------------
+void vesKiwiPolyDataRepresentation::setSurfaceShader(vesSharedPtr<vesShaderProgram> shader)
+{
+  this->Internal->SurfaceShader = shader;
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiPolyDataRepresentation::setWireframeShader(vesSharedPtr<vesShaderProgram> shader)
+{
+  this->Internal->WireframeShader = shader;
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiPolyDataRepresentation::setSurfaceWithEdgesShader(vesSharedPtr<vesShaderProgram> shader)
+{
+  this->Internal->SurfaceWithEdgesShader = shader;
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiPolyDataRepresentation::setTextureSurfaceShader(vesSharedPtr<vesShaderProgram> shader)
+{
+  this->Internal->TextureSurfaceShader = shader;
+}
+
+//----------------------------------------------------------------------------
 void vesKiwiPolyDataRepresentation::initializeWithShader(
   vesSharedPtr<vesShaderProgram> shaderProgram)
 {
   assert(shaderProgram);
   assert(!this->Internal->Mapper && !this->Internal->Actor);
 
+  this->Internal->SurfaceShader = shaderProgram;
   this->Internal->Mapper = vesSharedPtr<vesMapper>(new vesMapper());
 
   this->Internal->Actor = vesSharedPtr<vesActor>(new vesActor());
@@ -228,7 +402,51 @@ void vesKiwiPolyDataRepresentation::setColor(double r, double g, double b, doubl
 vesVector4f vesKiwiPolyDataRepresentation::color()
 {
   float* color = this->Internal->Actor->mapper()->color();
-  return vesVector4f(color[0], color[1], color[2], color[4]);
+  return vesVector4f(color[0], color[1], color[2], color[3]);
+}
+
+//----------------------------------------------------------------------------
+double vesKiwiPolyDataRepresentation::opacity() const
+{
+  return this->Internal->Actor->mapper()->color()[3];
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiPolyDataRepresentation::setOpacity(double opacity)
+{
+  float* color = this->Internal->Actor->mapper()->color();
+  this->Internal->Actor->mapper()->setColor(color[0], color[1], color[2], opacity);
+
+  if (opacity != 1.0) {
+    this->setBinNumber(2);
+  }
+  else {
+    this->setBinNumber(1);
+  }
+}
+
+//----------------------------------------------------------------------------
+int vesKiwiPolyDataRepresentation::pointSize() const
+{
+  return this->Internal->Actor->mapper()->pointSize();
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiPolyDataRepresentation::setPointSize(int size)
+{
+  this->Internal->Actor->mapper()->setPointSize(size);
+}
+
+//----------------------------------------------------------------------------
+int vesKiwiPolyDataRepresentation::lineWidth() const
+{
+  return this->Internal->Actor->mapper()->lineWidth();
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiPolyDataRepresentation::setLineWidth(int width)
+{
+  this->Internal->Actor->mapper()->setLineWidth(width);
 }
 
 //----------------------------------------------------------------------------
@@ -257,4 +475,231 @@ vesSharedPtr<vesActor> vesKiwiPolyDataRepresentation::actor() const
 vesSharedPtr<vesMapper> vesKiwiPolyDataRepresentation::mapper() const
 {
   return this->Internal->Mapper;
+}
+
+//----------------------------------------------------------------------------
+std::vector<std::string> vesKiwiPolyDataRepresentation::colorModes()
+{
+  std::vector<std::string> names;
+
+  names.push_back("Solid Color");
+
+  if (this->Internal->Colors) {
+    names.push_back("Vertex RGB");
+  }
+
+  if (this->Internal->TCoords && this->Internal->Texture) {
+    names.push_back("Texture");
+  }
+
+  names.insert(names.end(), this->Internal->ScalarArrayNames.begin(), this->Internal->ScalarArrayNames.end());
+  return names;
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiPolyDataRepresentation::setColorMode(const std::string& colorMode)
+{
+  if (colorMode == "Solid Color") {
+    this->colorBySolidColor();
+  }
+  if (colorMode == "Vertex RGB") {
+    this->colorByRGBArray();
+  }
+  else if (colorMode == "Texture") {
+    this->colorByTexture();
+  }
+  else {
+    this->colorByScalars(colorMode);
+  }
+}
+
+//----------------------------------------------------------------------------
+std::string vesKiwiPolyDataRepresentation::colorMode() const
+{
+  vesSourceData::Ptr colors = this->geometryData()->sourceData(vesVertexAttributeKeys::Color);
+  vesSourceData::Ptr tcoords = this->geometryData()->sourceData(vesVertexAttributeKeys::TextureCoordinate);
+
+  if (!colors && !tcoords) {
+    return "Solid Color";
+  }
+  else if (tcoords && tcoords == this->Internal->TCoords) {
+    return "Texture";
+  }
+  else if (colors && colors == this->Internal->Colors) {
+    return "Vertex RGB";
+  }
+  else if (colors) {
+
+    std::vector<vesSourceData::Ptr>::const_iterator itr = std::find(this->Internal->ScalarArrays.begin(),
+                                                           this->Internal->ScalarArrays.end(), colors);
+    if (itr != this->Internal->ScalarArrays.end()) {
+      return this->Internal->ScalarArrayNames[itr - this->Internal->ScalarArrays.begin()];
+    }
+  }
+
+  return "";
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiPolyDataRepresentation::colorByDefault()
+{
+  this->colorBySolidColor();
+
+  if (this->Internal->Colors) {
+    this->colorByRGBArray();
+  }
+  else if (this->Internal->TCoords) {
+    this->colorByTexture();
+  }
+  else if (this->Internal->ScalarColors) {
+    this->colorByScalars();
+  }
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiPolyDataRepresentation::colorByTexture()
+{
+  this->colorBySolidColor();
+  if (this->Internal->TCoords && this->Internal->TextureSurfaceShader) {
+    this->geometryData()->addSource(this->Internal->TCoords);
+    this->setShaderProgram(this->Internal->TextureSurfaceShader);
+  }
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiPolyDataRepresentation::colorByRGBArray()
+{
+  this->colorBySolidColor();
+  if (this->Internal->Colors) {
+    this->geometryData()->addSource(this->Internal->Colors);
+  }
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiPolyDataRepresentation::colorBySolidColor()
+{
+  this->geometryData()->removeSource(this->geometryData()->sourceData(vesVertexAttributeKeys::Color));
+  this->geometryData()->removeSource(this->geometryData()->sourceData(vesVertexAttributeKeys::TextureCoordinate));
+
+
+  // set correct shader
+  if (this->Internal->GeometryMode == SURFACE_MODE
+      || this->Internal->GeometryMode == POINTS_MODE) {
+    this->setShaderProgram(this->Internal->SurfaceShader);
+  }
+  else if (this->Internal->GeometryMode == WIREFRAME_MODE) {
+    this->setShaderProgram(this->Internal->WireframeShader);
+  }
+  else if (this->Internal->GeometryMode == SURFACE_WITH_EDGES_MODE) {
+    this->setShaderProgram(this->Internal->SurfaceWithEdgesShader);
+  }
+
+
+  // reset VBO
+  vesGeometryData::Ptr geometryData = this->geometryData();
+  this->mapper()->setGeometryData(vesGeometryData::Ptr(new vesGeometryData));
+  this->mapper()->setGeometryData(geometryData);
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiPolyDataRepresentation::colorByScalars()
+{
+  this->colorBySolidColor();
+  if (this->Internal->ScalarColors) {
+    this->geometryData()->addSource(this->Internal->ScalarColors);
+  }
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiPolyDataRepresentation::colorByScalars(const std::string& arrayName)
+{
+  this->colorBySolidColor();
+
+  std::vector<std::string>::const_iterator itr = std::find(this->Internal->ScalarArrayNames.begin(),
+                                                           this->Internal->ScalarArrayNames.end(), arrayName);
+
+  if (itr != this->Internal->ScalarArrayNames.end()) {
+    vesSourceData::Ptr scalarColors = this->Internal->ScalarArrays[itr - this->Internal->ScalarArrayNames.begin()];
+    this->geometryData()->addSource(scalarColors);
+  }
+}
+
+/*
+//----------------------------------------------------------------------------
+void vesKiwiPolyDataRepresentation::colorByScalars(vtkDataArray* scalars, vtkScalarsToColors* scalarsToColors)
+{
+
+  std::string arrayName = scalars->GetName();
+  this->Internal->ScalarColors = vesKiwiDataConversionTools::ConvertScalarsToColors(scalars, scalarsToColors);
+
+  if (scalars->GetName()) {
+    std::string arrayName = scalars->GetName();
+    std::vector<std::string>::const_iterator itr = std::find(this->Internal->ScalarArrayNames.begin(),
+                                                             this->Internal->ScalarArrayNames.end(), arrayName);
+
+    if (itr != this->Internal->ScalarArrayNames.end()) {
+      this->Internal->ScalarArrays[itr - this->Internal->ScalarArrayNames.begin()] = this->Internal->ScalarColors;
+    }
+  }
+  this->colorByScalars();
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiPolyDataRepresentation::colorByTexture(vtkDataArray* tcoords)
+{
+  this->Internal->TCoords = vesKiwiDataConversionTools::ConvertTCoords(tcoords);
+  this->colorByTexture();
+}
+*/
+
+//----------------------------------------------------------------------------
+void vesKiwiPolyDataRepresentation::assignColorsInternal()
+{
+  vesSourceData::Ptr colors = this->geometryData()->sourceData(vesVertexAttributeKeys::Color);
+  if (colors) {
+    this->Internal->Colors = colors;
+  }
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiPolyDataRepresentation::convertVertexArrays(vtkPolyData* dataSet)
+{
+  this->Internal->Colors.reset();
+  this->Internal->ScalarColors.reset();
+  this->Internal->TCoords.reset();
+  this->Internal->ScalarArrayNames.clear();
+  this->Internal->ScalarArrays.clear();
+
+
+  vtkUnsignedCharArray* colors = vesKiwiDataConversionTools::FindRGBColorsArray(dataSet);
+  if (colors) {
+    this->Internal->Colors = vesKiwiDataConversionTools::ConvertColors(colors);
+  }
+
+  std::vector<vtkDataArray*> scalarArrays = vesKiwiDataConversionTools::FindScalarArrays(dataSet);
+  for (size_t i = 0; i < scalarArrays.size(); ++i) {
+
+    vtkDataArray* scalars = scalarArrays[i];
+
+    vtkSmartPointer<vtkScalarsToColors> colorMap = this->colorMapCollection()->colorMapForArray(scalars);
+    if (!colorMap) {
+      colorMap = vesKiwiDataConversionTools::GetBlueToRedLookupTable(scalars->GetRange());
+    }
+
+    vesSourceData::Ptr arrayData = vesKiwiDataConversionTools::ConvertScalarsToColors(scalars, colorMap);
+
+    if (arrayData) {
+      std::string arrayName = scalars->GetName() ? scalars->GetName() : "scalars";
+      this->Internal->ScalarArrayNames.push_back(arrayName);
+      this->Internal->ScalarArrays.push_back(arrayData);
+    }
+  }
+  if (this->Internal->ScalarArrays.size()) {
+    this->Internal->ScalarColors = this->Internal->ScalarArrays.front();
+  }
+
+  vtkDataArray* tcoords = vesKiwiDataConversionTools::FindTextureCoordinatesArray(dataSet);
+  if (tcoords) {
+    this->Internal->TCoords = vesKiwiDataConversionTools::ConvertTCoords(tcoords);
+  }
 }

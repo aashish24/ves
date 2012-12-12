@@ -29,13 +29,13 @@
 
 // C++ includes
 #include <string>
+#include <vector>
 
 // Forward declarations
 class vesCamera;
 class vesKiwiCameraSpinner;
 class vesKiwiDataRepresentation;
 class vesKiwiPolyDataRepresentation;
-class vesKiwiImagePlaneDataRepresentation;
 class vesKiwiText2DRepresentation;
 class vesKiwiPlaneWidget;
 class vesRenderer;
@@ -45,7 +45,6 @@ class vesUniform;
 
 class vtkDataSet;
 class vtkPolyData;
-class vtkImageData;
 
 class vesKiwiViewerApp : public vesKiwiBaseApp
 {
@@ -67,9 +66,9 @@ public:
   std::string loadDatasetErrorMessage() const;
 
   int  getNumberOfShadingModels() const;
-  std::string getCurrentShadingModel() const;
   std::string getShadingModel(int index) const;
-  bool setShadingModel(const std::string& name);
+
+  vesSharedPtr<vesShaderProgram> shaderProgram(const std::string& name) const;
 
   /// This method is overridden to check support for GL extensions.  The
   /// GL_OES_element_index_uint extension is querried and used to determine
@@ -82,6 +81,8 @@ public:
   bool initToonShader(const std::string& vertexSource, const std::string& fragmentSource);
   bool initTextureShader(const std::string& vertexSource, const std::string& fragmentSource);
   bool initGouraudTextureShader(const std::string& vertexSource, const std::string& fragmentSource);
+  bool initWireframeShader(const std::string& vertexSource, const std::string& fragmentSource);
+  bool initSurfaceWithEdgesShader(const std::string& vertexSource, const std::string& fragmentSource);
   bool initClipShader(const std::string& vertexSource, const std::string& fragmentSource);
 
   bool isAnimating() const;
@@ -111,6 +112,7 @@ public:
   vesSharedPtr<vesShaderProgram> shaderProgram();
 
   /// Override superclass method in order to stop the camera spinner if needed.
+  using Superclass::resetView;
   virtual void resetView();
 
   /// Set/Get whether or not the app should use camera rotation inertia at the
@@ -123,6 +125,14 @@ public:
 
   /// Return the spinner instance used to implement camera rotation inertia.
   vesSharedPtr<vesKiwiCameraSpinner> cameraSpinner() const;
+
+  virtual void setDefaultBackgroundColor();
+
+  const std::vector<vesSharedPtr<vesKiwiDataRepresentation> >& dataRepresentations() const;
+
+  void resetScene();
+
+  void setDefaultCameraParameters(vesVector3f viewDirection, vesVector3f viewUp);
 
 protected:
 
@@ -137,18 +147,16 @@ protected:
   void removeAllDataRepresentations();
   void addRepresentationsForDataSet(vtkDataSet* dataSet);
 
+  void addManagedDataRepresentation(vesSharedPtr<vesKiwiDataRepresentation> rep);
+
   void setAnimating(bool animating);
 
-  void resetScene();
-
-  vesKiwiPolyDataRepresentation* addPolyDataRepresentation(
+  vesSharedPtr<vesKiwiPolyDataRepresentation> addPolyDataRepresentation(
     vtkPolyData* polyData, vesSharedPtr<vesShaderProgram> program);
-  vesKiwiText2DRepresentation* addTextRepresentation(const std::string& text);
-  vesKiwiPlaneWidget* addPlaneWidget();
+  vesSharedPtr<vesKiwiText2DRepresentation> addTextRepresentation(const std::string& text);
+  vesSharedPtr<vesKiwiPlaneWidget> addPlaneWidget();
   bool loadBrainAtlas(const std::string& filename);
-  bool loadCanSimulation(const std::string& filename);
-  bool loadBlueMarble(const std::string& filename);
-  void setDefaultBackgroundColor();
+  bool loadTexturedMesh(const std::string& meshFile, const std::string& imageFile);
 
   void setErrorMessage(const std::string& errorTitle, const std::string& errorMessage);
   void resetErrorMessage();

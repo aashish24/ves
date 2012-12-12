@@ -41,15 +41,9 @@ public:
   ~vesKiwiImagePlaneDataRepresentation();
 
   void setImageData(vtkImageData* imageData);
+  vtkImageData* imageData() const;
 
   vtkPolyData* imagePlanePolyData();
-
-  void setColorMap(vtkScalarsToColors* map);
-  vtkScalarsToColors* colorMap();
-
-  void setGrayscaleColorMap(double scalarRange[2]);
-
-  virtual void setShaderProgram(vesSharedPtr<vesShaderProgram> shaderProgram);
 
   static vtkSmartPointer<vtkPolyData> polyDataForImagePlane(vtkImageData* image);
   static int imageFlatDimension(vtkImageData* image);

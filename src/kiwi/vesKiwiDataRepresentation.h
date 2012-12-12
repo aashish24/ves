@@ -27,6 +27,7 @@
 #include <vesSharedPtr.h>
 #include <vesSetGet.h>
 
+class vesKiwiColorMapCollection;
 class vesRenderer;
 class vesActor;
 class vtkTransform;
@@ -37,20 +38,23 @@ public:
 
   vesTypeMacro(vesKiwiDataRepresentation);
 
-  vesKiwiDataRepresentation() {}
+  vesKiwiDataRepresentation();
   virtual ~vesKiwiDataRepresentation() {}
 
   virtual void addSelfToRenderer(vesSharedPtr<vesRenderer> renderer) = 0;
   virtual void removeSelfFromRenderer(vesSharedPtr<vesRenderer> renderer) = 0;
   virtual void willRender(vesSharedPtr<vesRenderer> renderer);
 
+  void setColorMapCollection(vesSharedPtr<vesKiwiColorMapCollection> collection);
+  vesSharedPtr<vesKiwiColorMapCollection> colorMapCollection() const;
+
   static void setTransformOnActor(vesSharedPtr<vesActor> actor, vtkTransform* transform);
 
 private:
 
+  vesSharedPtr<vesKiwiColorMapCollection> mColorMapCollection;
   vesKiwiDataRepresentation(const vesKiwiDataRepresentation&); // Not implemented
   void operator=(const vesKiwiDataRepresentation&); // Not implemented
 };
-
 
 #endif
