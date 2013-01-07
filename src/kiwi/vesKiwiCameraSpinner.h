@@ -69,6 +69,11 @@ public:
 
   double currentMagnitude() const;
 
+  /// Set/Get the deceleration magnitude, defined in pixels per second^2.
+  /// The default is 100.  A value of 0.0 will cause the spinner to spin forever.
+  double deceleration() const;
+  void setDeceleration(double d);
+
   /// Update the camera spin.  This method will call the camera manipulation
   /// methods on the vesKiwiBaseApp instance.  After the update, the spin
   /// velocity decreases.  When it slows past a threshold this method will
@@ -84,6 +89,8 @@ private:
 
   bool  mIsEnabled;
   double mLastPanDistance;
+  double mLastTime;
+  double mDeceleration;
   vesVector2d mLastPanDirection;
 };
 

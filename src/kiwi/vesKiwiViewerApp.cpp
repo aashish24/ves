@@ -363,7 +363,7 @@ void vesKiwiViewerApp::handleSingleTouchUp()
 
   if (!this->widgetInteractionIsActive()
       && this->Internal->CameraRotationInertiaIsEnabled
-      && this->Internal->CameraSpinner->currentMagnitude() > 4.0) {
+      && this->Internal->CameraSpinner->currentMagnitude() > 0.0) {
     this->Internal->CameraSpinner->enable();
   }
   else {
