@@ -48,6 +48,8 @@ public:
   std::string errorTitle() const;
   std::string errorMessage() const;
 
+  static bool hasEnding(const std::string& fullString, const std::string& ending);
+
 protected:
 
   /// Update the given algorithm and return the output dataset.  If the output
@@ -57,7 +59,6 @@ protected:
 
 
   bool updateAlgorithmOrSetErrorString(vtkAlgorithm* algorithm);
-  bool hasEnding(const std::string& fullString, const std::string& ending) const;
   void setMaximumNumberOfPointsErrorMessage();
 
 private:
