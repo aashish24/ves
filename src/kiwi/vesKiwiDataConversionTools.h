@@ -69,6 +69,7 @@ public:
 
   static vtkSmartPointer<vtkDiscretizableColorTransferFunction> GetBlackBodyRadiationColorMap(double scalarRange[2]);
   static vtkSmartPointer<vtkLookupTable> GetRedToBlueLookupTable(double scalarRange[2]);
+  static vtkSmartPointer<vtkLookupTable> GetBlueToRedLookupTable(double scalarRange[2]);
   static vtkSmartPointer<vtkLookupTable> GetGrayscaleLookupTable(double scalarRange[2]);
   static void SetVertexColors(vtkUnsignedCharArray* colors,
     vesSharedPtr<vesGeometryData> triangleData);
