@@ -30,6 +30,7 @@
 #include "vesKiwiText2DRepresentation.h"
 #include "vesKiwiPlaneWidget.h"
 #include "vesKiwiPolyDataRepresentation.h"
+#include "vesKiwiSceneRepresentation.h"
 #include "vesKiwiWidgetInteractionDelegate.h"
 
 #include "vesBackground.h"
@@ -784,10 +785,59 @@ bool vesKiwiViewerApp::loadTexturedMesh(const std::string& meshFile, const std::
 }
 
 //----------------------------------------------------------------------------
+bool vesKiwiViewerApp::loadKiwiScene(const std::string& sceneFile)
+{
+  vesKiwiSceneRepresentation::Ptr rep = vesKiwiSceneRepresentation::Ptr(new vesKiwiSceneRepresentation);
+
+  rep->setShaders(this->shaderProgram(),
+      this->Internal->WireframeShader,
+      this->Internal->SurfaceWithEdgesShader,
+      this->Internal->GouraudTextureShader,
+      this->Internal->TextureShader,
+      this->Internal->ClipShader);
+
+  bool result = rep->loadScene(sceneFile, &this->Internal->DataLoader);
+
+  if (!result) {
+    this->setErrorMessage(rep->errorTitle(), rep->errorMessage());
+  }
+
+  const std::vector<vesKiwiDataRepresentation::Ptr>& sceneReps = rep->dataRepresentations();
+  for (size_t i = 0; i < sceneReps.size(); ++i) {
+    sceneReps[i]->addSelfToRenderer(this->renderer());
+    this->addManagedDataRepresentation(sceneReps[i]);
+  }
+
+  if (rep->hasCameraSettings()) {
+    this->Internal->DefaultCameraParameters.setParameters(
+      rep->cameraFocalPoint() - rep->cameraPosition(),
+      rep->cameraViewUp());
+
+    this->Internal->DefaultCameraParameters.ViewDirection.normalize();
+    this->Internal->DefaultCameraParameters.ViewUp.normalize();
+  }
+
+  if (rep->hasBackgroundSettings()) {
+    this->renderer()->background()->setImage(vesImage::Ptr());
+    if (rep->backgroundImage().empty()) {
+      this->renderer()->background()->setGradientColor(rep->backgroundColor(), rep->backgroundColor2());
+    }
+    else {
+      this->setBackgroundTexture(rep->backgroundImage());
+    }
+  }
+
+  return result;
+}
+
+//----------------------------------------------------------------------------
 bool vesKiwiViewerApp::loadDatasetWithCustomBehavior(const std::string& filename)
 {
   if (vtksys::SystemTools::GetFilenameName(filename) == "spl_pnl_brain_atlas.kiwi") {
     return loadBrainAtlas(filename);
+  }
+  else if (vtksys::SystemTools::GetFilenameLastExtension(filename) == ".kiwi") {
+    return loadKiwiScene(filename);
   }
 
   return false;

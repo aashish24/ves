@@ -18,6 +18,7 @@ set(sources
   vesKiwiImageWidgetRepresentation.cpp
   vesKiwiPlaneWidget.cpp
   vesKiwiPolyDataRepresentation.cpp
+  vesKiwiSceneRepresentation.cpp
   vesKiwiStreamingDataRepresentation.cpp
   vesKiwiText2DRepresentation.cpp
   vesKiwiViewerApp.cpp

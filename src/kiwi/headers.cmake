@@ -15,6 +15,7 @@ set(headers
   vesKiwiImageWidgetRepresentation.h
   vesKiwiPlaneWidget.h
   vesKiwiPolyDataRepresentation.h
+  vesKiwiSceneRepresentation.h
   vesKiwiStreamingDataRepresentation.h
   vesKiwiTestHelper.h
   vesKiwiText2DRepresentation.h

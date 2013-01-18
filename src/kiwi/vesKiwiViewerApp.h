@@ -156,6 +156,7 @@ protected:
   vesSharedPtr<vesKiwiText2DRepresentation> addTextRepresentation(const std::string& text);
   vesSharedPtr<vesKiwiPlaneWidget> addPlaneWidget();
   bool loadBrainAtlas(const std::string& filename);
+  bool loadKiwiScene(const std::string& filename);
   bool loadTexturedMesh(const std::string& meshFile, const std::string& imageFile);
 
   void setErrorMessage(const std::string& errorTitle, const std::string& errorMessage);
