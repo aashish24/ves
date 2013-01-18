@@ -1,4 +1,5 @@
 set(headers
+  cJSON.h
   vesKiwiAnimationRepresentation.h
   vesKiwiBaseApp.h
   vesKiwiBaselineImageTester.h
