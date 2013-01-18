@@ -1,7 +1,11 @@
+if (NOT USE_PCL)
+  return()
+endif()
 
 set(build_target "android")
 
 if(NOT DEFINED PCL_SUPERBUILD_DIR)
+  set(PCL_SUPERBUILD_DIR "PCL_SUPERBUILD_DIR-NOTFOUND" CACHE FILEPATH "pcl mobile superbuild directory")
   message(FATAL_ERROR "Please set the cmake variable PCL_SUPERBUILD_DIR")
 endif()
 
@@ -19,26 +23,3 @@ set(PCL_DIR ${pcl_deps_install_dir}/pcl-${build_target}/share/pcl-1.6)
 
 find_package(PCL REQUIRED)
 include_directories(${PCL_INCLUDE_DIRS})
-
-
-
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-
-set(sources
-  vtkPCDReader.cxx
-  vtkPCLConversions.cxx
-  vtkPCLSACSegmentationPlane.cxx
-  vtkPCLVoxelGrid.cxx
-  )
-
-set(deps
-  ${PCL_SEGMENTATION_LIBRARY}
-  ${PCL_SAMPLE_CONSENSUS_LIBRARY}
-  ${PCL_FILTERS_LIBRARY}
-  ${PCL_KDTREE_LIBRARY}
-  ${PCL_IO_LIBRARY}
-  ${PCL_COMMON_LIBRARY}
-  ${BOOST_LIBRARIES}
-  )
-
-ves_add_library(vtkPCL "${sources}" "${deps}")

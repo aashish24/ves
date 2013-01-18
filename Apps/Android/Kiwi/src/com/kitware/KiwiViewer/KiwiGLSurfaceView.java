@@ -343,6 +343,8 @@ public class KiwiGLSurfaceView extends GLSurfaceView implements MultiTouchObject
       queueEvent(new Runnable() {
         public void run() {
 
+          Log.w(TAG, String.format("loadDataset %s %d", filename, builtinDatasetIndex));
+
           final boolean result = KiwiNative.loadDataset(filename, builtinDatasetIndex);
           final String errorTitle = KiwiNative.getLoadDatasetErrorTitle();
           final String errorMessage = KiwiNative.getLoadDatasetErrorMessage();
@@ -356,6 +358,78 @@ public class KiwiGLSurfaceView extends GLSurfaceView implements MultiTouchObject
         }});
     }
 
+    public void downloadAndOpenFile(final String url, final String downloadDir, final KiwiViewerActivity loader) {
+
+      queueEvent(new Runnable() {
+        public void run() {
+
+          final boolean result = KiwiNative.downloadAndOpenFile(url, downloadDir);
+          final String errorTitle = KiwiNative.getLoadDatasetErrorTitle();
+          final String errorMessage = KiwiNative.getLoadDatasetErrorMessage();
+
+          requestRender();
+
+          KiwiGLSurfaceView.this.post(new Runnable() {
+            public void run() {
+              loader.postLoadDataset(url, result, errorTitle, errorMessage);
+            }});
+        }});
+
+    }
+
+    public void doPVWeb(final String host, final String sessionId, final KiwiViewerActivity loader) {
+
+      queueEvent(new Runnable() {
+        public void run() {
+
+          final boolean result = KiwiNative.doPVWeb(host, sessionId);
+          final String errorTitle = KiwiNative.getLoadDatasetErrorTitle();
+          final String errorMessage = KiwiNative.getLoadDatasetErrorMessage();
+
+          requestRender();
+
+          KiwiGLSurfaceView.this.post(new Runnable() {
+            public void run() {
+              loader.postLoadDataset("pvweb", result, errorTitle, errorMessage);
+            }});
+        }});
+    }
+
+    public void doPVRemote(final String host, final int port, final KiwiViewerActivity loader) {
+
+      queueEvent(new Runnable() {
+        public void run() {
+
+          final boolean result = KiwiNative.doPVRemote(host, port);
+          final String errorTitle = KiwiNative.getLoadDatasetErrorTitle();
+          final String errorMessage = KiwiNative.getLoadDatasetErrorMessage();
+
+          requestRender();
+
+          KiwiGLSurfaceView.this.post(new Runnable() {
+            public void run() {
+              loader.postLoadDataset("pvremote", result, errorTitle, errorMessage);
+            }});
+        }});
+    }
+
+    public void doPointCloudStreaming(final String host, final int port, final KiwiViewerActivity loader) {
+
+      queueEvent(new Runnable() {
+        public void run() {
+
+          final boolean result = KiwiNative.doPointCloudStreaming(host, port);
+          final String errorTitle = KiwiNative.getLoadDatasetErrorTitle();
+          final String errorMessage = KiwiNative.getLoadDatasetErrorMessage();
+
+          requestRender();
+
+          KiwiGLSurfaceView.this.post(new Runnable() {
+            public void run() {
+              loader.postLoadDataset("pointcloudstreaming", result, errorTitle, errorMessage);
+            }});
+        }});
+    }
 
     public void resetCamera() {
       queueEvent(new Runnable() {
@@ -366,7 +440,7 @@ public class KiwiGLSurfaceView extends GLSurfaceView implements MultiTouchObject
     }
 
     public void stopRendering() {
-    
+
       queueEvent(new Runnable() {
                    public void run() {
                       KiwiNative.stopInertialMotion();

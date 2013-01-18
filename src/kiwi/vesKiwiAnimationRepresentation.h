@@ -51,6 +51,7 @@ public:
   virtual bool handleSingleTouchDown(int displayX, int displayY);
   virtual bool handleSingleTouchPanGesture(double deltaX, double deltaY);
   virtual bool handleSingleTouchUp();
+  virtual bool handleDoubleTap(int displayX, int displayY);
 
   virtual std::vector<std::string> actions() const;
   virtual bool handleAction(const std::string& action);
@@ -60,6 +61,8 @@ public:
 
   void onPlay();
   void onPause();
+
+  bool playMode() const;
 
 protected:
 

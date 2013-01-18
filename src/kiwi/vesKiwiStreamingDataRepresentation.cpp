@@ -218,6 +218,7 @@ void vesKiwiStreamingDataRepresentation::initializeWithShader(
   this->Internal->PolyDataRep = vesKiwiPolyDataRepresentation::Ptr(new vesKiwiPolyDataRepresentation);
   this->Internal->PolyDataRep->initializeWithShader(this->Internal->GeometryShader);
   this->Internal->PolyDataRep->mapper()->setGeometryData(ReceiveGeometryData(this->Internal->Comm.GetPointer()));
+  this->Internal->PolyDataRep->setPointSize(2.0);
 
 
   this->Internal->ClientThreadId = this->Internal->MultiThreader->SpawnThread(ClientLoop, this->Internal);

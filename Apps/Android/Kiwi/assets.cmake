@@ -1,22 +1,19 @@
-set(kiwi_data ../../iOS/Kiwi/Kiwi/Data)
+set(kiwi_data ../../iOS/KiwiViewer/KiwiViewer/data)
 
 set(assets
-  ${kiwi_data}/AppendedKneeData.vtp
-  ${kiwi_data}/Buckyball.vtp
-  ${kiwi_data}/MountStHelen.vtp
-  ${kiwi_data}/bunny.vtp
-  ${kiwi_data}/caffeine.pdb
-  ${kiwi_data}/shuttle.vtp
-  ${kiwi_data}/teapot.vtp
-  ${kiwi_data}/visible-woman-hand.vtp
-  ${kiwi_data}/head.vti
-  ${kiwi_data}/kiwi.png
-  ${kiwi_data}/cturtle.vtp
-  ${kiwi_data}/textured_sphere.vtp
-  ${kiwi_data}/earth.jpg
+  "${kiwi_data}/Can Simulation.zip"
+  "${kiwi_data}/Kinect Point Cloud.pcd"
+  "${kiwi_data}/Molecule PDB-7WGA.pdb"
+  "${kiwi_data}/NA-MIC Knee Atlas.vtp"
+  "${kiwi_data}/NASA Blue Marble.zip"
+  "${kiwi_data}/NLM Visible Human Project.vti"
+  "${kiwi_data}/PHASTA Blood Flow Sim.zip"
+  "${kiwi_data}/SPL-PNL Brain Atlas.zip"
+  "${kiwi_data}/Velodyne Lidar.zip"
+  "${kiwi_data}/textured_sphere.vtp"
   )
 
 foreach(f ${assets})
   get_filename_component(fname ${f} NAME)
-  configure_file(${f} ${CMAKE_BINARY_DIR}/assets/${fname} COPYONLY)
+  configure_file("${f}" "${CMAKE_BINARY_DIR}/assets/${fname}" COPYONLY)
 endforeach()

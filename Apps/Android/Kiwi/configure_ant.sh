@@ -2,4 +2,4 @@
 
 source tools.sh
 
-$ANDROID update project --name KiwiViewer --path $app_dir --target android-14
+$ANDROID update project --name KiwiViewer --path $app_dir --target android-16

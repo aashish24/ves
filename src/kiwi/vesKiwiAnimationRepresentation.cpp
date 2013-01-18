@@ -141,6 +141,23 @@ void vesKiwiAnimationRepresentation::setRepresentations(const std::vector<vesKiw
 }
 
 //----------------------------------------------------------------------------
+bool vesKiwiAnimationRepresentation::handleDoubleTap(int displayX, int displayY)
+{
+  if (this->Internal->PlayMode) {
+    this->onPause();
+  }
+  else {
+    this->onPlay();
+  }
+}
+
+//----------------------------------------------------------------------------
+bool vesKiwiAnimationRepresentation::playMode() const
+{
+  return this->Internal->PlayMode;
+}
+
+//----------------------------------------------------------------------------
 bool vesKiwiAnimationRepresentation::handleSingleTouchDown(int displayX, int displayY)
 {
   vesNotUsed(displayY);
