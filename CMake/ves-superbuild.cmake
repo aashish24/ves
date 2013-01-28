@@ -163,6 +163,11 @@ if(VES_HOST_SUPERBUILD)
   compile_ves(ves-host)
 endif()
 
+if(VES_QNX_SUPERBUILD)
+  crosscompile_vtk(vtk-qnx qnx.6.5.1.toolchain.cmake)
+  crosscompile_ves(ves-qnx qnx qnx.6.5.1.toolchain.cmake)
+endif()
+
 set(ves_superbuild_enabled ON)
 
 
