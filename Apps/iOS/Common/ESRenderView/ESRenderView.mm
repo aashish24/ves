@@ -54,7 +54,7 @@
     eaglLayer.opaque = TRUE;
     eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
                                     [NSNumber numberWithBool:FALSE], kEAGLDrawablePropertyRetainedBacking, kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat, nil];
-        context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
+        context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES];
         if (!context || ![EAGLContext setCurrentContext:context])
         {
           [self release];

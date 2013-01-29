@@ -47,7 +47,7 @@
 #include <X11/Xutil.h>
 #include <X11/keysym.h>
 
-#include <GLES2/gl2.h>
+#include <GLES/gl.h>
 #include <EGL/egl.h>
 
 
