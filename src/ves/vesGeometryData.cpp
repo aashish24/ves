@@ -25,7 +25,12 @@ void vesGeometryData::computeBounds()
   unsigned int stride
     = sourceData->attributeStride(vesVertexAttributeKeys::Position);
 
-  assert(numberOfComponents <= 3);
+//  assert(numberOfComponents <= 3);
+
+  if (numberOfComponents == 4)
+  {
+    numberOfComponents = 3;
+  }
 
   this->m_boundsMin[0] = this->m_boundsMin[1] = this->m_boundsMin[2] = 0.0f;
   this->m_boundsMax[0] = this->m_boundsMax[1] = this->m_boundsMax[2] = 0.0f;

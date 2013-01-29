@@ -117,7 +117,13 @@ bool vesMaterial::addAttribute(vesSharedPtr<vesMaterialAttribute> attribute)
     return false;
   }
 
-  std::cerr << attribute->type() << std::endl;
+  std::cerr << " vesMaterial::addAttribute " << attribute->type() << std::endl;
+
+//  if (attribute->type() == 4)
+//  {
+//    std::cerr << " vesMaterial::addAttribute " << attribute->type() << std::endl;
+//  }
+
 
   if (attribute->type()    != vesMaterialAttribute::Texture &&
       attribute->binding() == vesMaterialAttribute::BindAll) {

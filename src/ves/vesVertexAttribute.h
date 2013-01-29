@@ -96,6 +96,8 @@ public:
       return;
     }
 
+//    //key = vesVertexAttributeKeys::convertMatrerialVertexAttribute(key);
+
     assert(renderState.m_material);
 
     vesGeometryData::Ptr geometryData = renderState.m_mapper->geometryData();
@@ -104,12 +106,13 @@ public:
     vesSourceData::Ptr sourceData = geometryData->sourceData(key);
     assert(sourceData);
 
-//    std::cerr << "sourceData->sizeOfAttributeDataType(key) is " << sourceData->sizeOfAttributeDataType(key) << std::endl;
+//    std::cerr << "geometryData " << geometryData << std::endl;
+//    std::cerr << "sourceData->numberOfComponents(key) is " << sourceData->numberOfComponents(key) << std::endl;
 //    std::cerr << "sourceData->attributeDataType(key) is " << sourceData->attributeDataType(key) << std::endl;
 //    std::cerr << " sourceData->attributeStride(key) is " <<  sourceData->attributeStride(key) << std::endl;
 //    std::cerr << "sourceData->attributeOffset is " << sourceData->attributeOffset(key) << std::endl;
 
-    glVertexPointer(sourceData->sizeOfAttributeDataType(key),
+    glVertexPointer(sourceData->numberOfComponents(key),
                     sourceData->attributeDataType(key),
                     sourceData->attributeStride(key),
                     (void*)static_cast<intptr_t>(sourceData->attributeOffset(key)));
@@ -176,6 +179,8 @@ public:
       return;
     }
 
+    //key = vesVertexAttributeKeys::convertMatrerialVertexAttribute(key);
+
     assert(renderState.m_material);
 
     vesGeometryData::Ptr geometryData = renderState.m_mapper->geometryData();
@@ -184,9 +189,16 @@ public:
     vesSourceData::Ptr sourceData = geometryData->sourceData(key);
     assert(sourceData);
 
+//    std::cerr << "geometryData " << geometryData << std::endl;
+//    std::cerr << "sourceData->numberOfComponents(key) is " << sourceData->numberOfComponents(key) << std::endl;
+//    std::cerr << "sourceData->attributeDataType(key) is " << sourceData->attributeDataType(key) << std::endl;
+//    std::cerr << " sourceData->attributeStride(key) is " <<  sourceData->attributeStride(key) << std::endl;
+//    std::cerr << "sourceData->attributeOffset is " << sourceData->attributeOffset(key) << std::endl;
+
     glNormalPointer(sourceData->attributeDataType(key),
                     sourceData->attributeStride(key),
                     (void*)static_cast<intptr_t>(sourceData->attributeOffset(key)));
+
 
 //    glVertexAttribPointer(renderState.m_material->shaderProgram()->
 //                          attributeLocation(this->m_name),
@@ -236,6 +248,8 @@ public:
       return;
     }
 
+    //key = vesVertexAttributeKeys::convertMatrerialVertexAttribute(key);
+
     assert(renderState.m_material);
 
     vesGeometryData::Ptr geometryData = renderState.m_mapper->geometryData();
@@ -244,7 +258,13 @@ public:
     vesSourceData::Ptr sourceData = geometryData->sourceData(key);
     assert(sourceData);
 
-    glColorPointer(sourceData->sizeOfAttributeDataType(key),
+//    std::cerr << "geometryData " << geometryData << std::endl;
+//    std::cerr << "sourceData->numberOfComponents(key) is " << sourceData->numberOfComponents(key) << std::endl;
+//    std::cerr << "sourceData->attributeDataType(key) is " << sourceData->attributeDataType(key) << std::endl;
+//    std::cerr << " sourceData->attributeStride(key) is " <<  sourceData->attributeStride(key) << std::endl;
+//    std::cerr << "sourceData->attributeOffset is " << sourceData->attributeOffset(key) << std::endl;
+
+    glColorPointer(sourceData->numberOfComponents(key),
                    sourceData->attributeDataType(key),
                    sourceData->attributeStride(key),
                    (void*)static_cast<intptr_t>(sourceData->attributeOffset(key)));
@@ -286,8 +306,7 @@ public:
 
   vesTextureCoordinateVertexAttribute(int key=vesVertexAttributeKeys::TextureCoordinate,
                                       const std::string &name="vertexTextureCoordinate") :
-    vesGenericVertexAttribute(key, name)
-  {
+    vesGenericVertexAttribute(key, name) {
     this->m_type = vesMaterialAttribute::VertexTexCoordAttribute;
   }
 
@@ -297,6 +316,8 @@ public:
       return;
     }
 
+    //key = vesVertexAttributeKeys::convertMatrerialVertexAttribute(key);
+
     assert(renderState.m_material);
 
     vesGeometryData::Ptr geometryData = renderState.m_mapper->geometryData();
@@ -305,7 +326,7 @@ public:
     vesSourceData::Ptr sourceData = geometryData->sourceData(key);
     assert(sourceData);
 
-    glTexCoordPointer(sourceData->sizeOfAttributeDataType(key),
+    glTexCoordPointer(sourceData->numberOfComponents(key),
                       sourceData->attributeDataType(key),
                       sourceData->attributeStride(key),
                       (void*)static_cast<intptr_t>(sourceData->attributeOffset(key)));

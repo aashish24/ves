@@ -138,6 +138,8 @@ public:
     this->m_material->addAttribute(this->m_normalVertexAttribute);
     this->m_material->addAttribute(this->m_colorVertexAttribute);
 
+    std::cerr << "Done adding attributes " << std::endl;
+
     //this->m_material->addAttribute(this->m_shaderProgram);
     this->m_mapper->setGeometryData(this->createPlane());
     this->m_actor->setMapper(this->m_mapper);
@@ -151,32 +153,34 @@ public:
   vesSharedPtr<vesGeometryData> createPlane()
   {
     vesGeometryData::Ptr geometryData (new vesGeometryData());
-    vesSourceDataP3N3C3f::Ptr sourceData(new vesSourceDataP3N3C3f());
+    vesSourceDataP4N4C4f::Ptr sourceData(new vesSourceDataP4N4C4f());
 
-    vesVector4f topLeftColor = vesVector4f(0.5f, 0.0f, 0.0f, 1.0f);
-    vesVector4f bottomRightColor = vesVector4f(1.0f, 0.0f, 0.5f, 1.0f);
-    vesVector4f color = vesVector4f(1.0f, 0.5f, 0.5f, 1.0f);
+    vesVector4f topLeftColor = vesVector4f(0.5f, 0.0f, 1.0f, 1.0f);
+    vesVector4f bottomRightColor = vesVector4f(1.0f, 0.0f, 1.0f, 1.0f);
+    vesVector4f color = vesVector4f(0.0f, 0.0f, 0.0f, 1.0f);
 
     // Points.
-    vesVertexDataP3N3C3f v1;
-    v1.m_position = vesVector3f(-1.0f, -1.0f, 0.0f);
-    v1.m_normal = vesVector3f(0.0f, 0.0f, 1.0f);
-    v1.m_color = vesVector3f(color[0], color[1], color[2]);
+    vesVertexDataP4N4C4f v1;
+    v1.m_position = vesVector4f(-1.0f, -1.0f, 0.0f, 1.0f);
+    v1.m_normal = vesVector4f(0.0f, 0.0f, 0.0f, 0.0f);
+    v1.m_color = vesVector4f(color[0], color[1], color[2], color[3]);
 
-    vesVertexDataP3N3C3f v2;
-    v2.m_position = vesVector3f(1.0f, -1.0f, 0.0f);
-    v2.m_normal = vesVector3f(0.0f, 0.0f, 1.0f);
-    v2.m_color = vesVector3f(bottomRightColor[0], bottomRightColor[1], bottomRightColor[2]);
+    vesVertexDataP4N4C4f v2;
+    v2.m_position = vesVector4f(1.0f, -1.0f, 0.0f, 1.0f);
+    v2.m_normal = vesVector4f(0.0f, 0.0f, 0.0f, 0.0f);
+    v2.m_color = vesVector4f(bottomRightColor[0], bottomRightColor[1],
+      bottomRightColor[2], bottomRightColor[3]);
 
-    vesVertexDataP3N3C3f v3;
-    v3.m_position = vesVector3f(1.0f, 1.0f, 0.0f);
-    v3.m_normal = vesVector3f(0.0f, 0.0f, 1.0f);
-    v3.m_color = vesVector3f(color[0], color[1], color[2]);
+    vesVertexDataP4N4C4f v3;
+    v3.m_position = vesVector4f(1.0f, 1.0f, 0.0f,1.0f);
+    v3.m_normal = vesVector4f(0.0f, 0.0f, 0.0f, 0.0f);
+    v3.m_color = vesVector4f(color[0], color[1], color[2], color[3]);
 
-    vesVertexDataP3N3C3f v4;
-    v4.m_position = vesVector3f(-1.0f, 1.0f, 0.0f);
-    v4.m_normal = vesVector3f(0.0f, 0.0f, 1.0f);
-    v4.m_color = vesVector3f(topLeftColor[0], topLeftColor[1], topLeftColor[2]);
+    vesVertexDataP4N4C4f v4;
+    v4.m_position = vesVector4f(-1.0f, 1.0f, 0.0f, 1.0f);
+    v4.m_normal = vesVector4f(0.0f, 0.0f, 0.0f, 0.0f);
+    v4.m_color = vesVector4f(topLeftColor[0], topLeftColor[1],
+        topLeftColor[2], topLeftColor[3]);
 
     sourceData->pushBack(v1);
     sourceData->pushBack(v2);
@@ -196,6 +200,9 @@ public:
     geometryData->setName("PlaneGeometryData");
     geometryData->addSource(sourceData);
     geometryData->addPrimitive(triangles);
+
+    std::cerr << "Plane geometry data is " << geometryData << std::endl;
+
     return geometryData;
   }
 

@@ -222,27 +222,29 @@ vesSharedPtr<vesGeometryData> vesBackground::vesInternal::createBackgroundPlane(
   const vesVector4f &topColor, const vesVector4f &bottomColor)
 {
   vesGeometryData::Ptr backgroundGeometryData (new vesGeometryData());
-  vesSourceDataP3T3C3f::Ptr sourceData(new vesSourceDataP3T3C3f());
+  vesSourceDataP3T3C4f::Ptr sourceData(new vesSourceDataP3T3C4f());
 
   // Points.
-  vesVertexDataP3T3C3f v1;
+  vesVertexDataP3T3C4f v1;
   v1.m_position = vesVector3f(-1.0f, -1.0f, 0.0f);
-  v1.m_color = vesVector3f(bottomColor[0], bottomColor[1], bottomColor[2]);
+  v1.m_color = vesVector4f(bottomColor[0], bottomColor[1], bottomColor[2],
+                           bottomColor[3]);
   v1.m_texureCoordinates = vesVector3f(0.0f, 0.0f, 0.0f);
 
-  vesVertexDataP3T3C3f v2;
+  vesVertexDataP3T3C4f v2;
   v2.m_position = vesVector3f(1.0f, -1.0f, 0.0f);
-  v2.m_color = vesVector3f(bottomColor[0], bottomColor[1], bottomColor[2]);
+  v2.m_color = vesVector4f(bottomColor[0], bottomColor[1], bottomColor[2],
+                           bottomColor[3]);
   v2.m_texureCoordinates = vesVector3f(1.0f, 0.0f, 0.0f);
 
-  vesVertexDataP3T3C3f v3;
+  vesVertexDataP3T3C4f v3;
   v3.m_position = vesVector3f(1.0f, 1.0f, 0.0f);
-  v3.m_color = vesVector3f(topColor[0], topColor[1], topColor[2]);
+  v3.m_color = vesVector4f(topColor[0], topColor[1], topColor[2], topColor[3]);
   v3.m_texureCoordinates = vesVector3f(1.0f, 1.0f, 0.0f);
 
-  vesVertexDataP3T3C3f v4;
+  vesVertexDataP3T3C4f v4;
   v4.m_position = vesVector3f(-1.0f, 1.0f, 0.0f);
-  v4.m_color = vesVector3f(topColor[0], topColor[1], topColor[2]);
+  v4.m_color = vesVector4f(topColor[0], topColor[1], topColor[2], topColor[3]);
   v4.m_texureCoordinates = vesVector3f(0.0f, 1.0f, 0.0f);
 
   sourceData->pushBack(v1);

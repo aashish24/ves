@@ -21,6 +21,8 @@
 #ifndef VESVERTEXATTRIBUTEKEYS_H
 #define VESVERTEXATTRIBUTEKEYS_H
 
+#include "vesMaterialAttribute.h"
+
 struct vesVertexAttributeKeys
 {
   enum Key {
@@ -29,8 +31,25 @@ struct vesVertexAttributeKeys
     TextureCoordinate   = 2,
     Color               = 3,
     Scalar              = 4,
-    CountAttributeIndex = 5
+    CountAttributeIndex = 5,
+    Undefined           = 1000
   };
+
+  static int convertMatrerialVertexAttribute(int matVertAttr) {
+    switch (matVertAttr)
+    {
+      case vesMaterialAttribute::VertexPositionAttribute:
+        return Position;
+      case vesMaterialAttribute::VertexNormalAttribute:
+        return Normal;
+      case vesMaterialAttribute::VertexTexCoordAttribute:
+        return TextureCoordinate;
+      case vesMaterialAttribute::VertexColorAttribute:
+        return Color;
+      default:
+        return Undefined;
+    }
+  }
 };
 
 #endif // VESVERTEXATTRIBUTEKEYS_H

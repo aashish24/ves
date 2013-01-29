@@ -180,25 +180,33 @@ bool vesMapper::isEnabledWireframe() const
   return this->m_enableWireframe;
 }
 
-
+#include <iostream>
 void vesMapper::render(const vesRenderState &renderState)
 {
   assert(this->m_geometryData);
 
   if (!this->m_initialized) {
+    std::cout << "this->m_geometryData " << this->m_geometryData << std::endl;
     this->setupDrawObjects(renderState);
   }
+
 
   if (renderState.m_material->binNumber() == vesMaterial::Overlay) {
     glDisable(GL_DEPTH_TEST);
   }
 
+
   // Fixed vertex color.
   //glVertexAttrib4fv(vesVertexAttributeKeys::Color, this->color());
 
-  glPushMatrix();
-  glMatrixMode(GL_MODELVIEW);
-  glLoadMatrixf(renderState.m_modelViewMatrix->data());
+//  glMatrixMode(GL_PROJECTION);
+//  glPushMatrix();
+//  glLoadIdentity();
+//  glLoadMatrixf(renderState.m_projectionMatrix->data());
+
+//  glMatrixMode(GL_MODELVIEW);
+//  glLoadIdentity();
+//  glLoadMatrixf(renderState.m_modelViewMatrix->data());
 
   std::map<unsigned int, std::vector<int> >::const_iterator constItr
     = this->m_internal->m_bufferVertexAttributeMap.begin();
@@ -252,7 +260,9 @@ void vesMapper::render(const vesRenderState &renderState)
     glEnable(GL_DEPTH_TEST);
   }
 
-  glPopMatrix();
+//  glPopMatrix();
+//  glMatrixMode(GL_PROJECTION);
+//  glPopMatrix();
 }
 
 
@@ -290,6 +300,9 @@ void vesMapper::createVertexBufferObjects()
 
     std::vector<int> keys = this->m_geometryData->source(i)->keys();
     for(size_t j = 0; j < keys.size(); ++j) {
+
+      std::cerr << "Key is     " << keys[j] << std::endl;
+
       this->m_internal->m_bufferVertexAttributeMap[
       this->m_internal->m_buffers.back()].push_back(keys[j]);
     }
