@@ -6,46 +6,46 @@ set(headers
   vesBooleanUniform.h
   vesBoundingObject.h
   vesCamera.h
-  vesColorUniform.h
+#  vesColorUniform.h
   vesCullVisitor.h
   vesDepth.h
   vesEigen.h
   vesEngineUniform.h
-  vesFBO.h
-  vesFBORenderTarget.h
+#  vesFBO.h
+#  vesFBORenderTarget.h
   vesGeometryData.h
   vesGL.h
   vesGLTypes.h
   vesGroupNode.h
   vesImage.h
-  vesIntegerUniform.h
+#  vesIntegerUniform.h
   vesMapper.h
   vesMaterial.h
   vesMaterialAttribute.h
   vesMath.h
-  vesModelViewUniform.h
+#  vesModelViewUniform.h
   vesNode.h
-  vesNormalMatrixUniform.h
+#  vesNormalMatrixUniform.h
   vesObject.h
-  vesProjectionUniform.h
+#  vesProjectionUniform.h
   vesRenderData.h
   vesRenderer.h
   vesRenderLeaf.h
   vesRenderStage.h
   vesRenderState.h
   vesRenderTarget.h
-  vesRenderToTexture.h
+#  vesRenderToTexture.h
   vesSetGet.h
-  vesShader.h
-  vesShaderProgram.h
+#  vesShader.h
+#  vesShaderProgram.h
   vesSharedPtr.h
   vesStateAttributeBits.h
   vesSourceData.h
   vesTexture.h
   vesTransformNode.h
-  vesUniform.h
-  vesVertexAttribute.h
-  vesVertexAttributeKeys.h
+#  vesUniform.h
+#  vesVertexAttribute.h
+#  vesVertexAttributeKeys.h
   vesViewport.h
   vesVisitor.h
 )

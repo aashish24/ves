@@ -107,7 +107,7 @@ vesKiwiAnimationRepresentation::~vesKiwiAnimationRepresentation()
 
 //----------------------------------------------------------------------------
 void vesKiwiAnimationRepresentation::initializeWithShader(
-  vesSharedPtr<vesShaderProgram> geometryShader, 
+  vesSharedPtr<vesShaderProgram> geometryShader,
   vesSharedPtr<vesShaderProgram> textureShader,
   vesSharedPtr<vesShaderProgram> gouraudTextureShader)
 {
@@ -115,13 +115,13 @@ void vesKiwiAnimationRepresentation::initializeWithShader(
   this->Internal->TextureShader = gouraudTextureShader;
 
   this->Internal->TextRep = new vesKiwiText2DRepresentation();
-  this->Internal->TextRep->initializeWithShader(textureShader);
+//  this->Internal->TextRep->initializeWithShader(textureShader);
   this->Internal->TextRep->setDisplayPosition(vesVector2f(10, 10));
   this->Internal->TextRep->setText("Time: 0.000 s");
   this->Internal->AllReps.push_back(this->Internal->TextRep);
 
   this->Internal->PlayRep = new vesKiwiText2DRepresentation();
-  this->Internal->PlayRep->initializeWithShader(textureShader);
+//  this->Internal->PlayRep->initializeWithShader(textureShader);
   this->Internal->PlayRep->setText("[Play]");
   this->Internal->AllReps.push_back(this->Internal->PlayRep);
 }
@@ -168,7 +168,7 @@ void vesKiwiAnimationRepresentation::loadData(const std::string& filename)
     }
 
     vesKiwiPolyDataRepresentation* rep = new vesKiwiPolyDataRepresentation();
-    rep->initializeWithShader(this->Internal->GeometryShader);
+//    rep->initializeWithShader(this->Internal->GeometryShader);
     rep->setPolyData(polyData, scalarsToColors);
 
     vtkDataArray* scalars = vesKiwiDataConversionTools::FindScalarsArray(polyData);

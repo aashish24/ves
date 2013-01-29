@@ -8,6 +8,7 @@ include(setup-headers.cmake)
 add_subdirectory(ves)
 add_subdirectory(shaders)
 
-if(VES_USE_VTK)
-  add_subdirectory(kiwi)
-endif()
+# TODO Commented out for now
+#if(VES_USE_VTK)
+#  add_subdirectory(kiwi)
+#endif()

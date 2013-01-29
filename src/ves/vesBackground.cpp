@@ -28,12 +28,12 @@
 #include "vesGLTypes.h"
 #include "vesMapper.h"
 #include "vesMaterial.h"
-#include "vesModelViewUniform.h"
-#include "vesProjectionUniform.h"
-#include "vesShader.h"
-#include "vesShaderProgram.h"
+//#include "vesModelViewUniform.h"
+//#include "vesProjectionUniform.h"
+//#include "vesShader.h"
+//#include "vesShaderProgram.h"
 #include "vesTexture.h"
-#include "vesUniform.h"
+//#include "vesUniform.h"
 #include "vesVertexAttribute.h"
 #include "vesVertexAttributeKeys.h"
 #include "vesViewport.h"
@@ -50,26 +50,26 @@ public:
 //    m_fragmentShader(new vesShader(vesShader::Fragment)),
 //    m_modelViewUniform(new vesModelViewUniform()),
 //    m_projectionUniform(new vesProjectionUniform()),
-//    m_positionVertexAttribute(new vesPositionVertexAttribute()),
-//    m_colorVertexAttribute(new vesColorVertexAttribute()),
-//    m_textureCoodinateAttribute(new vesTextureCoordinateVertexAttribute()),
+    m_positionVertexAttribute(new vesPositionVertexAttribute()),
+    m_normalVertexAttribute(new vesNormalVertexAttribute()),
+    m_colorVertexAttribute(new vesColorVertexAttribute()),
+    m_textureCoodinateAttribute(new vesTextureCoordinateVertexAttribute()),
     m_depth(new vesDepth())
   {
-/*
-    this->m_shaderProgram->addShader(this->m_vertexShader);
-    this->m_shaderProgram->addShader(this->m_fragmentShader);
-    this->m_shaderProgram->addUniform(this->m_modelViewUniform);
-    this->m_shaderProgram->addUniform(this->m_projectionUniform);
-    this->m_shaderProgram->addVertexAttribute(
-      this->m_positionVertexAttribute, vesVertexAttributeKeys::Position);
-    this->m_shaderProgram->addVertexAttribute(
-      this->m_normalVertexAttribute, vesVertexAttributeKeys::Normal);
-    this->m_shaderProgram->addVertexAttribute(
-      this->m_colorVertexAttribute, vesVertexAttributeKeys::Color);
-    this->m_shaderProgram->addVertexAttribute(
-      this->m_textureCoodinateAttribute,
-      vesVertexAttributeKeys::TextureCoordinate);
-*/
+
+//    this->m_shaderProgram->addShader(this->m_vertexShader);
+//    this->m_shaderProgram->addShader(this->m_fragmentShader);
+//    this->m_shaderProgram->addUniform(this->m_modelViewUniform);
+//    this->m_shaderProgram->addUniform(this->m_projectionUniform);
+    this->m_backgroundMaterial->addAttribute(
+      this->m_positionVertexAttribute);
+    this->m_backgroundMaterial->addAttribute(
+      this->m_normalVertexAttribute);
+    this->m_backgroundMaterial->addAttribute(
+      this->m_colorVertexAttribute);
+    this->m_backgroundMaterial->addAttribute(
+      this->m_textureCoodinateAttribute);
+
     this->m_depth->disable();
   }
 
@@ -85,58 +85,58 @@ public:
   vesSharedPtr<vesGeometryData> createBackgroundPlane(
     const vesVector4f &topColor, const vesVector4f &bottomColor);
 
-  void createShaderSourceForNonTexturedPlane(std::string &vertShaderText,
-                                             std::string &fragShaderText)
-  {
-    const std::string vertexShaderSource =
-      "uniform highp mat4 modelViewMatrix;\n \
-       uniform highp mat4 projectionMatrix;\n \
-       attribute highp vec4 vertexPosition;\n \
-       attribute mediump vec4 vertexColor;\n \
-       varying mediump vec4 varColor;\n \
-       void main()\n \
-       {\n \
-         gl_Position = vertexPosition;\n \
-         varColor = vertexColor;\n \
-       }";
+//  void createShaderSourceForNonTexturedPlane(std::string &vertShaderText,
+//                                             std::string &fragShaderText)
+//  {
+//    const std::string vertexShaderSource =
+//      "uniform highp mat4 modelViewMatrix;\n \
+//       uniform highp mat4 projectionMatrix;\n \
+//       attribute highp vec4 vertexPosition;\n \
+//       attribute mediump vec4 vertexColor;\n \
+//       varying mediump vec4 varColor;\n \
+//       void main()\n \
+//       {\n \
+//         gl_Position = vertexPosition;\n \
+//         varColor = vertexColor;\n \
+//       }";
 
-    const std::string fragmentShaderSource =
-      "varying mediump vec4 varColor;\n \
-       void main()\n \
-       {\n \
-         gl_FragColor = varColor;\n \
-       }";
+//    const std::string fragmentShaderSource =
+//      "varying mediump vec4 varColor;\n \
+//       void main()\n \
+//       {\n \
+//         gl_FragColor = varColor;\n \
+//       }";
 
-    vertShaderText = vertexShaderSource;
-    fragShaderText = fragmentShaderSource;
-  }
+//    vertShaderText = vertexShaderSource;
+//    fragShaderText = fragmentShaderSource;
+//  }
 
-  void createShaderSourceForTexturedPlane(std::string &vertShaderText,
-                                          std::string &fragShaderText)
-  {
-    const std::string vertexShaderSource =
-      "uniform highp mat4 modelViewMatrix;\n \
-       uniform highp mat4 projectionMatrix;\n \
-       attribute highp vec4 vertexPosition;\n \
-       attribute mediump vec3 vertexTextureCoordinate;\n \
-       varying mediump vec2 textureCoordinate;\n \
-       void main()\n \
-       {\n \
-         gl_Position = vertexPosition;\n \
-         textureCoordinate = vertexTextureCoordinate.xy;\n \
-       }";
+//  void createShaderSourceForTexturedPlane(std::string &vertShaderText,
+//                                          std::string &fragShaderText)
+//  {
+//    const std::string vertexShaderSource =
+//      "uniform highp mat4 modelViewMatrix;\n \
+//       uniform highp mat4 projectionMatrix;\n \
+//       attribute highp vec4 vertexPosition;\n \
+//       attribute mediump vec3 vertexTextureCoordinate;\n \
+//       varying mediump vec2 textureCoordinate;\n \
+//       void main()\n \
+//       {\n \
+//         gl_Position = vertexPosition;\n \
+//         textureCoordinate = vertexTextureCoordinate.xy;\n \
+//       }";
 
-    const std::string fragmentShaderSource =
-       "varying mediump vec2 textureCoordinate;\n \
-        uniform highp sampler2D image;\n \
-       void main()\n \
-       {\n \
-          gl_FragColor = texture2D(image, textureCoordinate);\n \
-       }";
+//    const std::string fragmentShaderSource =
+//       "varying mediump vec2 textureCoordinate;\n \
+//        uniform highp sampler2D image;\n \
+//       void main()\n \
+//       {\n \
+//          gl_FragColor = texture2D(image, textureCoordinate);\n \
+//       }";
 
-    vertShaderText = vertexShaderSource;
-    fragShaderText = fragmentShaderSource;
-  }
+//    vertShaderText = vertexShaderSource;
+//    fragShaderText = fragmentShaderSource;
+//  }
 
   vesSharedPtr<vesActor> m_backgroundActor;
   vesSharedPtr<vesMapper> m_backgroundMapper;
@@ -146,10 +146,10 @@ public:
 //  vesSharedPtr<vesShader> m_fragmentShader;
 //  vesSharedPtr<vesModelViewUniform> m_modelViewUniform;
 //  vesSharedPtr<vesProjectionUniform> m_projectionUniform;
-//  vesSharedPtr<vesPositionVertexAttribute> m_positionVertexAttribute;
-//  vesSharedPtr<vesNormalVertexAttribute> m_normalVertexAttribute;
-//  vesSharedPtr<vesColorVertexAttribute> m_colorVertexAttribute;
-//  vesSharedPtr<vesTextureCoordinateVertexAttribute> m_textureCoodinateAttribute;
+  vesSharedPtr<vesPositionVertexAttribute> m_positionVertexAttribute;
+  vesSharedPtr<vesNormalVertexAttribute> m_normalVertexAttribute;
+  vesSharedPtr<vesColorVertexAttribute> m_colorVertexAttribute;
+  vesSharedPtr<vesTextureCoordinateVertexAttribute> m_textureCoodinateAttribute;
   vesSharedPtr<vesGeometryData> m_backgroundPlaneData;
   vesSharedPtr<vesDepth> m_depth;
   vesSharedPtr<vesImage> m_image;
@@ -177,14 +177,14 @@ void vesBackground::vesInternal::createBackground(const vesVector4f &topColor,
   std::string vertShaderText;
   std::string fragShaderText;
 
-  if(!this->m_image)
-  {
-    this->createShaderSourceForNonTexturedPlane(vertShaderText, fragShaderText);
-  }
-  else
-  {
-    this->createShaderSourceForTexturedPlane(vertShaderText, fragShaderText);
-  }
+//  if(!this->m_image)
+//  {
+//    this->createShaderSourceForNonTexturedPlane(vertShaderText, fragShaderText);
+//  }
+//  else
+//  {
+//    this->createShaderSourceForTexturedPlane(vertShaderText, fragShaderText);
+//  }
 
   //this->m_vertexShader->setShaderSource(vertShaderText);
   //this->m_fragmentShader->setShaderSource(fragShaderText);

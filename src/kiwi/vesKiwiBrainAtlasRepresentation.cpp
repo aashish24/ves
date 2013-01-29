@@ -109,7 +109,7 @@ void vesKiwiBrainAtlasRepresentation::initializeWithShader(vesSharedPtr<vesShade
 {
 
   this->Internal->TextRep = vesKiwiText2DRepresentation::Ptr(new vesKiwiText2DRepresentation);
-  this->Internal->TextRep->initializeWithShader(textureShader);
+//  this->Internal->TextRep->initializeWithShader(textureShader);
   this->Internal->TextRep->setWorldAnchorPointEnabled(true);
   this->Internal->AllReps.push_back(this->Internal->TextRep);
 
@@ -164,7 +164,7 @@ void vesKiwiBrainAtlasRepresentation::loadData(const std::string& filename)
     }
 
     vesKiwiPolyDataRepresentation::Ptr rep = vesKiwiPolyDataRepresentation::Ptr(new vesKiwiPolyDataRepresentation);
-    rep->initializeWithShader(shader);
+//    rep->initializeWithShader(shader);
     rep->setPolyData(polyData);
     rep->setColor(color[0], color[1], color[2], opacity);
     rep->setBinNumber(binNumber);

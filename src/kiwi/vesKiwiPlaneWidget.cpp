@@ -24,7 +24,7 @@
 #include "vesRenderer.h"
 #include "vesCamera.h"
 #include "vesMapper.h"
-#include "vesUniform.h"
+//#include "vesUniform.h"
 #include "vesKiwiPolyDataRepresentation.h"
 
 #include <vtkNew.h>
@@ -116,7 +116,7 @@ public:
 
   std::vector<vesKiwiDataRepresentation::Ptr> AllReps;
 
-  vesSharedPtr<vesUniform> ClipUniform;
+//  vesSharedPtr<vesUniform> ClipUniform;
   vesSharedPtr<vesKiwiPolyDataRepresentation> PlaneRep;
   vesSharedPtr<vesKiwiPolyDataRepresentation> NormalRep;
 };
@@ -136,35 +136,35 @@ vesKiwiPlaneWidget::~vesKiwiPlaneWidget()
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiPlaneWidget::initializeWithShader(vesSharedPtr<vesShaderProgram> geometryShader,
-                                              vesSharedPtr<vesUniform> clipUniform)
-{
-  this->Internal->ClipUniform = clipUniform;
+//void vesKiwiPlaneWidget::initializeWithShader(vesSharedPtr<vesShaderProgram> geometryShader,
+//                                              vesSharedPtr<vesUniform> clipUniform)
+//{
+////  this->Internal->ClipUniform = clipUniform;
 
-  this->Internal->PlaneSource->Update();
-  this->Internal->Handle->Update();
+//  this->Internal->PlaneSource->Update();
+//  this->Internal->Handle->Update();
 
-  this->Internal->PlaneRep = vesKiwiPolyDataRepresentation::Ptr(new vesKiwiPolyDataRepresentation());
-  this->Internal->PlaneRep->initializeWithShader(geometryShader);
-  this->Internal->PlaneRep->setBinNumber(10);
-  this->Internal->PlaneRep->setPolyData(this->Internal->PlaneSource->GetOutput());
-  this->Internal->PlaneRep->setColor(1.0, 1.0, 0.0, 0.15);
+//  this->Internal->PlaneRep = vesKiwiPolyDataRepresentation::Ptr(new vesKiwiPolyDataRepresentation());
+//  this->Internal->PlaneRep->initializeWithShader(geometryShader);
+//  this->Internal->PlaneRep->setBinNumber(10);
+//  this->Internal->PlaneRep->setPolyData(this->Internal->PlaneSource->GetOutput());
+//  this->Internal->PlaneRep->setColor(1.0, 1.0, 0.0, 0.15);
 
-  this->Internal->NormalRep = vesKiwiPolyDataRepresentation::Ptr(new vesKiwiPolyDataRepresentation());
-  this->Internal->NormalRep->initializeWithShader(geometryShader);
-  this->Internal->NormalRep->setBinNumber(1);
-  this->Internal->NormalRep->setPolyData(this->Internal->Handle->GetOutput());
+//  this->Internal->NormalRep = vesKiwiPolyDataRepresentation::Ptr(new vesKiwiPolyDataRepresentation());
+//  this->Internal->NormalRep->initializeWithShader(geometryShader);
+//  this->Internal->NormalRep->setBinNumber(1);
+//  this->Internal->NormalRep->setPolyData(this->Internal->Handle->GetOutput());
 
-  // make the handle bigger so that it is easier to pick
-  this->Internal->SphereSource->SetRadius(0.3);
-  this->Internal->Handle->Update();
+//  // make the handle bigger so that it is easier to pick
+//  this->Internal->SphereSource->SetRadius(0.3);
+//  this->Internal->Handle->Update();
 
-  this->Internal->AllReps.push_back(this->Internal->PlaneRep);
-  this->Internal->AllReps.push_back(this->Internal->NormalRep);
+//  this->Internal->AllReps.push_back(this->Internal->PlaneRep);
+//  this->Internal->AllReps.push_back(this->Internal->NormalRep);
 
-  this->setTransformOnActor(this->Internal->PlaneRep->actor(), this->Internal->WidgetTransform);
-  this->setTransformOnActor(this->Internal->NormalRep->actor(), this->Internal->WidgetTransform);
-}
+//  this->setTransformOnActor(this->Internal->PlaneRep->actor(), this->Internal->WidgetTransform);
+//  this->setTransformOnActor(this->Internal->NormalRep->actor(), this->Internal->WidgetTransform);
+//}
 
 //----------------------------------------------------------------------------
 vtkPlane* vesKiwiPlaneWidget::plane() const
@@ -193,7 +193,7 @@ void vesKiwiPlaneWidget::willRender(vesSharedPtr<vesRenderer> renderer)
   assert(this->Internal->ClipUniform);
   double planeEquation[4];
   this->planeEquation(planeEquation);
-  this->Internal->ClipUniform->set(vesVector4f(planeEquation[0], planeEquation[1], planeEquation[2], planeEquation[3]));
+//  this->Internal->ClipUniform->set(vesVector4f(planeEquation[0], planeEquation[1], planeEquation[2], planeEquation[3]));
 }
 
 //----------------------------------------------------------------------------

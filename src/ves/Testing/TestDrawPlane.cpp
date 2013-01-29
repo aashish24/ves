@@ -37,8 +37,8 @@
 //#include <vesShader.h>
 //#include <vesShaderProgram.h>
 //#include <vesUniform.h>
-//#include <vesVertexAttribute.h>
-//#include <vesVertexAttributeKeys.h>
+#include <vesVertexAttribute.h>
+#include <vesVertexAttributeKeys.h>
 #include <vesViewport.h>
 
 #include <X11/Xlib.h>
@@ -57,9 +57,9 @@ public:
   vesTestDrawPlane() :
 //    m_modelViewUniform(new vesModelViewUniform()),
 //    m_projectionUniform(new vesProjectionUniform()),
-//    m_positionVertexAttribute(new vesPositionVertexAttribute()),
-//    m_normalVertexAttribute(new vesNormalVertexAttribute()),
-//    m_colorVertexAttribute(new vesColorVertexAttribute()),
+    m_positionVertexAttribute(new vesPositionVertexAttribute()),
+    m_normalVertexAttribute(new vesNormalVertexAttribute()),
+    m_colorVertexAttribute(new vesColorVertexAttribute()),
 //    m_vertexShader(new vesShader(vesShader::Vertex)),
 //    m_fragmentShader(new vesShader(vesShader::Fragment)),
 //    m_shaderProgram(vesShaderProgram::Ptr(new vesShaderProgram())),
@@ -100,24 +100,24 @@ public:
 
   void init()
   {
-    const std::string vertexShaderSource =
-      "uniform highp mat4 modelViewMatrix;\n \
-       uniform highp mat4 projectionMatrix;\n \
-       attribute highp vec4 vertexPosition;\n \
-       attribute mediump vec4 vertexColor;\n \
-       varying mediump vec4 varColor;\n \
-       void main()\n \
-       {\n \
-         gl_Position = projectionMatrix * modelViewMatrix * vertexPosition;\n \
-         varColor = vertexColor;\n \
-       }";
+//    const std::string vertexShaderSource =
+//      "uniform highp mat4 modelViewMatrix;\n \
+//       uniform highp mat4 projectionMatrix;\n \
+//       attribute highp vec4 vertexPosition;\n \
+//       attribute mediump vec4 vertexColor;\n \
+//       varying mediump vec4 varColor;\n \
+//       void main()\n \
+//       {\n \
+//         gl_Position = projectionMatrix * modelViewMatrix * vertexPosition;\n \
+//         varColor = vertexColor;\n \
+//       }";
 
-    const std::string fragmentShaderSource =
-      "varying mediump vec4 varColor;\n \
-       void main()\n \
-       {\n \
-         gl_FragColor = varColor;\n \
-       }";
+//    const std::string fragmentShaderSource =
+//      "varying mediump vec4 varColor;\n \
+//       void main()\n \
+//       {\n \
+//         gl_FragColor = varColor;\n \
+//       }";
 
     //this->m_vertexShader->setShaderSource(vertexShaderSource);
     //this->m_fragmentShader->setShaderSource(fragmentShaderSource);
@@ -133,6 +133,10 @@ public:
     //                                          vesVertexAttributeKeys::Normal);
     //this->m_shaderProgram->addVertexAttribute(this->m_colorVertexAttribute,
     //                                          vesVertexAttributeKeys::Color);
+
+    this->m_material->addAttribute(this->m_positionVertexAttribute);
+    this->m_material->addAttribute(this->m_normalVertexAttribute);
+    this->m_material->addAttribute(this->m_colorVertexAttribute);
 
     //this->m_material->addAttribute(this->m_shaderProgram);
     this->m_mapper->setGeometryData(this->createPlane());
@@ -150,8 +154,8 @@ public:
     vesSourceDataP3N3C3f::Ptr sourceData(new vesSourceDataP3N3C3f());
 
     vesVector4f topLeftColor = vesVector4f(0.5f, 0.0f, 0.0f, 1.0f);
-    vesVector4f bottomRightColor = vesVector4f(0.0f, 0.0f, 0.5f, 1.0f);
-    vesVector4f color = vesVector4f(0.5f, 0.5f, 0.5f, 1.0f);
+    vesVector4f bottomRightColor = vesVector4f(1.0f, 0.0f, 0.5f, 1.0f);
+    vesVector4f color = vesVector4f(1.0f, 0.5f, 0.5f, 1.0f);
 
     // Points.
     vesVertexDataP3N3C3f v1;
@@ -232,10 +236,10 @@ private:
 
   //vesSharedPtr<vesModelViewUniform> m_modelViewUniform;
   //vesSharedPtr<vesProjectionUniform> m_projectionUniform;
-  //vesSharedPtr<vesPositionVertexAttribute> m_positionVertexAttribute;
-  //vesSharedPtr<vesNormalVertexAttribute> m_normalVertexAttribute;
-  //vesSharedPtr<vesColorVertexAttribute> m_colorVertexAttribute;
-  //vesSharedPtr<vesTextureCoordinateVertexAttribute> m_textureCoodinateAttribute;
+  vesSharedPtr<vesPositionVertexAttribute> m_positionVertexAttribute;
+  vesSharedPtr<vesNormalVertexAttribute> m_normalVertexAttribute;
+  vesSharedPtr<vesColorVertexAttribute> m_colorVertexAttribute;
+  vesSharedPtr<vesTextureCoordinateVertexAttribute> m_textureCoodinateAttribute;
   vesSharedPtr<vesGeometryData> m_backgroundPlaneData;
 
   //vesShader::Ptr m_vertexShader;
@@ -310,11 +314,11 @@ make_x_window(Display *x_dpy, EGLDisplay egl_dpy,
       EGL_GREEN_SIZE, 1,
       EGL_BLUE_SIZE, 1,
       EGL_DEPTH_SIZE, 1,
-      EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
+      EGL_RENDERABLE_TYPE, EGL_OPENGL_ES_BIT,
       EGL_NONE
    };
    static const EGLint ctx_attribs[] = {
-      EGL_CONTEXT_CLIENT_VERSION, 2,
+      EGL_CONTEXT_CLIENT_VERSION, 1,
       EGL_NONE
    };
    int scrnum;
@@ -393,7 +397,7 @@ make_x_window(Display *x_dpy, EGLDisplay egl_dpy,
    {
       EGLint val;
       eglQueryContext(egl_dpy, ctx, EGL_CONTEXT_CLIENT_VERSION, &val);
-      assert(val == 2);
+      assert(val == 1);
    }
 
    *surfRet = eglCreateWindowSurface(egl_dpy, config, win, NULL);
@@ -523,7 +527,7 @@ main(int argc, char *argv[])
   printf("EGL_CLIENT_APIS = %s\n", s);
 
   make_x_window(x_dpy, egl_dpy,
-               "OpenGL ES 2.x tri", 0, 0, winWidth, winHeight,
+               "OpenGL ES 1.x tri", 0, 0, winWidth, winHeight,
                &win, &egl_ctx, &egl_surf);
 
   XMapWindow(x_dpy, win);

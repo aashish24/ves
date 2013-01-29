@@ -48,7 +48,8 @@ public:
     Shader = 0x1,
     Texture = 0x2,
     Blend = 0x3,
-    Depth = 0x4
+    Depth = 0x4,
+    VertexAttribute = 0x5
   };
 
 

@@ -47,7 +47,7 @@ public:
   vesKiwiPolyDataRepresentation();
   ~vesKiwiPolyDataRepresentation();
 
-  void initializeWithShader(vesSharedPtr<vesShaderProgram> shaderProgram);
+//  void initializeWithShader(vesSharedPtr<vesShaderProgram> shaderProgram);
 
   void setPolyData(vtkPolyData* polyData, vtkScalarsToColors* scalarsToColors=NULL);
 

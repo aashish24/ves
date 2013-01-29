@@ -36,14 +36,17 @@
 #include <string>
 #include <stdint.h>
 
-class vesVertexAttribute
+class vesVertexAttribute : public vesMaterialAttribute
 {
 public:
   vesTypeMacro(vesVertexAttribute);
 
-  vesVertexAttribute(const std::string &name) :
+  vesVertexAttribute(int key, const std::string &name) : vesMaterialAttribute(),
     m_name(name)
   {
+    this->m_key = key;
+    this->m_type = vesMaterialAttribute::VertexAttribute;
+    this->m_binding = vesMaterialAttribute::BindAll;
   }
 
   virtual ~vesVertexAttribute()
@@ -72,6 +75,7 @@ public:
 
 protected:
   std::string m_name;
+  int m_key;
 };
 
 
@@ -80,15 +84,18 @@ class vesGenericVertexAttribute : public vesVertexAttribute
 public:
   vesTypeMacro(vesGenericVertexAttribute);
 
-  vesGenericVertexAttribute(const std::string &name="vertexGeneric") :
-    vesVertexAttribute(name)
+  vesGenericVertexAttribute(int key, const std::string &name="vertexGeneric") :
+    vesVertexAttribute(key, name)
   {
   }
 
   virtual void bindVertexData(const vesRenderState &renderState, int key)
   {
-    vesNotUsed(key);
-    assert(renderState.m_material && renderState.m_material->shaderProgram());
+    if (key != this->m_key) {
+      return;
+    }
+
+    assert(renderState.m_material);
 
     vesGeometryData::Ptr geometryData = renderState.m_mapper->geometryData();
     assert(geometryData);
@@ -96,25 +103,37 @@ public:
     vesSourceData::Ptr sourceData = geometryData->sourceData(key);
     assert(sourceData);
 
-    glVertexAttribPointer(renderState.m_material->shaderProgram()->
-                          attributeLocation(this->m_name),
-                          sourceData->numberOfComponents(key),
-                          sourceData->attributeDataType(key),
-                          sourceData->isAttributeNormalized(key),
-                          sourceData->attributeStride(key),
-                          (void*)static_cast<intptr_t>(sourceData->attributeOffset(key)));
+    glVertexPointer(sourceData->sizeOfAttributeDataType(key),
+                    sourceData->attributeDataType(key),
+                    sourceData->attributeStride(key),
+                    (void*)static_cast<intptr_t>(sourceData->attributeOffset(key)));
 
-    glEnableVertexAttribArray(renderState.m_material->shaderProgram()->
-                              attributeLocation(this->m_name));
+//    glVertexAttribPointer(renderState.m_material->shaderProgram()->
+//                          attributeLocation(this->m_name),
+//                          sourceData->numberOfComponents(key),
+//                          sourceData->attributeDataType(key),
+//                          sourceData->isAttributeNormalized(key),
+//                          sourceData->attributeStride(key),
+//                          (void*)static_cast<intptr_t>(sourceData->attributeOffset(key)));
+
+//    glEnableVertexAttribArray(renderState.m_material->shaderProgram()->
+//                              attributeLocation(this->m_name));
+
+     glEnableClientState(GL_VERTEX_ARRAY);
   }
 
   virtual void unbindVertexData(const vesRenderState &renderState, int key)
   {
-    vesNotUsed(key);
-    assert(renderState.m_material && renderState.m_material->shaderProgram());
+    if (key != this->m_key) {
+      return;
+    }
 
-    glDisableVertexAttribArray(renderState.m_material->shaderProgram()->
-                               attributeLocation(this->m_name));
+    assert(renderState.m_material);
+
+//    glDisableVertexAttribArray(renderState.m_material->shaderProgram()->
+//                               attributeLocation(this->m_name));
+
+    glDisableClientState(GL_VERTEX_ARRAY);
   }
 };
 
@@ -124,8 +143,9 @@ class vesPositionVertexAttribute : public vesGenericVertexAttribute
 public:
   vesTypeMacro(vesPositionVertexAttribute);
 
-  vesPositionVertexAttribute(const std::string &name="vertexPosition") :
-    vesGenericVertexAttribute(name)
+  vesPositionVertexAttribute(int key=vesVertexAttributeKeys::Position,
+                             const std::string &name="vertexPosition") :
+    vesGenericVertexAttribute(key, name)
   {
   }
 };
@@ -136,9 +156,56 @@ class vesNormalVertexAttribute : public vesGenericVertexAttribute
 public:
   vesTypeMacro(vesNormalVertexAttribute);
 
-  vesNormalVertexAttribute(const std::string &name="vertexNormal") :
-    vesGenericVertexAttribute(name)
+  vesNormalVertexAttribute(int key=vesVertexAttributeKeys::Normal,
+                           const std::string &name="vertexNormal") :
+    vesGenericVertexAttribute(key, name)
   {
+  }
+
+  virtual void bindVertexData(const vesRenderState &renderState, int key)
+  {
+    if (key != this->m_key) {
+      return;
+    }
+
+    assert(renderState.m_material);
+
+    vesGeometryData::Ptr geometryData = renderState.m_mapper->geometryData();
+    assert(geometryData);
+
+    vesSourceData::Ptr sourceData = geometryData->sourceData(key);
+    assert(sourceData);
+
+    glNormalPointer(sourceData->attributeDataType(key),
+                    sourceData->attributeStride(key),
+                    (void*)static_cast<intptr_t>(sourceData->attributeOffset(key)));
+
+//    glVertexAttribPointer(renderState.m_material->shaderProgram()->
+//                          attributeLocation(this->m_name),
+//                          sourceData->numberOfComponents(key),
+//                          sourceData->attributeDataType(key),
+//                          sourceData->isAttributeNormalized(key),
+//                          sourceData->attributeStride(key),
+//                          (void*)static_cast<intptr_t>(sourceData->attributeOffset(key)));
+
+//    glEnableVertexAttribArray(renderState.m_material->shaderProgram()->
+//                              attributeLocation(this->m_name));
+
+     glEnableClientState(GL_NORMAL_ARRAY);
+  }
+
+  virtual void unbindVertexData(const vesRenderState &renderState, int key)
+  {
+    if (key != this->m_key) {
+      return;
+    }
+
+    assert(renderState.m_material);
+
+//    glDisableVertexAttribArray(renderState.m_material->shaderProgram()->
+//                               attributeLocation(this->m_name));
+
+    glDisableClientState(GL_NORMAL_ARRAY);
   }
 };
 
@@ -148,9 +215,57 @@ class vesColorVertexAttribute : public vesGenericVertexAttribute
 public:
   vesTypeMacro(vesColorVertexAttribute);
 
-  vesColorVertexAttribute(const std::string &name="vertexColor") :
-    vesGenericVertexAttribute(name)
+  vesColorVertexAttribute(int key=vesVertexAttributeKeys::Color,
+                          const std::string &name="vertexColor") :
+    vesGenericVertexAttribute(key, name)
   {
+  }
+
+  virtual void bindVertexData(const vesRenderState &renderState, int key)
+  {
+    if (key != this->m_key) {
+      return;
+    }
+
+    assert(renderState.m_material);
+
+    vesGeometryData::Ptr geometryData = renderState.m_mapper->geometryData();
+    assert(geometryData);
+
+    vesSourceData::Ptr sourceData = geometryData->sourceData(key);
+    assert(sourceData);
+
+    glColorPointer(sourceData->sizeOfAttributeDataType(key),
+                   sourceData->attributeDataType(key),
+                   sourceData->attributeStride(key),
+                   (void*)static_cast<intptr_t>(sourceData->attributeOffset(key)));
+
+//    glVertexAttribPointer(renderState.m_material->shaderProgram()->
+//                          attributeLocation(this->m_name),
+//                          sourceData->numberOfComponents(key),
+//                          sourceData->attributeDataType(key),
+//                          sourceData->isAttributeNormalized(key),
+//                          sourceData->attributeStride(key),
+//                          (void*)static_cast<intptr_t>(sourceData->attributeOffset(key)));
+
+//    glEnableVertexAttribArray(renderState.m_material->shaderProgram()->
+//                              attributeLocation(this->m_name));
+
+     glEnableClientState(GL_COLOR_ARRAY);
+  }
+
+  virtual void unbindVertexData(const vesRenderState &renderState, int key)
+  {
+    if (key != this->m_key) {
+      return;
+    }
+
+    assert(renderState.m_material);
+
+//    glDisableVertexAttribArray(renderState.m_material->shaderProgram()->
+//                               attributeLocation(this->m_name));
+
+    glDisableClientState(GL_COLOR_ARRAY);
   }
 };
 
@@ -160,9 +275,57 @@ class vesTextureCoordinateVertexAttribute : public vesGenericVertexAttribute
 public:
   vesTypeMacro(vesTextureCoordinateVertexAttribute);
 
-  vesTextureCoordinateVertexAttribute(const std::string &name="vertexTextureCoordinate") :
-    vesGenericVertexAttribute(name)
+  vesTextureCoordinateVertexAttribute(int key=vesVertexAttributeKeys::TextureCoordinate,
+                                      const std::string &name="vertexTextureCoordinate") :
+    vesGenericVertexAttribute(key, name)
   {
+  }
+
+  virtual void bindVertexData(const vesRenderState &renderState, int key)
+  {
+    if (key != this->m_key) {
+      return;
+    }
+
+    assert(renderState.m_material);
+
+    vesGeometryData::Ptr geometryData = renderState.m_mapper->geometryData();
+    assert(geometryData);
+
+    vesSourceData::Ptr sourceData = geometryData->sourceData(key);
+    assert(sourceData);
+
+    glTexCoordPointer(sourceData->sizeOfAttributeDataType(key),
+                      sourceData->attributeDataType(key),
+                      sourceData->attributeStride(key),
+                      (void*)static_cast<intptr_t>(sourceData->attributeOffset(key)));
+
+//    glVertexAttribPointer(renderState.m_material->shaderProgram()->
+//                          attributeLocation(this->m_name),
+//                          sourceData->numberOfComponents(key),
+//                          sourceData->attributeDataType(key),
+//                          sourceData->isAttributeNormalized(key),
+//                          sourceData->attributeStride(key),
+//                          (void*)static_cast<intptr_t>(sourceData->attributeOffset(key)));
+
+//    glEnableVertexAttribArray(renderState.m_material->shaderProgram()->
+//                              attributeLocation(this->m_name));
+
+     glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+  }
+
+  virtual void unbindVertexData(const vesRenderState &renderState, int key)
+  {
+    if (key != this->m_key) {
+      return;
+    }
+
+    assert(renderState.m_material);
+
+//    glDisableVertexAttribArray(renderState.m_material->shaderProgram()->
+//                               attributeLocation(this->m_name));
+
+    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
   }
 };
 

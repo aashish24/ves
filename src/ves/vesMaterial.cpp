@@ -110,20 +110,22 @@ vesMaterial::~vesMaterial()
   delete this->m_internal; this->m_internal = 0x0;
 }
 
-
+#include <iostream>
 bool vesMaterial::addAttribute(vesSharedPtr<vesMaterialAttribute> attribute)
 {
   if (!attribute) {
     return false;
   }
 
+  std::cerr << attribute->type() << std::endl;
+
   if (attribute->type()    != vesMaterialAttribute::Texture &&
       attribute->binding() == vesMaterialAttribute::BindAll) {
 
     // Shader is a special attribute.
-    if (attribute->type() == vesMaterialAttribute::Shader) {
-      return this->setShaderProgram(std::tr1::static_pointer_cast<vesShaderProgram>(attribute));
-    }
+//    if (attribute->type() == vesMaterialAttribute::Shader) {
+//      return this->setShaderProgram(std::tr1::static_pointer_cast<vesShaderProgram>(attribute));
+//    }
 
     // Everything else.
     return this->m_internal->addAttribute(
@@ -147,18 +149,18 @@ bool vesMaterial::addAttribute(vesSharedPtr<vesMaterialAttribute> attribute)
 }
 
 
-bool vesMaterial::setShaderProgram(vesSharedPtr<vesShaderProgram> shaderProgram)
-{
-  if (!shaderProgram || shaderProgram == this->m_shaderProgram) {
-    return false;
-  }
+//bool vesMaterial::setShaderProgram(vesSharedPtr<vesShaderProgram> shaderProgram)
+//{
+//  if (!shaderProgram || shaderProgram == this->m_shaderProgram) {
+//    return false;
+//  }
 
-  this->m_shaderProgram = shaderProgram;
-  this->m_internal->m_attributes[shaderProgram->type()] =
-    this->m_shaderProgram;
+//  this->m_shaderProgram = shaderProgram;
+//  this->m_internal->m_attributes[shaderProgram->type()] =
+//    this->m_shaderProgram;
 
-  return true;
-}
+//  return true;
+//}
 
 
 vesSharedPtr<vesMaterialAttribute>
@@ -177,12 +179,12 @@ const vesSharedPtr<vesMaterialAttribute>
 
 bool vesMaterial::enableVertexColor(bool value)
 {
-  vesShaderProgram::Ptr shaderProgram = this->shaderProgram();
+//  vesShaderProgram::Ptr shaderProgram = this->shaderProgram();
 
-  if (shaderProgram) {
-    return shaderProgram->enableVertexAttribute(vesVertexAttributeKeys::Color,
-                                                value);
-  }
+//  if (shaderProgram) {
+//    return shaderProgram->enableVertexAttribute(vesVertexAttributeKeys::Color,
+//                                                value);
+//  }
 
   return false;
 }
@@ -190,12 +192,12 @@ bool vesMaterial::enableVertexColor(bool value)
 
 bool vesMaterial::isEnabledVertexColor() const
 {
-  vesShaderProgram::Ptr shaderProgram = this->shaderProgram();
+//  vesShaderProgram::Ptr shaderProgram = this->shaderProgram();
 
-  if (shaderProgram) {
-    return shaderProgram->isEnabledVertexAttribute(
-      vesVertexAttributeKeys::Color);
-  }
+//  if (shaderProgram) {
+//    return shaderProgram->isEnabledVertexAttribute(
+//      vesVertexAttributeKeys::Color);
+//  }
 
   return false;
 }

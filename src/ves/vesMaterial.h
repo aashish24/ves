@@ -85,11 +85,11 @@ public:
     vesMaterialAttribute::AttributeType type) const;
 
   /// Provide quick acces to shader program
-  bool setShaderProgram(vesSharedPtr<vesShaderProgram> shaderProgram);
-  vesSharedPtr<vesShaderProgram> shaderProgram()
-    { return this->m_shaderProgram; }
-  const vesSharedPtr<vesShaderProgram> shaderProgram() const
-    { return this->m_shaderProgram; }
+//  bool setShaderProgram(vesSharedPtr<vesShaderProgram> shaderProgram);
+//  vesSharedPtr<vesShaderProgram> shaderProgram()
+//    { return this->m_shaderProgram; }
+//  const vesSharedPtr<vesShaderProgram> shaderProgram() const
+//    { return this->m_shaderProgram; }
 
   /// Set whether or not use vertex colors
   bool enableVertexColor(bool value);
@@ -118,7 +118,7 @@ protected:
 
   int m_binNumber;
 
-  vesSharedPtr<vesShaderProgram> m_shaderProgram;
+//  vesSharedPtr<vesShaderProgram> m_shaderProgram;
 
   class vesInternal;
   vesInternal *m_internal;

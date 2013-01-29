@@ -40,8 +40,8 @@ public:
   ~vesKiwiImageWidgetRepresentation();
 
   void setImageData(vtkImageData* imageData);
-  void initializeWithShader(vesSharedPtr<vesShaderProgram> geometryShader,
-                            vesSharedPtr<vesShaderProgram> textureShader);
+//  void initializeWithShader(vesSharedPtr<vesShaderProgram> geometryShader,
+//                            vesSharedPtr<vesShaderProgram> textureShader);
 
   virtual void addSelfToRenderer(vesSharedPtr<vesRenderer> renderer);
   virtual void removeSelfFromRenderer(vesSharedPtr<vesRenderer> renderer);

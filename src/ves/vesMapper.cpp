@@ -27,8 +27,8 @@
 #include "vesGLTypes.h"
 #include "vesRenderData.h"
 #include "vesRenderStage.h"
-#include "vesShaderProgram.h"
-#include "vesVertexAttributeKeys.h"
+//#include "vesShaderProgram.h"
+//#include "vesVertexAttributeKeys.h"
 
 #include "vesGL.h"
 

@@ -38,7 +38,7 @@ public:
 
   vtkPlane* plane() const;
 
-  void initializeWithShader(vesSharedPtr<vesShaderProgram> geometryShader, vesSharedPtr<vesUniform> clipUniform);
+//  void initializeWithShader(vesSharedPtr<vesShaderProgram> geometryShader, vesSharedPtr<vesUniform> clipUniform);
 
   virtual void addSelfToRenderer(vesSharedPtr<vesRenderer> renderer);
   virtual void removeSelfFromRenderer(vesSharedPtr<vesRenderer> renderer);

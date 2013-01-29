@@ -36,7 +36,7 @@ class vesCamera;
 class vesOpenGLSupport;
 class vesRenderer;
 class vesShader;
-class vesShaderProgram;
+//class vesShaderProgram;
 class vesUniform;
 class vesVertexAttribute;
 class vesKiwiCameraInteractor;
@@ -160,26 +160,26 @@ protected:
   virtual void willRender() {}
   virtual void didRender() {}
 
-  vesSharedPtr<vesShaderProgram> addShaderProgram(
-    const std::string& vertexShaderSource, const std::string& fragmentShaderSource);
-  void deleteShaderProgram(vesSharedPtr<vesShaderProgram> shaderProgram);
+//  vesSharedPtr<vesShaderProgram> addShaderProgram(
+//    const std::string& vertexShaderSource, const std::string& fragmentShaderSource);
+//  void deleteShaderProgram(vesSharedPtr<vesShaderProgram> shaderProgram);
 
 
-  vesSharedPtr<vesUniform> addModelViewMatrixUniform(
-    vesSharedPtr<vesShaderProgram> program, const std::string& name=std::string());
-  vesSharedPtr<vesUniform> addProjectionMatrixUniform(
-    vesSharedPtr<vesShaderProgram> program, const std::string& name=std::string());
-  vesSharedPtr<vesUniform> addNormalMatrixUniform(
-    vesSharedPtr<vesShaderProgram> program, const std::string& name=std::string());
+//  vesSharedPtr<vesUniform> addModelViewMatrixUniform(
+//    vesSharedPtr<vesShaderProgram> program, const std::string& name=std::string());
+//  vesSharedPtr<vesUniform> addProjectionMatrixUniform(
+//    vesSharedPtr<vesShaderProgram> program, const std::string& name=std::string());
+//  vesSharedPtr<vesUniform> addNormalMatrixUniform(
+//    vesSharedPtr<vesShaderProgram> program, const std::string& name=std::string());
 
-  vesSharedPtr<vesVertexAttribute> addVertexPositionAttribute(
-    vesSharedPtr<vesShaderProgram> program, const std::string& name=std::string());
-  vesSharedPtr<vesVertexAttribute> addVertexNormalAttribute(
-    vesSharedPtr<vesShaderProgram> program, const std::string& name=std::string());
-  vesSharedPtr<vesVertexAttribute> addVertexColorAttribute(
-    vesSharedPtr<vesShaderProgram> program, const std::string& name=std::string());
-  vesSharedPtr<vesVertexAttribute> addVertexTextureCoordinateAttribute(
-    vesSharedPtr<vesShaderProgram> program, const std::string& name=std::string());
+//  vesSharedPtr<vesVertexAttribute> addVertexPositionAttribute(
+//    vesSharedPtr<vesShaderProgram> program, const std::string& name=std::string());
+//  vesSharedPtr<vesVertexAttribute> addVertexNormalAttribute(
+//    vesSharedPtr<vesShaderProgram> program, const std::string& name=std::string());
+//  vesSharedPtr<vesVertexAttribute> addVertexColorAttribute(
+//    vesSharedPtr<vesShaderProgram> program, const std::string& name=std::string());
+//  vesSharedPtr<vesVertexAttribute> addVertexTextureCoordinateAttribute(
+//    vesSharedPtr<vesShaderProgram> program, const std::string& name=std::string());
 
   /// This accessor is protected so that clients of this class do not use the
   /// API of the returned object. Instead, this class should provide public methods

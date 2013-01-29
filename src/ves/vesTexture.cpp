@@ -25,7 +25,7 @@
 #include "vesGL.h"
 #include "vesRenderState.h"
 #include "vesShaderProgram.h"
-#include "vesUniform.h"
+//#include "vesUniform.h"
 
 // C/C++ includes
 #include <cassert>

@@ -164,31 +164,31 @@ void vesKiwiImageWidgetRepresentation::setImageData(vtkImageData* image)
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiImageWidgetRepresentation::initializeWithShader(
-  vesSharedPtr<vesShaderProgram> geometryShader,
-  vesSharedPtr<vesShaderProgram> textureShader)
-{
+//void vesKiwiImageWidgetRepresentation::initializeWithShader(
+//  vesSharedPtr<vesShaderProgram> geometryShader,
+//  vesSharedPtr<vesShaderProgram> textureShader)
+//{
 
-  this->Internal->AppendFilter = vtkSmartPointer<vtkAppendPolyData>::New();
+//  this->Internal->AppendFilter = vtkSmartPointer<vtkAppendPolyData>::New();
 
-  this->Internal->ContourRep = new vesKiwiPolyDataRepresentation();
-  this->Internal->ContourRep->initializeWithShader(geometryShader);
-  this->Internal->ContourRep->setBinNumber(2);
-  this->Internal->OutlineRep = new vesKiwiPolyDataRepresentation();
-  this->Internal->OutlineRep->initializeWithShader(geometryShader);
-  this->Internal->OutlineRep->setBinNumber(2);
-  this->Internal->AllReps.push_back(this->Internal->OutlineRep);
+//  this->Internal->ContourRep = new vesKiwiPolyDataRepresentation();
+//  this->Internal->ContourRep->initializeWithShader(geometryShader);
+//  this->Internal->ContourRep->setBinNumber(2);
+//  this->Internal->OutlineRep = new vesKiwiPolyDataRepresentation();
+//  this->Internal->OutlineRep->initializeWithShader(geometryShader);
+//  this->Internal->OutlineRep->setBinNumber(2);
+//  this->Internal->AllReps.push_back(this->Internal->OutlineRep);
 
-  for (int i = 0; i < 3; ++i) {
-    vesKiwiImagePlaneDataRepresentation* rep = new vesKiwiImagePlaneDataRepresentation();
-    rep->initializeWithShader(textureShader);
-    rep->setBinNumber(1);
-    this->Internal->SliceReps.push_back(rep);
-    this->Internal->AllReps.push_back(rep);
-    this->Internal->AppendFilter->AddInputData(vtkSmartPointer<vtkPolyData>::New());
-  }
+//  for (int i = 0; i < 3; ++i) {
+//    vesKiwiImagePlaneDataRepresentation* rep = new vesKiwiImagePlaneDataRepresentation();
+//    rep->initializeWithShader(textureShader);
+//    rep->setBinNumber(1);
+//    this->Internal->SliceReps.push_back(rep);
+//    this->Internal->AllReps.push_back(rep);
+//    this->Internal->AppendFilter->AddInputData(vtkSmartPointer<vtkPolyData>::New());
+//  }
 
-}
+//}
 
 //----------------------------------------------------------------------------
 bool vesKiwiImageWidgetRepresentation::scrollSliceModeActive() const
