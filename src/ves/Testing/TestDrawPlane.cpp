@@ -28,16 +28,17 @@
 
 #include <vesActor.h>
 #include <vesCamera.h>
+#include <vesGeometryData.h>
 #include <vesMapper.h>
 #include <vesMaterial.h>
-#include <vesModelViewUniform.h>
-#include <vesProjectionUniform.h>
+//#include <vesModelViewUniform.h>
+//#include <vesProjectionUniform.h>
 #include <vesRenderer.h>
-#include <vesShader.h>
-#include <vesShaderProgram.h>
-#include <vesUniform.h>
-#include <vesVertexAttribute.h>
-#include <vesVertexAttributeKeys.h>
+//#include <vesShader.h>
+//#include <vesShaderProgram.h>
+//#include <vesUniform.h>
+//#include <vesVertexAttribute.h>
+//#include <vesVertexAttributeKeys.h>
 #include <vesViewport.h>
 
 #include <X11/Xlib.h>
@@ -54,14 +55,14 @@ class vesTestDrawPlane {
 public:
 
   vesTestDrawPlane() :
-    m_modelViewUniform(new vesModelViewUniform()),
-    m_projectionUniform(new vesProjectionUniform()),
-    m_positionVertexAttribute(new vesPositionVertexAttribute()),
-    m_normalVertexAttribute(new vesNormalVertexAttribute()),
-    m_colorVertexAttribute(new vesColorVertexAttribute()),
-    m_vertexShader(new vesShader(vesShader::Vertex)),
-    m_fragmentShader(new vesShader(vesShader::Fragment)),
-    m_shaderProgram(vesShaderProgram::Ptr(new vesShaderProgram())),
+//    m_modelViewUniform(new vesModelViewUniform()),
+//    m_projectionUniform(new vesProjectionUniform()),
+//    m_positionVertexAttribute(new vesPositionVertexAttribute()),
+//    m_normalVertexAttribute(new vesNormalVertexAttribute()),
+//    m_colorVertexAttribute(new vesColorVertexAttribute()),
+//    m_vertexShader(new vesShader(vesShader::Vertex)),
+//    m_fragmentShader(new vesShader(vesShader::Fragment)),
+//    m_shaderProgram(vesShaderProgram::Ptr(new vesShaderProgram())),
     m_material(vesMaterial::Ptr(new vesMaterial())),
     m_mapper(vesMapper::Ptr(new vesMapper())),
     m_actor(vesActor::Ptr(new vesActor())),
@@ -118,22 +119,22 @@ public:
          gl_FragColor = varColor;\n \
        }";
 
-    this->m_vertexShader->setShaderSource(vertexShaderSource);
-    this->m_fragmentShader->setShaderSource(fragmentShaderSource);
+    //this->m_vertexShader->setShaderSource(vertexShaderSource);
+    //this->m_fragmentShader->setShaderSource(fragmentShaderSource);
 
-    this->m_shaderProgram->addShader(this->m_vertexShader);
-    this->m_shaderProgram->addShader(this->m_fragmentShader);
+    //this->m_shaderProgram->addShader(this->m_vertexShader);
+    //this->m_shaderProgram->addShader(this->m_fragmentShader);
 
-    this->m_shaderProgram->addUniform(this->m_modelViewUniform);
-    this->m_shaderProgram->addUniform(this->m_projectionUniform);
-    this->m_shaderProgram->addVertexAttribute(this->m_positionVertexAttribute,
-                                              vesVertexAttributeKeys::Position);
-    this->m_shaderProgram->addVertexAttribute(this->m_normalVertexAttribute,
-                                              vesVertexAttributeKeys::Normal);
-    this->m_shaderProgram->addVertexAttribute(this->m_colorVertexAttribute,
-                                              vesVertexAttributeKeys::Color);
+    //this->m_shaderProgram->addUniform(this->m_modelViewUniform);
+    //this->m_shaderProgram->addUniform(this->m_projectionUniform);
+    //this->m_shaderProgram->addVertexAttribute(this->m_positionVertexAttribute,
+    //                                          vesVertexAttributeKeys::Position);
+    //this->m_shaderProgram->addVertexAttribute(this->m_normalVertexAttribute,
+    //                                          vesVertexAttributeKeys::Normal);
+    //this->m_shaderProgram->addVertexAttribute(this->m_colorVertexAttribute,
+    //                                          vesVertexAttributeKeys::Color);
 
-    this->m_material->addAttribute(this->m_shaderProgram);
+    //this->m_material->addAttribute(this->m_shaderProgram);
     this->m_mapper->setGeometryData(this->createPlane());
     this->m_actor->setMapper(this->m_mapper);
     this->m_actor->setMaterial(this->m_material);
@@ -218,7 +219,7 @@ public:
 
   void toggleColorVisibility()
   {
-    this->m_material->enableVertexColor(!this->m_material->isEnabledVertexColor());
+    //this->m_material->enableVertexColor(!this->m_material->isEnabledVertexColor());
     this->render();
   }
 
@@ -229,17 +230,17 @@ private:
   std::string       DataDirectory;
   bool              IsTesting;
 
-  vesSharedPtr<vesModelViewUniform> m_modelViewUniform;
-  vesSharedPtr<vesProjectionUniform> m_projectionUniform;
-  vesSharedPtr<vesPositionVertexAttribute> m_positionVertexAttribute;
-  vesSharedPtr<vesNormalVertexAttribute> m_normalVertexAttribute;
-  vesSharedPtr<vesColorVertexAttribute> m_colorVertexAttribute;
-  vesSharedPtr<vesTextureCoordinateVertexAttribute> m_textureCoodinateAttribute;
+  //vesSharedPtr<vesModelViewUniform> m_modelViewUniform;
+  //vesSharedPtr<vesProjectionUniform> m_projectionUniform;
+  //vesSharedPtr<vesPositionVertexAttribute> m_positionVertexAttribute;
+  //vesSharedPtr<vesNormalVertexAttribute> m_normalVertexAttribute;
+  //vesSharedPtr<vesColorVertexAttribute> m_colorVertexAttribute;
+  //vesSharedPtr<vesTextureCoordinateVertexAttribute> m_textureCoodinateAttribute;
   vesSharedPtr<vesGeometryData> m_backgroundPlaneData;
 
-  vesShader::Ptr m_vertexShader;
-  vesShader::Ptr m_fragmentShader;
-  vesShaderProgram::Ptr m_shaderProgram;
+  //vesShader::Ptr m_vertexShader;
+  //vesShader::Ptr m_fragmentShader;
+  //vesShaderProgram::Ptr m_shaderProgram;
   vesMaterial::Ptr m_material;
   vesMapper::Ptr m_mapper;
   vesActor::Ptr m_actor;

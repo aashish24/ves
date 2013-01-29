@@ -47,10 +47,10 @@ public:
     SrcAlpha                = GL_SRC_ALPHA,
     SrcAlphaSaturate        = GL_SRC_ALPHA_SATURATE,
     SrcColor                = GL_SRC_COLOR,
-    ConstantColor           = GL_CONSTANT_COLOR,
-    OneMinusConstantColor   = GL_ONE_MINUS_CONSTANT_COLOR,
-    ConstantAlpha           = GL_CONSTANT_ALPHA,
-    OneMinusConstantAlpha   = GL_ONE_MINUS_CONSTANT_ALPHA,
+//    ConstantColor           = GL_CONSTANT_COLOR,
+//    OneMinusConstantColor   = GL_ONE_MINUS_CONSTANT_COLOR,
+//    ConstantAlpha           = GL_CONSTANT_ALPHA,
+//    OneMinusConstantAlpha   = GL_ONE_MINUS_CONSTANT_ALPHA,
     Zero                    = GL_ZERO
   };
 

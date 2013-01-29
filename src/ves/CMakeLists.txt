@@ -7,8 +7,6 @@ set(sources
   vesCamera.cpp
   vesCullVisitor.cpp
   vesDepth.cpp
-  vesFBO.cpp
-  vesFBORenderTarget.cpp
   vesEigen.cpp
   vesGeometryData.cpp
   vesGroupNode.cpp
@@ -18,12 +16,8 @@ set(sources
   vesOpenGLSupport.cpp
   vesRenderer.cpp
   vesRenderStage.cpp
-  vesRenderToTexture.cpp
-  vesShader.cpp
   vesTexture.cpp
   vesTransformNode.cpp
-  vesShaderProgram.cpp
-  vesUniform.cpp
   vesViewport.cpp
   vesVisitor.cpp
 )

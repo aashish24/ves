@@ -45,16 +45,17 @@ public:
     m_backgroundActor(new vesActor()),
     m_backgroundMapper(new vesMapper()),
     m_backgroundMaterial(new vesMaterial()),
-    m_shaderProgram(new vesShaderProgram()),
-    m_vertexShader(new vesShader(vesShader::Vertex)),
-    m_fragmentShader(new vesShader(vesShader::Fragment)),
-    m_modelViewUniform(new vesModelViewUniform()),
-    m_projectionUniform(new vesProjectionUniform()),
-    m_positionVertexAttribute(new vesPositionVertexAttribute()),
-    m_colorVertexAttribute(new vesColorVertexAttribute()),
-    m_textureCoodinateAttribute(new vesTextureCoordinateVertexAttribute()),
+//    m_shaderProgram(new vesShaderProgram()),
+//    m_vertexShader(new vesShader(vesShader::Vertex)),
+//    m_fragmentShader(new vesShader(vesShader::Fragment)),
+//    m_modelViewUniform(new vesModelViewUniform()),
+//    m_projectionUniform(new vesProjectionUniform()),
+//    m_positionVertexAttribute(new vesPositionVertexAttribute()),
+//    m_colorVertexAttribute(new vesColorVertexAttribute()),
+//    m_textureCoodinateAttribute(new vesTextureCoordinateVertexAttribute()),
     m_depth(new vesDepth())
   {
+/*
     this->m_shaderProgram->addShader(this->m_vertexShader);
     this->m_shaderProgram->addShader(this->m_fragmentShader);
     this->m_shaderProgram->addUniform(this->m_modelViewUniform);
@@ -68,6 +69,7 @@ public:
     this->m_shaderProgram->addVertexAttribute(
       this->m_textureCoodinateAttribute,
       vesVertexAttributeKeys::TextureCoordinate);
+*/
     this->m_depth->disable();
   }
 
@@ -139,15 +141,15 @@ public:
   vesSharedPtr<vesActor> m_backgroundActor;
   vesSharedPtr<vesMapper> m_backgroundMapper;
   vesSharedPtr<vesMaterial> m_backgroundMaterial;
-  vesSharedPtr<vesShaderProgram> m_shaderProgram;
-  vesSharedPtr<vesShader> m_vertexShader;
-  vesSharedPtr<vesShader> m_fragmentShader;
-  vesSharedPtr<vesModelViewUniform> m_modelViewUniform;
-  vesSharedPtr<vesProjectionUniform> m_projectionUniform;
-  vesSharedPtr<vesPositionVertexAttribute> m_positionVertexAttribute;
-  vesSharedPtr<vesNormalVertexAttribute> m_normalVertexAttribute;
-  vesSharedPtr<vesColorVertexAttribute> m_colorVertexAttribute;
-  vesSharedPtr<vesTextureCoordinateVertexAttribute> m_textureCoodinateAttribute;
+//  vesSharedPtr<vesShaderProgram> m_shaderProgram;
+//  vesSharedPtr<vesShader> m_vertexShader;
+//  vesSharedPtr<vesShader> m_fragmentShader;
+//  vesSharedPtr<vesModelViewUniform> m_modelViewUniform;
+//  vesSharedPtr<vesProjectionUniform> m_projectionUniform;
+//  vesSharedPtr<vesPositionVertexAttribute> m_positionVertexAttribute;
+//  vesSharedPtr<vesNormalVertexAttribute> m_normalVertexAttribute;
+//  vesSharedPtr<vesColorVertexAttribute> m_colorVertexAttribute;
+//  vesSharedPtr<vesTextureCoordinateVertexAttribute> m_textureCoodinateAttribute;
   vesSharedPtr<vesGeometryData> m_backgroundPlaneData;
   vesSharedPtr<vesDepth> m_depth;
   vesSharedPtr<vesImage> m_image;
@@ -184,8 +186,8 @@ void vesBackground::vesInternal::createBackground(const vesVector4f &topColor,
     this->createShaderSourceForTexturedPlane(vertShaderText, fragShaderText);
   }
 
-  this->m_vertexShader->setShaderSource(vertShaderText);
-  this->m_fragmentShader->setShaderSource(fragShaderText);
+  //this->m_vertexShader->setShaderSource(vertShaderText);
+  //this->m_fragmentShader->setShaderSource(fragShaderText);
 }
 
 
@@ -202,7 +204,7 @@ void vesBackground::vesInternal::createBackground(vesBackground *background,
   this->m_backgroundActor->setMapper(this->m_backgroundMapper);
   this->m_backgroundMapper->setGeometryData(this->m_backgroundPlaneData);
   this->m_backgroundActor->setMaterial(this->m_backgroundMaterial);
-  this->m_backgroundMaterial->addAttribute(this->m_shaderProgram);
+  //this->m_backgroundMaterial->addAttribute(this->m_shaderProgram);
   this->m_backgroundMaterial->addAttribute(this->m_depth);
 
   if(this->m_image)
