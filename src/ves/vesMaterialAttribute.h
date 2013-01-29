@@ -49,7 +49,10 @@ public:
     Texture = 0x2,
     Blend = 0x3,
     Depth = 0x4,
-    VertexAttribute = 0x5
+    VertexPositionAttribute = 0x5,
+    VertexNormalAttribute = 0x6,
+    VertexColorAttribute = 0x7,
+    VertexTexCoordAttribute = 0x8
   };
 
 

@@ -196,6 +196,10 @@ void vesMapper::render(const vesRenderState &renderState)
   // Fixed vertex color.
   //glVertexAttrib4fv(vesVertexAttributeKeys::Color, this->color());
 
+  glPushMatrix();
+  glMatrixMode(GL_MODELVIEW);
+  glLoadMatrixf(renderState.m_modelViewMatrix->data());
+
   std::map<unsigned int, std::vector<int> >::const_iterator constItr
     = this->m_internal->m_bufferVertexAttributeMap.begin();
 
@@ -247,6 +251,8 @@ void vesMapper::render(const vesRenderState &renderState)
   if (renderState.m_material->binNumber() == vesMaterial::Overlay) {
     glEnable(GL_DEPTH_TEST);
   }
+
+  glPopMatrix();
 }
 
 

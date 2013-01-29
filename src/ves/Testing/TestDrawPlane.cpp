@@ -145,7 +145,7 @@ public:
     this->m_renderer->addActor(this->m_actor);
 
     this->m_renderer->camera()->setParallelProjection(false);
-    this->m_renderer->setBackgroundColor(0.0, 0.2, 0.8);
+    this->m_renderer->setBackgroundColor(0.0, 0.4, 0.6);
   }
 
   vesSharedPtr<vesGeometryData> createPlane()

@@ -45,7 +45,7 @@ public:
     m_name(name)
   {
     this->m_key = key;
-    this->m_type = vesMaterialAttribute::VertexAttribute;
+    this->m_type = vesMaterialAttribute::Undefined;
     this->m_binding = vesMaterialAttribute::BindAll;
   }
 
@@ -79,6 +79,7 @@ protected:
 };
 
 
+#include <iostream>
 class vesGenericVertexAttribute : public vesVertexAttribute
 {
 public:
@@ -102,6 +103,11 @@ public:
 
     vesSourceData::Ptr sourceData = geometryData->sourceData(key);
     assert(sourceData);
+
+//    std::cerr << "sourceData->sizeOfAttributeDataType(key) is " << sourceData->sizeOfAttributeDataType(key) << std::endl;
+//    std::cerr << "sourceData->attributeDataType(key) is " << sourceData->attributeDataType(key) << std::endl;
+//    std::cerr << " sourceData->attributeStride(key) is " <<  sourceData->attributeStride(key) << std::endl;
+//    std::cerr << "sourceData->attributeOffset is " << sourceData->attributeOffset(key) << std::endl;
 
     glVertexPointer(sourceData->sizeOfAttributeDataType(key),
                     sourceData->attributeDataType(key),
@@ -147,6 +153,7 @@ public:
                              const std::string &name="vertexPosition") :
     vesGenericVertexAttribute(key, name)
   {
+    this->m_type = vesMaterialAttribute::VertexPositionAttribute;
   }
 };
 
@@ -160,6 +167,7 @@ public:
                            const std::string &name="vertexNormal") :
     vesGenericVertexAttribute(key, name)
   {
+    this->m_type = vesMaterialAttribute::VertexNormalAttribute;
   }
 
   virtual void bindVertexData(const vesRenderState &renderState, int key)
@@ -219,6 +227,7 @@ public:
                           const std::string &name="vertexColor") :
     vesGenericVertexAttribute(key, name)
   {
+    this->m_type = vesMaterialAttribute::VertexColorAttribute;
   }
 
   virtual void bindVertexData(const vesRenderState &renderState, int key)
@@ -279,6 +288,7 @@ public:
                                       const std::string &name="vertexTextureCoordinate") :
     vesGenericVertexAttribute(key, name)
   {
+    this->m_type = vesMaterialAttribute::VertexTexCoordAttribute;
   }
 
   virtual void bindVertexData(const vesRenderState &renderState, int key)
