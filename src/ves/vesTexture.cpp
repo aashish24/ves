@@ -52,11 +52,11 @@ vesTexture::~vesTexture()
   glDeleteTextures(1, &this->m_textureHandle);
 }
 
-
+#include <iostream>
 void vesTexture::bind(const vesRenderState &renderState)
 {
   vesNotUsed(renderState);
-
+  glEnable(GL_TEXTURE_2D);
   glActiveTexture(GL_TEXTURE0 + this->m_textureUnit);
   glBindTexture(GL_TEXTURE_2D, this->m_textureHandle);
 }
@@ -67,6 +67,7 @@ void vesTexture::unbind(const vesRenderState &renderState)
   vesNotUsed(renderState);
 
   glBindTexture(GL_TEXTURE_2D, 0);
+  glDisable(GL_TEXTURE_2D);
 }
 
 

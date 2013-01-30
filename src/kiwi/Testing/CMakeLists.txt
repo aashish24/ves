@@ -4,8 +4,8 @@ set(tests
   TestGradientBackground
 #  TestKiwiViewer
 #  TestPointCloud
-#  TestTexture
-#  TestTexturedBackground
+  TestTexture
+  TestTexturedBackground
 #  TestWireframe
   )
 

@@ -106,6 +106,7 @@ public:
     vesSourceData::Ptr sourceData = geometryData->sourceData(key);
     assert(sourceData);
 
+//    std::cerr << "vesGenericVertexAttribute " << std::endl;
 //    std::cerr << "geometryData " << geometryData << std::endl;
 //    std::cerr << "sourceData->numberOfComponents(key) is " << sourceData->numberOfComponents(key) << std::endl;
 //    std::cerr << "sourceData->attributeDataType(key) is " << sourceData->attributeDataType(key) << std::endl;
@@ -189,6 +190,7 @@ public:
     vesSourceData::Ptr sourceData = geometryData->sourceData(key);
     assert(sourceData);
 
+//    std::cerr << "vesNormalVertexAttribute " << std::endl;
 //    std::cerr << "geometryData " << geometryData << std::endl;
 //    std::cerr << "sourceData->numberOfComponents(key) is " << sourceData->numberOfComponents(key) << std::endl;
 //    std::cerr << "sourceData->attributeDataType(key) is " << sourceData->attributeDataType(key) << std::endl;
@@ -258,6 +260,7 @@ public:
     vesSourceData::Ptr sourceData = geometryData->sourceData(key);
     assert(sourceData);
 
+//    std::cerr << "vesColorVertexAttribute " << std::endl;
 //    std::cerr << "geometryData " << geometryData << std::endl;
 //    std::cerr << "sourceData->numberOfComponents(key) is " << sourceData->numberOfComponents(key) << std::endl;
 //    std::cerr << "sourceData->attributeDataType(key) is " << sourceData->attributeDataType(key) << std::endl;
@@ -326,6 +329,13 @@ public:
 
     vesSourceData::Ptr sourceData = geometryData->sourceData(key);
     assert(sourceData);
+
+//    std::cerr << "vesTextureCoordinateVertexAttribute " << std::endl;
+//    std::cerr << "geometryData " << geometryData << std::endl;
+//    std::cerr << "sourceData->numberOfComponents(key) is " << sourceData->numberOfComponents(key) << std::endl;
+//    std::cerr << "sourceData->attributeDataType(key) is " << sourceData->attributeDataType(key) << std::endl;
+//    std::cerr << " sourceData->attributeStride(key) is " <<  sourceData->attributeStride(key) << std::endl;
+//    std::cerr << "sourceData->attributeOffset is " << sourceData->attributeOffset(key) << std::endl;
 
     glTexCoordPointer(sourceData->numberOfComponents(key),
                       sourceData->attributeDataType(key),

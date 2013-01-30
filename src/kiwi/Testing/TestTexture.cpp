@@ -69,15 +69,16 @@ public:
     this->unloadData();
   }
 
-  void initTextureShader(const std::string& vertexSource, const std::string fragmentSource)
+  void initTextureMaterial()
   {
-    vesSharedPtr<vesShaderProgram> shaderProgram
-      = this->addShaderProgram(vertexSource, fragmentSource);
-    this->addModelViewMatrixUniform(shaderProgram);
-    this->addProjectionMatrixUniform(shaderProgram);
-    this->addVertexPositionAttribute(shaderProgram);
-    this->addVertexTextureCoordinateAttribute(shaderProgram);
-    this->TextureShader = shaderProgram;
+    vesSharedPtr<vesMaterial> material
+      = this->addMaterial();
+//    this->addModelViewMatrixUniform(shaderProgram);
+//    this->addProjectionMatrixUniform(shaderProgram);
+    this->addVertexPositionAttribute(material);
+    this->addVertexNormalAttribute(material);
+    this->addVertexTextureCoordinateAttribute(material);
+    this->TextureMaterial = material;
   }
 
   void create1DTexture()
@@ -120,7 +121,7 @@ public:
     assert(polyData.GetPointer());
 
     vesKiwiPolyDataRepresentation* rep = new vesKiwiPolyDataRepresentation();
-    rep->initializeWithShader(this->TextureShader);
+    rep->initializeWithMaterial(this->TextureMaterial);
     rep->setPolyData(polyData);
     rep->addSelfToRenderer(this->renderer());
     this->DataRep = rep;
@@ -131,7 +132,7 @@ public:
   vesSharedPtr<vesImage> Image;
   vesSharedPtr<vesTexture> Texture;
   vtkSmartPointer<vtkLookupTable> LookupTable;
-  vesSharedPtr<vesShaderProgram> TextureShader;
+  vesSharedPtr<vesMaterial> TextureMaterial;
   vesKiwiPolyDataRepresentation* DataRep;
 };
 
@@ -230,9 +231,7 @@ std::string GetFileContents(const std::string& filename)
 void InitRendering()
 {
   std::cout << "Init rendering " << std::endl;
-  testHelper->app()->initTextureShader(
-    vesBuiltinShaders::vesTestTexture_vert(),
-    vesBuiltinShaders::vesTestTexture_frag());
+  testHelper->app()->initTextureMaterial();
 }
 
 //----------------------------------------------------------------------------
@@ -280,11 +279,11 @@ make_x_window(Display *x_dpy, EGLDisplay egl_dpy,
       EGL_GREEN_SIZE, 1,
       EGL_BLUE_SIZE, 1,
       EGL_DEPTH_SIZE, 1,
-      EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
+      EGL_RENDERABLE_TYPE, EGL_OPENGL_ES_BIT,
       EGL_NONE
    };
    static const EGLint ctx_attribs[] = {
-      EGL_CONTEXT_CLIENT_VERSION, 2,
+      EGL_CONTEXT_CLIENT_VERSION, 1,
       EGL_NONE
    };
    int scrnum;

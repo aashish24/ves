@@ -133,12 +133,12 @@ void vesKiwiDataConversionTools::SetVertexColors(
   unsigned char rgb[3];
   const size_t nTuples = colors->GetNumberOfTuples();
 
-  vesSourceDataC3f::Ptr colorSourceData (new vesSourceDataC3f());
+  vesSourceDataC4f::Ptr colorSourceData (new vesSourceDataC4f());
   for (size_t i = 0; i < nTuples; ++i)
     {
     colors->GetTupleValue(i, rgb);
-    vesVertexDataC3f color;
-    color.m_color = vesVector3f(rgb[0]/255.0, rgb[1]/255.0, rgb[2]/255.0);
+    vesVertexDataC4f color;
+    color.m_color = vesVector4f(rgb[0]/255.0, rgb[1]/255.0, rgb[2]/255.0, 1.0);
     colorSourceData->pushBack(color);
     }
 
@@ -156,13 +156,13 @@ void vesKiwiDataConversionTools::SetVertexColors(vtkDataArray* scalars,
   double rgb[3];
   const size_t nTuples = scalars->GetNumberOfTuples();
 
-  vesSourceDataC3f::Ptr colorSourceData (new vesSourceDataC3f());
+  vesSourceDataC4f::Ptr colorSourceData (new vesSourceDataC4f());
 
   for (size_t i = 0; i < nTuples; ++i)
     {
     scalarsToColors->GetColor(scalars->GetComponent(i, 0), rgb);
-    vesVertexDataC3f color;
-    color.m_color = vesVector3f(rgb[0], rgb[1], rgb[2]);
+    vesVertexDataC4f color;
+    color.m_color = vesVector4f(rgb[0], rgb[1], rgb[2], 1.0);
     colorSourceData->pushBack(color);
     }
 
