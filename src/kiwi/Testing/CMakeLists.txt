@@ -1,8 +1,8 @@
 set(tests
-#  TestCap
-#  TestClipPlane
+  TestCap
+  TestClipPlane
   TestGradientBackground
-#  TestKiwiViewer
+  TestKiwiViewer
 #  TestPointCloud
   TestTexture
   TestTexturedBackground

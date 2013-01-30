@@ -33,6 +33,7 @@
 
 #include "vesBackground.h"
 #include "vesCamera.h"
+#include "vesClipPlane.h"
 #include "vesColorUniform.h"
 #include "vesMath.h"
 #include "vesModelViewUniform.h"
@@ -125,7 +126,7 @@ public:
   vesSharedPtr<vesMaterial> TextureMaterial;
   vesSharedPtr<vesMaterial> GouraudTextureMaterial;
   vesSharedPtr<vesMaterial> ClipMaterial;
-//  vesSharedPtr<vesUniform> ClipUniform;
+  vesSharedPtr<vesClipPlane> ClipPlane;
 
   std::vector<vesKiwiDataRepresentation*> DataRepresentations;
 
@@ -517,36 +518,25 @@ bool vesKiwiViewerApp::setShadingModel(const std::string& name)
 //----------------------------------------------------------------------------
 bool vesKiwiViewerApp::initGouraudMaterial()
 {
-//  vesSharedPtr<vesShaderProgram> shaderProgram
-//    = this->addMaterial(vertexSource, fragmentSource);
-
-//  this->addModelViewMatrixUniform(shaderProgram);
-//  this->addProjectionMatrixUniform(shaderProgram);
-//  this->addNormalMatrixUniform(shaderProgram);
-
   vesSharedPtr<vesMaterial> material = this->addMaterial();
 
   this->addVertexPositionAttribute(material);
   this->addVertexNormalAttribute(material);
   this->addVertexColorAttribute(material);
+
+  this->Internal->GeometryMaterial = material;
 }
 
 //----------------------------------------------------------------------------
 bool vesKiwiViewerApp::initTextureMaterial()
 {
-//  vesSharedPtr<vesShaderProgram> shaderProgram
-//    = this->addShaderProgram(vertexSource, fragmentSource);
-
-//  this->addModelViewMatrixUniform();
-//  this->addProjectionMatrixUniform();
-
   vesSharedPtr<vesMaterial> material
     = this->addMaterial();
 
   this->addVertexPositionAttribute(material);
   this->addVertexTextureCoordinateAttribute(material);
 
-//  this->Internal->TextureShader = shaderProgram;
+  this->Internal->TextureMaterial = material;
   return true;
 }
 
@@ -555,15 +545,12 @@ bool vesKiwiViewerApp::initGouraudTextureMaterial()
 {
   vesMaterial::Ptr material =
     this->addMaterial();
-//  this->addModelViewMatrixUniform(shaderProgram);
-//  this->addProjectionMatrixUniform(shaderProgram);
-//  this->addNormalMatrixUniform(shaderProgram);
 
   this->addVertexPositionAttribute(material);
   this->addVertexNormalAttribute(material);
   this->addVertexTextureCoordinateAttribute(material);
 
-//  this->Internal->GouraudTextureMaterial = shaderProgram;
+  this->Internal->GouraudTextureMaterial = material;
   return true;
 }
 
@@ -573,20 +560,15 @@ bool vesKiwiViewerApp::initClipMaterial()
   vesMaterial::Ptr material =
     this->addMaterial();
 
-//  vesShaderProgram::Ptr shaderProgram = this->addShaderProgram(vertexSource, fragmentSource);
-//  this->addModelViewMatrixUniform(shaderProgram);
-//  this->addProjectionMatrixUniform(shaderProgram);
-//  this->addNormalMatrixUniform(shaderProgram);
-
   this->addVertexPositionAttribute(material);
   this->addVertexNormalAttribute(material);
   this->addVertexColorAttribute(material);
   this->addVertexTextureCoordinateAttribute(material);
 
-//  this->Internal->ClipMaterial = shaderProgram;
-
-//  this->Internal->ClipUniform = vesUniform::Ptr(new vesUniform("clipPlaneEquation", vesVector4f(1.0f, 0.0f, 0.0f, 0.0f)));
-//  this->Internal->ClipMaterial->addUniform(this->Internal->ClipUniform);
+  this->Internal->ClipMaterial = material;
+  this->Internal->ClipPlane = vesClipPlane::Ptr(new vesClipPlane());
+  this->Internal->ClipPlane->setPlaneEquation(1.0, 0.0, 0.0, 0.0);
+  this->Internal->ClipMaterial->addAttribute(this->Internal->ClipPlane);
   return true;
 }
 
@@ -672,7 +654,7 @@ vesKiwiText2DRepresentation* vesKiwiViewerApp::addTextRepresentation(const std::
 vesKiwiPlaneWidget* vesKiwiViewerApp::addPlaneWidget()
 {
   vesKiwiPlaneWidget* rep = new vesKiwiPlaneWidget();
-//  rep->initializeWithShader(this->shaderProgram(), this->Internal->ClipUniform);
+//  rep->initializeWithShader(this->shaderProgram(), this->Internal->ClipPlane);
   rep->addSelfToRenderer(this->renderer());
   this->Internal->DataRepresentations.push_back(rep);
   return rep;

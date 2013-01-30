@@ -189,11 +189,11 @@ make_x_window(Display *x_dpy, EGLDisplay egl_dpy,
       EGL_GREEN_SIZE, 1,
       EGL_BLUE_SIZE, 1,
       EGL_DEPTH_SIZE, 1,
-      EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
+      EGL_RENDERABLE_TYPE, EGL_OPENGL_ES_BIT,
       EGL_NONE
    };
    static const EGLint ctx_attribs[] = {
-      EGL_CONTEXT_CLIENT_VERSION, 2,
+      EGL_CONTEXT_CLIENT_VERSION, 1,
       EGL_NONE
    };
    int scrnum;
@@ -272,7 +272,7 @@ make_x_window(Display *x_dpy, EGLDisplay egl_dpy,
    {
       EGLint val;
       eglQueryContext(egl_dpy, ctx, EGL_CONTEXT_CLIENT_VERSION, &val);
-      assert(val == 2);
+      assert(val == 1);
    }
 
    *surfRet = eglCreateWindowSurface(egl_dpy, config, win, NULL);

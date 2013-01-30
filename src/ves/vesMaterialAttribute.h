@@ -52,7 +52,8 @@ public:
     VertexPositionAttribute = 0x5,
     VertexNormalAttribute = 0x6,
     VertexColorAttribute = 0x7,
-    VertexTexCoordAttribute = 0x8
+    VertexTexCoordAttribute = 0x8,
+    ClipPlane = 0x9
   };
 
 

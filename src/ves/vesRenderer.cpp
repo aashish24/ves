@@ -60,8 +60,8 @@ void vesRenderer::render()
   // By default enable depth test.
   glEnable(GL_DEPTH_TEST);
 
-//  glEnable(GL_LIGHTING);
-//  glEnable(GL_LIGHT0);
+  glEnable(GL_LIGHTING);
+  glEnable(GL_LIGHT0);
 
   if (this->m_sceneRoot) {
 
