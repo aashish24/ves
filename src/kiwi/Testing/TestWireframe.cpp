@@ -64,22 +64,22 @@ public:
     this->unloadData();
   }
 
-  void initClipShader(const std::string& vertexSource, const std::string fragmentSource)
+  void initClipMaterial()
   {
-    vesSharedPtr<vesShaderProgram> shaderProgram
-      = this->addShaderProgram(vertexSource, fragmentSource);
-    this->addModelViewMatrixUniform(shaderProgram);
-    this->addProjectionMatrixUniform(shaderProgram);
-    this->addNormalMatrixUniform(shaderProgram);
-    this->addVertexPositionAttribute(shaderProgram);
-    this->addVertexNormalAttribute(shaderProgram);
-    this->addVertexColorAttribute(shaderProgram);
-    this->addVertexTextureCoordinateAttribute(shaderProgram);
-    this->ClipShader = shaderProgram;
+    vesSharedPtr<vesMaterial> material
+      = this->addMaterial();
+//    this->addModelViewMatrixUniform(shaderProgram);
+//    this->addProjectionMatrixUniform(shaderProgram);
+//    this->addNormalMatrixUniform(shaderProgram);
+    this->addVertexPositionAttribute(material);
+    this->addVertexNormalAttribute(material);
+    this->addVertexColorAttribute(material);
+    this->addVertexTextureCoordinateAttribute(material);
+    this->ClipMaterial = material;
 
-    this->ClipUniform = vesSharedPtr<vesUniform>(
-      new vesUniform("clipPlaneEquation", vesVector4f(-1.0f, 0.0f, 0.0f, 0.0f)));
-    this->ClipShader->addUniform(this->ClipUniform);
+//    this->ClipUniform = vesSharedPtr<vesUniform>(
+//      new vesUniform("clipPlaneEquation", vesVector4f(-1.0f, 0.0f, 0.0f, 0.0f)));
+//    this->ClipMaterial->addUniform(this->ClipUniform);
   }
 
   void unloadData()
@@ -101,7 +101,7 @@ public:
     assert(polyData.GetPointer());
 
     vesKiwiPolyDataRepresentation* rep = new vesKiwiPolyDataRepresentation();
-    rep->initializeWithShader(this->ClipShader);
+    rep->initializeWithMaterial(this->ClipMaterial);
     rep->setPolyData(polyData);
     rep->addSelfToRenderer(this->renderer());
     rep->actor()->mapper()->enableWireframe(true);
@@ -109,8 +109,8 @@ public:
   }
 
 
-  vesSharedPtr<vesUniform> ClipUniform;
-  vesSharedPtr<vesShaderProgram> ClipShader;
+//  vesSharedPtr<vesUniform> ClipUniform;
+  vesSharedPtr<vesMaterial> ClipMaterial;
   vesKiwiPolyDataRepresentation* DataRep;
 };
 
@@ -208,7 +208,7 @@ std::string GetFileContents(const std::string& filename)
 //----------------------------------------------------------------------------
 void InitRendering()
 {
-  testHelper->app()->initClipShader(vesBuiltinShaders::vesClipPlane_vert(), vesBuiltinShaders::vesClipPlane_frag());
+  testHelper->app()->initClipMaterial();
 }
 
 //----------------------------------------------------------------------------
@@ -256,11 +256,11 @@ make_x_window(Display *x_dpy, EGLDisplay egl_dpy,
       EGL_GREEN_SIZE, 1,
       EGL_BLUE_SIZE, 1,
       EGL_DEPTH_SIZE, 1,
-      EGL_RENDERABLE_TYPE, EGL_OPENGL_ES2_BIT,
+      EGL_RENDERABLE_TYPE, EGL_OPENGL_ES_BIT,
       EGL_NONE
    };
    static const EGLint ctx_attribs[] = {
-      EGL_CONTEXT_CLIENT_VERSION, 2,
+      EGL_CONTEXT_CLIENT_VERSION, 1,
       EGL_NONE
    };
    int scrnum;
@@ -510,7 +510,7 @@ main(int argc, char *argv[])
   printf("EGL_CLIENT_APIS = %s\n", s);
 
   make_x_window(x_dpy, egl_dpy,
-               "OpenGL ES 2.x tri", 0, 0, winWidth, winHeight,
+               "OpenGL ES 1.x tri", 0, 0, winWidth, winHeight,
                &win, &egl_ctx, &egl_surf);
 
   XMapWindow(x_dpy, win);

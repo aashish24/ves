@@ -6,7 +6,7 @@ set(tests
 #  TestPointCloud
   TestTexture
   TestTexturedBackground
-#  TestWireframe
+  TestWireframe
   )
 
 
