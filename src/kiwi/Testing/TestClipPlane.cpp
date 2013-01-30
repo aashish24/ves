@@ -64,20 +64,20 @@ public:
 
   void initClipShader(const std::string& vertexSource, const std::string fragmentSource)
   {
-    vesSharedPtr<vesShaderProgram> shaderProgram
-      = this->addShaderProgram(vertexSource, fragmentSource);
-    this->addModelViewMatrixUniform(shaderProgram);
-    this->addProjectionMatrixUniform(shaderProgram);
-    this->addNormalMatrixUniform(shaderProgram);
-    this->addVertexPositionAttribute(shaderProgram);
-    this->addVertexNormalAttribute(shaderProgram);
-    this->addVertexColorAttribute(shaderProgram);
-    this->addVertexTextureCoordinateAttribute(shaderProgram);
-    this->ClipShader = shaderProgram;
+    vesSharedPtr<vesMaterial> material
+      = this->addMaterial();
+//    this->addModelViewMatrixUniform(shaderProgram);
+//    this->addProjectionMatrixUniform(shaderProgram);
+//    this->addNormalMatrixUniform(shaderProgram);
+    this->addVertexPositionAttribute(material);
+    this->addVertexNormalAttribute(material);
+    this->addVertexColorAttribute(material);
+    this->addVertexTextureCoordinateAttribute(material);
+    this->ClipMaterial = material;
 
-    this->ClipUniform = vesSharedPtr<vesUniform>(
-      new vesUniform("clipPlaneEquation", vesVector4f(-1.0f, 0.0f, 0.0f, 0.0f)));
-    this->ClipShader->addUniform(this->ClipUniform);
+//    this->ClipUniform = vesSharedPtr<vesUniform>(
+//      new vesUniform("clipPlaneEquation", vesVector4f(-1.0f, 0.0f, 0.0f, 0.0f)));
+//    this->ClipMaterial->addUniform(this->ClipUniform);
   }
 
   void unloadData()
@@ -99,15 +99,15 @@ public:
     assert(polyData.GetPointer());
 
     vesKiwiPolyDataRepresentation* rep = new vesKiwiPolyDataRepresentation();
-    rep->initializeWithShader(this->ClipShader);
+    rep->initializeWithMaterial(this->ClipMaterial);
     rep->setPolyData(polyData);
     rep->addSelfToRenderer(this->renderer());
     this->DataRep = rep;
   }
 
 
-  vesSharedPtr<vesUniform> ClipUniform;
-  vesSharedPtr<vesShaderProgram> ClipShader;
+//  vesSharedPtr<vesUniform> ClipUniform;
+  vesSharedPtr<vesMaterial> ClipMaterial;
   vesKiwiPolyDataRepresentation* DataRep;
 };
 

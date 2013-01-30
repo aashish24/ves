@@ -32,6 +32,7 @@
 //#include "vesProjectionUniform.h"
 //#include "vesShader.h"
 //#include "vesShaderProgram.h"
+#include "vesSourceData.h"
 #include "vesTexture.h"
 //#include "vesUniform.h"
 #include "vesVertexAttribute.h"
@@ -222,30 +223,30 @@ vesSharedPtr<vesGeometryData> vesBackground::vesInternal::createBackgroundPlane(
   const vesVector4f &topColor, const vesVector4f &bottomColor)
 {
   vesGeometryData::Ptr backgroundGeometryData (new vesGeometryData());
-  vesSourceDataP3T3C4f::Ptr sourceData(new vesSourceDataP3T3C4f());
+  vesSourceDataP4T4C4f::Ptr sourceData(new vesSourceDataP4T4C4f());
 
   // Points.
-  vesVertexDataP3T3C4f v1;
-  v1.m_position = vesVector3f(-1.0f, -1.0f, 0.0f);
+  vesVertexDataP4T4C4f v1;
+  v1.m_position = vesVector4f(-1.0f, -1.0f, 0.0f, 1.0f);
   v1.m_color = vesVector4f(bottomColor[0], bottomColor[1], bottomColor[2],
                            bottomColor[3]);
-  v1.m_texureCoordinates = vesVector3f(0.0f, 0.0f, 0.0f);
+  v1.m_texureCoordinates = vesVector4f(0.0f, 0.0f, 0.0f, 0.0f);
 
-  vesVertexDataP3T3C4f v2;
-  v2.m_position = vesVector3f(1.0f, -1.0f, 0.0f);
+  vesVertexDataP4T4C4f v2;
+  v2.m_position = vesVector4f(1.0f, -1.0f, 0.0f, 1.0f);
   v2.m_color = vesVector4f(bottomColor[0], bottomColor[1], bottomColor[2],
                            bottomColor[3]);
-  v2.m_texureCoordinates = vesVector3f(1.0f, 0.0f, 0.0f);
+  v2.m_texureCoordinates = vesVector4f(1.0f, 0.0f, 0.0f, 0.0f);
 
-  vesVertexDataP3T3C4f v3;
-  v3.m_position = vesVector3f(1.0f, 1.0f, 0.0f);
+  vesVertexDataP4T4C4f v3;
+  v3.m_position = vesVector4f(1.0f, 1.0f, 0.0f, 1.0f);
   v3.m_color = vesVector4f(topColor[0], topColor[1], topColor[2], topColor[3]);
-  v3.m_texureCoordinates = vesVector3f(1.0f, 1.0f, 0.0f);
+  v3.m_texureCoordinates = vesVector4f(1.0f, 1.0f, 0.0f, 0.0f);
 
-  vesVertexDataP3T3C4f v4;
-  v4.m_position = vesVector3f(-1.0f, 1.0f, 0.0f);
+  vesVertexDataP4T4C4f v4;
+  v4.m_position = vesVector4f(-1.0f, 1.0f, 0.0f, 1.0f);
   v4.m_color = vesVector4f(topColor[0], topColor[1], topColor[2], topColor[3]);
-  v4.m_texureCoordinates = vesVector3f(0.0f, 1.0f, 0.0f);
+  v4.m_texureCoordinates = vesVector4f(0.0f, 1.0f, 0.0f, 0.0f);
 
   sourceData->pushBack(v1);
   sourceData->pushBack(v2);

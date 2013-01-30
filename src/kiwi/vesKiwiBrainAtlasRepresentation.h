@@ -24,7 +24,7 @@
 
 #include "vesKiwiWidgetRepresentation.h"
 
-class vesShaderProgram;
+class vesMaterial;
 class vtkPlane;
 
 class vesKiwiBrainAtlasRepresentation : public vesKiwiWidgetRepresentation
@@ -35,9 +35,9 @@ public:
   vesKiwiBrainAtlasRepresentation();
   ~vesKiwiBrainAtlasRepresentation();
 
-  void initializeWithShader(vesSharedPtr<vesShaderProgram> geometryShader,
-                            vesSharedPtr<vesShaderProgram> textureShader,
-                            vesSharedPtr<vesShaderProgram> clipShader);
+  void initializeWithMaterial(std::tr1::shared_ptr<vesMaterial> geometryMaterial,
+                              vesSharedPtr<vesMaterial> textureShader,
+                              vesSharedPtr<vesMaterial> clipMaterial);
 
   void loadData(const std::string& filename);
 

@@ -35,8 +35,7 @@
 class vesCamera;
 class vesOpenGLSupport;
 class vesRenderer;
-class vesShader;
-//class vesShaderProgram;
+class vesMaterial;
 class vesUniform;
 class vesVertexAttribute;
 class vesKiwiCameraInteractor;
@@ -160,10 +159,8 @@ protected:
   virtual void willRender() {}
   virtual void didRender() {}
 
-//  vesSharedPtr<vesShaderProgram> addShaderProgram(
-//    const std::string& vertexShaderSource, const std::string& fragmentShaderSource);
-//  void deleteShaderProgram(vesSharedPtr<vesShaderProgram> shaderProgram);
-
+  vesSharedPtr<vesMaterial> addMaterial();
+  void deleteMaterial(vesSharedPtr<vesMaterial> material);
 
 //  vesSharedPtr<vesUniform> addModelViewMatrixUniform(
 //    vesSharedPtr<vesShaderProgram> program, const std::string& name=std::string());
@@ -172,14 +169,14 @@ protected:
 //  vesSharedPtr<vesUniform> addNormalMatrixUniform(
 //    vesSharedPtr<vesShaderProgram> program, const std::string& name=std::string());
 
-//  vesSharedPtr<vesVertexAttribute> addVertexPositionAttribute(
-//    vesSharedPtr<vesShaderProgram> program, const std::string& name=std::string());
-//  vesSharedPtr<vesVertexAttribute> addVertexNormalAttribute(
-//    vesSharedPtr<vesShaderProgram> program, const std::string& name=std::string());
-//  vesSharedPtr<vesVertexAttribute> addVertexColorAttribute(
-//    vesSharedPtr<vesShaderProgram> program, const std::string& name=std::string());
-//  vesSharedPtr<vesVertexAttribute> addVertexTextureCoordinateAttribute(
-//    vesSharedPtr<vesShaderProgram> program, const std::string& name=std::string());
+  vesSharedPtr<vesVertexAttribute> addVertexPositionAttribute(
+    vesSharedPtr<vesMaterial> material, const std::string& name=std::string());
+  vesSharedPtr<vesVertexAttribute> addVertexNormalAttribute(
+    vesSharedPtr<vesMaterial> material, const std::string& name=std::string());
+  vesSharedPtr<vesVertexAttribute> addVertexColorAttribute(
+    vesSharedPtr<vesMaterial> material, const std::string& name=std::string());
+  vesSharedPtr<vesVertexAttribute> addVertexTextureCoordinateAttribute(
+    vesSharedPtr<vesMaterial> material, const std::string& name=std::string());
 
   /// This accessor is protected so that clients of this class do not use the
   /// API of the returned object. Instead, this class should provide public methods

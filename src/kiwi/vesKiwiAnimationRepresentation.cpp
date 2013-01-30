@@ -89,8 +89,8 @@ public:
 
   vtkSmartPointer<vtkUnsignedCharArray> ColorTable;
 
-  vesSharedPtr<vesShaderProgram> GeometryShader;
-  vesSharedPtr<vesShaderProgram> TextureShader;
+  vesSharedPtr<vesMaterial> GeometryMaterial;
+  vesSharedPtr<vesMaterial> TextureMaterial;
 };
 
 //----------------------------------------------------------------------------
@@ -106,22 +106,21 @@ vesKiwiAnimationRepresentation::~vesKiwiAnimationRepresentation()
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiAnimationRepresentation::initializeWithShader(
-  vesSharedPtr<vesShaderProgram> geometryShader,
-  vesSharedPtr<vesShaderProgram> textureShader,
-  vesSharedPtr<vesShaderProgram> gouraudTextureShader)
+void vesKiwiAnimationRepresentation::initializeWithMaterial(
+  vesSharedPtr<vesMaterial> geometryMaterial,
+  vesSharedPtr<vesMaterial> gouraudTextureMaterial)
 {
-  this->Internal->GeometryShader = geometryShader;
-  this->Internal->TextureShader = gouraudTextureShader;
+  this->Internal->GeometryMaterial = geometryMaterial;
+  this->Internal->TextureMaterial = gouraudTextureMaterial;
 
   this->Internal->TextRep = new vesKiwiText2DRepresentation();
-//  this->Internal->TextRep->initializeWithShader(textureShader);
+  this->Internal->TextRep->initializeWithMaterial(gouraudTextureMaterial);
   this->Internal->TextRep->setDisplayPosition(vesVector2f(10, 10));
   this->Internal->TextRep->setText("Time: 0.000 s");
   this->Internal->AllReps.push_back(this->Internal->TextRep);
 
   this->Internal->PlayRep = new vesKiwiText2DRepresentation();
-//  this->Internal->PlayRep->initializeWithShader(textureShader);
+  this->Internal->PlayRep->initializeWithMaterial(gouraudTextureMaterial);
   this->Internal->PlayRep->setText("[Play]");
   this->Internal->AllReps.push_back(this->Internal->PlayRep);
 }
@@ -168,7 +167,7 @@ void vesKiwiAnimationRepresentation::loadData(const std::string& filename)
     }
 
     vesKiwiPolyDataRepresentation* rep = new vesKiwiPolyDataRepresentation();
-//    rep->initializeWithShader(this->Internal->GeometryShader);
+//    rep->initializeWithShader(this->Internal->GeometryMaterial);
     rep->setPolyData(polyData, scalarsToColors);
 
     vtkDataArray* scalars = vesKiwiDataConversionTools::FindScalarsArray(polyData);
@@ -247,13 +246,13 @@ bool vesKiwiAnimationRepresentation::handleSingleTouchTap(int displayX, int disp
   }
   else if (displayX > this->renderer()->width() - 50 && displayY < 50) {
 
-    vesShaderProgram::Ptr newShader = this->Internal->GeometryShader;
-    if (this->Internal->FrameReps[0]->shaderProgram() == newShader) {
-      newShader = this->Internal->TextureShader;
+    vesMaterial::Ptr newMaterial = this->Internal->GeometryMaterial;
+    if (this->Internal->FrameReps[0]->material() == newMaterial) {
+      newMaterial = this->Internal->TextureMaterial;
     }
 
     for (size_t i = 0; i < this->Internal->FrameReps.size(); ++i) {
-      this->Internal->FrameReps[i]->setShaderProgram(newShader);
+      this->Internal->FrameReps[i]->setMaterial(newMaterial);
     }
 
   }

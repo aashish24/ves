@@ -40,14 +40,14 @@ public:
   // \note: GL* types can be moved to some external header.
   enum ShaderType
   {
-    Vertex = GL_VERTEX_SHADER,
+//    Vertex = GL_VERTEX_SHADER,
 
     // \note: Currently GLES does not support other shaders.
     //TESSCONTROL    = GL_TESS_CONTROL_SHADER,
     //TESSEVALUATION = GL_TESS_EVALUATION_SHADER,
     //GEOMETRY       = GL_GEOMETRY_SHADER_EXT,
 
-    Fragment = GL_FRAGMENT_SHADER,
+//    Fragment = GL_FRAGMENT_SHADER,
     Undefined = -1
   };
 

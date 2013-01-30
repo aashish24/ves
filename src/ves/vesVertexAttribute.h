@@ -152,8 +152,8 @@ class vesPositionVertexAttribute : public vesGenericVertexAttribute
 public:
   vesTypeMacro(vesPositionVertexAttribute);
 
-  vesPositionVertexAttribute(int key=vesVertexAttributeKeys::Position,
-                             const std::string &name="vertexPosition") :
+  vesPositionVertexAttribute(const std::string &name="vertexPosition",
+                             int key=vesVertexAttributeKeys::Position) :
     vesGenericVertexAttribute(key, name)
   {
     this->m_type = vesMaterialAttribute::VertexPositionAttribute;
@@ -166,8 +166,8 @@ class vesNormalVertexAttribute : public vesGenericVertexAttribute
 public:
   vesTypeMacro(vesNormalVertexAttribute);
 
-  vesNormalVertexAttribute(int key=vesVertexAttributeKeys::Normal,
-                           const std::string &name="vertexNormal") :
+  vesNormalVertexAttribute(const std::string &name="vertexNormal",
+                           int key=vesVertexAttributeKeys::Normal) :
     vesGenericVertexAttribute(key, name)
   {
     this->m_type = vesMaterialAttribute::VertexNormalAttribute;
@@ -235,8 +235,8 @@ class vesColorVertexAttribute : public vesGenericVertexAttribute
 public:
   vesTypeMacro(vesColorVertexAttribute);
 
-  vesColorVertexAttribute(int key=vesVertexAttributeKeys::Color,
-                          const std::string &name="vertexColor") :
+  vesColorVertexAttribute(const std::string &name="vertexColor",
+                          int key=vesVertexAttributeKeys::Color) :
     vesGenericVertexAttribute(key, name)
   {
     this->m_type = vesMaterialAttribute::VertexColorAttribute;
@@ -304,8 +304,9 @@ class vesTextureCoordinateVertexAttribute : public vesGenericVertexAttribute
 public:
   vesTypeMacro(vesTextureCoordinateVertexAttribute);
 
-  vesTextureCoordinateVertexAttribute(int key=vesVertexAttributeKeys::TextureCoordinate,
-                                      const std::string &name="vertexTextureCoordinate") :
+  vesTextureCoordinateVertexAttribute(
+    const std::string &name="vertexTextureCoordinate",
+    int key=vesVertexAttributeKeys::TextureCoordinate) :
     vesGenericVertexAttribute(key, name) {
     this->m_type = vesMaterialAttribute::VertexTexCoordAttribute;
   }

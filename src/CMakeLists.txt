@@ -9,6 +9,6 @@ add_subdirectory(ves)
 add_subdirectory(shaders)
 
 # TODO Commented out for now
-#if(VES_USE_VTK)
-#  add_subdirectory(kiwi)
-#endif()
+if(VES_USE_VTK)
+  add_subdirectory(kiwi)
+endif()

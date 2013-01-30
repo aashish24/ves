@@ -113,11 +113,11 @@ void vesKiwiImagePlaneDataRepresentation::setGrayscaleColorMap(double scalarRang
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiImagePlaneDataRepresentation::setShaderProgram(
-  vesSharedPtr<vesShaderProgram> shaderProgram)
+void vesKiwiImagePlaneDataRepresentation::setMaterial(
+  vesSharedPtr<vesMaterial> material)
 {
   // Do nothing.
-  vesNotUsed(shaderProgram);
+  vesNotUsed(material);
 }
 
 //----------------------------------------------------------------------------

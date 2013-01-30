@@ -75,12 +75,10 @@ public:
   /// more than 65k vertices.
   virtual void initGL();
 
-  bool initGouraudShader(const std::string& vertexSource, const std::string& fragmentSource);
-  bool initBlinnPhongShader(const std::string& vertexSource, const std::string& fragmentSource);
-  bool initToonShader(const std::string& vertexSource, const std::string& fragmentSource);
-  bool initTextureShader(const std::string& vertexSource, const std::string& fragmentSource);
-  bool initGouraudTextureShader(const std::string& vertexSource, const std::string& fragmentSource);
-  bool initClipShader(const std::string& vertexSource, const std::string& fragmentSource);
+  bool initGouraudMaterial();
+  bool initTextureMaterial();
+  bool initGouraudTextureMaterial();
+  bool initClipMaterial();
 
   bool isAnimating() const;
   void setBackgroundTexture(const std::string& filename);
@@ -129,8 +127,8 @@ protected:
   virtual bool loadDatasetWithCustomBehavior(const std::string& filename);
 
   void addBuiltinDataset(const std::string& name, const std::string& filename);
-  void addBuiltinShadingModel(
-    const std::string& name, vesSharedPtr<vesShaderProgram> shaderProgram);
+//  void addBuiltinShadingModel(
+//    const std::string& name, vesSharedPtr<vesShaderProgram> shaderProgram);
 
   void removeAllDataRepresentations();
   void addRepresentationsForDataSet(vtkDataSet* dataSet);
@@ -140,7 +138,7 @@ protected:
   void resetScene();
 
   vesKiwiPolyDataRepresentation* addPolyDataRepresentation(
-    vtkPolyData* polyData, vesSharedPtr<vesShaderProgram> program);
+    vtkPolyData* polyData, vesSharedPtr<vesMaterial> material);
   vesKiwiText2DRepresentation* addTextRepresentation(const std::string& text);
   vesKiwiPlaneWidget* addPlaneWidget();
   bool loadBrainAtlas(const std::string& filename);

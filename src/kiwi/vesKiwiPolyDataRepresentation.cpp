@@ -157,44 +157,43 @@ void vesKiwiPolyDataRepresentation::setTranslation(const vesVector3f& translatio
 }
 
 //----------------------------------------------------------------------------
-//void vesKiwiPolyDataRepresentation::setShaderProgram(
-//  vesSharedPtr<vesShaderProgram> shaderProgram)
-//{
-//  if (!shaderProgram) {
-//    return;
-//  }
+void vesKiwiPolyDataRepresentation::setMaterial(
+  vesSharedPtr<vesMaterial> material)
+{
+  if (!material) {
+    return;
+  }
 
-//  this->Internal->Actor->material()->setShaderProgram(shaderProgram);
-//}
-
-//----------------------------------------------------------------------------
-//vesSharedPtr<vesShaderProgram> vesKiwiPolyDataRepresentation::shaderProgram() const
-//{
-//  return this->Internal->Actor->material()->shaderProgram();
-//}
+  this->Internal->Actor->setMaterial(material);
+}
 
 //----------------------------------------------------------------------------
-//void vesKiwiPolyDataRepresentation::initializeWithShader(
-//  vesSharedPtr<vesShaderProgram> shaderProgram)
-//{
-//  assert(shaderProgram);
-//  assert(!this->Internal->Mapper && !this->Internal->Actor);
+vesSharedPtr<vesMaterial> vesKiwiPolyDataRepresentation::material() const
+{
+  return this->Internal->Actor->material();
+}
 
-//  this->Internal->Mapper = vesSharedPtr<vesMapper>(new vesMapper());
+//----------------------------------------------------------------------------
+void vesKiwiPolyDataRepresentation::initializeWithMaterial(
+  vesSharedPtr<vesMaterial> material)
+{
+  assert(material);
+  assert(!this->Internal->Mapper && !this->Internal->Actor);
 
-//  this->Internal->Actor = vesSharedPtr<vesActor>(new vesActor());
-//  this->Internal->Actor->setMapper(this->Internal->Mapper);
+  this->Internal->Mapper = vesSharedPtr<vesMapper>(new vesMapper());
 
-//  this->Internal->Material = vesSharedPtr<vesMaterial>(new vesMaterial());
-//  this->Internal->Actor->setMaterial(this->Internal->Material);
+  this->Internal->Actor = vesSharedPtr<vesActor>(new vesActor());
+  this->Internal->Actor->setMapper(this->Internal->Mapper);
 
-//  this->Internal->Blend = vesSharedPtr<vesBlend>(new vesBlend());
-//  this->Internal->Depth = vesSharedPtr<vesDepth>(new vesDepth());
+  this->Internal->Material = material;
+  this->Internal->Actor->setMaterial(this->Internal->Material);
 
-//  this->Internal->Actor->material()->addAttribute(shaderProgram);
-//  this->Internal->Actor->material()->addAttribute(this->Internal->Blend);
-//  this->Internal->Actor->material()->addAttribute(this->Internal->Depth);
-//}
+  this->Internal->Blend = vesSharedPtr<vesBlend>(new vesBlend());
+  this->Internal->Depth = vesSharedPtr<vesDepth>(new vesDepth());
+
+  this->Internal->Actor->material()->addAttribute(this->Internal->Blend);
+  this->Internal->Actor->material()->addAttribute(this->Internal->Depth);
+}
 
 //----------------------------------------------------------------------------
 void vesKiwiPolyDataRepresentation::setBinNumber(int binNumber)

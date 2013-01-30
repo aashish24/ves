@@ -33,7 +33,7 @@
 #include <vesKiwiBaselineImageTester.h>
 #include <vesKiwiPolyDataRepresentation.h>
 #include <vesShaderProgram.h>
-#include <vesUniform.h>
+//#include <vesUniform.h>
 
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
@@ -63,22 +63,22 @@ public:
     this->unloadData();
   }
 
-  void initClipShader(const std::string& vertexSource, const std::string fragmentSource)
+  void initClipMaterial(const std::string& vertexSource, const std::string fragmentSource)
   {
-    vesSharedPtr<vesShaderProgram> shaderProgram
-      = this->addShaderProgram(vertexSource, fragmentSource);
-    this->addModelViewMatrixUniform(shaderProgram);
-    this->addProjectionMatrixUniform(shaderProgram);
-    this->addNormalMatrixUniform(shaderProgram);
-    this->addVertexPositionAttribute(shaderProgram);
-    this->addVertexNormalAttribute(shaderProgram);
-    this->addVertexColorAttribute(shaderProgram);
-    this->addVertexTextureCoordinateAttribute(shaderProgram);
-    this->ClipShader = shaderProgram;
+    vesSharedPtr<vesMaterial> material
+      = this->addMaterial();
+//    this->addModelViewMatrixUniform(shaderProgram);
+//    this->addProjectionMatrixUniform(shaderProgram);
+//    this->addNormalMatrixUniform(shaderProgram);
+    this->addVertexPositionAttribute(material);
+    this->addVertexNormalAttribute(material);
+    this->addVertexColorAttribute(material);
+    this->addVertexTextureCoordinateAttribute(material);
+    this->ClipMaterial = material;
 
-    this->ClipUniform = vesSharedPtr<vesUniform>(
-      new vesUniform("clipPlaneEquation", vesVector4f(-1.0f, 0.0f, 0.0f, 0.0f)));
-    this->ClipShader->addUniform(this->ClipUniform);
+//    this->ClipUniform = vesSharedPtr<vesUniform>(
+//      new vesUniform("clipPlaneEquation", vesVector4f(-1.0f, 0.0f, 0.0f, 0.0f)));
+//    this->ClipMaterial->addUniform(this->ClipUniform);
   }
 
   void unloadData()
@@ -100,7 +100,7 @@ public:
     assert(polyData.GetPointer());
 
     vesKiwiPolyDataRepresentation* rep = new vesKiwiPolyDataRepresentation();
-    rep->initializeWithShader(this->ClipShader);
+    rep->initializeWithMaterial(this->ClipMaterial);
     rep->setPolyData(polyData);
     rep->actor()->setRotation(vesVector4f(0.0f, 1.0f, 0.0f, (-155.0f * M_PI/180.0f)));
     rep->addSelfToRenderer(this->renderer());
@@ -109,7 +109,7 @@ public:
 
 
   vesSharedPtr<vesUniform> ClipUniform;
-  vesSharedPtr<vesShaderProgram> ClipShader;
+  vesSharedPtr<vesMaterial> ClipMaterial;
   vesKiwiPolyDataRepresentation* DataRep;
 };
 
@@ -207,7 +207,7 @@ std::string GetFileContents(const std::string& filename)
 //----------------------------------------------------------------------------
 void InitRendering()
 {
-  testHelper->app()->initClipShader(vesBuiltinShaders::vesCap_vert(), vesBuiltinShaders::vesCap_frag());
+  testHelper->app()->initClipMaterial(vesBuiltinShaders::vesCap_vert(), vesBuiltinShaders::vesCap_frag());
 }
 
 //----------------------------------------------------------------------------

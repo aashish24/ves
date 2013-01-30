@@ -88,15 +88,22 @@ struct vesVertexDataP3N3C3f
 
 struct vesVertexDataP3N3C4f
 {
-  vesVector3f m_position; // 12
-  vesVector3f m_normal; // 12
-  vesVector4f m_color; // 16
+  vesVector3f m_position;
+  vesVector3f m_normal;
+  vesVector4f m_color;
 };
 
 struct vesVertexDataP4N4C4f
 {
   vesVector4f m_position;
   vesVector4f m_normal;
+  vesVector4f m_color;
+};
+
+struct vesVertexDataP4T4C4f
+{
+  vesVector4f m_position;
+  vesVector4f m_texureCoordinates;
   vesVector4f m_color;
 };
 
@@ -661,6 +668,37 @@ public:
     this->setSizeOfAttributeDataType(vesVertexAttributeKeys::Color, sizeof(float));
     this->setIsAttributeNormalized(vesVertexAttributeKeys::Position, false);
     this->setIsAttributeNormalized(vesVertexAttributeKeys::Normal, false);
+    this->setIsAttributeNormalized(vesVertexAttributeKeys::Color, false);
+  }
+};
+
+class vesSourceDataP4T4C4f : public vesGenericSourceData<vesVertexDataP4T4C4f>
+{
+public:
+  vesTypeMacro(vesSourceDataP4T4C4f);
+
+  vesSourceDataP4T4C4f() : vesGenericSourceData<vesVertexDataP4T4C4f>()
+  {
+    const int totalNumberOfFloats = 12;
+    const int stride = sizeof(float) * totalNumberOfFloats;
+
+    this->setAttributeDataType(vesVertexAttributeKeys::Position, vesDataType::Float);
+    this->setAttributeDataType(vesVertexAttributeKeys::TextureCoordinate, vesDataType::Float);
+    this->setAttributeDataType(vesVertexAttributeKeys::Color, vesDataType::Float);
+    this->setAttributeOffset(vesVertexAttributeKeys::Position, 0);
+    this->setAttributeOffset(vesVertexAttributeKeys::TextureCoordinate, 16);
+    this->setAttributeOffset(vesVertexAttributeKeys::Color, 32);
+    this->setAttributeStride(vesVertexAttributeKeys::Position, stride);
+    this->setAttributeStride(vesVertexAttributeKeys::TextureCoordinate, stride);
+    this->setAttributeStride(vesVertexAttributeKeys::Color, stride);
+    this->setNumberOfComponents(vesVertexAttributeKeys::Position, 4);
+    this->setNumberOfComponents(vesVertexAttributeKeys::TextureCoordinate, 4);
+    this->setNumberOfComponents(vesVertexAttributeKeys::Color, 4);
+    this->setSizeOfAttributeDataType(vesVertexAttributeKeys::Position, sizeof(float));
+    this->setSizeOfAttributeDataType(vesVertexAttributeKeys::TextureCoordinate, sizeof(float));
+    this->setSizeOfAttributeDataType(vesVertexAttributeKeys::Color, sizeof(float));
+    this->setIsAttributeNormalized(vesVertexAttributeKeys::Position, false);
+    this->setIsAttributeNormalized(vesVertexAttributeKeys::TextureCoordinate, false);
     this->setIsAttributeNormalized(vesVertexAttributeKeys::Color, false);
   }
 };

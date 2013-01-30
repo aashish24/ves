@@ -66,9 +66,9 @@ public:
 
   std::vector<vesKiwiDataRepresentation::Ptr> AllReps;
 
-  vesSharedPtr<vesShaderProgram> GeometryShader;
-  vesSharedPtr<vesShaderProgram> TextureShader;
-  vesSharedPtr<vesShaderProgram> ClipShader;
+  vesSharedPtr<vesMaterial> GeometryMaterial;
+  vesSharedPtr<vesMaterial> TextureMaterial;
+  vesSharedPtr<vesMaterial> ClipMaterial;
 
   vesKiwiText2DRepresentation::Ptr TextRep;
 
@@ -103,19 +103,20 @@ vesKiwiBrainAtlasRepresentation::~vesKiwiBrainAtlasRepresentation()
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiBrainAtlasRepresentation::initializeWithShader(vesSharedPtr<vesShaderProgram> geometryShader,
-                                                           vesSharedPtr<vesShaderProgram> textureShader,
-                                                           vesSharedPtr<vesShaderProgram> clipShader)
+void vesKiwiBrainAtlasRepresentation::initializeWithMaterial(
+  vesSharedPtr<vesMaterial> geometryMaterial,
+  vesSharedPtr<vesMaterial> textureMaterial,
+  vesSharedPtr<vesMaterial> clipMaterial)
 {
 
   this->Internal->TextRep = vesKiwiText2DRepresentation::Ptr(new vesKiwiText2DRepresentation);
-//  this->Internal->TextRep->initializeWithShader(textureShader);
+  this->Internal->TextRep->initializeWithMaterial(textureMaterial);
   this->Internal->TextRep->setWorldAnchorPointEnabled(true);
   this->Internal->AllReps.push_back(this->Internal->TextRep);
 
-  this->Internal->GeometryShader = geometryShader;
-  this->Internal->TextureShader = textureShader;
-  this->Internal->ClipShader = clipShader;
+  this->Internal->GeometryMaterial = geometryMaterial;
+  this->Internal->TextureMaterial = textureMaterial;
+  this->Internal->ClipMaterial = clipMaterial;
 }
 
 //----------------------------------------------------------------------------
@@ -154,13 +155,13 @@ void vesKiwiBrainAtlasRepresentation::loadData(const std::string& filename)
       continue;
     }
 
-    vesSharedPtr<vesShaderProgram> shader = this->Internal->GeometryShader;
+    vesSharedPtr<vesMaterial> material = this->Internal->GeometryMaterial;
 
     double opacity = 1.0;
     int binNumber = 2;
 
     if (anatomicalName == "Skin" || anatomicalName == "skull_bone") {
-      shader = this->Internal->ClipShader;
+      material = this->Internal->ClipMaterial;
     }
 
     vesKiwiPolyDataRepresentation::Ptr rep = vesKiwiPolyDataRepresentation::Ptr(new vesKiwiPolyDataRepresentation);

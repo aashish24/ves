@@ -31,7 +31,7 @@ class vesGeometryData;
 class vesActor;
 class vesMapper;
 class vesRenderer;
-class vesShaderProgram;
+class vesMaterial;
 class vesTexture;
 
 class vtkPolyData;
@@ -47,7 +47,7 @@ public:
   vesKiwiPolyDataRepresentation();
   ~vesKiwiPolyDataRepresentation();
 
-//  void initializeWithShader(vesSharedPtr<vesShaderProgram> shaderProgram);
+  void initializeWithMaterial(vesSharedPtr<vesMaterial> material);
 
   void setPolyData(vtkPolyData* polyData, vtkScalarsToColors* scalarsToColors=NULL);
 
@@ -68,8 +68,8 @@ public:
 
   virtual void setTranslation(const vesVector3f& translation);
 
-  virtual void setShaderProgram(vesSharedPtr<vesShaderProgram> shaderProgram);
-  virtual vesSharedPtr<vesShaderProgram> shaderProgram() const;
+  virtual void setMaterial(vesSharedPtr<vesMaterial> material);
+  virtual vesSharedPtr<vesMaterial> material() const;
 
   virtual int numberOfFacets();
   virtual int numberOfVertices();

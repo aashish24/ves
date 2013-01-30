@@ -1,12 +1,12 @@
 set(tests
-  TestCap
-  TestClipPlane
+#  TestCap
+#  TestClipPlane
   TestGradientBackground
-  TestKiwiViewer
-  TestPointCloud
-  TestTexture
-  TestTexturedBackground
-  TestWireframe
+#  TestKiwiViewer
+#  TestPointCloud
+#  TestTexture
+#  TestTexturedBackground
+#  TestWireframe
   )
 
 

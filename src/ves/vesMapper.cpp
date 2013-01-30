@@ -195,18 +195,16 @@ void vesMapper::render(const vesRenderState &renderState)
     glDisable(GL_DEPTH_TEST);
   }
 
-
-  // Fixed vertex color.
+  // TODO Fixed vertex color.
   //glVertexAttrib4fv(vesVertexAttributeKeys::Color, this->color());
 
-//  glMatrixMode(GL_PROJECTION);
-//  glPushMatrix();
-//  glLoadIdentity();
-//  glLoadMatrixf(renderState.m_projectionMatrix->data());
+  glMatrixMode(GL_PROJECTION);
+  glPushMatrix();
+  glLoadMatrixf(renderState.m_projectionMatrix->data());
 
-//  glMatrixMode(GL_MODELVIEW);
-//  glLoadIdentity();
-//  glLoadMatrixf(renderState.m_modelViewMatrix->data());
+  glMatrixMode(GL_MODELVIEW);
+  glPushMatrix();
+  glLoadMatrixf(renderState.m_modelViewMatrix->data());
 
   std::map<unsigned int, std::vector<int> >::const_iterator constItr
     = this->m_internal->m_bufferVertexAttributeMap.begin();
@@ -260,9 +258,9 @@ void vesMapper::render(const vesRenderState &renderState)
     glEnable(GL_DEPTH_TEST);
   }
 
-//  glPopMatrix();
-//  glMatrixMode(GL_PROJECTION);
-//  glPopMatrix();
+  glPopMatrix();
+  glMatrixMode(GL_PROJECTION);
+  glPopMatrix();
 }
 
 

@@ -24,7 +24,7 @@
 
 #include "vesKiwiWidgetRepresentation.h"
 
-class vesShaderProgram;
+class vesMaterial;
 class vesKiwiPolyDataRepresentation;
 
 class vesKiwiAnimationRepresentation : public vesKiwiWidgetRepresentation
@@ -35,9 +35,9 @@ public:
   vesKiwiAnimationRepresentation();
   ~vesKiwiAnimationRepresentation();
 
-  void initializeWithShader(vesSharedPtr<vesShaderProgram> geometryShader, 
-    vesSharedPtr<vesShaderProgram> textureShader,
-    vesSharedPtr<vesShaderProgram> gouraudTextureShader);
+  void initializeWithMaterial(
+    vesSharedPtr<vesMaterial> textureMaterial,
+    vesSharedPtr<vesMaterial> gouraudTextureMaterial);
 
   void loadData(const std::string& filename);
 

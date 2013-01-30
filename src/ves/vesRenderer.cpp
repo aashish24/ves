@@ -60,6 +60,9 @@ void vesRenderer::render()
   // By default enable depth test.
   glEnable(GL_DEPTH_TEST);
 
+  glEnable(GL_LIGHTING);
+  glEnable(GL_LIGHT0);
+
   if (this->m_sceneRoot) {
 
     // Update traversal.
@@ -71,7 +74,7 @@ void vesRenderer::render()
     vesRenderState renderState;
 
     // Clear all the previous render targets.
-//    this->m_camera->clearRenderTargets(renderState);
+    this->m_camera->clearRenderTargets(renderState);
 
     // For now, lets not push camera to the stage, just call
     // render on render target of the current camera.
@@ -372,7 +375,7 @@ void vesRenderer::cullTraverseScene()
 void vesRenderer::setupBackground()
 {
   this->updateBackgroundViewport();
-//  this->m_camera->addChild(this->sm_background);
+  this->m_camera->addChild(this->m_background);
   this->m_camera->setClearMask(vesStateAttributeBits::DepthBufferBit);
 }
 

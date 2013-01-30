@@ -24,7 +24,7 @@
 
 #include "vesKiwiWidgetRepresentation.h"
 
-class vesShaderProgram;
+class vesMaterial;
 class vesKiwiPolyDataRepresentation;
 class vesKiwiImagePlaneDataRepresentation;
 
@@ -40,8 +40,8 @@ public:
   ~vesKiwiImageWidgetRepresentation();
 
   void setImageData(vtkImageData* imageData);
-//  void initializeWithShader(vesSharedPtr<vesShaderProgram> geometryShader,
-//                            vesSharedPtr<vesShaderProgram> textureShader);
+  void initializeWithMaterial(vesSharedPtr<vesMaterial> geometryMaterial,
+                              vesSharedPtr<vesMaterial> textureMaterial);
 
   virtual void addSelfToRenderer(vesSharedPtr<vesRenderer> renderer);
   virtual void removeSelfFromRenderer(vesSharedPtr<vesRenderer> renderer);
@@ -61,8 +61,8 @@ public:
 
   bool scrollSliceModeActive() const;
 
-  virtual void setShaderProgram(vesSharedPtr<vesShaderProgram> shaderProgram);
-  virtual vesSharedPtr<vesShaderProgram> shaderProgram() const;
+  virtual void setMaterial(vesSharedPtr<vesMaterial> material);
+  virtual vesSharedPtr<vesMaterial> material() const;
 
 protected:
 
