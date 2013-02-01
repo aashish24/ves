@@ -1,4 +1,4 @@
-if(NOT VES_HOST_SUPERBUILD AND NOT VES_ANDROID_SUPERBUILD AND NOT VES_IOS_SUPERBUILD)
+if(NOT VES_HOST_SUPERBUILD AND NOT VES_ANDROID_SUPERBUILD AND NOT VES_IOS_SUPERBUILD AND NOT VES_QNX_SUPERBUILD)
   return()
 endif()
 
@@ -164,8 +164,9 @@ if(VES_HOST_SUPERBUILD)
 endif()
 
 if(VES_QNX_SUPERBUILD)
-  crosscompile_vtk(vtk-qnx qnx.6.5.1.toolchain.cmake)
-  crosscompile_ves(ves-qnx qnx qnx.6.5.1.toolchain.cmake)
+  message("Compiling QNX")
+  crosscompile_vtk(vtk-qnx qnx.6.5.0.toolchain.cmake)
+  crosscompile_ves(ves-qnx qnx qnx.6.5.0.toolchain.cmake)
 endif()
 
 set(ves_superbuild_enabled ON)
