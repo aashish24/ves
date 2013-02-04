@@ -110,28 +110,15 @@ vesMaterial::~vesMaterial()
   delete this->m_internal; this->m_internal = 0x0;
 }
 
-#include <iostream>
+
 bool vesMaterial::addAttribute(vesSharedPtr<vesMaterialAttribute> attribute)
 {
   if (!attribute) {
     return false;
   }
 
-  std::cerr << " vesMaterial::addAttribute " << attribute->type() << std::endl;
-
-//  if (attribute->type() == 4)
-//  {
-//    std::cerr << " vesMaterial::addAttribute " << attribute->type() << std::endl;
-//  }
-
-
   if (attribute->type()    != vesMaterialAttribute::Texture &&
       attribute->binding() == vesMaterialAttribute::BindAll) {
-
-    // Shader is a special attribute.
-//    if (attribute->type() == vesMaterialAttribute::Shader) {
-//      return this->setShaderProgram(std::tr1::static_pointer_cast<vesShaderProgram>(attribute));
-//    }
 
     // Everything else.
     return this->m_internal->addAttribute(
@@ -154,21 +141,6 @@ bool vesMaterial::addAttribute(vesSharedPtr<vesMaterialAttribute> attribute)
   return false;
 }
 
-
-//bool vesMaterial::setShaderProgram(vesSharedPtr<vesShaderProgram> shaderProgram)
-//{
-//  if (!shaderProgram || shaderProgram == this->m_shaderProgram) {
-//    return false;
-//  }
-
-//  this->m_shaderProgram = shaderProgram;
-//  this->m_internal->m_attributes[shaderProgram->type()] =
-//    this->m_shaderProgram;
-
-//  return true;
-//}
-
-
 vesSharedPtr<vesMaterialAttribute>
   vesMaterial::attribute(vesMaterialAttribute::AttributeType type)
 {
@@ -185,6 +157,7 @@ const vesSharedPtr<vesMaterialAttribute>
 
 bool vesMaterial::enableVertexColor(bool value)
 {
+  // \todo Fix this
 //  vesShaderProgram::Ptr shaderProgram = this->shaderProgram();
 
 //  if (shaderProgram) {
@@ -198,6 +171,7 @@ bool vesMaterial::enableVertexColor(bool value)
 
 bool vesMaterial::isEnabledVertexColor() const
 {
+  // \todo Fix this
 //  vesShaderProgram::Ptr shaderProgram = this->shaderProgram();
 
 //  if (shaderProgram) {

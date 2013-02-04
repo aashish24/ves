@@ -28,10 +28,6 @@
 #include "vesGLTypes.h"
 #include "vesMapper.h"
 #include "vesMaterial.h"
-//#include "vesModelViewUniform.h"
-//#include "vesProjectionUniform.h"
-//#include "vesShader.h"
-//#include "vesShaderProgram.h"
 #include "vesSourceData.h"
 #include "vesTexture.h"
 //#include "vesUniform.h"
@@ -46,22 +42,12 @@ public:
     m_backgroundActor(new vesActor()),
     m_backgroundMapper(new vesMapper()),
     m_backgroundMaterial(new vesMaterial()),
-//    m_shaderProgram(new vesShaderProgram()),
-//    m_vertexShader(new vesShader(vesShader::Vertex)),
-//    m_fragmentShader(new vesShader(vesShader::Fragment)),
-//    m_modelViewUniform(new vesModelViewUniform()),
-//    m_projectionUniform(new vesProjectionUniform()),
     m_positionVertexAttribute(new vesPositionVertexAttribute()),
     m_normalVertexAttribute(new vesNormalVertexAttribute()),
     m_colorVertexAttribute(new vesColorVertexAttribute()),
     m_textureCoodinateAttribute(new vesTextureCoordinateVertexAttribute()),
     m_depth(new vesDepth())
   {
-
-//    this->m_shaderProgram->addShader(this->m_vertexShader);
-//    this->m_shaderProgram->addShader(this->m_fragmentShader);
-//    this->m_shaderProgram->addUniform(this->m_modelViewUniform);
-//    this->m_shaderProgram->addUniform(this->m_projectionUniform);
     this->m_backgroundMaterial->addAttribute(
       this->m_positionVertexAttribute);
     this->m_backgroundMaterial->addAttribute(
@@ -86,67 +72,9 @@ public:
   vesSharedPtr<vesGeometryData> createBackgroundPlane(
     const vesVector4f &topColor, const vesVector4f &bottomColor);
 
-//  void createShaderSourceForNonTexturedPlane(std::string &vertShaderText,
-//                                             std::string &fragShaderText)
-//  {
-//    const std::string vertexShaderSource =
-//      "uniform highp mat4 modelViewMatrix;\n \
-//       uniform highp mat4 projectionMatrix;\n \
-//       attribute highp vec4 vertexPosition;\n \
-//       attribute mediump vec4 vertexColor;\n \
-//       varying mediump vec4 varColor;\n \
-//       void main()\n \
-//       {\n \
-//         gl_Position = vertexPosition;\n \
-//         varColor = vertexColor;\n \
-//       }";
-
-//    const std::string fragmentShaderSource =
-//      "varying mediump vec4 varColor;\n \
-//       void main()\n \
-//       {\n \
-//         gl_FragColor = varColor;\n \
-//       }";
-
-//    vertShaderText = vertexShaderSource;
-//    fragShaderText = fragmentShaderSource;
-//  }
-
-//  void createShaderSourceForTexturedPlane(std::string &vertShaderText,
-//                                          std::string &fragShaderText)
-//  {
-//    const std::string vertexShaderSource =
-//      "uniform highp mat4 modelViewMatrix;\n \
-//       uniform highp mat4 projectionMatrix;\n \
-//       attribute highp vec4 vertexPosition;\n \
-//       attribute mediump vec3 vertexTextureCoordinate;\n \
-//       varying mediump vec2 textureCoordinate;\n \
-//       void main()\n \
-//       {\n \
-//         gl_Position = vertexPosition;\n \
-//         textureCoordinate = vertexTextureCoordinate.xy;\n \
-//       }";
-
-//    const std::string fragmentShaderSource =
-//       "varying mediump vec2 textureCoordinate;\n \
-//        uniform highp sampler2D image;\n \
-//       void main()\n \
-//       {\n \
-//          gl_FragColor = texture2D(image, textureCoordinate);\n \
-//       }";
-
-//    vertShaderText = vertexShaderSource;
-//    fragShaderText = fragmentShaderSource;
-//  }
-
   vesSharedPtr<vesActor> m_backgroundActor;
   vesSharedPtr<vesMapper> m_backgroundMapper;
   vesSharedPtr<vesMaterial> m_backgroundMaterial;
-//  vesSharedPtr<vesShaderProgram> m_shaderProgram;
-//  vesSharedPtr<vesShader> m_vertexShader;
-//  vesSharedPtr<vesShader> m_fragmentShader;
-//  vesSharedPtr<vesModelViewUniform> m_modelViewUniform;
-//  vesSharedPtr<vesProjectionUniform> m_projectionUniform;
   vesSharedPtr<vesPositionVertexAttribute> m_positionVertexAttribute;
   vesSharedPtr<vesNormalVertexAttribute> m_normalVertexAttribute;
   vesSharedPtr<vesColorVertexAttribute> m_colorVertexAttribute;
@@ -177,18 +105,6 @@ void vesBackground::vesInternal::createBackground(const vesVector4f &topColor,
 
   std::string vertShaderText;
   std::string fragShaderText;
-
-//  if(!this->m_image)
-//  {
-//    this->createShaderSourceForNonTexturedPlane(vertShaderText, fragShaderText);
-//  }
-//  else
-//  {
-//    this->createShaderSourceForTexturedPlane(vertShaderText, fragShaderText);
-//  }
-
-  //this->m_vertexShader->setShaderSource(vertShaderText);
-  //this->m_fragmentShader->setShaderSource(fragShaderText);
 }
 
 
@@ -205,7 +121,6 @@ void vesBackground::vesInternal::createBackground(vesBackground *background,
   this->m_backgroundActor->setMapper(this->m_backgroundMapper);
   this->m_backgroundMapper->setGeometryData(this->m_backgroundPlaneData);
   this->m_backgroundActor->setMaterial(this->m_backgroundMaterial);
-  //this->m_backgroundMaterial->addAttribute(this->m_shaderProgram);
   this->m_backgroundMaterial->addAttribute(this->m_depth);
 
   if(this->m_image)
