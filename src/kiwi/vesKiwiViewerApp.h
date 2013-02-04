@@ -103,8 +103,8 @@ public:
 
   void applyBuiltinDatasetCameraParameters(int index);
 
-  const vesSharedPtr<vesShaderProgram> shaderProgram() const;
-  vesSharedPtr<vesShaderProgram> shaderProgram();
+  const vesSharedPtr<vesMaterial> material() const;
+  vesSharedPtr<vesMaterial> material();
 
   /// Override superclass method in order to stop the camera spinner if needed.
   virtual void resetView();
@@ -127,8 +127,6 @@ protected:
   virtual bool loadDatasetWithCustomBehavior(const std::string& filename);
 
   void addBuiltinDataset(const std::string& name, const std::string& filename);
-//  void addBuiltinShadingModel(
-//    const std::string& name, vesSharedPtr<vesShaderProgram> shaderProgram);
 
   void removeAllDataRepresentations();
   void addRepresentationsForDataSet(vtkDataSet* dataSet);

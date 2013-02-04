@@ -42,7 +42,6 @@
 #include "vesRenderer.h"
 #include "vesActor.h"
 #include "vesShader.h"
-#include "vesShaderProgram.h"
 #include "vesTexture.h"
 #include "vesUniform.h"
 #include "vesVertexAttribute.h"
@@ -82,19 +81,18 @@ public:
     this->DataRepresentations.clear();
     this->BuiltinDatasetNames.clear();
     this->BuiltinDatasetFilenames.clear();
-    this->BuiltinShadingModels.clear();
   }
 
-  struct vesShaderProgramData
+  struct vesMaterialData
   {
-    vesShaderProgramData(
-      const std::string &name, vesSharedPtr<vesShaderProgram> shaderProgram) :
-      Name(name), ShaderProgram(shaderProgram)
+    vesMaterialData(
+      const std::string &name, vesSharedPtr<vesMaterial> material) :
+      Name(name), Material(material)
     {
     }
 
     std::string Name;
-    vesSharedPtr<vesShaderProgram> ShaderProgram;
+    vesSharedPtr<vesMaterial> Material;
   };
 
   struct vesCameraParameters
@@ -122,6 +120,7 @@ public:
   std::string ErrorTitle;
   std::string ErrorMessage;
 
+  vesSharedPtr<vesMaterial> Material;
   vesSharedPtr<vesMaterial> GeometryMaterial;
   vesSharedPtr<vesMaterial> TextureMaterial;
   vesSharedPtr<vesMaterial> GouraudTextureMaterial;
@@ -136,9 +135,6 @@ public:
   std::vector<std::string> BuiltinDatasetNames;
   std::vector<std::string> BuiltinDatasetFilenames;
   std::vector<vesCameraParameters> BuiltinDatasetCameraParameters;
-
-  std::string CurrentShadingModel;
-  std::vector<vesShaderProgramData> BuiltinShadingModels;
 };
 
 //----------------------------------------------------------------------------
@@ -208,8 +204,6 @@ vesKiwiViewerApp::vesKiwiViewerApp()
   this->initGouraudTextureMaterial();
   this->initTextureMaterial();
   this->initClipMaterial();
-
-  this->setShadingModel("Gouraud");
 }
 
 //----------------------------------------------------------------------------
@@ -226,17 +220,17 @@ void vesKiwiViewerApp::initGL()
   this->Internal->DataLoader.setErrorOnMoreThan65kVertices(!this->glSupport()->isSupportedIndexUnsignedInt());
 }
 
-////----------------------------------------------------------------------------
-//const vesSharedPtr<vesShaderProgram> vesKiwiViewerApp::shaderProgram() const
-//{
-//  return this->Internal->ShaderProgram;
-//}
+//----------------------------------------------------------------------------
+const vesSharedPtr<vesMaterial> vesKiwiViewerApp::material() const
+{
+  return this->Internal->Material;
+}
 
-////----------------------------------------------------------------------------
-//vesSharedPtr<vesShaderProgram> vesKiwiViewerApp::shaderProgram()
-//{
-//  return this->Internal->ShaderProgram;
-//}
+//----------------------------------------------------------------------------
+vesSharedPtr<vesMaterial> vesKiwiViewerApp::material()
+{
+  return this->Internal->Material;
+}
 
 //----------------------------------------------------------------------------
 int vesKiwiViewerApp::numberOfBuiltinDatasets() const
@@ -279,28 +273,6 @@ void vesKiwiViewerApp::applyBuiltinDatasetCameraParameters(int index)
   this->Superclass::resetView(this->Internal->BuiltinDatasetCameraParameters[index].ViewDirection,
                   this->Internal->BuiltinDatasetCameraParameters[index].ViewUp);
 }
-
-//----------------------------------------------------------------------------
-//void vesKiwiViewerApp::addBuiltinShadingModel(
-//  const std::string &name, vesSharedPtr<vesShaderProgram> shaderProgram)
-//{
-//  assert(shaderProgram);
-
-//  if (!shaderProgram) {
-//    return;
-//  }
-
-//  for(size_t i=0; i < this->Internal->BuiltinShadingModels.size(); ++i) {
-//    if (this->Internal->BuiltinShadingModels[i].Name == name) {
-//      this->deleteShaderProgram(this->Internal->BuiltinShadingModels[i].ShaderProgram);
-//      this->Internal->BuiltinShadingModels[i].ShaderProgram = shaderProgram;
-//      return;
-//    }
-//  }
-
-//  this->Internal->BuiltinShadingModels.push_back(
-//    vesInternal::vesShaderProgramData(name, shaderProgram));
-//}
 
 //----------------------------------------------------------------------------
 bool vesKiwiViewerApp::isAnimating() const
@@ -466,53 +438,6 @@ void vesKiwiViewerApp::resetView()
 {
   this->Superclass::resetView();
   this->Internal->CameraSpinner->disable();
-}
-
-//----------------------------------------------------------------------------
-int vesKiwiViewerApp::getNumberOfShadingModels() const
-{
-  return static_cast<int>(this->Internal->BuiltinShadingModels.size());
-}
-
-//----------------------------------------------------------------------------
-std::string vesKiwiViewerApp::getCurrentShadingModel() const
-{
-  return this->Internal->CurrentShadingModel;
-}
-
-//----------------------------------------------------------------------------
-std::string vesKiwiViewerApp::getShadingModel(int index) const
-{
-  std::string empty;
-  if(index < 0 ||
-     index > static_cast<int>(this->Internal->BuiltinShadingModels.size()))
-  {
-  return empty;
-  }
-
-  return this->Internal->BuiltinShadingModels[index].Name;
-}
-
-//----------------------------------------------------------------------------
-bool vesKiwiViewerApp::setShadingModel(const std::string& name)
-{
-  bool success = true;
-
-//  for(size_t i=0; i < this->Internal->BuiltinShadingModels.size(); ++i) {
-//    // Check if we have a match.
-//    if (this->Internal->BuiltinShadingModels[i].Name == name) {
-//      // Check if we have a valid shader program before we switch.
-//      if (this->Internal->BuiltinShadingModels[i].ShaderProgram) {
-//        this->Internal->ShaderProgram =
-//          this->Internal->BuiltinShadingModels[i].ShaderProgram;
-
-//        return this->Internal->setMaterialOnRepresentations(
-//          this->Internal->ShaderProgram);
-//      }
-//    }
-//  }
-
-  return !success;
 }
 
 //----------------------------------------------------------------------------

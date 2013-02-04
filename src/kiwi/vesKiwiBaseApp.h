@@ -162,13 +162,6 @@ protected:
   vesSharedPtr<vesMaterial> addMaterial();
   void deleteMaterial(vesSharedPtr<vesMaterial> material);
 
-//  vesSharedPtr<vesUniform> addModelViewMatrixUniform(
-//    vesSharedPtr<vesShaderProgram> program, const std::string& name=std::string());
-//  vesSharedPtr<vesUniform> addProjectionMatrixUniform(
-//    vesSharedPtr<vesShaderProgram> program, const std::string& name=std::string());
-//  vesSharedPtr<vesUniform> addNormalMatrixUniform(
-//    vesSharedPtr<vesShaderProgram> program, const std::string& name=std::string());
-
   vesSharedPtr<vesVertexAttribute> addVertexPositionAttribute(
     vesSharedPtr<vesMaterial> material, const std::string& name=std::string());
   vesSharedPtr<vesVertexAttribute> addVertexNormalAttribute(

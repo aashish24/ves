@@ -24,13 +24,7 @@
 #include <vesOpenGLSupport.h>
 #include <vesRenderer.h>
 #include <vesSetGet.h>
-//#include <vesUniform.h>
 #include <vesVertexAttribute.h>
-//#include <vesShader.h>
-//#include <vesShaderProgram.h>
-//#include <vesModelViewUniform.h>
-#include <vesNormalMatrixUniform.h>
-#include <vesProjectionUniform.h>
 #include <vesVertexAttributeKeys.h>
 
 #include <cassert>
@@ -59,9 +53,6 @@ public:
   vesRenderer::Ptr Renderer;
   vesKiwiCameraInteractor::Ptr CameraInteractor;
 
-//  std::vector< vesSharedPtr<vesShaderProgram> > ShaderPrograms;
-//  std::vector< vesSharedPtr<vesShader> > Shaders;
-//  std::vector< vesSharedPtr<vesUniform> > Uniforms;
   std::vector< vesSharedPtr<vesMaterial> > Materials;
   std::vector< vesSharedPtr<vesVertexAttribute> > VertexAttributes;
 };
@@ -249,43 +240,6 @@ void vesKiwiBaseApp::deleteMaterial(vesSharedPtr<vesMaterial> material)
     this->Internal->Materials.erase(itr);
   }
 }
-
-//----------------------------------------------------------------------------
-//vesSharedPtr<vesUniform> vesKiwiBaseApp::addModelViewMatrixUniform(
-//  vesSharedPtr<vesShaderProgram> program, const std::string& name)
-//{
-//  this->Internal->Uniforms.push_back(
-//    name.empty() ? vesSharedPtr<vesUniform>(new vesModelViewUniform())
-//    : vesSharedPtr<vesUniform>(new vesModelViewUniform(name)));
-//  program->addUniform(this->Internal->Uniforms.back());
-
-//  return this->Internal->Uniforms.back();
-//}
-
-//----------------------------------------------------------------------------
-//vesSharedPtr<vesUniform> vesKiwiBaseApp::addProjectionMatrixUniform(
-//  vesSharedPtr<vesShaderProgram> program, const std::string& name)
-//{
-//  this->Internal->Uniforms.push_back(
-//    name.empty() ? vesSharedPtr<vesUniform>(new vesProjectionUniform()) :
-//    vesSharedPtr<vesUniform>(new vesProjectionUniform(name)));
-
-//  program->addUniform(this->Internal->Uniforms.back());
-
-//  return this->Internal->Uniforms.back();
-//}
-
-//----------------------------------------------------------------------------
-//vesSharedPtr<vesUniform> vesKiwiBaseApp::addNormalMatrixUniform(
-//  vesSharedPtr<vesShaderProgram> program, const std::string& name)
-//{
-//  this->Internal->Uniforms.push_back(
-//    name.empty() ? vesSharedPtr<vesUniform>(new vesNormalMatrixUniform())
-//    : vesSharedPtr<vesUniform>(new vesNormalMatrixUniform(name)));
-//  program->addUniform(this->Internal->Uniforms.back());
-
-//  return this->Internal->Uniforms.back();
-//}
 
 //----------------------------------------------------------------------------
 vesSharedPtr<vesVertexAttribute> vesKiwiBaseApp::addVertexPositionAttribute(

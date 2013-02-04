@@ -376,17 +376,7 @@ event_loop(Display *dpy, Window win,
                   /* escape */
                   return;
                }
-               if (buffer[0] == 't') {
-                 static int currentShadingModelIndex =
-                   testHelper->app()->getNumberOfShadingModels() - 1;
-
-                 currentShadingModelIndex = (currentShadingModelIndex + 1) %
-                   testHelper->app()->getNumberOfShadingModels();
-
-                 testHelper->app()->setShadingModel(testHelper->app()->getShadingModel(
-                    currentShadingModelIndex));
-               }
-               else if (buffer[0] == 'n') {
+               if (buffer[0] == 'n') {
                  static int currentDataset = 0;
                  currentDataset = (currentDataset + 1) % testHelper->app()->numberOfBuiltinDatasets();
                  LoadData(currentDataset);
