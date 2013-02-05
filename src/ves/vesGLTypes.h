@@ -22,7 +22,7 @@ struct vesPrimitiveIndicesValueType
   enum Type
   {
     UnsignedShort = GL_UNSIGNED_SHORT,
-    UnsignedInt = GL_UNSIGNED_INT
+    //UnsignedInt = GL_UNSIGNED_INT
   };
 };
 

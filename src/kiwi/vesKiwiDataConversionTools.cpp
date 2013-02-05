@@ -380,7 +380,7 @@ template<typename T>
 {
   unsigned int indicesValuesType;
   if(typeid(T) == typeid(unsigned int)) {
-    indicesValuesType = vesPrimitiveIndicesValueType::UnsignedInt;
+    //indicesValuesType = vesPrimitiveIndicesValueType::UnsignedInt;
   }
   // Default
   else {
