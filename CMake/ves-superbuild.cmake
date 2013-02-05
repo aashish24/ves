@@ -72,8 +72,8 @@ macro(compile_vtk proj)
   ExternalProject_Add(
     ${proj}
     SOURCE_DIR ${source_prefix}/vtk
-    GIT_REPOSITORY git://github.com/patmarion/VTK.git
-    GIT_TAG ce4a267
+    GIT_REPOSITORY git://github.com/aashish24/VTK.git
+    GIT_TAG 8e4e14e822d8
     INSTALL_COMMAND ""
     CMAKE_ARGS
       -DCMAKE_INSTALL_PREFIX:PATH=${install_prefix}/${proj}
