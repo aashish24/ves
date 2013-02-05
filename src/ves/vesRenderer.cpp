@@ -64,16 +64,16 @@ void vesRenderer::render()
   glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
 
-  const GLfloat light0Ambient[] = {0.05, 0.05, 0.05, 1.0};
+  const GLfloat light0Ambient[] = {0.0, 0.0, 0.0, 1.0};
   glLightfv(GL_LIGHT0, GL_AMBIENT, light0Ambient);
 
-  const GLfloat light0Diffuse[] = {1.0, 1.0, 1.0, 1.0};
+  const GLfloat light0Diffuse[] = {0.725, 0.725, 0.725, 1.0};
   glLightfv(GL_LIGHT0, GL_DIFFUSE, light0Diffuse);
 
-  const GLfloat light0Specular[] = {0.5, 0.5, 0.5, 1.0};
+  const GLfloat light0Specular[] = {0.0, 0.0, 0.0, 1.0};
   glLightfv(GL_LIGHT0, GL_SPECULAR, light0Specular);
 
-  const GLfloat light0Position[] = {0.0, 100.0, 100.0, 0.0};
+  const GLfloat light0Position[] = {0.0, 0.0, 0.650, 0.0};
   glLightfv(GL_LIGHT0, GL_POSITION, light0Position);
 
   glEnable(GL_COLOR_MATERIAL);

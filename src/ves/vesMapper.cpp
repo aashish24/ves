@@ -186,7 +186,6 @@ void vesMapper::render(const vesRenderState &renderState)
   assert(this->m_geometryData);
 
   if (!this->m_initialized) {
-    std::cout << "this->m_geometryData " << this->m_geometryData << std::endl;
     this->setupDrawObjects(renderState);
   }
 
@@ -300,9 +299,6 @@ void vesMapper::createVertexBufferObjects()
 
     std::vector<int> keys = this->m_geometryData->source(i)->keys();
     for(size_t j = 0; j < keys.size(); ++j) {
-
-      std::cerr << "Key is     " << keys[j] << std::endl;
-
       this->m_internal->m_bufferVertexAttributeMap[
       this->m_internal->m_buffers.back()].push_back(keys[j]);
     }
