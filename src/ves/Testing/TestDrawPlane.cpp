@@ -31,12 +31,7 @@
 #include <vesGeometryData.h>
 #include <vesMapper.h>
 #include <vesMaterial.h>
-//#include <vesModelViewUniform.h>
-//#include <vesProjectionUniform.h>
 #include <vesRenderer.h>
-//#include <vesShader.h>
-//#include <vesShaderProgram.h>
-//#include <vesUniform.h>
 #include <vesVertexAttribute.h>
 #include <vesVertexAttributeKeys.h>
 #include <vesViewport.h>
@@ -55,14 +50,9 @@ class vesTestDrawPlane {
 public:
 
   vesTestDrawPlane() :
-//    m_modelViewUniform(new vesModelViewUniform()),
-//    m_projectionUniform(new vesProjectionUniform()),
     m_positionVertexAttribute(new vesPositionVertexAttribute()),
     m_normalVertexAttribute(new vesNormalVertexAttribute()),
     m_colorVertexAttribute(new vesColorVertexAttribute()),
-//    m_vertexShader(new vesShader(vesShader::Vertex)),
-//    m_fragmentShader(new vesShader(vesShader::Fragment)),
-//    m_shaderProgram(vesShaderProgram::Ptr(new vesShaderProgram())),
     m_material(vesMaterial::Ptr(new vesMaterial())),
     m_mapper(vesMapper::Ptr(new vesMapper())),
     m_actor(vesActor::Ptr(new vesActor())),
@@ -100,47 +90,10 @@ public:
 
   void init()
   {
-//    const std::string vertexShaderSource =
-//      "uniform highp mat4 modelViewMatrix;\n \
-//       uniform highp mat4 projectionMatrix;\n \
-//       attribute highp vec4 vertexPosition;\n \
-//       attribute mediump vec4 vertexColor;\n \
-//       varying mediump vec4 varColor;\n \
-//       void main()\n \
-//       {\n \
-//         gl_Position = projectionMatrix * modelViewMatrix * vertexPosition;\n \
-//         varColor = vertexColor;\n \
-//       }";
-
-//    const std::string fragmentShaderSource =
-//      "varying mediump vec4 varColor;\n \
-//       void main()\n \
-//       {\n \
-//         gl_FragColor = varColor;\n \
-//       }";
-
-    //this->m_vertexShader->setShaderSource(vertexShaderSource);
-    //this->m_fragmentShader->setShaderSource(fragmentShaderSource);
-
-    //this->m_shaderProgram->addShader(this->m_vertexShader);
-    //this->m_shaderProgram->addShader(this->m_fragmentShader);
-
-    //this->m_shaderProgram->addUniform(this->m_modelViewUniform);
-    //this->m_shaderProgram->addUniform(this->m_projectionUniform);
-    //this->m_shaderProgram->addVertexAttribute(this->m_positionVertexAttribute,
-    //                                          vesVertexAttributeKeys::Position);
-    //this->m_shaderProgram->addVertexAttribute(this->m_normalVertexAttribute,
-    //                                          vesVertexAttributeKeys::Normal);
-    //this->m_shaderProgram->addVertexAttribute(this->m_colorVertexAttribute,
-    //                                          vesVertexAttributeKeys::Color);
-
     this->m_material->addAttribute(this->m_positionVertexAttribute);
     this->m_material->addAttribute(this->m_normalVertexAttribute);
     this->m_material->addAttribute(this->m_colorVertexAttribute);
 
-    std::cerr << "Done adding attributes " << std::endl;
-
-    //this->m_material->addAttribute(this->m_shaderProgram);
     this->m_mapper->setGeometryData(this->createPlane());
     this->m_actor->setMapper(this->m_mapper);
     this->m_actor->setMaterial(this->m_material);
@@ -201,8 +154,6 @@ public:
     geometryData->addSource(sourceData);
     geometryData->addPrimitive(triangles);
 
-    std::cerr << "Plane geometry data is " << geometryData << std::endl;
-
     return geometryData;
   }
 
@@ -241,17 +192,12 @@ private:
   std::string       DataDirectory;
   bool              IsTesting;
 
-  //vesSharedPtr<vesModelViewUniform> m_modelViewUniform;
-  //vesSharedPtr<vesProjectionUniform> m_projectionUniform;
   vesSharedPtr<vesPositionVertexAttribute> m_positionVertexAttribute;
   vesSharedPtr<vesNormalVertexAttribute> m_normalVertexAttribute;
   vesSharedPtr<vesColorVertexAttribute> m_colorVertexAttribute;
   vesSharedPtr<vesTextureCoordinateVertexAttribute> m_textureCoodinateAttribute;
   vesSharedPtr<vesGeometryData> m_backgroundPlaneData;
 
-  //vesShader::Ptr m_vertexShader;
-  //vesShader::Ptr m_fragmentShader;
-  //vesShaderProgram::Ptr m_shaderProgram;
   vesMaterial::Ptr m_material;
   vesMapper::Ptr m_mapper;
   vesActor::Ptr m_actor;
@@ -301,6 +247,7 @@ void FinalizeTest()
 }
 
 }; // end namespace
+
 //----------------------------------------------------------------------------
 
 
