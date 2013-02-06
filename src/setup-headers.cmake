@@ -44,7 +44,6 @@ endfunction()
 
 process_dir(.)
 process_dir(ves)
-process_dir(shaders)
 
 if(VES_USE_VTK)
   process_dir(kiwi)
