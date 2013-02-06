@@ -24,7 +24,6 @@
 #include "vesRenderer.h"
 #include "vesCamera.h"
 #include "vesMapper.h"
-//#include "vesUniform.h"
 #include "vesKiwiPolyDataRepresentation.h"
 
 #include <vtkNew.h>

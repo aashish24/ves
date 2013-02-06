@@ -304,9 +304,10 @@ main(int argc, char *argv[])
   }
 
   /* initialize the graphics device */
-  if (gf_dev_attach(&gfdev, NULL, &info)!=GF_ERR_OK)
+  int res = gf_dev_attach(&gfdev, NULL, &info);
+  if (res != GF_ERR_OK)
   {
-     perror("gf_dev_attach()");
+     fprintf(stderr, "gf_dev_attach() %d\n", res);
      return -1;
   }
 
