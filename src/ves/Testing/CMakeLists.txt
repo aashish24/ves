@@ -1,5 +1,6 @@
 set(tests
   TestDrawPlaneQNX
+  TestDrawPlaneQNX2
   TestMatrix
   )
 
