@@ -29,8 +29,9 @@
 #include <gf/gf3d.h>
 
 
-static EGLint attribute_list_tmp[] = {
+static EGLint attribute_list[] = {
   EGL_NATIVE_VISUAL_ID, 0,
+  EGL_NATIVE_RENDERABLE, EGL_TRUE,
   EGL_RED_SIZE, 5,
   EGL_GREEN_SIZE, 5,
   EGL_BLUE_SIZE, 5,
@@ -38,39 +39,12 @@ static EGLint attribute_list_tmp[] = {
   EGL_NONE
 };
 
-//static EGLint attribute_list_tmp[] = {
-//  EGL_NATIVE_VISUAL_ID, 0,
-//  EGL_RED_SIZE, 8,
-//  EGL_GREEN_SIZE, 8,
-//  EGL_BLUE_SIZE, 8,
-//  EGL_ALPHA_SIZE, 8,
-//  EGL_SURFACE_TYPE, 4,
-//  EGL_DEPTH_SIZE, 1,
-//  EGL_STENCIL_SIZE, 1,
-//  EGL_SAMPLE_BUFFERS, 0,
-//  EGL_LEVEL, 0,
-//  EGL_RENDERABLE_TYPE, EGL_OPENGL_ES_BIT,
-//  EGL_NONE
-//};
+gf_dev_t    gfdev;
+gf_layer_t  layer;
+int         layer_idx;
 
-//static EGLint attribute_list_tmp [] = {
-//EGL_NATIVE_RENDERABLE, EGL_TRUE,
-// EGL_NONE
-//};
-
-static	gf_display_t		gf_disp;
-static	gf_dev_t			gf_dev;
-static	EGLConfig			config;
-static	EGLContext			econtext;
-static	EGLint				num_config;
-static	gf_dev_info_t	 	info;
-static	gf_display_info_t	disp_info;
-
-gf_layer_t layer;
-int layer_idx;
-gf_layer_info_t linfo;
-gf_3d_target_t target;
-EGLint format_idx;
+static EGLDisplay display;
+static EGLSurface surface;
 
 
 //----------------------------------------------------------------------------
@@ -278,231 +252,194 @@ void FinalizeTest()
 
 }; // end namespace
 
-int
-time_elapsed()
-{
-  static uint64_t	init_clock_cycles;
-  static int	timer_installed;
-  static uint64_t	cycles_per_sec;
-  uint64_t	timestamp;
+//int
+//time_elapsed()
+//{
+//  static uint64_t	init_clock_cycles;
+//  static int	timer_installed;
+//  static uint64_t	cycles_per_sec;
+//  uint64_t	timestamp;
 
-  /* Return number of milliseconds since first call */
-  if (!timer_installed) {
-    init_clock_cycles = ClockCycles();
-    timer_installed = 1;
-    return 0;
-  }
-
-  timestamp = ClockCycles();
-
-  if (timestamp < init_clock_cycles) {
-    /* Counter wrapped */
-    timestamp += (UINT64_MAX-init_clock_cycles) + 1;
-  } else {
-    timestamp -= init_clock_cycles;
-  }
-
-  if (cycles_per_sec == 0)
-    cycles_per_sec =
-        SYSPAGE_ENTRY(qtime)->cycles_per_sec;
-
-  if (timestamp > 1000*1000*1000)
-    return timestamp / cycles_per_sec * 1000;
-  else
-    return timestamp * 1000 / cycles_per_sec;
-}
-
-int
-init_contenxt( EGLDisplay *display, EGLSurface *surface, gf_surface_t *gf_surface,
-      int width, int height, int init_flag )
-{
-  if( init_flag ) {
-
-    /* initialize the graphics device */
-    if( gf_dev_attach(&gf_dev, GF_DEVICE_INDEX(0), &info ) != GF_ERR_OK ) {
-      perror("gf_dev_attach()");
-      return -1;
-    }
-
-    printf("Number of displays: %d\n",info.ndisplays);
-
-    for (unsigned int i = 0; i < info.ndisplays; i++) {
-        printf("Display %d: ", i);
-        if (gf_display_attach(&gf_disp, gf_dev, i, &disp_info) == GF_ERR_OK) {
-            printf("%dX%d, refresh = %dHz\n", disp_info.xres,
-                disp_info.yres, disp_info.refresh);
-            printf("Number of layers: %d\n", disp_info.nlayers);
-        } else {
-            printf("gf_display_attach() failed\n");
-        }
-    }
-
-    layer_idx = disp_info.main_layer_index;
-
-    /* get an EGL display connection */
-    *display = eglGetDisplay(gf_dev);
-
-    if( *display == EGL_NO_DISPLAY ) {
-      fprintf(stderr, "eglGetDisplay() failed\n");
-      return -1;
-    }
-
-    printf("Layer index: %d\n", layer_idx);
-    if(gf_layer_attach(&layer, gf_disp, layer_idx, 0) != GF_ERR_OK)
-    {
-      fprintf(stderr, "ERROR: gf_layer_attach()\n");
-      return -1;
-    }
-
-    // initialize the EGL display connection
-    if (eglInitialize(*display, NULL, NULL) != EGL_TRUE) {
-      fprintf(stderr, "eglInitialize: error 0x%x\n", eglGetError());
-      exit(EXIT_FAILURE);
-    }
-
-    GLuint it;
-    for (it = 0; ; it++) {
-      // Walk through all possible pixel formats for this layer
-      if (gf_layer_query(layer, it, &linfo) != GF_ERR_OK) {
-        fprintf(stderr, "Couldn’t find a compatible frame "
-        "buffer configuration on layer %d\n", gf_layer_query(layer, it, &linfo));
-        fprintf(stderr, "Layer it %d\n", it);
-        exit(EXIT_FAILURE);
-      }
-
-      // We want the color buffer format to match the layer format,
-      // so request the layer format through EGL_NATIVE_VISUAL_ID.
-      attribute_list_tmp[1] = linfo.format;
-      // Look for a compatible EGL frame buffer configuration
-      if (eglChooseConfig(*display,
-      attribute_list_tmp, &config, 1, &num_config) == EGL_TRUE) {
-        if (num_config > 0) {
-          format_idx = it;
-          break;
-        }
-      }
-    }
-
-    // create a 3D rendering target
-    if (gf_3d_target_create(&target, layer, NULL, 0, width, height, linfo.format)!=GF_ERR_OK)
-    {
-      fprintf(stderr, "Unable to create rendering target\n");
-      return -1;
-    }
-    else
-    {
-      fprintf(stderr, "Created rendering target\n");
-    };
-
-    gf_layer_set_src_viewport(layer, 0, 0, width-1, height-1);
-    gf_layer_set_dst_viewport(layer, 0, 0, width-1, height-1);
-    gf_layer_enable(layer);
-
-    // The layer settings haven't taken effect yet since we haven't
-    // called gf_layer_update() yet.  This is exactly what we want,
-    // since we haven't supplied a valid surface to display yet.
-    // Later, the OpenGL ES library calls will call gf_layer_update()
-    // internally, when  displaying the rendered 3D content.
-
-    // create an EGL rendering context
-    if( NULL == (econtext = eglCreateContext( *display, config, EGL_NO_CONTEXT, NULL )) ) {
-      perror( "eglCreateContext()" );
-      return -1;
-    }
-
-    // Create an EGL window surface
-    *surface = eglCreateWindowSurface (*display, config, target, NULL);
-    if (surface == EGL_NO_SURFACE)
-    {
-       fprintf(stderr, "Create surface failed: 0x%x\n", eglGetError());
-       return -1;
-    }
-
-    // Connect the context to the surface
-    int res = eglMakeCurrent (*display, *surface, *surface, econtext);
-    if (res == EGL_FALSE)
-    {
-      fprintf(stderr, "Make current failed: 0x%x\n", eglGetError());
-    }
-
-    return 0;
-
-  } else {
-    // free the existing surface.
-    eglMakeCurrent( *display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-    eglDestroySurface( *display, *surface );
-    gf_surface_free( *gf_surface );
-  }
-
-  //  We want to allocate a surface that EGL can use to create
-  //  a Pixmap surface
-//  gf_3d_config_info_t cfginfo;
-//  if (gf_3d_query_config(&cfginfo, gf_dev, display, format_idx) != GF_ERR_OK) {
-//      fprintf(stderr, "query native failed\n");
-//      exit(EXIT_FAILURE);
+//  /* Return number of milliseconds since first call */
+//  if (!timer_installed) {
+//    init_clock_cycles = ClockCycles();
+//    timer_installed = 1;
+//    return 0;
 //  }
 
-//  if (gf_surface_create( gf_surface, gf_dev, width, height,
-//      cfginfo.format, NULL, cfginfo.create_flags) != GF_ERR_OK ) {
-//      fprintf(stderr, "create surface failed\n");
-//      exit(EXIT_FAILURE);
+//  timestamp = ClockCycles();
+
+//  if (timestamp < init_clock_cycles) {
+//    /* Counter wrapped */
+//    timestamp += (UINT64_MAX-init_clock_cycles) + 1;
+//  } else {
+//    timestamp -= init_clock_cycles;
 //  }
 
-//  *surface = eglCreatePixmapSurface(*display, format_idx, *gf_surface, NULL);
+//  if (cycles_per_sec == 0)
+//    cycles_per_sec =
+//        SYSPAGE_ENTRY(qtime)->cycles_per_sec;
 
-//  if (*surface == EGL_NO_SURFACE) {
-//      fprintf(stderr, "Create Pixmap failed: 0x%x\n", eglGetError());
-//      exit(EXIT_FAILURE);
-//  }
-
-
-  /* connect the context to the surface */
-//  if (eglMakeCurrent( *display, *surface, *surface, econtext) == EGL_FALSE) {
-//    fprintf(stderr, "Make current failed: 0x%x\n", eglGetError());
-//    exit(EXIT_FAILURE);
-//  }
-
-  return 0;
-}
+//  if (timestamp > 1000*1000*1000)
+//    return timestamp / cycles_per_sec * 1000;
+//  else
+//    return timestamp * 1000 / cycles_per_sec;
+//}
 
 int
 main(int argc, char *argv[])
 {
-  const int winWidth = 800, winHeight = 600;
-  EGLSurface egl_surf;
-  EGLContext egl_ctx;
-  EGLDisplay egl_dpy;
-  gf_surface_t gf_surface;
+  gf_3d_target_t      target;
+  gf_display_t        gf_disp;
+  EGLConfig           config;
+  EGLContext          econtext;
+  EGLint              num_config;
+  gf_dev_info_t       info;
+  gf_layer_info_t     linfo;
+  gf_display_info_t   disp_info;
+  GLuint              width, height;
+  GLuint              it;
 
   if (!InitTest(argc, argv)) {
     return -1;
+    fprintf(stderr, "Looping\n");
   }
 
-  init_contenxt(&egl_dpy, &egl_surf, &gf_surface, winWidth, winHeight, 1);
+  /* initialize the graphics device */
+  if (gf_dev_attach(&gfdev, NULL, &info)!=GF_ERR_OK)
+  {
+     perror("gf_dev_attach()");
+     return -1;
+  }
+
+  /* Setup the layer we will use */
+  if (gf_display_attach(&gf_disp, gfdev, 0, &disp_info)!=GF_ERR_OK)
+  {
+     fprintf(stderr, "gf_display_attach() failed\n");
+     return -1;
+  }
+
+  width = disp_info.xres;
+  height = disp_info.yres;
+
+  layer_idx = disp_info.main_layer_index;
+
+  /* get an EGL display connection */
+  display=eglGetDisplay(gfdev);
+  if (display==EGL_NO_DISPLAY)
+  {
+     fprintf(stderr, "eglGetDisplay() failed\n");
+     return -1;
+  }
+
+  if (gf_layer_attach(&layer, gf_disp, layer_idx, 0)!=GF_ERR_OK)
+  {
+     fprintf(stderr, "gf_layer_attach() failed\n");
+     return -1;
+  }
+
+  /* initialize the EGL display connection */
+  if (eglInitialize(display, NULL, NULL)!=EGL_TRUE)
+  {
+     fprintf(stderr, "eglInitialize: error 0x%x\n", eglGetError());
+     return -1;
+  }
+
+  for (it=0;; it++)
+  {
+     /* Walk through all possible pixel formats for this layer */
+     if (gf_layer_query(layer, it, &linfo)==-1)
+     {
+        fprintf(stderr, "Couldn't find a compatible frame "
+                        "buffer configuration on layer %d\n", layer_idx);
+        return -1;
+     }
+
+     /*
+      * We want the color buffer format to match the layer format,
+      * so request the layer format through EGL_NATIVE_VISUAL_ID.
+      */
+     attribute_list[1]=linfo.format;
+
+     /* Look for a compatible EGL frame buffer configuration */
+     if (eglChooseConfig(display, attribute_list, &config, 1, &num_config)==EGL_TRUE)
+     {
+        if (num_config>0)
+        {
+           break;
+        }
+     }
+
+     fprintf(stderr, "Looping\n");
+  }
+
+  /* create a 3D rendering target */
+  if (gf_3d_target_create(&target, layer, NULL, 0, width, height, linfo.format)!=GF_ERR_OK)
+  {
+     fprintf(stderr, "Unable to create rendering target\n");
+     return -1;
+  }
+
+  gf_layer_set_src_viewport(layer, 0, 0, width-1, height-1);
+  gf_layer_set_dst_viewport(layer, 0, 0, width-1, height-1);
+  gf_layer_enable(layer);
+
+  /*
+   * The layer settings haven't taken effect yet since we haven't
+   * called gf_layer_update() yet.  This is exactly what we want,
+   * since we haven't supplied a valid surface to display yet.
+   * Later, the OpenGL ES library calls will call gf_layer_update()
+   * internally, when  displaying the rendered 3D content.
+   */
+
+  /* create an EGL rendering context */
+  econtext=eglCreateContext(display, config, EGL_NO_CONTEXT, NULL);
+  if (econtext==EGL_NO_CONTEXT)
+  {
+     fprintf(stderr, "Create context failed: 0x%x\n", eglGetError());
+     return -1;
+  }
+
+  /* create an EGL window surface */
+  surface=eglCreateWindowSurface(display, config, target, NULL);
+  if (surface==EGL_NO_SURFACE)
+  {
+     fprintf(stderr, "Create surface failed: 0x%x\n", eglGetError());
+     return -1;
+  }
+
+  /* connect the context to the surface */
+  if (eglMakeCurrent(display, surface, surface, econtext)==EGL_FALSE)
+  {
+     fprintf(stderr, "Make current failed: 0x%x\n", eglGetError());
+     return -1;
+  }
 
   InitRendering();
 
   // render once
-  testDrawPlane->resizeView(winWidth, winHeight);
+  testDrawPlane->resizeView(width, height);
   testDrawPlane->resetView();
   testDrawPlane->render();
-  eglSwapBuffers(egl_dpy, egl_surf);
+  glFinish();
+  eglWaitGL();
+  eglSwapBuffers(display, surface);
 
   // begin the event loop if not in testing mode
   bool testPassed = true;
   if (!testDrawPlane->isTesting()) {
-    // TODO fix this
-//    event_loop(x_dpy, win, egl_dpy, egl_surf);
+    do {
+       testDrawPlane->render();
+       glFinish();
+       eglWaitGL();
+       eglSwapBuffers(display, surface);
+    } while(1);
   }
   else {
     testPassed = DoTesting();
   }
 
   FinalizeTest();
-
-  eglDestroyContext(egl_dpy, egl_ctx);
-  eglDestroySurface(egl_dpy, egl_surf);
-  eglTerminate(egl_dpy);
 
   return testPassed ? 0 : 1;
 }
