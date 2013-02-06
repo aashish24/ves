@@ -61,7 +61,6 @@ void vesTexture::bind(const vesRenderState &renderState)
   glBindTexture(GL_TEXTURE_2D, this->m_textureHandle);
 }
 
-
 void vesTexture::unbind(const vesRenderState &renderState)
 {
   vesNotUsed(renderState);
@@ -237,10 +236,10 @@ void vesTexture::setup(const vesRenderState &renderState)
     glDeleteTextures(1, &this->m_textureHandle);
     glGenTextures(1, &this->m_textureHandle);
     glBindTexture(GL_TEXTURE_2D, this->m_textureHandle);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
     if (this->m_hasImage) {

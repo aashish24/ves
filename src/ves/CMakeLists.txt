@@ -28,7 +28,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/vesVersion.h.in
   ${CMAKE_CURRENT_BINARY_DIR}/vesVersion.h @ONLY)
 
 ves_add_library(ves "${sources}" "")
-target_link_libraries(ves GLESv1_CM EGL)
+target_link_libraries(ves GLES_CM EGL)
 
 # Add version info to the target. Currently using a single global version string.
 set_target_properties(ves PROPERTIES SOVERSION ${VES_VERSION_STR}

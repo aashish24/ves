@@ -37,11 +37,6 @@ void init_scene(int width, int height)
   /* Setup display viewport */
   glViewport(0, 0, (GLint)width, (GLint)height);
 
-  /* draw a perspective scene */
-  glMatrixMode(GL_PROJECTION);
-  glFrustumf(-100.f, 100.f, -100.f, 100.f, 320.f, 640.f);
-  glMatrixMode(GL_MODELVIEW);
-
   /* turn on features */
   glDisable(GL_DEPTH_TEST);
 
@@ -53,28 +48,26 @@ void init_scene(int width, int height)
 }
 //////////////////////////////////////////////////////////////////////////////////////////
 
-void render_scene()
+void render_scene(int width, int height)
 {
-  glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-  glClearColor(1.0, 1.0, 1.0, 1.0);
+  glMatrixMode (GL_PROJECTION);
+  glLoadIdentity ();
+  glOrthof (0, width, height, 0, 0, 1);
+  glMatrixMode (GL_MODELVIEW);
 
-  fprintf(stderr, "Render\n");
+  glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  const GLfloat line[] = {
-    0, 0, //point A
-    50, 50, //point B
-  };
+  GLfloat line [4];
+  line[0] = 0;
+  line[1] = 0;
+  line[2] = width;
+  line[3] = height;
 
-  glVertexPointer(2, GL_FLOAT, 0, line);
-  glEnableClientState(GL_VERTEX_ARRAY);
-  glDrawArrays(GL_LINES, 0, 2);
+  glColor4f (0.0f, 1.0f, 0.0f, 1.0f);
+  glVertexPointer (2, GL_FLOAT, 0, line);
+  glEnableClientState (GL_VERTEX_ARRAY);
 
-  glDisableClientState(GL_VERTEX_ARRAY);
-
-  if (glGetError())
-  {
-    printf("Oops! I screwed up my OpenGL ES calls somewhere\n");
-  }
+  glDrawArrays (GL_LINES, 0, 2);
 }
 //////////////////////////////////////////////////////////////////////////////////////////
 
@@ -105,10 +98,10 @@ int main(int argc, char** argv)
       return -1;
    }
 
-   width=disp_info.xres;
-   height=disp_info.yres;
+   width = disp_info.xres;
+   height = disp_info.yres;
 
-   layer_idx=disp_info.main_layer_index;
+   layer_idx = disp_info.main_layer_index;
 
    /* get an EGL display connection */
    display=eglGetDisplay(gfdev);
@@ -204,7 +197,7 @@ int main(int argc, char** argv)
    init_scene(width, height);
 
    do {
-      render_scene();
+      render_scene(width, height);
       glFinish();
       eglWaitGL();
       eglSwapBuffers(display, surface);
