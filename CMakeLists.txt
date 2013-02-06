@@ -1,13 +1,22 @@
 cmake_minimum_required(VERSION 2.8.5)
 
-include(CMake/cmake_patch.cmake)
-
 include(CMake/ves-superbuild.cmake)
 if(ves_superbuild_enabled)
   return()
 endif()
 
 project(VES)
+
+# Workaround for the CMake / qcc bug
+#
+# Teach CMakeParseImplicitLinkInfo to convert implicit link library full
+# paths to a canonical form.  This makes them more reproducible in case
+# different language compiler front-ends add the same library by different
+# paths e.g. ".../libA.a" and "...//libA.a".
+
+# Add a case to the CMake.ImplicitLinkInfo test to cover removal of extra
+# slashes from both library and directory paths.
+include(CMake/cmake_patch.cmake)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake/Modules")
 
