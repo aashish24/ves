@@ -46,7 +46,7 @@ void vesBlend::setBlendFunction(const vesBlendFunction &blendFunction)
 
 void vesBlend::bind(const vesRenderState &renderState)
 {
-  this->m_wasEnabled = glIsEnabled(GL_BLEND);
+//  this->m_wasEnabled = glIsEnabled(GL_BLEND);
 
   if (this->m_enable) {
     glEnable(GL_BLEND);

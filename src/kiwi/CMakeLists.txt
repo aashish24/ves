@@ -51,5 +51,5 @@ set_target_properties(kiwi PROPERTIES SOVERSION ${VES_VERSION_STR}
 
 if(BUILD_TESTING)
   #TODO FIX this
-  #add_subdirectory(Testing)
+  add_subdirectory(Testing)
 endif()
