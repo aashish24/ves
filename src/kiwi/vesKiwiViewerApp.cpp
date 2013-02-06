@@ -47,7 +47,6 @@
 #include "vesVertexAttribute.h"
 #include "vesVertexAttributeKeys.h"
 #include "vesOpenGLSupport.h"
-#include "vesBuiltinShaders.h"
 
 #include <vtkNew.h>
 #include <vtkPolyData.h>
@@ -450,6 +449,8 @@ bool vesKiwiViewerApp::initGouraudMaterial()
   this->addVertexColorAttribute(material);
 
   this->Internal->GeometryMaterial = material;
+
+  return true;
 }
 
 //----------------------------------------------------------------------------

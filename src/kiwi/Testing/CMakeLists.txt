@@ -15,7 +15,7 @@ set(tests
 
 
 macro(ves_add_test name)
-  set(deps GLES_CM EGL gf ves kiwi)
+  set(deps gf GLES_CM EGL ves kiwi)
   add_executable(${name} ${name}.cpp)
   target_link_libraries(${name} ${deps})
   add_test(${name} ${EXECUTABLE_OUTPUT_PATH}/${name} ${VES_SOURCE_DIR} ${VES_SOURCE_DIR}/Testing/BaselineImages)
