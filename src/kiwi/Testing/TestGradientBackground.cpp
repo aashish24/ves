@@ -70,22 +70,15 @@ public:
     this->unloadData();
   }
 
-  void initClipShader(const std::string& vertexSource, const std::string fragmentSource)
+  void initClipMaterial()
   {
     vesSharedPtr<vesMaterial> material
       = this->addMaterial();
-//    this->addModelViewMatrixUniform(shaderProgram);
-//    this->addProjectionMatrixUniform(shaderProgram);
-//    this->addNormalMatrixUniform(shaderProgram);
     this->addVertexPositionAttribute(material);
     this->addVertexNormalAttribute(material);
     this->addVertexColorAttribute(material);
     this->addVertexTextureCoordinateAttribute(material);
     this->ClipMaterial = material;
-
-//    this->ClipUniform = vesSharedPtr<vesUniform>(
-//      new vesUniform("clipPlaneEquation", vesVector4f(-1.0f, 0.0f, 0.0f, 0.0f)));
-//    this->ClipMaterial->addUniform(this->ClipUniform);
   }
 
   void unloadData()
@@ -112,7 +105,6 @@ public:
     this->DataRep = rep;
   }
 
-//  vesSharedPtr<vesUniform> ClipUniform;
   vesSharedPtr<vesMaterial> ClipMaterial;
   vesKiwiPolyDataRepresentation* DataRep;
 };
@@ -210,7 +202,7 @@ std::string GetFileContents(const std::string& filename)
 //----------------------------------------------------------------------------
 void InitRendering()
 {
-  testHelper->app()->initClipShader(
+  testHelper->app()->initClipMaterial(
     vesBuiltinShaders::vesClipPlane_vert(),
     vesBuiltinShaders::vesClipPlane_frag());
 }

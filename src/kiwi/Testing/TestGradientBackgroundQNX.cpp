@@ -13,6 +13,7 @@
 #include <cstring>
 
 #include <vesActor.h>
+#include <vesBackground.h>
 #include <vesCamera.h>
 #include <vesGeometryData.h>
 #include <vesMapper.h>
@@ -21,6 +22,13 @@
 #include <vesVertexAttribute.h>
 #include <vesVertexAttributeKeys.h>
 #include <vesViewport.h>
+
+#include <vesKiwiBaseApp.h>
+#include <vesKiwiBaselineImageTester.h>
+#include <vesKiwiDataLoader.h>
+#include <vesKiwiPolyDataRepresentation.h>
+
+#include <vtkPolyData.h>
 
 #include <GLES/gl.h>
 #include <GLES/egl.h>
@@ -48,22 +56,76 @@ static EGLSurface surface;
 //----------------------------------------------------------------------------
 namespace {
 
-class vesTestDrawPlane {
+
+class vesGradientBackgroundApp : public vesKiwiBaseApp {
 public:
 
-  vesTestDrawPlane() :
-    m_positionVertexAttribute(new vesPositionVertexAttribute()),
-    m_normalVertexAttribute(new vesNormalVertexAttribute()),
-    m_colorVertexAttribute(new vesColorVertexAttribute()),
-    m_material(vesMaterial::Ptr(new vesMaterial())),
-    m_mapper(vesMapper::Ptr(new vesMapper())),
-    m_actor(vesActor::Ptr(new vesActor())),
-    m_renderer(vesRenderer::Ptr(new vesRenderer()))
+  vesGradientBackgroundApp()
+  {
+    this->DataRep = 0;
+
+    this->renderer()->background()->setGradientColor(
+      vesVector4f(0.0f/255.0f, 0.0f/255.0f, 2.0f/255.0f, 1.0),
+      vesVector4f(55.0f/255.0f, 55.0f/255.0f, 113.0f/255.0f, 1.0));
+  }
+
+  ~vesGradientBackgroundApp()
+  {
+    this->unloadData();
+  }
+
+  void initClipMaterial()
+  {
+    vesSharedPtr<vesMaterial> material
+      = this->addMaterial();
+    this->addVertexPositionAttribute(material);
+    this->addVertexNormalAttribute(material);
+    this->addVertexColorAttribute(material);
+    this->addVertexTextureCoordinateAttribute(material);
+    this->ClipMaterial = material;
+  }
+
+  void unloadData()
+  {
+    if (this->DataRep) {
+      this->DataRep->removeSelfFromRenderer(this->renderer());
+      delete this->DataRep;
+      this->DataRep = 0;
+    }
+  }
+
+  void loadData(const std::string& filename)
+  {
+    this->unloadData();
+
+    vesKiwiDataLoader loader;
+    vtkSmartPointer<vtkPolyData> polyData = vtkPolyData::SafeDownCast(loader.loadDataset(filename));
+    assert(polyData.GetPointer());
+
+    vesKiwiPolyDataRepresentation* rep = new vesKiwiPolyDataRepresentation();
+    rep->initializeWithMaterial(this->ClipMaterial);
+    rep->setPolyData(polyData);
+    rep->addSelfToRenderer(this->renderer());
+    this->DataRep = rep;
+  }
+
+  vesSharedPtr<vesMaterial> ClipMaterial;
+  vesKiwiPolyDataRepresentation* DataRep;
+};
+
+class vesTestHelper {
+public:
+  vesTestHelper() :
+    IsTesting(false)
   {
   }
 
-  ~vesTestDrawPlane()
+  ~vesTestHelper()
   {
+  }
+
+  vesGradientBackgroundApp* app() {
+    return &this->App;
   }
 
   std::string sourceDirectory() {
@@ -90,138 +152,73 @@ public:
     this->IsTesting = testing;
   }
 
-  void init()
-  {
-    this->m_material->addAttribute(this->m_positionVertexAttribute);
-    this->m_material->addAttribute(this->m_normalVertexAttribute);
-    this->m_material->addAttribute(this->m_colorVertexAttribute);
-
-    this->m_mapper->setGeometryData(this->createPlane());
-    this->m_actor->setMapper(this->m_mapper);
-    this->m_actor->setMaterial(this->m_material);
-    this->m_renderer->addActor(this->m_actor);
-
-    this->m_renderer->camera()->setParallelProjection(false);
-    this->m_renderer->setBackgroundColor(0.0, 0.4, 0.6);
+  void resizeView(int width, int height) {
+    this->App.resizeView(width, height);
   }
 
-  vesSharedPtr<vesGeometryData> createPlane()
-  {
-    vesGeometryData::Ptr geometryData (new vesGeometryData());
-    vesSourceDataP4N4C4f::Ptr sourceData(new vesSourceDataP4N4C4f());
-
-    vesVector4f topLeftColor = vesVector4f(0.5f, 0.0f, 1.0f, 1.0f);
-    vesVector4f bottomRightColor = vesVector4f(1.0f, 0.0f, 1.0f, 1.0f);
-    vesVector4f color = vesVector4f(0.0f, 0.0f, 0.0f, 1.0f);
-
-    // Points.
-    vesVertexDataP4N4C4f v1;
-    v1.m_position = vesVector4f(-1.0f, -1.0f, 0.0f, 1.0f);
-    v1.m_normal = vesVector4f(0.0f, 0.0f, 0.0f, 0.0f);
-    v1.m_color = vesVector4f(color[0], color[1], color[2], color[3]);
-
-    vesVertexDataP4N4C4f v2;
-    v2.m_position = vesVector4f(1.0f, -1.0f, 0.0f, 1.0f);
-    v2.m_normal = vesVector4f(0.0f, 0.0f, 0.0f, 0.0f);
-    v2.m_color = vesVector4f(bottomRightColor[0], bottomRightColor[1],
-      bottomRightColor[2], bottomRightColor[3]);
-
-    vesVertexDataP4N4C4f v3;
-    v3.m_position = vesVector4f(1.0f, 1.0f, 0.0f,1.0f);
-    v3.m_normal = vesVector4f(0.0f, 0.0f, 0.0f, 0.0f);
-    v3.m_color = vesVector4f(color[0], color[1], color[2], color[3]);
-
-    vesVertexDataP4N4C4f v4;
-    v4.m_position = vesVector4f(-1.0f, 1.0f, 0.0f, 1.0f);
-    v4.m_normal = vesVector4f(0.0f, 0.0f, 0.0f, 0.0f);
-    v4.m_color = vesVector4f(topLeftColor[0], topLeftColor[1],
-        topLeftColor[2], topLeftColor[3]);
-
-    sourceData->pushBack(v1);
-    sourceData->pushBack(v2);
-    sourceData->pushBack(v3);
-    sourceData->pushBack(v4);
-
-    // Triangle cells.
-    vesPrimitive::Ptr triangles (new vesPrimitive());
-    vesSharedPtr< vesIndices<unsigned short> > indices (new vesIndices<unsigned short>());
-    indices->pushBackIndices(0, 3, 2);
-    indices->pushBackIndices(1, 0, 2);
-    triangles->setVesIndices(indices);
-    triangles->setPrimitiveType(vesPrimitiveRenderType::Triangles);
-    triangles->setIndexCount(3);
-    triangles->setIndicesValueType(vesPrimitiveIndicesValueType::UnsignedShort);
-
-    geometryData->setName("PlaneGeometryData");
-    geometryData->addSource(sourceData);
-    geometryData->addPrimitive(triangles);
-
-    return geometryData;
+  void resetView() {
+    this->App.resetView();
   }
 
-  void render()
-  {
-    this->m_renderer->render();
+  void render() {
+    this->App.render();
   }
-
-  void resizeView(int winWidth, int winHeight)
-  {
-    this->m_renderer->resize(winWidth, winHeight, 1.0f);
-  }
-
-  void resetView()
-  {
-    // dolly so that scene fits window
-    this->m_renderer->resetCamera();
-  }
-
-  void toggleVisibility()
-  {
-    this->m_actor->setVisible(!this->m_actor->isVisible());
-    this->render();
-  }
-
-  void toggleColorVisibility()
-  {
-    //this->m_material->enableVertexColor(!this->m_material->isEnabledVertexColor());
-    this->render();
-  }
-
 
 private:
+  vesGradientBackgroundApp App;
 
   std::string       SourceDirectory;
   std::string       DataDirectory;
   bool              IsTesting;
-
-  vesSharedPtr<vesPositionVertexAttribute> m_positionVertexAttribute;
-  vesSharedPtr<vesNormalVertexAttribute> m_normalVertexAttribute;
-  vesSharedPtr<vesColorVertexAttribute> m_colorVertexAttribute;
-  vesSharedPtr<vesTextureCoordinateVertexAttribute> m_textureCoodinateAttribute;
-  vesSharedPtr<vesGeometryData> m_backgroundPlaneData;
-
-  vesMaterial::Ptr m_material;
-  vesMapper::Ptr m_mapper;
-  vesActor::Ptr m_actor;
-  vesRenderer::Ptr m_renderer;
-
 };
 
 //----------------------------------------------------------------------------
-vesTestDrawPlane* testDrawPlane;
+vesTestHelper* testHelper;
+
+//----------------------------------------------------------------------------
+void LoadData()
+{
+  std::string filename = testHelper->sourceDirectory() +
+    std::string("/Apps/iOS/Kiwi/Kiwi/Data/bunny.vtp");
+
+  testHelper->app()->loadData(filename);
+  testHelper->app()->resetView();
+}
+
+//----------------------------------------------------------------------------
+void LoadDefaultData()
+{
+  LoadData();
+}
 
 //----------------------------------------------------------------------------
 bool DoTesting()
 {
-  testDrawPlane->render();
+  const double threshold = 10.0;
+  const std::string testName = "Gradient Background";
 
-  return true;
+  vesKiwiBaselineImageTester baselineTester;
+  baselineTester.setApp(testHelper->app());
+  baselineTester.setBaselineImageDirectory(testHelper->dataDirectory());
+  return baselineTester.performTest(testName, threshold);
+}
+
+//----------------------------------------------------------------------------
+std::string GetFileContents(const std::string& filename)
+{
+  std::ifstream file(filename.c_str());
+  std::stringstream buffer;
+  if (file) {
+    buffer << file.rdbuf();
+    file.close();
+  }
+  return buffer.str();
 }
 
 //----------------------------------------------------------------------------
 void InitRendering()
 {
-  testDrawPlane->init();
+  testHelper->app()->initClipMaterial();
 }
 
 //----------------------------------------------------------------------------
@@ -232,12 +229,12 @@ bool InitTest(int argc, char* argv[])
     return false;
   }
 
-  testDrawPlane = new vesTestDrawPlane();
-  testDrawPlane->setSourceDirectory(argv[1]);
+  testHelper = new vesTestHelper();
+  testHelper->setSourceDirectory(argv[1]);
 
   if (argc == 3) {
-    testDrawPlane->setDataDirectory(argv[2]);
-    testDrawPlane->setTesting(true);
+    testHelper->setDataDirectory(argv[2]);
+    testHelper->setTesting(true);
   }
   return true;
 }
@@ -245,44 +242,11 @@ bool InitTest(int argc, char* argv[])
 //----------------------------------------------------------------------------
 void FinalizeTest()
 {
-  delete testDrawPlane;
+  delete testHelper;
 }
 
 }; // end namespace
 
-//int
-//time_elapsed()
-//{
-//  static uint64_t	init_clock_cycles;
-//  static int	timer_installed;
-//  static uint64_t	cycles_per_sec;
-//  uint64_t	timestamp;
-
-//  /* Return number of milliseconds since first call */
-//  if (!timer_installed) {
-//    init_clock_cycles = ClockCycles();
-//    timer_installed = 1;
-//    return 0;
-//  }
-
-//  timestamp = ClockCycles();
-
-//  if (timestamp < init_clock_cycles) {
-//    /* Counter wrapped */
-//    timestamp += (UINT64_MAX-init_clock_cycles) + 1;
-//  } else {
-//    timestamp -= init_clock_cycles;
-//  }
-
-//  if (cycles_per_sec == 0)
-//    cycles_per_sec =
-//        SYSPAGE_ENTRY(qtime)->cycles_per_sec;
-
-//  if (timestamp > 1000*1000*1000)
-//    return timestamp / cycles_per_sec * 1000;
-//  else
-//    return timestamp * 1000 / cycles_per_sec;
-//}
 
 int
 main(int argc, char *argv[])
@@ -415,20 +379,21 @@ main(int argc, char *argv[])
   }
 
   InitRendering();
+  LoadDefaultData();
 
   // render once
-  testDrawPlane->resizeView(width, height);
-  testDrawPlane->resetView();
-  testDrawPlane->render();
+  testHelper->resizeView(width, height);
+  testHelper->resetView();
+  testHelper->render();
   glFinish();
   eglWaitGL();
   eglSwapBuffers(display, surface);
 
   // begin the event loop if not in testing mode
   bool testPassed = true;
-  if (!testDrawPlane->isTesting()) {
+  if (!testHelper->isTesting()) {
     do {
-       testDrawPlane->render();
+       testHelper->render();
        glFinish();
        eglWaitGL();
        eglSwapBuffers(display, surface);
