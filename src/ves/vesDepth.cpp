@@ -46,7 +46,8 @@ void vesDepth::bind(const vesRenderState &renderState)
   vesNotUsed(renderState);
 
   // Save current state.
-  //this->m_wasEnabled = glIsEnabled(GL_DEPTH_TEST);
+  // TODO Got undefined error for QNX
+//  this->m_wasEnabled = glIsEnabled(GL_DEPTH_TEST);
 
   // Save current depth mask for restoration later.
 //  glGet(GL_DEPTH_WRITEMASK, &this->m_previousDepthWriteMask);

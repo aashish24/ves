@@ -121,7 +121,7 @@ void vesBackground::vesInternal::createBackground(vesBackground *background,
   this->m_backgroundActor->setMapper(this->m_backgroundMapper);
   this->m_backgroundMapper->setGeometryData(this->m_backgroundPlaneData);
   this->m_backgroundActor->setMaterial(this->m_backgroundMaterial);
-  this->m_backgroundMaterial->addAttribute(this->m_depth);
+//  this->m_backgroundMaterial->addAttribute(this->m_depth);
 
   if(this->m_image)
   {

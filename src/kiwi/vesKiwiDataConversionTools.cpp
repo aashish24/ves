@@ -380,6 +380,7 @@ template<typename T>
 {
   unsigned int indicesValuesType;
   if(typeid(T) == typeid(unsigned int)) {
+    // TODO: QNX does not support unsigned int type
     //indicesValuesType = vesPrimitiveIndicesValueType::UnsignedInt;
   }
   // Default
