@@ -139,6 +139,7 @@ macro(crosscompile_ves proj tag toolchain_file)
       -DVTK_DIR:PATH=${build_prefix}/vtk-${tag}
       -DEIGEN_INCLUDE_DIR:PATH=${install_prefix}/eigen
       -DPYTHON_EXECUTABLE:FILEPATH=${PYTHON_EXECUTABLE}
+      -DBUILD_TESTING:BOOL=ON
   )
 
   force_build(${proj})
