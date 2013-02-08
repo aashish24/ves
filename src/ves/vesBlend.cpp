@@ -61,11 +61,15 @@ void vesBlend::unbind(const vesRenderState &renderState)
 {
   vesNotUsed(renderState);
 
+  // Don't bother restoring state for now since ES 1.0
+  // does not support querying GL states
+#if 0
   if (this->m_wasEnabled) {
     glEnable(GL_BLEND);
   } else {
     glDisable(GL_BLEND);
   }
+#endif
 
   this->setDirtyStateOff();
 }

@@ -65,7 +65,10 @@ void vesDepth::unbind(const vesRenderState &renderState)
 {
   vesNotUsed(renderState);
 
-  if (this->m_wasEnabled) {
+  // Don't bother restoring state for now since ES 1.0
+  // does not support querying GL states
+#if 0
+    if (this->m_wasEnabled) {
       glEnable(GL_DEPTH_TEST);
       glDepthMask((GLboolean) this->m_depthWriteMask);
   } else {
@@ -73,7 +76,8 @@ void vesDepth::unbind(const vesRenderState &renderState)
   }
 
   // Restore previous depth mask.
-//  glDepthMask(this->m_previousDepthWriteMask);
+  glDepthMask(this->m_previousDepthWriteMask);
+#endif
 
   this->setDirtyStateOff();
 }
