@@ -1,11 +1,21 @@
-set(tests
-  TestDrawPlaneQNX
-  TestDrawPlaneQNX2
-  TestMatrix
+if ("${CMAKE_CXX_PLATFORM_ID}" STREQUAL "QNX")
+  set(tests
+    TestDrawPlaneQNX
+    TestDrawPlaneQNX2
+    TestMatrix
   )
 
+  set(deps GLES_CM gf)
+else()
+  set(tests
+    TestDrawPlane
+    TestMatrix
+  )
+  set(deps GLESv1_CM X11)
+endif()
+
 macro(ves_add_test name)
-  set(deps ves GLES_CM EGL gf)
+  set(deps ves ${deps} EGL)
   add_executable(${name} ${name}.cpp)
   target_link_libraries(${name} ${deps})
   add_test(${name} ${EXECUTABLE_OUTPUT_PATH}/${name} ${VES_SOURCE_DIR} ${VES_SOURCE_DIR}/Testing/BaselineImages)

@@ -32,9 +32,6 @@
 #include <vesKiwiPolyDataRepresentation.h>
 
 #include <vesClipPlane.h>
-#include <vesShaderProgram.h>
-#include <vesUniform.h>
-#include <vesBuiltinShaders.h>
 
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>

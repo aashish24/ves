@@ -28,7 +28,6 @@
 
 #include <vesKiwiViewerApp.h>
 #include <vesKiwiBaselineImageTester.h>
-#include <vesBuiltinShaders.h>
 #include <vesSetGet.h>
 
 #include <X11/Xlib.h>

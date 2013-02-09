@@ -36,8 +36,6 @@
 #include <vesSetGet.h>
 #include <vesShaderProgram.h>
 #include <vesTexture.h>
-#include <vesUniform.h>
-#include <vesBuiltinShaders.h>
 
 #include <vtkLookupTable.h>
 #include <vtkPolyData.h>

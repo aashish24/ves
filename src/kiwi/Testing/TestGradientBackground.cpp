@@ -34,9 +34,6 @@
 #include <vesKiwiPolyDataRepresentation.h>
 #include <vesRenderer.h>
 #include <vesSetGet.h>
-#include <vesShaderProgram.h>
-#include <vesUniform.h>
-#include <vesBuiltinShaders.h>
 
 #include <vtkPolyData.h>
 #include <vtkSmartPointer.h>
@@ -202,9 +199,7 @@ std::string GetFileContents(const std::string& filename)
 //----------------------------------------------------------------------------
 void InitRendering()
 {
-  testHelper->app()->initClipMaterial(
-    vesBuiltinShaders::vesClipPlane_vert(),
-    vesBuiltinShaders::vesClipPlane_frag());
+  testHelper->app()->initClipMaterial();
 }
 
 //----------------------------------------------------------------------------
