@@ -3,6 +3,7 @@ if ("${CMAKE_CXX_PLATFORM_ID}" STREQUAL "QNX")
     TestGradientBackgroundQNX
     TestKiwiViewerQNX
     TestTexturedBackgroundQNX
+    TestTextureQNX
   #  TestWireframeQNX
   )
 
