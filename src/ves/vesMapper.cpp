@@ -38,6 +38,19 @@
 #include <cstdio>
 #include <stdint.h>
 
+class EnableMaterialColor
+{
+public:
+  EnableMaterialColor(const float* const color) {
+    glDisable(GL_COLOR_MATERIAL);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
+  }
+
+  ~EnableMaterialColor() {
+  }
+};
+
+
 class vesMapper::vesInternal
 {
 public:
@@ -196,6 +209,11 @@ void vesMapper::render(const vesRenderState &renderState)
 
   // TODO Fixed vertex color.
   //glVertexAttrib4fv(vesVertexAttributeKeys::Color, this->color());
+
+  if (!this->m_geometryData->sourceData(vesVertexAttributeKeys::Color)) {
+    // Will be disabled when destroyed
+    EnableMaterialColor matColor(this->color());
+  }
 
   glMatrixMode(GL_PROJECTION);
   glPushMatrix();
