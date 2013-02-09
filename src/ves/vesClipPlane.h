@@ -47,7 +47,9 @@ public:
   virtual void unbind (const vesRenderState &renderState);
 
 protected:
+#if 0
   bool m_wasEnabled;
+#endif
   int m_planeNumber;
   float m_planeEquation[4];
 //  bool m_previousDepthWriteMask;

@@ -11,6 +11,9 @@
 
 set(tests
   TestGradientBackgroundQNX
+  TestKiwiViewerQNX
+  TestTexturedBackgroundQNX
+#  TestWireframeQNX
 )
 
 

@@ -26,8 +26,10 @@
 #include <cassert>
 #include <iostream>
 
-vesClipPlane::vesClipPlane() : vesMaterialAttribute(),
-  m_wasEnabled(false)
+vesClipPlane::vesClipPlane() : vesMaterialAttribute()
+#if 0
+  ,m_wasEnabled(false)
+#endif
 {
   this->m_type = vesMaterialAttribute::ClipPlane;
   this->m_binding = BindMinimal;
@@ -90,16 +92,20 @@ void vesClipPlane::bind(const vesRenderState &renderState)
 {
   vesNotUsed(renderState);
 
+#if 0 // ES 1.0 does not provide glIsEnabled
   // Save current state.
   this->m_wasEnabled = glIsEnabled(GL_CLIP_PLANE0 + this->m_planeNumber);
+#endif
 
+#if 0
   if (this->m_enable) {
     GLfloat eqn2[4] = {1.0, 0.0, 1.0, 0.0};
     glEnable(GL_CLIP_PLANE0 + this->m_planeNumber);
-    glClipPlanef(GL_CLIP_PLANE0, eqn2);
+    glClipPlanexOES(GL_CLIP_PLANE0, eqn2);
   } else {
     glDisable(GL_CLIP_PLANE0 + this->m_planeNumber);
   }
+#endif
 }
 
 
@@ -107,11 +113,13 @@ void vesClipPlane::unbind(const vesRenderState &renderState)
 {
   vesNotUsed(renderState);
 
+#if 0 // ES 1.0 does not provide glIsEnabled
   if (this->m_wasEnabled) {
       glEnable(GL_CLIP_PLANE0 + this->m_planeNumber);
   } else {
     glDisable(GL_CLIP_PLANE0 + this->m_planeNumber);
   }
+#endif
 
   this->setDirtyStateOff();
 }
