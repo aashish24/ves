@@ -189,7 +189,7 @@ void vesKiwiPolyDataRepresentation::initializeWithMaterial(
   this->Internal->Actor->setMaterial(this->Internal->Material);
 
   this->Internal->Blend = vesSharedPtr<vesBlend>(new vesBlend());
-//  this->Internal->Blend->disable();
+  this->Internal->Blend->disable();
   this->Internal->Depth = vesSharedPtr<vesDepth>(new vesDepth());
 
   this->Internal->Actor->material()->addAttribute(this->Internal->Blend);
