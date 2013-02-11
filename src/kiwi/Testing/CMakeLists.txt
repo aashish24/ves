@@ -4,14 +4,14 @@ if ("${CMAKE_CXX_PLATFORM_ID}" STREQUAL "QNX")
     TestKiwiViewerQNX
     TestTexturedBackgroundQNX
     TestTextureQNX
-  #  TestWireframeQNX
+    TestWireframeQNX
   )
 
   set(deps GLES_CM gf)
 else()
   set(tests
-    TestCap
-    TestClipPlane
+    TestCap # ClipPlanes are not supported in ES 1.0
+    TestClipPlane # ClipPlanes are not supported in ES 1.0
     TestGradientBackground
     TestKiwiViewer
   #  TestPointCloud

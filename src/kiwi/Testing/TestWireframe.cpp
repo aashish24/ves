@@ -65,18 +65,11 @@ public:
   {
     vesSharedPtr<vesMaterial> material
       = this->addMaterial();
-//    this->addModelViewMatrixUniform(shaderProgram);
-//    this->addProjectionMatrixUniform(shaderProgram);
-//    this->addNormalMatrixUniform(shaderProgram);
     this->addVertexPositionAttribute(material);
     this->addVertexNormalAttribute(material);
     this->addVertexColorAttribute(material);
     this->addVertexTextureCoordinateAttribute(material);
     this->ClipMaterial = material;
-
-//    this->ClipUniform = vesSharedPtr<vesUniform>(
-//      new vesUniform("clipPlaneEquation", vesVector4f(-1.0f, 0.0f, 0.0f, 0.0f)));
-//    this->ClipMaterial->addUniform(this->ClipUniform);
   }
 
   void unloadData()
@@ -105,8 +98,6 @@ public:
     this->DataRep = rep;
   }
 
-
-//  vesSharedPtr<vesUniform> ClipUniform;
   vesSharedPtr<vesMaterial> ClipMaterial;
   vesKiwiPolyDataRepresentation* DataRep;
 };
