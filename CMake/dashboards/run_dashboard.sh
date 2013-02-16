@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ctest=$HOME/install/cmake-2.8.6/bin/ctest
+ctest=$HOME/tools/cmake/install_head/bin/ctest
 
 cd /source/ves/dashboards
 $ctest -S ./linux_memcheck_dashboard.cmake -VV

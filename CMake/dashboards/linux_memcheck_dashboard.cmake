@@ -1,4 +1,4 @@
-set(CTEST_SITE "wormulon.kitware")
+set(CTEST_SITE "krishna.kitware")
 set(CTEST_BUILD_NAME "linux-x64-gcc-4.4.3")
 set(CTEST_BUILD_CONFIGURATION Debug)
 set(CTEST_CMAKE_GENERATOR "Unix Makefiles")
@@ -24,7 +24,7 @@ set(CTEST_COVERAGE_COMMAND "/usr/bin/gcov")
 set(dashboard_build_test_dir "/source/ves/dashboards/build/CMakeExternals/Build/ves-host")
 
 set(dashboard_cache "
-VES_LINUX_SUPERBUILD:BOOL=TRUE
+VES_HOST_SUPERBUILD:BOOL=TRUE
 VES_CXX_FLAGS:STRING=-Wall -Wextra -Wno-unused-variable -O0 -fprofile-arcs -ftest-coverage
 ")
 
