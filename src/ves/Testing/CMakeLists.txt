@@ -1,7 +1,7 @@
 if ("${CMAKE_CXX_PLATFORM_ID}" STREQUAL "QNX")
   set(tests
+    TestDrawLineQNX
     TestDrawPlaneQNX
-    TestDrawPlaneQNX2
     TestMatrix
   )
 

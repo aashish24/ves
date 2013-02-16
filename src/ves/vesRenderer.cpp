@@ -73,7 +73,7 @@ void vesRenderer::render()
   const GLfloat light0Specular[] = {0.0, 0.0, 0.0, 1.0};
   glLightfv(GL_LIGHT0, GL_SPECULAR, light0Specular);
 
-  const GLfloat light0Position[] = {0.0, 0.0, 0.650, 0.0};
+  const GLfloat light0Position[] = {0.0, 0.0, 1.0, 0.0};
   glLightfv(GL_LIGHT0, GL_POSITION, light0Position);
 
   glEnable(GL_COLOR_MATERIAL);
