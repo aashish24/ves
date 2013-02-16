@@ -5,6 +5,7 @@ if ("${CMAKE_CXX_PLATFORM_ID}" STREQUAL "QNX")
     TestTexturedBackgroundQNX
     TestTextureQNX
     TestWireframeQNX
+    TestImageClipQNX
   )
 
   set(deps GLES_CM gf)
