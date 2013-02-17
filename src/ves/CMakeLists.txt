@@ -33,6 +33,8 @@ set(sources
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/vesVersion.h.in
   ${CMAKE_CURRENT_BINARY_DIR}/vesVersion.h @ONLY)
 
+include_directories(${VES_BINARY_DIR})
+
 ves_add_library(ves "${sources}" "")
 target_link_libraries(ves ${deps} EGL)
 

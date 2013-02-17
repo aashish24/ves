@@ -1,0 +1,8 @@
+#ifndef VESKIWICONFIGURE_H_IN
+#define VESKIWICONFIGURE_H_IN
+
+#cmakedefine VES_HOST
+#cmakedefine VES_QNX
+
+
+#endif // VESKIWICONFIGURE_H_IN

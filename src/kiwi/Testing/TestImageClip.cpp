@@ -1,10 +1,4 @@
-#include "vesKiwiQNXTestDriver.h"
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <errno.h>
-#include <sys/neutrino.h>
-#include <sys/syspage.h>
+#include <vesConfigure.h>
 
 #include <iostream>
 #include <sstream>
@@ -36,6 +30,20 @@
 #include <vtkPlane.h>
 #include <vtkPolyData.h>
 #include <vtkRTAnalyticSource.h>
+
+#ifdef VES_QNX
+  #include "vesKiwiQNXTestDriver.h"
+  #include <stdio.h>
+  #include <stdlib.h>
+  #include <errno.h>
+  #include <sys/neutrino.h>
+  #include <sys/syspage.h>
+#elif defined (VES_HOST)
+  #include "vesKiwiX11TestDriver.h"
+  #include <X11/Xlib.h>
+  #include <X11/Xutil.h>
+  #include <X11/keysym.h>
+#endif
 
 //----------------------------------------------------------------------------
 namespace {
@@ -128,7 +136,7 @@ public:
   bool doTesting()
   {
     const double threshold = 10.0;
-    const std::string testName = "Wireframe Standford Bunny";
+    const std::string testName = "3D Image Clip";
 
     vesKiwiBaselineImageTester baselineTester;
     baselineTester.setApp(this);
@@ -202,7 +210,12 @@ main(int argc, char *argv[])
     fprintf(stderr, "Looping\n");
   }
 
+#ifdef VES_QNX
   vesKiwiQNXTestDriver testDriver(&app);
+#elif defined (VES_HOST)
+  vesKiwiX11TestDriver testDriver(&app);
+#endif
+
   testDriver.init();
 
   app.initRendering();

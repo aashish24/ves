@@ -42,6 +42,8 @@ set(deps
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/vesKiwiVersion.h.in
   ${CMAKE_CURRENT_BINARY_DIR}/vesKiwiVersion.h @ONLY)
 
+include_directories(${VES_BINARY_DIR})
+
 ves_add_library(kiwi "${sources}" "${deps}")
 
 # Add version info to the target. Currently using a single global version string.

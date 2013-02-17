@@ -23,6 +23,8 @@
 #ifndef VESKIWIQNXTESTDRIVER_H
 #define VESKIWIQNXTESTDRIVER_H
 
+#include "vesKiwiTestDriver.h"
+
 #include <vesKiwiBaseApp.h>
 
 #include <GLES/gl.h>
@@ -50,7 +52,7 @@ static EGLint attribute_list[] = {
 };
 
 
-class  vesKiwiQNXTestDriver
+class  vesKiwiQNXTestDriver : public vesKiwiTestDriver
 {
 public:
   gf_3d_target_t      target;
@@ -74,7 +76,7 @@ public:
   vesKiwiBaseApp* m_test;
 
 public:
-  vesKiwiQNXTestDriver(vesKiwiBaseApp* test) {
+  vesKiwiQNXTestDriver(vesKiwiBaseApp* test) : vesKiwiTestDriver(test) {
     this->m_test = test;
   }
 

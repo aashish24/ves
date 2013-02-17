@@ -1,26 +1,15 @@
-if ("${CMAKE_CXX_PLATFORM_ID}" STREQUAL "QNX")
-  set(tests
-    TestGradientBackgroundQNX
-    TestKiwiViewerQNX
-    TestTexturedBackgroundQNX
-    TestTextureQNX
-    TestWireframeQNX
-    TestImageClipQNX
-  )
-
-  set(deps GLES_CM gf)
-else()
-  set(tests
-    TestCap # ClipPlanes are not supported in ES 1.0
-    TestClipPlane # ClipPlanes are not supported in ES 1.0
+set(tests
     TestGradientBackground
     TestKiwiViewer
-  #  TestPointCloud
-    TestTexture
     TestTexturedBackground
+    TestTexture
     TestWireframe
-  )
+    TestImageClip
+)
 
+if ("${CMAKE_CXX_PLATFORM_ID}" STREQUAL "QNX")
+  set(deps GLES_CM gf)
+else()
   set(deps GLESv1_CM X11)
 endif()
 
@@ -30,7 +19,6 @@ macro(ves_add_test name)
   target_link_libraries(${name} ${deps})
   add_test(${name} ${EXECUTABLE_OUTPUT_PATH}/${name} ${VES_SOURCE_DIR} ${VES_SOURCE_DIR}/Testing/BaselineImages)
 endmacro()
-
 
 foreach(name ${tests})
   ves_add_test(${name})

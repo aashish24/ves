@@ -7,12 +7,13 @@ set(headers
   vesKiwiDataRepresentation.h
   vesKiwiImagePlaneDataRepresentation.h
   vesKiwiImageWidgetRepresentation.h
-  vesKiwiQNXTestDriver.h
   vesKiwiPlaneWidget.h
   vesKiwiPolyDataRepresentation.h
+  vesKiwiQNXTestDriver.h
   vesKiwiText2DRepresentation.h
   vesKiwiViewerApp.h
   vesKiwiWidgetRepresentation.h
+  vesKiwiX11TestDriver.h
   )
 
 set(header_dirs

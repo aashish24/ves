@@ -7,6 +7,12 @@ endif()
 
 project(VES)
 
+if("${CMAKE_CXX_PLATFORM_ID}" MATCHES "QNX")
+  set(VES_QNX 1)
+else()
+  set(VES_HOST 1)
+endif()
+
 # Workaround for the CMake / qcc bug
 #
 # Teach CMakeParseImplicitLinkInfo to convert implicit link library full
