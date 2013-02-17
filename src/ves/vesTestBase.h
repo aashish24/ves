@@ -129,26 +129,36 @@ public:
 
   void handleTwoTouchPanGesture(double x0, double y0, double x1, double y1)
   {
+    vesNotUsed(x0);
+    vesNotUsed(y0);
+    vesNotUsed(x1);
+    vesNotUsed(y1);
   }
 
 
   virtual void handleSingleTouchPanGesture(double deltaX, double deltaY)
   {
+    vesNotUsed(deltaX);
+    vesNotUsed(deltaY);
   }
 
 
   virtual void handleTwoTouchPinchGesture(double scale)
   {
+    vesNotUsed(scale);
   }
 
 
   virtual void handleTwoTouchRotationGesture(double rotation)
   {
+    vesNotUsed(rotation);
   }
 
 
   virtual void handleSingleTouchDown(int displayX, int displayY)
   {
+    vesNotUsed(displayX);
+    vesNotUsed(displayY);
   }
 
 
@@ -159,15 +169,21 @@ public:
 
   virtual void handleSingleTouchTap(int displayX, int displayY)
   {
+    vesNotUsed(displayX);
+    vesNotUsed(displayY);
   }
 
 
   virtual void handleDoubleTap(int displayX, int displayY)
   {
+    vesNotUsed(displayX);
+    vesNotUsed(displayY);
   }
 
   virtual void handleLongPress(int displayX, int displayY)
   {
+    vesNotUsed(displayX);
+    vesNotUsed(displayY);
   }
 
 

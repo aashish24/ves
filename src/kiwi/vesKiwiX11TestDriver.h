@@ -35,7 +35,7 @@ public:
 
   virtual int init()
   {
-    this->m_x11TestDriver->init();
+    return this->m_x11TestDriver->init();
   }
 
 

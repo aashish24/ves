@@ -198,6 +198,8 @@ public:
       printf("GL_VENDOR     = %s\n", (char *) glGetString(GL_VENDOR));
       printf("GL_EXTENSIONS = %s\n", (char *) glGetString(GL_EXTENSIONS));
     }
+
+    return 0;
   }
 
 
