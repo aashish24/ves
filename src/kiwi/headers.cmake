@@ -10,6 +10,7 @@ set(headers
   vesKiwiPlaneWidget.h
   vesKiwiPolyDataRepresentation.h
   vesKiwiQNXTestDriver.h
+  vesKiwiTestDriver.h
   vesKiwiText2DRepresentation.h
   vesKiwiViewerApp.h
   vesKiwiWidgetRepresentation.h

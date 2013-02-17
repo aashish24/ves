@@ -213,7 +213,7 @@ main(int argc, char *argv[])
 
   app.initRendering();
   app.loadDefaultData();
-  app.resizeView(testDriver.width, testDriver.height);
+  app.resizeView(testDriver.width(), testDriver.height());
   app.resetView();
   app.setCameraPosition(vesVector3f(-0.25, 0.25, 0.25));
   app.setCameraFocalPoint(vesVector3f(0.0, 0.1, 0.0));

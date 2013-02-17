@@ -21,6 +21,7 @@ set(headers
   vesMath.h
   vesNode.h
   vesObject.h
+  vesQNXTestDriver.h
   vesRenderData.h
   vesRenderer.h
   vesRenderLeaf.h
@@ -31,12 +32,15 @@ set(headers
   vesSharedPtr.h
   vesStateAttributeBits.h
   vesSourceData.h
+  vesTestBase.h
+  vesTestDriver.h
   vesTexture.h
   vesTransformNode.h
   vesVertexAttribute.h
   vesVertexAttributeKeys.h
   vesViewport.h
   vesVisitor.h
+  vesX11TestDriver.h
 )
 
 set(header_dirs

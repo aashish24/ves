@@ -182,7 +182,7 @@ main(int argc, char *argv[])
   testDriver.init();
 
   app.initRendering();
-  app.resizeView(testDriver.width, testDriver.height);
+  app.resizeView(testDriver.width(), testDriver.height());
   app.resetView();
 
   for (int i = 0; i < app.numberOfBuiltinDatasets(); ++i) {

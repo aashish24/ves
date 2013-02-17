@@ -215,7 +215,7 @@ main(int argc, char *argv[])
 
   app.initRendering();
   app.loadDefaultData();
-  app.resizeView(testDriver.width, testDriver.height);
+  app.resizeView(testDriver.width(), testDriver.height());
   app.resetView();
 
   testDriver.render();

@@ -1,16 +1,12 @@
-if ("${CMAKE_CXX_PLATFORM_ID}" STREQUAL "QNX")
-  set(tests
-    TestDrawLineQNX
-    TestDrawPlaneQNX
-    TestMatrix
-  )
+set(tests
+  TestDrawLine
+  TestDrawPlane
+  TestMatrix
+)
 
+if ("${CMAKE_CXX_PLATFORM_ID}" STREQUAL "QNX")
   set(deps GLES_CM gf)
 else()
-  set(tests
-    TestDrawPlane
-    TestMatrix
-  )
   set(deps GLESv1_CM X11)
 endif()
 
