@@ -51,10 +51,7 @@ public:
   {
     this->DataRep = 0;
     this->IsTesting = false;
-
-    this->renderer()->background()->setGradientColor(
-      vesVector4f(0.0f/255.0f, 0.0f/255.0f, 2.0f/255.0f, 1.0),
-      vesVector4f(55.0f/255.0f, 55.0f/255.0f, 113.0f/255.0f, 1.0));
+    this->setBackgroundColor(63/255.0, 96/255.0, 144/255.0);
   }
 
   ~vesGradientBackgroundApp()
@@ -218,6 +215,8 @@ main(int argc, char *argv[])
   app.loadDefaultData();
   app.resizeView(testDriver.width, testDriver.height);
   app.resetView();
+  app.setCameraPosition(vesVector3f(-0.25, 0.25, 0.25));
+  app.setCameraFocalPoint(vesVector3f(0.0, 0.1, 0.0));
 
   testDriver.render();
 
