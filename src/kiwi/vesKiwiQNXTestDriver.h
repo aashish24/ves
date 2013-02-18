@@ -78,13 +78,13 @@ public:
 
   virtual int width()
   {
-    return this->m_qnxTestDriver->width;
+    return this->m_qnxTestDriver->width();
   }
 
 
   virtual int height()
   {
-    return this->m_qnxTestDriver->height;
+    return this->m_qnxTestDriver->height();
   }
 
 };

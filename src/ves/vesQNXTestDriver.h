@@ -53,34 +53,39 @@ template <typename AppT>
 class  vesQNXTestDriver : public vesTestDriver<AppT>
 {
 public:
-  gf_3d_target_t      target;
-  gf_display_t        gf_disp;
-  EGLConfig           config;
-  EGLContext          econtext;
-  EGLint              num_config;
-  gf_dev_info_t       info;
-  gf_layer_info_t     linfo;
-  gf_display_info_t   disp_info;
-  GLuint              width, height;
-  GLuint              it;
+  gf_3d_target_t      m_target;
+  gf_display_t        m_gfDisp;
+  EGLConfig           m_config;
+  EGLContext          m_econtext;
+  EGLint              m_num_config;
+  gf_dev_info_t       m_info;
+  gf_layer_info_t     m_linfo;
+  gf_display_info_t   m_dispInfo;
+  GLuint              m_width, m_height;
+  GLuint              m_it;
 
-  gf_dev_t    gfdev;
-  gf_layer_t  layer;
-  int         layer_idx;
+  gf_dev_t    m_gfdev;
+  gf_layer_t  m_layer;
+  int         m_layerIdx;
 
-  EGLDisplay display;
-  EGLSurface surface;
+  EGLDisplay m_display;
+  EGLSurface m_surface;
 
 public:
   vesQNXTestDriver(AppT* test) : vesTestDriver<AppT>(test)
   {
+    this->m_width = 800;
+    this->m_height = 600;
+
+    this->m_display = NULL;
+    this->m_surface = NULL;
   }
 
 
   int init()
   {
     /* initialize the graphics device */
-    int res = gf_dev_attach(&gfdev, NULL, &info);
+    int res = gf_dev_attach(&m_gfdev, NULL, &m_info);
     if (res != GF_ERR_OK)
     {
        fprintf(stderr, "gf_dev_attach() %d\n", res);
@@ -88,45 +93,45 @@ public:
     }
 
     /* Setup the layer we will use */
-    if (gf_display_attach(&gf_disp, gfdev, 0, &disp_info)!=GF_ERR_OK)
+    if (gf_display_attach(&m_gfDisp, m_gfdev, 0, &m_dispInfo)!=GF_ERR_OK)
     {
        fprintf(stderr, "gf_display_attach() failed\n");
        return -1;
     }
 
-    width = disp_info.xres;
-    height = disp_info.yres;
+    m_width = m_dispInfo.xres;
+    m_height = m_dispInfo.yres;
 
-    layer_idx = disp_info.main_layer_index;
+    m_layerIdx = m_dispInfo.main_layer_index;
 
     /* get an EGL display connection */
-    display=eglGetDisplay(gfdev);
-    if (display==EGL_NO_DISPLAY)
+    m_display=eglGetDisplay(m_gfdev);
+    if (m_display==EGL_NO_DISPLAY)
     {
        fprintf(stderr, "eglGetDisplay() failed\n");
        return -1;
     }
 
-    if (gf_layer_attach(&layer, gf_disp, layer_idx, 0)!=GF_ERR_OK)
+    if (gf_layer_attach(&m_layer, m_gfDisp, m_layerIdx, 0)!=GF_ERR_OK)
     {
        fprintf(stderr, "gf_layer_attach() failed\n");
        return -1;
     }
 
     /* initialize the EGL display connection */
-    if (eglInitialize(display, NULL, NULL)!=EGL_TRUE)
+    if (eglInitialize(m_display, NULL, NULL)!=EGL_TRUE)
     {
        fprintf(stderr, "eglInitialize: error 0x%x\n", eglGetError());
        return -1;
     }
 
-    for (it=0;; it++)
+    for (m_it=0;; m_it++)
     {
        /* Walk through all possible pixel formats for this layer */
-       if (gf_layer_query(layer, it, &linfo)==-1)
+       if (gf_layer_query(m_layer, m_it, &m_linfo)==-1)
        {
           fprintf(stderr, "Couldn't find a compatible frame "
-                          "buffer configuration on layer %d\n", layer_idx);
+                          "buffer configuration on layer %d\n", m_layerIdx);
           return -1;
        }
 
@@ -134,12 +139,12 @@ public:
         * We want the color buffer format to match the layer format,
         * so request the layer format through EGL_NATIVE_VISUAL_ID.
         */
-       attribute_list[1]=linfo.format;
+       attribute_list[1]=m_linfo.format;
 
        /* Look for a compatible EGL frame buffer configuration */
-       if (eglChooseConfig(display, attribute_list, &config, 1, &num_config)==EGL_TRUE)
+       if (eglChooseConfig(m_display, attribute_list, &m_config, 1, &m_num_config)==EGL_TRUE)
        {
-          if (num_config>0)
+          if (m_num_config>0)
           {
              break;
           }
@@ -148,16 +153,16 @@ public:
        fprintf(stderr, "Looping\n");
     }
 
-    /* create a 3D rendering target */
-    if (gf_3d_target_create(&target, layer, NULL, 0, width, height, linfo.format)!=GF_ERR_OK)
+    /* create a 3D rendering m_target */
+    if (gf_3d_target_create(&m_target, m_layer, NULL, 0, m_width, m_height, m_linfo.format)!=GF_ERR_OK)
     {
-       fprintf(stderr, "Unable to create rendering target\n");
+       fprintf(stderr, "Unable to create rendering m_target\n");
        return -1;
     }
 
-    gf_layer_set_src_viewport(layer, 0, 0, width-1, height-1);
-    gf_layer_set_dst_viewport(layer, 0, 0, width-1, height-1);
-    gf_layer_enable(layer);
+    gf_layer_set_src_viewport(m_layer, 0, 0, m_width-1, m_height-1);
+    gf_layer_set_dst_viewport(m_layer, 0, 0, m_width-1, m_height-1);
+    gf_layer_enable(m_layer);
 
     /*
      * The layer settings haven't taken effect yet since we haven't
@@ -168,23 +173,23 @@ public:
      */
 
     /* create an EGL rendering context */
-    econtext=eglCreateContext(display, config, EGL_NO_CONTEXT, NULL);
-    if (econtext==EGL_NO_CONTEXT)
+    m_econtext=eglCreateContext(m_display, m_config, EGL_NO_CONTEXT, NULL);
+    if (m_econtext==EGL_NO_CONTEXT)
     {
        fprintf(stderr, "Create context failed: 0x%x\n", eglGetError());
        return -1;
     }
 
     /* create an EGL window surface */
-    surface=eglCreateWindowSurface(display, config, target, NULL);
-    if (surface==EGL_NO_SURFACE)
+    m_surface=eglCreateWindowSurface(m_display, m_config, m_target, NULL);
+    if (m_surface==EGL_NO_SURFACE)
     {
        fprintf(stderr, "Create surface failed: 0x%x\n", eglGetError());
        return -1;
     }
 
     /* connect the context to the surface */
-    if (eglMakeCurrent(display, surface, surface, econtext)==EGL_FALSE)
+    if (eglMakeCurrent(m_display, m_surface, m_surface, m_econtext)==EGL_FALSE)
     {
        fprintf(stderr, "Make current failed: 0x%x\n", eglGetError());
        return -1;
@@ -199,7 +204,7 @@ public:
     this->m_test->render();
     glFinish();
     eglWaitGL();
-    eglSwapBuffers(display, surface);
+    eglSwapBuffers(m_display, m_surface);
   }
 
 
@@ -213,6 +218,18 @@ public:
 
   void finalize()
   {
+  }
+
+
+  virtual int width()
+  {
+    return this->m_width;
+  }
+
+
+  virtual int height()
+  {
+    return this->m_height;
   }
 };
 
