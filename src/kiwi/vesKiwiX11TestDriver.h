@@ -59,13 +59,13 @@ public:
 
   virtual int width()
   {
-    return this->m_x11TestDriver->width;
+    return this->m_x11TestDriver->width();
   }
 
 
   virtual int height()
   {
-    return this->m_x11TestDriver->height;
+    return this->m_x11TestDriver->height();
   }
 
 public:

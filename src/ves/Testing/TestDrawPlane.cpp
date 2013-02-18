@@ -152,7 +152,7 @@ int main(int argc, char *argv[])
   testDriver.init();
 
   // render once
-  testDrawPlane.resizeView(testDriver.width, testDriver.height);
+  testDrawPlane.resizeView(testDriver.width(), testDriver.height());
   testDrawPlane.resetView();
 
   testDriver.render();

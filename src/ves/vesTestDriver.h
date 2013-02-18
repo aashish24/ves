@@ -14,6 +14,8 @@ public:
   virtual void finalize() = 0;
   virtual void render() = 0;
   virtual void start() = 0;
+  virtual int width() = 0;
+  virtual int height() = 0;
 
 protected:
   AppT* m_test;

@@ -74,7 +74,7 @@ int main(int argc, char** argv)
 
   testDriver.init();
 
-  testDrawLine.resizeView(testDriver.width, testDriver.height);
+  testDrawLine.resizeView(testDriver.width(), testDriver.height());
 
   testDriver.render();
 

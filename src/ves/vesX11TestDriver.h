@@ -15,22 +15,28 @@ class vesX11TestDriver : public vesTestDriver<AppT>
 {
 public:
   vesX11TestDriver(AppT* app) : vesTestDriver<AppT>(app),
-    width(800),
-    height(600)
+    m_outStr(NULL),
+    m_width(800),
+    m_height(600)
   {
-    dpyName = NULL;
-    printInfo = GL_FALSE;
+    m_xDpy = NULL;
+    m_eglSurf = NULL;
+    m_eglCtx = NULL;
+    m_eglDpy = NULL;
 
-    haveLastMotion = false;
-    lastMotionX = 0;
-    lastMotionY = 0;
-    currentX = 0;
-    currentY = 0;
+    m_dpyName = NULL;
+    m_printInfo = GL_FALSE;
+
+    m_haveLastMotion = false;
+    m_lastMotionX = 0;
+    m_lastMotionY = 0;
+    m_currentX = 0;
+    m_currentY = 0;
   }
 
-  void make_x_window(Display *x_dpy, EGLDisplay egl_dpy,
+  void make_x_window(Display *m_xDpy, EGLDisplay m_eglDpy,
                      const char *name,
-                     int x, int y, int width, int height,
+                     int x, int y, int m_width, int m_height,
                      Window *winRet,
                      EGLContext *ctxRet,
                      EGLSurface *surfRet)
@@ -51,7 +57,7 @@ public:
      XSetWindowAttributes attr;
      unsigned long mask;
      Window root;
-     Window win;
+     Window m_win;
      XVisualInfo *visInfo, visTemplate;
      int num_visuals;
      EGLContext ctx;
@@ -59,10 +65,10 @@ public:
      EGLint num_configs;
      EGLint vid;
 
-     scrnum = DefaultScreen( x_dpy );
-     root = RootWindow( x_dpy, scrnum );
+     scrnum = DefaultScreen( m_xDpy );
+     root = RootWindow( m_xDpy, scrnum );
 
-     if (!eglChooseConfig( egl_dpy, attribs, &config, 1, &num_configs)) {
+     if (!eglChooseConfig( m_eglDpy, attribs, &config, 1, &num_configs)) {
         printf("Error: couldn't get an EGL visual config\n");
         exit(1);
      }
@@ -70,14 +76,14 @@ public:
      assert(config);
      assert(num_configs > 0);
 
-     if (!eglGetConfigAttrib(egl_dpy, config, EGL_NATIVE_VISUAL_ID, &vid)) {
+     if (!eglGetConfigAttrib(m_eglDpy, config, EGL_NATIVE_VISUAL_ID, &vid)) {
         printf("Error: eglGetConfigAttrib() failed\n");
         exit(1);
      }
 
      /* The X window visual must match the EGL config */
      visTemplate.visualid = vid;
-     visInfo = XGetVisualInfo(x_dpy, VisualIDMask, &visTemplate, &num_visuals);
+     visInfo = XGetVisualInfo(m_xDpy, VisualIDMask, &visTemplate, &num_visuals);
      if (!visInfo) {
         printf("Error: couldn't get X visual\n");
         exit(1);
@@ -86,11 +92,11 @@ public:
      /* window attributes */
      attr.background_pixel = 0;
      attr.border_pixel = 0;
-     attr.colormap = XCreateColormap( x_dpy, root, visInfo->visual, AllocNone);
+     attr.colormap = XCreateColormap( m_xDpy, root, visInfo->visual, AllocNone);
      attr.event_mask = StructureNotifyMask | ExposureMask | KeyPressMask | ButtonPressMask | ButtonReleaseMask | ButtonMotionMask;
      mask = CWBackPixel | CWBorderPixel | CWColormap | CWEventMask;
 
-     win = XCreateWindow( x_dpy, root, 0, 0, width, height,
+     m_win = XCreateWindow( m_xDpy, root, 0, 0, m_width, m_height,
                           0, visInfo->depth, InputOutput,
                           visInfo->visual, mask, &attr );
 
@@ -99,11 +105,11 @@ public:
         XSizeHints sizehints;
         sizehints.x = x;
         sizehints.y = y;
-        sizehints.width  = width;
-        sizehints.height = height;
+        sizehints.width  = this->m_width;
+        sizehints.height = this->m_height;
         sizehints.flags = USSize | USPosition;
-        XSetNormalHints(x_dpy, win, &sizehints);
-        XSetStandardProperties(x_dpy, win, name, name,
+        XSetNormalHints(m_xDpy, m_win, &sizehints);
+        XSetStandardProperties(m_xDpy, m_win, name, name,
                                 None, (char **)NULL, 0, &sizehints);
      }
 
@@ -113,7 +119,7 @@ public:
      eglBindAPI(EGL_OPENGL_ES_API);
   #endif
 
-     ctx = eglCreateContext(egl_dpy, config, EGL_NO_CONTEXT, ctx_attribs );
+     ctx = eglCreateContext(m_eglDpy, config, EGL_NO_CONTEXT, ctx_attribs );
      if (!ctx) {
         printf("Error: eglCreateContext failed\n");
         exit(1);
@@ -122,11 +128,11 @@ public:
      /* test eglQueryContext() */
      {
         EGLint val;
-        eglQueryContext(egl_dpy, ctx, EGL_CONTEXT_CLIENT_VERSION, &val);
+        eglQueryContext(m_eglDpy, ctx, EGL_CONTEXT_CLIENT_VERSION, &val);
         assert(val == 1);
      }
 
-     *surfRet = eglCreateWindowSurface(egl_dpy, config, win, NULL);
+     *surfRet = eglCreateWindowSurface(m_eglDpy, config, m_win, NULL);
      if (!*surfRet) {
         printf("Error: eglCreateWindowSurface failed\n");
         exit(1);
@@ -135,64 +141,64 @@ public:
      /* sanity checks */
      {
         EGLint val;
-        eglQuerySurface(egl_dpy, *surfRet, EGL_WIDTH, &val);
-        assert(val == width);
-        eglQuerySurface(egl_dpy, *surfRet, EGL_HEIGHT, &val);
-        assert(val == height);
-        assert(eglGetConfigAttrib(egl_dpy, config, EGL_SURFACE_TYPE, &val));
+        eglQuerySurface(m_eglDpy, *surfRet, EGL_WIDTH, &val);
+        assert(val == m_width);
+        eglQuerySurface(m_eglDpy, *surfRet, EGL_HEIGHT, &val);
+        assert(val == m_height);
+        assert(eglGetConfigAttrib(m_eglDpy, config, EGL_SURFACE_TYPE, &val));
         assert(val & EGL_WINDOW_BIT);
      }
 
      XFree(visInfo);
 
-     *winRet = win;
+     *winRet = m_win;
      *ctxRet = ctx;
   }
 
 
   virtual int init()
   {
-    x_dpy = XOpenDisplay(dpyName);
-    if (!x_dpy) {
+    m_xDpy = XOpenDisplay(m_dpyName);
+    if (!m_xDpy) {
       printf("Error: couldn't open display %s\n",
-             dpyName ? dpyName : getenv("DISPLAY"));
+             m_dpyName ? m_dpyName : getenv("DISPLAY"));
       return -1;
     }
 
-    egl_dpy = eglGetDisplay(x_dpy);
-    if (!egl_dpy) {
+    m_eglDpy = eglGetDisplay(m_xDpy);
+    if (!m_eglDpy) {
       printf("Error: eglGetDisplay() failed\n");
       return -1;
     }
 
-    if (!eglInitialize(egl_dpy, &egl_major, &egl_minor)) {
+    if (!eglInitialize(m_eglDpy, &m_eglMajor, &m_eglMinor)) {
       printf("Error: eglInitialize() failed\n");
       return -1;
     }
 
-    s = eglQueryString(egl_dpy, EGL_VERSION);
-    printf("EGL_VERSION = %s\n", s);
+    m_outStr = eglQueryString(m_eglDpy, EGL_VERSION);
+    printf("EGL_VERSION = %s\n", m_outStr);
 
-    s = eglQueryString(egl_dpy, EGL_VENDOR);
-    printf("EGL_VENDOR = %s\n", s);
+    m_outStr = eglQueryString(m_eglDpy, EGL_VENDOR);
+    printf("EGL_VENDOR = %s\n", m_outStr);
 
-    s = eglQueryString(egl_dpy, EGL_EXTENSIONS);
-    printf("EGL_EXTENSIONS = %s\n", s);
+    m_outStr = eglQueryString(m_eglDpy, EGL_EXTENSIONS);
+    printf("EGL_EXTENSIONS = %s\n", m_outStr);
 
-    s = eglQueryString(egl_dpy, EGL_CLIENT_APIS);
-    printf("EGL_CLIENT_APIS = %s\n", s);
+    m_outStr = eglQueryString(m_eglDpy, EGL_CLIENT_APIS);
+    printf("EGL_CLIENT_APIS = %s\n", m_outStr);
 
-    make_x_window(x_dpy, egl_dpy,
-                 "OpenGL ES 1.x tri", 0, 0, width, height,
-                 &win, &egl_ctx, &egl_surf);
+    make_x_window(m_xDpy, m_eglDpy,
+                 "OpenGL ES 1.x tri", 0, 0, m_width, m_height,
+                 &m_win, &m_eglCtx, &m_eglSurf);
 
-    XMapWindow(x_dpy, win);
-    if (!eglMakeCurrent(egl_dpy, egl_surf, egl_surf, egl_ctx)) {
+    XMapWindow(m_xDpy, m_win);
+    if (!eglMakeCurrent(m_eglDpy, m_eglSurf, m_eglSurf, m_eglCtx)) {
       printf("Error: eglMakeCurrent() failed\n");
       return -1;
     }
 
-    if (printInfo) {
+    if (m_printInfo) {
       printf("GL_RENDERER   = %s\n", (char *) glGetString(GL_RENDERER));
       printf("GL_VERSION    = %s\n", (char *) glGetString(GL_VERSION));
       printf("GL_VENDOR     = %s\n", (char *) glGetString(GL_VENDOR));
@@ -211,25 +217,25 @@ public:
 
   void start()
   {
-    this->event_loop(x_dpy, win, egl_dpy, egl_surf);
+    this->event_loop(m_xDpy, m_win, m_eglDpy, m_eglSurf);
   }
 
 
   void finalize()
   {
-    eglDestroyContext(egl_dpy, egl_ctx);
-    eglDestroySurface(egl_dpy, egl_surf);
-    eglTerminate(egl_dpy);
+    eglDestroyContext(m_eglDpy, m_eglCtx);
+    eglDestroySurface(m_eglDpy, m_eglSurf);
+    eglTerminate(m_eglDpy);
 
-    XDestroyWindow(x_dpy, win);
-    XCloseDisplay(x_dpy);
+    XDestroyWindow(m_xDpy, m_win);
+    XCloseDisplay(m_xDpy);
   }
 
 
-  void event_loop(Display *dpy, Window win,
-    EGLDisplay egl_dpy, EGLSurface egl_surf)
+  void event_loop(Display *dpy, Window m_win,
+    EGLDisplay m_eglDpy, EGLSurface m_eglSurf)
   {
-    vesNotUsed(win);
+    vesNotUsed(m_win);
 
      while (1) {
         int redraw = 0;
@@ -248,24 +254,24 @@ public:
         case ButtonPress:
           this->m_test->handleSingleTouchDown(event.xbutton.x, event.xbutton.y);
 
-          haveLastMotion = true;
-          lastMotionX = event.xbutton.x;
-          lastMotionY = event.xbutton.y;
+          m_haveLastMotion = true;
+          m_lastMotionX = event.xbutton.x;
+          m_lastMotionY = event.xbutton.y;
           break;
 
         case ButtonRelease:
           this->m_test->handleSingleTouchUp();
-          haveLastMotion = false;
+          m_haveLastMotion = false;
           break;
 
         case MotionNotify:
 
-          if (haveLastMotion) {
-            currentX = event.xmotion.x;
-            currentY = event.xmotion.y;
-            this->m_test->handleSingleTouchPanGesture(currentX - lastMotionX, currentY - lastMotionY);
-            lastMotionX = currentX;
-            lastMotionY = currentY;
+          if (m_haveLastMotion) {
+            m_currentX = event.xmotion.x;
+            m_currentY = event.xmotion.y;
+            this->m_test->handleSingleTouchPanGesture(m_currentX - m_lastMotionX, m_currentY - m_lastMotionY);
+            m_lastMotionX = m_currentX;
+            m_lastMotionY = m_currentY;
             redraw = 1;
           }
           break;
@@ -308,29 +314,44 @@ public:
 
         if (redraw) {
            this->m_test->render();
-           eglSwapBuffers(egl_dpy, egl_surf);
+           eglSwapBuffers(m_eglDpy, m_eglSurf);
         }
      }
   }
 
-public:
-  Display *x_dpy;
-  Window win;
-  EGLSurface egl_surf;
-  EGLContext egl_ctx;
-  EGLDisplay egl_dpy;
-  char *dpyName;
-  GLboolean printInfo;
-  EGLint egl_major, egl_minor;
-  const char *s;
-  const int width;
-  const int height;
 
-  bool haveLastMotion;
-  int lastMotionX;
-  int lastMotionY;
-  int currentX;
-  int currentY;
+  virtual int width()
+  {
+    return this->m_width;
+  }
+
+
+  virtual int height()
+  {
+    return this->m_height;
+  }
+
+public:
+  Display *m_xDpy;
+  Window m_win;
+
+  EGLSurface m_eglSurf;
+  EGLContext m_eglCtx;
+  EGLDisplay m_eglDpy;
+
+  char *m_dpyName;
+  GLboolean m_printInfo;
+  EGLint m_eglMajor, m_eglMinor;
+
+  const char *m_outStr;
+  const int m_width;
+  const int m_height;
+
+  bool m_haveLastMotion;
+  int m_lastMotionX;
+  int m_lastMotionY;
+  int m_currentX;
+  int m_currentY;
 };
 
 #endif // VESX11TESTDRIVER_H
