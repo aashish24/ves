@@ -307,7 +307,7 @@ void vesBackground::setGradientColor(const vesVector4f &topColor,
 {
   this->m_topColor = topColor;
   this->m_bottomColor = bottomColor;
-
+  this->m_internal->m_image.reset();
   this->createBackground();
 }
 
