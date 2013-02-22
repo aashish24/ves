@@ -512,6 +512,9 @@ bool vesUniform::getElement(unsigned int index, vesMatrix4x4f &value) const
 
 void vesUniform::callGL(int location) const
 {
+  if (location < 0)
+    return;
+
   if (this->m_numberElements < 1)
     return;
 
