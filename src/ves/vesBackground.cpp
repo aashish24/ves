@@ -63,11 +63,6 @@ public:
       this->m_positionVertexAttribute, vesVertexAttributeKeys::Position);
     this->m_shaderProgram->addVertexAttribute(
       this->m_normalVertexAttribute, vesVertexAttributeKeys::Normal);
-    this->m_shaderProgram->addVertexAttribute(
-      this->m_colorVertexAttribute, vesVertexAttributeKeys::Color);
-    this->m_shaderProgram->addVertexAttribute(
-      this->m_textureCoodinateAttribute,
-      vesVertexAttributeKeys::TextureCoordinate);
     this->m_depth->disable();
   }
 
@@ -178,10 +173,15 @@ void vesBackground::vesInternal::createBackground(const vesVector4f &topColor,
   if(!this->m_image)
   {
     this->createShaderSourceForNonTexturedPlane(vertShaderText, fragShaderText);
+    this->m_shaderProgram->addVertexAttribute(
+      this->m_colorVertexAttribute, vesVertexAttributeKeys::Color);
   }
   else
   {
     this->createShaderSourceForTexturedPlane(vertShaderText, fragShaderText);
+    this->m_shaderProgram->addVertexAttribute(
+      this->m_textureCoodinateAttribute,
+      vesVertexAttributeKeys::TextureCoordinate);
   }
 
   this->m_vertexShader->setShaderSource(vertShaderText);
