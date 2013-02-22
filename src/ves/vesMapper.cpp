@@ -108,19 +108,6 @@ void vesMapper::computeBounds()
 }
 
 
-void vesMapper::normalize()
-{
-  float r = this->boundsRadius();
-
-  this->m_normalizedMatrix =
-      makeScaleMatrix4x4(1/r,1/r,1/r)*
-      makeTranslationMatrix4x4(-this->boundsCenter());
-
-  this->setBoundsCenter(transformPoint3f(this->m_normalizedMatrix, this->boundsCenter()));
-  this->setBoundsSize(transformPoint3f(this->m_normalizedMatrix, this->boundsSize()));
-}
-
-
 bool vesMapper::setGeometryData(vesSharedPtr<vesGeometryData> geometryData)
 {
   bool success = true;

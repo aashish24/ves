@@ -86,10 +86,6 @@ private:
   virtual void createVertexBufferObjects();
   virtual void deleteVertexBufferObjects();
 
-  //\todo: Why do we need this?
-  void normalize();
-  vesMatrix4x4f m_normalizedMatrix;
-
 protected:
   void drawPrimitive(const vesRenderState &renderState,
                      vesSharedPtr<vesPrimitive> primitive);
