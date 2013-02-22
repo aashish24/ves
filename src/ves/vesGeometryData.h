@@ -100,6 +100,7 @@ public:
     return !success;
   }
 
+  /// Remove a source if it exists in the list of sources.
   inline void removeSource(vesSharedPtr<vesSourceData> source)
   {
     this->m_sources.erase(std::remove(this->m_sources.begin(), this->m_sources.end(), source), this->m_sources.end());
@@ -130,6 +131,12 @@ public:
   inline const vesSharedPtr<vesPrimitive> primitive(unsigned int index) const
   {
     return this->m_primitives[index];
+  }
+
+  /// Remove a primitive if it exists in the list of primitives.
+  inline void removePrimitive(vesSharedPtr<vesPrimitive> primitive)
+  {
+    this->m_primitives.erase(std::remove(this->m_primitives.begin(), this->m_primitives.end(), primitive), this->m_primitives.end());
   }
 
   /// Return a source given a index. Return NULL on failure.
