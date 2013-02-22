@@ -100,6 +100,11 @@ public:
     return !success;
   }
 
+  inline void removeSource(vesSharedPtr<vesSourceData> source)
+  {
+    this->m_sources.erase(std::remove(this->m_sources.begin(), this->m_sources.end(), source), this->m_sources.end());
+  }
+
   /// Add a new primitive to the geometry. Return true on success.
   inline bool addPrimitive(vesSharedPtr<vesPrimitive> primitive)
   {
