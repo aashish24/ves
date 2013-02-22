@@ -285,11 +285,22 @@ vesBackground::~vesBackground()
 }
 
 
+void vesBackground::setColor(const vesVector3f &color)
+{
+  this->setGradientColor(color, color);
+}
+
 void vesBackground::setColor(const vesVector4f &color)
 {
   this->setGradientColor(color, color);
 }
 
+void vesBackground::setGradientColor(const vesVector3f &topColor,
+                                     const vesVector3f &bottomColor)
+{
+  this->setGradientColor(vesVector4f(topColor[0], topColor[1], topColor[2], 1.f),
+                         vesVector4f(bottomColor[0], bottomColor[1], bottomColor[2], 1.f));
+}
 
 void vesBackground::setGradientColor(const vesVector4f &topColor,
                                      const vesVector4f &bottomColor)

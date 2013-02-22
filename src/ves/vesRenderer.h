@@ -70,7 +70,10 @@ public:
   virtual void resize(int width,int height, float scale);
 
   /// Set background color of the renderer
-  virtual void setBackgroundColor(float r, float g, float b, float a=1.0f);
+  virtual void setBackgroundColor(const vesVector3f &color);
+  virtual void setBackgroundColor(const vesVector4f &color);
+  virtual void setBackgroundColor(float r, float g, float b);
+  virtual void setBackgroundColor(float r, float g, float b, float a);
 
   /// Get background object of the renderer
   vesSharedPtr<vesBackground> background();
