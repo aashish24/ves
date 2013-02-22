@@ -29,6 +29,7 @@
 #include "vesBackground.h"
 #include "vesTexture.h"
 #include "vesKiwiColorMapCollection.h"
+#include "vesKiwiCurlDownloader.h"
 #include "vesKiwiDataLoader.h"
 #include "vesKiwiDataConversionTools.h"
 #include "vesKiwiText2DRepresentation.h"
@@ -437,6 +438,7 @@ public:
       return this->loadObjectSeries(objectJson);
     }
 
+    std::string url = getStr(objectJson, "url");
     std::string filename = getStr(objectJson, "filename");
 
     if (filename.empty()) {
@@ -445,6 +447,14 @@ public:
     }
 
     filename = this->BaseDir + "/" + filename;
+
+    if (!url.empty() && !vtksys::SystemTools::FileExists(filename.c_str(), true)) {
+      vesKiwiCurlDownloader downloader;
+      if (!downloader.downloadUrlToFile(url, filename)) {
+        this->setError(downloader.errorTitle(), downloader.errorMessage());
+        return false;
+      }
+    }
 
     vesKiwiDataRepresentation::Ptr rep = this->loadDataset(filename, objectJson);
     if (!rep) {
