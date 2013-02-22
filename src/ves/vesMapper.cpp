@@ -207,7 +207,7 @@ void vesMapper::render(const vesRenderState &renderState)
   }
 
   // Fixed vertex color.
-  glVertexAttrib4fv(vesVertexAttributeKeys::Color, this->color());
+  glVertexAttrib3fv(vesVertexAttributeKeys::Color, this->color());
 
   std::map<unsigned int, std::vector<int> >::const_iterator constItr
     = this->m_internal->m_bufferVertexAttributeMap.begin();

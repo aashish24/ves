@@ -62,6 +62,25 @@ public:
 };
 
 
+class vesVertexOpacityUniform : public vesUniform
+{
+public:
+  vesTypeMacro(vesVertexOpacityUniform);
+
+  vesVertexOpacityUniform(const std::string &name="vertexOpacity") :
+    vesUniform(name, static_cast<float>(1.0))
+  {
+  }
+
+  virtual void update(const vesRenderState &renderState,
+                      const vesShaderProgram &program)
+  {
+    vesNotUsed(program);
+    this->set(renderState.m_mapper->color()[3]);
+  }
+};
+
+
 class vesPrimitiveType : public vesEngineUniform
 {
 public:

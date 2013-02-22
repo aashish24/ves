@@ -89,6 +89,7 @@ vesShaderProgram::vesShaderProgram() : vesMaterialAttribute()
   this->m_internal->m_engineUniforms.push_back(windowSize);
   this->m_internal->m_engineUniforms.push_back(pointSize);
   this->m_internal->m_engineUniforms.push_back(lineWidth);
+  this->addUniform(vesVertexOpacityUniform::Ptr(new vesVertexOpacityUniform));
 
   for (size_t i=0; i < this->m_internal->m_engineUniforms.size(); ++i) {
     this->addUniform(this->m_internal->m_engineUniforms[i]->uniform());
