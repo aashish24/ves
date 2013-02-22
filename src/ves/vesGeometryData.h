@@ -64,12 +64,6 @@ public:
   }
 
   /// Get name / ID of the geometry data
-  inline std::string name()
-  {
-    return this->m_name;
-  }
-
-  /// Get name / ID of the geometry data
   inline const std::string& name() const
   {
     return this->m_name;
