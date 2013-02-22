@@ -199,6 +199,8 @@ public:
   /// Return primitive of type lines. Return NULL on failure.
   inline vesSharedPtr<vesPrimitive> lines();
 
+  inline vesSharedPtr<vesPrimitive> points();
+
   /// Return source data given a key. Return NULL on failure.
   inline vesSharedPtr<vesSourceData> sourceData(int key);
 
@@ -247,6 +249,17 @@ vesSharedPtr<vesPrimitive> vesGeometryData::lines()
 {
   for (size_t i=0; i < this->m_primitives.size(); ++i) {
     if (this->m_primitives[i]->primitiveType() == GL_LINES) {
+      return this->m_primitives[i];
+    }
+  }
+
+  return vesPrimitive::Ptr();
+}
+
+vesSharedPtr<vesPrimitive> vesGeometryData::points()
+{
+  for (size_t i=0; i < this->m_primitives.size(); ++i) {
+    if (this->m_primitives[i]->primitiveType() == GL_POINTS) {
       return this->m_primitives[i];
     }
   }
