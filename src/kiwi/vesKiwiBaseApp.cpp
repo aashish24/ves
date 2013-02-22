@@ -155,11 +155,6 @@ void vesKiwiBaseApp::resetView(const vesVector3f& viewDirection, const vesVector
   // dolly so that scene fits window
   renderer->resetCamera();
 
-  // The current ResetCamera() method pulls the camera back further than
-  // required.  ResetCamera should be fixed.  Until then, perform a dolly
-  // with a scale factor of 1.5 (a magic number).
-  renderer->camera()->dolly(1.5);
-
   // now set the view plane normal
   renderer->camera()->setViewUp(viewUp);
   renderer->camera()->orthogonalizeViewUp();

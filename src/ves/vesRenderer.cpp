@@ -98,15 +98,15 @@ void vesRenderer::resize(int width, int height, float scale)
 
   this->updateBackgroundViewport();
 
-  this->m_aspect[0] = this->m_camera->viewport()->inverseAspect();
-  this->m_aspect[1] = this->m_camera->viewport()->aspect();
+  this->m_aspect[0] = this->m_camera->viewport()->aspect();
+  this->m_aspect[1] = 1.0;
 }
 
 
 vesVector3f vesRenderer::computeWorldToDisplay(vesVector3f world)
 {
   // WorldToView
-  vesMatrix4x4f proj_mat = this->m_camera->computeProjectionTransform(this->m_aspect[1],
+  vesMatrix4x4f proj_mat = this->m_camera->computeProjectionTransform(this->m_aspect[0],
                                                                     0, 1);
   vesMatrix4x4f view_mat = this->m_camera->computeViewTransform();
   vesMatrix4x4f t(proj_mat * view_mat);
@@ -135,7 +135,7 @@ vesVector3f vesRenderer::computeDisplayToWorld(vesVector3f display)
   view[3] = 1;
 
   // ViewToWorld
-  vesMatrix4x4f proj_mat = this->m_camera->computeProjectionTransform(this->m_aspect[1],
+  vesMatrix4x4f proj_mat = this->m_camera->computeProjectionTransform(this->m_aspect[0],
                                                                     0, 1);
   vesMatrix4x4f view_mat = this->m_camera->computeViewTransform();
   vesMatrix4x4f mat = proj_mat*view_mat;
