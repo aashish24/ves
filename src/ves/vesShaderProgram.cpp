@@ -435,7 +435,7 @@ void vesShaderProgram::bind(const vesRenderState &renderState)
     std::vector< vesSharedPtr<vesShader> >::iterator itr
       = this->m_internal->m_shaders.begin();
     for (; itr != this->m_internal->m_shaders.end(); ++itr) {
-      std::cerr << "INFO: Compiling shaders: " << std::endl;
+      //std::cerr << "INFO: Compiling shaders: " << std::endl;
 
       (*itr)->compileShader();
 
