@@ -410,6 +410,41 @@ public:
   }
 };
 
+class vesGenericSourceData3f : public vesGenericSourceData<vesVector3f>
+{
+public:
+  vesTypeMacro(vesGenericSourceData3f);
+
+  vesGenericSourceData3f(int key) : vesGenericSourceData<vesVector3f>()
+  {
+    const int totalNumberOfFloats = 3;
+    const int stride = sizeof(float) * totalNumberOfFloats;
+
+    this->setAttributeDataType(key, vesDataType::Float);
+    this->setAttributeOffset(key, 0);
+    this->setAttributeStride(key, stride);
+    this->setNumberOfComponents(key, 3);
+    this->setSizeOfAttributeDataType(key, sizeof(float));
+    this->setIsAttributeNormalized(key, false);
+  }
+};
+
+class vesGenericSourceData1f : public vesGenericSourceData<float>
+{
+public:
+  vesTypeMacro(vesGenericSourceData1f);
+
+  vesGenericSourceData1f(int key) : vesGenericSourceData<float>()
+  {
+    this->setAttributeDataType(key, vesDataType::Float);
+    this->setAttributeOffset(key, 0);
+    this->setAttributeStride(key, sizeof(float));
+    this->setNumberOfComponents(key, 1);
+    this->setSizeOfAttributeDataType(key, sizeof(float));
+    this->setIsAttributeNormalized(key, false);
+  }
+};
+
 class vesSourceDataf : public vesGenericSourceData<vesVertexDataf>
 {
 public:
