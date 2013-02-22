@@ -5,6 +5,10 @@ set(tests
   TestKiwiViewer
   TestNoContext
   TestPointCloud
+  TestPVRemote
+  TestPVWeb
+  TestKiwiMidas
+  TestKiwiImage
   TestStreamingDataRepresentation
   TestTexture
   TestTexturedBackground

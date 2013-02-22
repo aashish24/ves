@@ -1,0 +1,46 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 5cc5d60..dd55235 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -804,8 +804,9 @@ ENDIF(ENABLE_ICONV)
+ #
+ # Find Libxml2
+ #
++if(FALSE AND ENABLE_XML)
+ FIND_PACKAGE(LibXml2)
+-IF(LIBXML2_FOUND)
++IF(FALSE AND LIBXML2_FOUND)
+   CMAKE_PUSH_CHECK_STATE()	# Save the state of the variables
+   INCLUDE_DIRECTORIES(${LIBXML2_INCLUDE_DIR})
+   LIST(APPEND ADDITIONAL_LIBS ${LIBXML2_LIBRARIES})
+@@ -825,7 +826,7 @@ IF(LIBXML2_FOUND)
+     ADD_DEFINITIONS(-DLIBXML_STATIC)
+   ENDIF(NOT WITHOUT_LIBXML_STATIC AND LIBXML_STATIC)
+   CMAKE_POP_CHECK_STATE()	# Restore the state of the variables
+-ELSE(LIBXML2_FOUND)
++ELSE(FALSE AND LIBXML2_FOUND)
+   #
+   # Find Expat
+   #
+@@ -841,6 +842,8 @@ ELSE(LIBXML2_FOUND)
+ ENDIF(LIBXML2_FOUND)
+ MARK_AS_ADVANCED(CLEAR LIBXML2_INCLUDE_DIR)
+ MARK_AS_ADVANCED(CLEAR LIBXML2_LIBRARIES)
++endif()
++
+ #
+ # Find Libregex
+ #
+diff --git a/libarchive/archive_read_disk_posix.c b/libarchive/archive_read_disk_posix.c
+index 698600e..e5e3387 100644
+--- a/libarchive/archive_read_disk_posix.c
++++ b/libarchive/archive_read_disk_posix.c
+@@ -1630,7 +1630,7 @@ setup_current_filesystem(struct archive_read_disk *a)
+ }
+ 
+ #elif defined(HAVE_SYS_STATFS_H) && defined(HAVE_LINUX_MAGIC_H) &&\
+-	defined(HAVE_STATFS) && defined(HAVE_FSTATFS)
++	defined(HAVE_STATFS) && defined(HAVE_FSTATFS) && 0
+ /*
+  * Note: statfs is deprecated since LSB 3.2
+  */

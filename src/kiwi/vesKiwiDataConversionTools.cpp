@@ -24,6 +24,7 @@
 #include "vesImage.h"
 #include "vesTexture.h"
 #include "vesMath.h"
+#include "vesPVWebDataSet.h"
 
 #include "vtkCellArray.h"
 #include "vtkDiscretizableColorTransferFunction.h"
@@ -665,6 +666,117 @@ template<typename T>
 
 
   return output;
+}
+
+//-----------------------------------------------------------------------------
+vesSharedPtr<vesGeometryData> vesKiwiDataConversionTools::ConvertPVWebData(vesSharedPtr<vesPVWebDataSet> dataset)
+{
+  vesSharedPtr<vesGeometryData> geometryData = vesSharedPtr<vesGeometryData>(new vesGeometryData);
+  geometryData->setName("PolyData");
+
+  const int numberOfVerts = dataset->m_numberOfVerts;
+
+
+  if (dataset->m_datasetType == 'M') {
+
+    // verts and normals
+    vesSourceDataP3N3f::Ptr sourceData(new vesSourceDataP3N3f());
+    vesVertexDataP3N3f vertexData;
+    for (int i = 0; i < numberOfVerts; ++i) {
+      float* vertex = dataset->vertices() + i*3;
+      float* normal = dataset->normals() + i*3;
+      vertexData.m_position[0] = vertex[0];
+      vertexData.m_position[1] = vertex[1];
+      vertexData.m_position[2] = vertex[2];
+      vertexData.m_normal[0] = normal[0];
+      vertexData.m_normal[1] = normal[1];
+      vertexData.m_normal[2] = normal[2];
+      sourceData->pushBack(vertexData);
+    }
+    geometryData->addSource(sourceData);
+
+    // triangles
+    vesSharedPtr<vesIndices<unsigned int> > triangleIndices =
+      vesSharedPtr<vesIndices<unsigned int> >(new vesIndices<unsigned int>());
+    vesPrimitive::Ptr trianglesPrimitive = vesPrimitive::Ptr(new vesPrimitive());
+    trianglesPrimitive->setIndexCount(3);
+    trianglesPrimitive->setIndicesValueType(vesPrimitiveIndicesValueType::UnsignedInt);
+    trianglesPrimitive->setPrimitiveType(vesPrimitiveRenderType::Triangles);
+    trianglesPrimitive->setVesIndices(triangleIndices);
+    geometryData->addPrimitive(trianglesPrimitive);
+
+    for (int i = 0; i < dataset->m_numberOfIndices/3; ++i) {
+      short* indices = dataset->indices() + i*3;
+      triangleIndices->pushBackIndices(indices[0], indices[1], indices[2]);
+    }
+
+  }
+  else if (dataset->m_datasetType == 'L') {
+
+    // verts
+    vesSourceDataP3f::Ptr vertexSourceData(new vesSourceDataP3f());
+    vesVertexDataP3f vertexData;
+    for (int i = 0; i < numberOfVerts; ++i) {
+      float* vertex = dataset->vertices() + i*3;
+      vertexData.m_position[0] = vertex[0];
+      vertexData.m_position[1] = vertex[1];
+      vertexData.m_position[2] = vertex[2];
+      vertexSourceData->pushBack(vertexData);
+    }
+    geometryData->addSource(vertexSourceData);
+
+    // lines
+    vesSharedPtr<vesIndices<unsigned int> > lineIndices =
+      vesSharedPtr<vesIndices<unsigned int> >(new vesIndices<unsigned int>());
+    vesPrimitive::Ptr linesPrimitive = vesPrimitive::Ptr(new vesPrimitive());
+    linesPrimitive->setIndexCount(2);
+    linesPrimitive->setIndicesValueType(vesPrimitiveIndicesValueType::UnsignedInt);
+    linesPrimitive->setPrimitiveType(vesPrimitiveRenderType::Lines);
+    linesPrimitive->setVesIndices(lineIndices);
+    geometryData->addPrimitive(linesPrimitive);
+
+    for (int i = 0; i < dataset->m_numberOfIndices/2; ++i) {
+      short* indices = dataset->indices() + i*2;
+      lineIndices->pushBackIndices(indices[0], indices[1]);
+    }
+  }
+  else if (dataset->m_datasetType == 'P') {
+
+    // verts
+    vesSourceDataP3f::Ptr vertexSourceData(new vesSourceDataP3f());
+    vesVertexDataP3f vertexData;
+    for (int i = 0; i < numberOfVerts; ++i) {
+      float* vertex = dataset->vertices() + i*3;
+      vertexData.m_position[0] = vertex[0];
+      vertexData.m_position[1] = vertex[1];
+      vertexData.m_position[2] = vertex[2];
+      vertexSourceData->pushBack(vertexData);
+    }
+    geometryData->addSource(vertexSourceData);
+
+    vesPrimitive::Ptr pointPrimitive (new vesPrimitive());
+    pointPrimitive->setPrimitiveType(vesPrimitiveRenderType::Points);
+    pointPrimitive->setIndexCount(1);
+    geometryData->addPrimitive(pointPrimitive);
+  }
+
+  // colors
+  float opacity = 1.0;
+  if (dataset->m_transparency) {
+    opacity = 0.4;
+  }
+
+  vesSourceDataC3f::Ptr colorSourceData(new vesSourceDataC3f());
+  vesVertexDataC3f vertColor;
+  for (size_t i = 0; i < numberOfVerts; ++i)
+    {
+    unsigned char* color = dataset->colors() + i*4;
+    vertColor.m_color = vesVector3f(color[0]/255.0, color[1]/255.0, color[2]/255.0);
+    colorSourceData->pushBack(vertColor);
+    }
+
+  geometryData->addSource(colorSourceData);
+  return geometryData;
 }
 
 //-----------------------------------------------------------------------------

@@ -38,10 +38,13 @@ class vesKiwiDataRepresentation;
 class vesKiwiPolyDataRepresentation;
 class vesKiwiText2DRepresentation;
 class vesKiwiPlaneWidget;
+class vesKiwiPVRemoteRepresentation;
 class vesRenderer;
 class vesShaderProgram;
 class vesTexture;
 class vesUniform;
+class vesPVWebClient;
+class vesPVWebDataSet;
 
 class vtkDataSet;
 class vtkPolyData;
@@ -55,6 +58,18 @@ public:
 
   vesKiwiViewerApp();
   ~vesKiwiViewerApp();
+
+  bool doPVWebTest(const std::string& host, const std::string& sessionId);
+  bool doPVRemote(const std::string& host, int port);
+  vesSharedPtr<vesKiwiPVRemoteRepresentation> pvRemoteRep();
+
+  bool loadPVWebDataSet(const std::string& filename);
+  bool loadPVWebDataSet(vesSharedPtr<vesPVWebDataSet> dataset);
+
+  /// Downloads a file using cURL.
+  /// Returns the absolute path to the downloaded file if successful,
+  /// otherwise returns the empty string.
+  std::string downloadFile(const std::string& url, const std::string& downloadDir);
 
   int numberOfBuiltinDatasets() const;
   int defaultBuiltinDatasetIndex() const;
@@ -157,11 +172,14 @@ protected:
   vesSharedPtr<vesKiwiPlaneWidget> addPlaneWidget();
   bool loadBrainAtlas(const std::string& filename);
   bool loadKiwiScene(const std::string& filename);
+  bool loadArchive(const std::string& filename);
   bool loadTexturedMesh(const std::string& meshFile, const std::string& imageFile);
 
   void setErrorMessage(const std::string& errorTitle, const std::string& errorMessage);
   void resetErrorMessage();
   void handleLoadDatasetError();
+
+  bool checkForPVWebError(vesSharedPtr<vesPVWebClient> client);
 
 private:
 

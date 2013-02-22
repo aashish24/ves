@@ -1,12 +1,14 @@
 set(headers
   cJSON.h
   vesKiwiAnimationRepresentation.h
+  vesKiwiArchiveUtils.h
   vesKiwiBaseApp.h
   vesKiwiBaselineImageTester.h
   vesKiwiBrainAtlasRepresentation.h
   vesKiwiCameraInteractor.h
   vesKiwiCameraSpinner.h
   vesKiwiColorMapCollection.h
+  vesKiwiCurlDownloader.h
   vesKiwiDataConversionTools.h
   vesKiwiDataLoader.h
   vesKiwiDataRepresentation.h
@@ -15,6 +17,7 @@ set(headers
   vesKiwiImageWidgetRepresentation.h
   vesKiwiPlaneWidget.h
   vesKiwiPolyDataRepresentation.h
+  vesKiwiPVRemoteRepresentation.h
   vesKiwiSceneRepresentation.h
   vesKiwiStreamingDataRepresentation.h
   vesKiwiTestHelper.h
@@ -22,6 +25,9 @@ set(headers
   vesKiwiViewerApp.h
   vesKiwiWidgetInteractionDelegate.h
   vesKiwiWidgetRepresentation.h
+  vesMidasClient.h
+  vesPVWebClient.h
+  vesPVWebDataSet.h
   )
 
 set(header_dirs
