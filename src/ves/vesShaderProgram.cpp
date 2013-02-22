@@ -80,9 +80,15 @@ vesShaderProgram::vesShaderProgram() : vesMaterialAttribute()
 
   vesSharedPtr<vesEngineUniform> vertexHasColors (new vesHasVertexColors());
   vesSharedPtr<vesEngineUniform> primitiveType (new vesPrimitiveType());
+  vesSharedPtr<vesEngineUniform> windowSize (new vesWindowSizeEngineUniform());
+  vesSharedPtr<vesEngineUniform> pointSize (new vesPointSizeEngineUniform());
+  vesSharedPtr<vesEngineUniform> lineWidth (new vesLineWidthEngineUniform());
 
   this->m_internal->m_engineUniforms.push_back(vertexHasColors);
   this->m_internal->m_engineUniforms.push_back(primitiveType);
+  this->m_internal->m_engineUniforms.push_back(windowSize);
+  this->m_internal->m_engineUniforms.push_back(pointSize);
+  this->m_internal->m_engineUniforms.push_back(lineWidth);
 
   for (size_t i=0; i < this->m_internal->m_engineUniforms.size(); ++i) {
     this->addUniform(this->m_internal->m_engineUniforms[i]->uniform());

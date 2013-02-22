@@ -43,6 +43,7 @@ public:
 
     this->m_modelViewMatrix   = this->m_identity;
     this->m_projectionMatrix  = this->m_identity;
+    this->m_viewSize = vesVector2f(0.0, 0.0);
   }
 
 
@@ -94,6 +95,7 @@ public:
   vesSharedPtr<vesMaterial> m_material;
   vesSharedPtr<vesMapper> m_mapper;
 
+  vesVector2f m_viewSize;
   vesMatrix4x4f *m_identity;
   vesMatrix4x4f *m_projectionMatrix;
   vesMatrix4x4f *m_modelViewMatrix;

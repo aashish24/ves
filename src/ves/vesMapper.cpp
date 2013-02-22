@@ -76,6 +76,8 @@ public:
 vesMapper::vesMapper() : vesBoundingObject(),
   m_initialized(false),
   m_enableWireframe(false),
+  m_pointSize(1),
+  m_lineWidth(1),
   m_maximumTriangleIndicesPerDraw(65535),
   m_internal(0x0)
 {
@@ -153,6 +155,30 @@ float* vesMapper::color()
 const float* vesMapper::color() const
 {
   return this->m_internal->color();
+}
+
+//----------------------------------------------------------------------------
+int vesMapper::pointSize() const
+{
+  return m_pointSize;
+}
+
+//----------------------------------------------------------------------------
+void vesMapper::setPointSize(int size)
+{
+  this->m_pointSize = size;
+}
+
+//----------------------------------------------------------------------------
+int vesMapper::lineWidth() const
+{
+  return this->m_lineWidth;
+}
+
+//----------------------------------------------------------------------------
+void vesMapper::setLineWidth(int width)
+{
+  this->m_lineWidth = width;
 }
 
 
@@ -306,7 +332,7 @@ void vesMapper::drawPrimitive(const vesRenderState &renderState,
 {
   // Send the primitive type information out
   renderState.m_material->bindRenderData(
-    renderState, vesRenderData(primitive->primitiveType()));
+    renderState, vesRenderData(primitive->primitiveType(), this->pointSize(), this->lineWidth()));
 
   glDrawElements(primitive->primitiveType(), primitive->numberOfIndices(),
                  primitive->indicesValueType(),  (void*)0);
@@ -334,7 +360,7 @@ void vesMapper::drawTriangles(const vesRenderState &renderState,
 
     // Send the primitive type information out
     renderState.m_material->bindRenderData(
-      renderState, vesRenderData(triangles->primitiveType()));
+      renderState, vesRenderData(triangles->primitiveType(), this->pointSize(), this->lineWidth()));
 
     if (!this->m_enableWireframe) {
       offset = triangles->sizeOfDataType() * drawnIndices;
@@ -373,7 +399,7 @@ void vesMapper::drawPoints(const vesRenderState &renderState,
         m_geometryData->sourceData(vesVertexAttributeKeys::Position);
     // Send the primitive type information out
     renderState.m_material->bindRenderData(
-      renderState, vesRenderData(vesPrimitiveRenderType::Points));
+      renderState, vesRenderData(vesPrimitiveRenderType::Points, this->pointSize(), this->lineWidth()));
     glDrawArrays(points->primitiveType(), 0, data->sizeOfArray());
   }
 }

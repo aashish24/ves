@@ -69,6 +69,7 @@ void vesRenderer::render()
     this->cullTraverseScene();
 
     vesRenderState renderState;
+    renderState.m_viewSize = vesVector2f(this->m_width, this->m_height);
 
     // Clear all the previous render targets.
     this->m_camera->clearRenderTargets(renderState);

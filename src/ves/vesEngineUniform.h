@@ -79,4 +79,57 @@ public:
   }
 };
 
+class vesPointSizeEngineUniform : public vesEngineUniform
+{
+public:
+  vesPointSizeEngineUniform() : vesEngineUniform()
+  {
+    this->m_uniform = vesUniform::Ptr(new vesIntegerUniform("pointSize"));
+  }
+
+  virtual void bindRenderData(const vesRenderState &renderState,
+                              const vesRenderData  &renderData)
+  {
+    this->m_uniform->set(renderData.m_pointSize);
+    this->m_uniform->callGL(renderState.m_material->shaderProgram()->
+                            uniformLocation(this->m_uniform->name()));
+  }
+};
+
+class vesLineWidthEngineUniform : public vesEngineUniform
+{
+public:
+  vesLineWidthEngineUniform() : vesEngineUniform()
+  {
+    this->m_uniform = vesUniform::Ptr(new vesUniform("lineWidth", static_cast<float>(1.0)));
+  }
+
+  virtual void bindRenderData(const vesRenderState &renderState,
+                              const vesRenderData  &renderData)
+  {
+    this->m_uniform->set(static_cast<float>(renderData.m_lineWidth));
+    this->m_uniform->callGL(renderState.m_material->shaderProgram()->
+                            uniformLocation(this->m_uniform->name()));
+    glLineWidth(static_cast<int>(renderData.m_lineWidth));
+  }
+};
+
+class vesWindowSizeEngineUniform : public vesEngineUniform
+{
+public:
+  vesWindowSizeEngineUniform() : vesEngineUniform()
+  {
+    this->m_uniform = vesUniform::Ptr(new vesUniform("windowSize", vesVector2f(1.0, 1.0)));
+  }
+
+  virtual void bindRenderData(const vesRenderState &renderState,
+                              const vesRenderData  &renderData)
+  {
+    vesVector2f windowSize = renderState.m_viewSize / 2.0;
+    this->m_uniform->set(windowSize);
+    this->m_uniform->callGL(renderState.m_material->shaderProgram()->
+                            uniformLocation(this->m_uniform->name()));
+  }
+};
+
 #endif // VESENGINEUNIFORM_H
