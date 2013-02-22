@@ -176,6 +176,8 @@ public:
 
   virtual int attributeStride(int key) const = 0;
   virtual bool setAttributeStride(int key, int stride) = 0;
+
+  virtual void duplicateElements(const std::vector<unsigned int>& indices) = 0;
 };
 
 /// Generic implementation for the source data
@@ -188,6 +190,15 @@ public:
   virtual ~vesGenericSourceData()
   {
   }
+
+  virtual void duplicateElements(const std::vector<unsigned int>& indices)
+  {
+    size_t nIndices = indices.size();
+    for (size_t i = 0; i < nIndices; ++i) {
+      this->m_data.push_back(this->m_data[indices[i]]);
+    }
+  }
+
 
   /// Use this method with caution
   inline std::vector<T>& arrayReference()
