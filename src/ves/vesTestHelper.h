@@ -189,7 +189,7 @@ vesTestHelper::vesTestHelper()
 void vesTestHelper::init(int* argcp, char** argv, int windowWidth, int windowHeight, const std::string& windowTitle)
 {
   glutInit(argcp, argv);
-  glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH | GLUT_MULTISAMPLE);
+  glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
   glutInitWindowSize(windowWidth, windowHeight);
   glutCreateWindow(windowTitle.c_str());
   glutKeyboardFunc(vesTestHelperGlobals::handleKeyboard);
