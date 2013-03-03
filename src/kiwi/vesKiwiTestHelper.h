@@ -137,15 +137,6 @@ public:
     return baselineTester.performTest(imageName, threshold);
   }
 
-  bool runTesting()
-  {
-    bool testPassed = false;
-    this->processEventLoop();
-    this->app()->render();
-    testPassed = this->doTesting();
-    return testPassed;
-  }
-
   static int main(int argc, char *argv[], vesKiwiTestHelper &helper)
   {
     if (argc < 2) {
@@ -177,7 +168,13 @@ public:
       helper.startMainLoop();
     }
     else {
-      testPassed = helper.runTesting();
+
+#ifdef FREEGLUT
+      helper.processEventLoop();
+ #endif
+
+      helper.app()->render();
+      testPassed = helper.doTesting();
     }
 
     return testPassed ? 0 : 1;

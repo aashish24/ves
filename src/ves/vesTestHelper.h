@@ -32,7 +32,9 @@
   #include <GLUT/glut.h>
 #else
   #include <GL/glut.h>
+#ifdef FREEGLUT
   #include <GL/freeglut.h>
+#endif
 #endif
 
 #include "vesRenderer.h"
@@ -100,7 +102,9 @@ public:
 
   virtual void startMainLoop();
 
+#ifdef FREEGLUT
   virtual void processEventLoop();
+#endif
 
   virtual void handleMouseClick(int button, int state, int x, int y);
 
@@ -192,10 +196,6 @@ vesTestHelper::vesTestHelper()
 void vesTestHelper::init(int* argcp, char** argv, int windowWidth, int windowHeight, const std::string& windowTitle)
 {
   glutInit(argcp, argv);
-  if (glutGet(GLUT_VERSION) < 20001) {
-      std::cerr << "Sorry, you need freeglut version 2.0.1 or later to run this program.\n";
-      exit(1);
-  }
   glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
   glutInitWindowSize(windowWidth, windowHeight);
   glutCreateWindow(windowTitle.c_str());
@@ -213,10 +213,12 @@ void vesTestHelper::startMainLoop()
   glutMainLoop();
 }
 
+#ifdef FREEGLUT
 void vesTestHelper::processEventLoop()
 {
   glutMainLoopEvent();
 }
+#endif
 
 void vesTestHelper::handleMouseClick(int button, int state, int x, int y)
 {
