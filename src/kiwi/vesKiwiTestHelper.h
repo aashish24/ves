@@ -137,6 +137,20 @@ public:
     return baselineTester.performTest(imageName, threshold);
   }
 
+  bool runTesting()
+  {
+    bool testPassed = false;
+    bool loopExit = false;
+    while (!loopExit) {
+      this->processEventLoop();
+      this->app()->render();
+      testPassed = this->doTesting();
+      loopExit = true;
+    }
+
+    return testPassed;
+  }
+
   static int main(int argc, char *argv[], vesKiwiTestHelper &helper)
   {
     if (argc < 2) {
@@ -158,10 +172,9 @@ public:
       return 1;
     }
 
-    // render once
+    // reset view
     helper.resize(windowWidth, windowHeight);
     helper.resetView();
-    helper.app()->render();
 
     // begin the event loop if not in testing mode
     bool testPassed = true;
@@ -169,7 +182,7 @@ public:
       helper.startMainLoop();
     }
     else {
-      testPassed = helper.doTesting();
+      testPassed = helper.runTesting();
     }
 
     return testPassed ? 0 : 1;
