@@ -140,14 +140,9 @@ public:
   bool runTesting()
   {
     bool testPassed = false;
-    bool loopExit = false;
-    while (!loopExit) {
-      this->processEventLoop();
-      this->app()->render();
-      testPassed = this->doTesting();
-      loopExit = true;
-    }
-
+    this->processEventLoop();
+    this->app()->render();
+    testPassed = this->doTesting();
     return testPassed;
   }
 
