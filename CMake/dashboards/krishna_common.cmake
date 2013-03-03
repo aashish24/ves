@@ -12,7 +12,7 @@ set(dashboard_do_coverage TRUE)
 
 # rest
 set(CTEST_MEMORYCHECK_COMMAND "/usr/bin/valgrind")
-set(CTEST_MEMORYCHECK_SUPPRESSIONS_FILE "${CTEST_DASHBOARD_ROOT}/supp.txt")
+set(CTEST_MEMORYCHECK_SUPPRESSIONS_FILE "${CTEST_SCRIPT_DIRECTORY}/supp.txt")
 set(CTEST_MEMORYCHECK_COMMAND_OPTIONS "-q --leak-check=full --num-callers=50")
 set(CTEST_COVERAGE_COMMAND "/usr/bin/gcov")
 set(gcov_cxx_args "-O0 -fprofile-arcs -ftest-coverage")
