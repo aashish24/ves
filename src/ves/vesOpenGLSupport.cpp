@@ -85,5 +85,9 @@ bool vesOpenGLSupport::isSupported(const std::string &ext) const
 
 bool vesOpenGLSupport::isSupportedIndexUnsignedInt() const
 {
+#ifdef VES_USE_DESKTOP_GL
+  return true;
+#else
   return this->isSupported("GL_OES_element_index_uint");
+#endif
 }

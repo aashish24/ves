@@ -52,6 +52,8 @@ class vesKiwiViewerApp : public vesKiwiBaseApp
 public:
 
   typedef vesKiwiBaseApp Superclass;
+  vesTypeMacro(vesKiwiViewerApp);
+
   vesKiwiViewerApp();
   ~vesKiwiViewerApp();
 

@@ -29,14 +29,14 @@
 
 vesShader::vesShader(ShaderType type) :
   m_type          (type),
-  m_shaderHandle  (std::numeric_limits<unsigned>::max())
+  m_shaderHandle  (0)
 {
 }
 
 
 vesShader::vesShader(ShaderType type, const std::string &source) :
   m_type        (type),
-  m_shaderHandle(std::numeric_limits<unsigned>::max()),
+  m_shaderHandle(0),
   m_shaderSource(source)
 {
 }
@@ -68,12 +68,18 @@ void vesShader::compileShader()
 {
   GLint compiled;
 
-  // Create shader
   this->m_shaderHandle = glCreateShader(this->m_type);
 
-  // Load source
-  const char *source = reinterpret_cast<const char*>(this->m_shaderSource.c_str());
-  glShaderSource(this->m_shaderHandle, 1, &source, NULL);
+  const char* shaderSource = this->m_shaderSource.c_str();
+
+#ifdef VES_USE_DESKTOP_GL
+  std::string compatibleShaderSource = "#define mediump\n"
+                             "#define highp\n"
+                             "#define lowp\n" + this->m_shaderSource;
+  shaderSource = compatibleShaderSource.c_str();
+#endif
+
+  glShaderSource(this->m_shaderHandle, 1, &shaderSource, NULL);
   glCompileShader(this->m_shaderHandle);
 
   glGetShaderiv(this->m_shaderHandle, GL_COMPILE_STATUS, &compiled);

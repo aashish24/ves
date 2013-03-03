@@ -29,6 +29,7 @@
 
 #include <vesMath.h>
 #include <vesSharedPtr.h>
+#include <vesSetGet.h>
 
 #include <string>
 
@@ -44,6 +45,8 @@ class vesKiwiCameraInteractor;
 class vesKiwiBaseApp
 {
 public:
+
+  vesTypeMacro(vesKiwiBaseApp);
 
   vesKiwiBaseApp();
   virtual ~vesKiwiBaseApp();
