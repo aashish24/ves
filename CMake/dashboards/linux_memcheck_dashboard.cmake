@@ -68,4 +68,4 @@ set(dashboard_cache "
 set(CTEST_SOURCE_DIRECTORY ${CTEST_DASHBOARD_ROOT}/srcs/${dashboard_source_name})
 set(CTEST_BINARY_DIRECTORY ${CTEST_DASHBOARD_ROOT}/builds/${dashboard_binary_name})
 
-include(${CTEST_SCRIPT_DIRECTORY}/cmake_common.cmake)
+include(${CTEST_SCRIPT_DIRECTORY}/dashboard_common.cmake)

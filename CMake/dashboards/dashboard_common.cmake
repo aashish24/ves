@@ -1,4 +1,4 @@
-# CMake Common Dashboard Script
+# VES Common Dashboard Script
 #
 # This script contains basic dashboard driver code common to all
 # clients.
@@ -26,8 +26,8 @@
 #
 #   dashboard_model       = Nightly | Experimental | Continuous
 #   dashboard_root_name   = Change name of "My Tests" directory
-#   dashboard_source_name = Name of source directory (CMake)
-#   dashboard_binary_name = Name of binary directory (CMake-build)
+#   dashboard_source_name = Name of source directory
+#   dashboard_binary_name = Name of binary directory
 #   dashboard_cache       = Initial CMakeCache.txt file content
 #   dashboard_do_coverage = True to enable coverage (ex: gcov)
 #   dashboard_do_memcheck = True to enable memcheck (ex: valgrind)
