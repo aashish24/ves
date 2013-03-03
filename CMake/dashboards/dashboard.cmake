@@ -40,8 +40,6 @@ endif()
 set(dashboard_model "${CTEST_DASHBOARD_MODEL}")
 set(dashboard_source_name "ves_${CTEST_PROJECT_BRANCH}_${dashboard_model}")
 set(dashboard_binary_name "ves_${CTEST_PROJECT_BRANCH}_${dashboard_model}")
-set(dashboard_do_memcheck TRUE)
-set(dashboard_do_coverage TRUE)
 
 set(CTEST_BUILD_NAME "${CTEST_PROJECT_BRANCH}_${dashboard_arch}")
 set(CTEST_SOURCE_DIRECTORY ${CTEST_DASHBOARD_ROOT}/srcs/${dashboard_source_name})
