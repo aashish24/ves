@@ -60,8 +60,6 @@ set(CTEST_MEMORYCHECK_COMMAND_OPTIONS "-q --leak-check=full --num-callers=50")
 
 set(CTEST_COVERAGE_COMMAND "/usr/bin/gcov")
 
-set(dashboard_build_test_dir "${CTEST_DASHBOARD_ROOT}/builds/${dashboard_binary_name}/CMakeExternals/Build/ves-host")
-
 set(dashboard_cache "
   VES_HOST_SUPERBUILD:BOOL=TRUE
   VES_CXX_FLAGS:STRING=-Wall -Wextra -Wno-unused-variable -O0 -fprofile-arcs -ftest-coverage

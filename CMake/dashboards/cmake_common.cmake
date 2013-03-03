@@ -195,6 +195,10 @@ if("${dashboard_model}" STREQUAL "Continuous")
   set(dashboard_continuous 1)
 endif()
 
+# this is a superbuild project, this variable defines the
+# ves subproject directory that should be the target of ctest
+set(dashboard_build_test_dir "${CTEST_BINARY_DIRECTORY}/CMakeExternals/Build/ves-host")
+
 set(dashboard_done 0)
 while(NOT dashboard_done)
   if(dashboard_continuous)
