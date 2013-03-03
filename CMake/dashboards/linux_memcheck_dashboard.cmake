@@ -7,7 +7,12 @@ set(CTEST_TEST_ARGS PARALLEL_LEVEL 6)
 set(CTEST_TEST_TIMEOUT 500)
 set(ENV{DISPLAY} ":0")
 
-set(CTEST_DASHBOARD_ROOT "/source/ves/dashboards")
+if(DEFINED ENV{CTEST_DASHBOARD_ROOT})
+  set(CTEST_DASHBOARD_ROOT "ENV{CTEST_DASHBOARD_ROOT}")
+else()
+  set(CTEST_DASHBOARD_ROOT "/source/ves/dashboards")
+endif()
+
 set(dashboard_model "Nightly")
 set(dashboard_source_name "ves")
 set(dashboard_binary_name "build")
@@ -15,13 +20,13 @@ set(dashboard_do_memcheck TRUE)
 set(dashboard_do_coverage TRUE)
 
 set(CTEST_MEMORYCHECK_COMMAND "/usr/bin/valgrind")
-set(CTEST_MEMORYCHECK_SUPPRESSIONS_FILE "/source/ves/dashboards/supp.txt")
+set(CTEST_MEMORYCHECK_SUPPRESSIONS_FILE "${CTEST_DASHBOARD_ROOT}/supp.txt")
 set(CTEST_MEMORYCHECK_COMMAND_OPTIONS "-q --leak-check=full --num-callers=50")
 #set(CTEST_MEMORYCHECK_COMMAND_OPTIONS "--gen-suppressions=all --leak-check=full --show-reachable=yes --num-callers=50")
 
 set(CTEST_COVERAGE_COMMAND "/usr/bin/gcov")
 
-set(dashboard_build_test_dir "/source/ves/dashboards/build/CMakeExternals/Build/ves-host")
+set(dashboard_build_test_dir "${CTEST_DASHBOARD_ROOT}/build/CMakeExternals/Build/ves-host")
 
 set(dashboard_cache "
 VES_HOST_SUPERBUILD:BOOL=TRUE
