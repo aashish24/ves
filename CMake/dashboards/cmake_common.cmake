@@ -93,19 +93,27 @@ if(NOT DEFINED CTEST_GIT_COMMAND)
     )
 endif()
 
+# Setup update command
+set(CTEST_UPDATE_COMMAND "${CTEST_GIT_COMMAND}")
+
 # Select a source directory name.
 if(NOT DEFINED CTEST_SOURCE_DIRECTORY)
   if(DEFINED dashboard_source_name)
-    set(CTEST_SOURCE_DIRECTORY ${CTEST_DASHBOARD_ROOT}/${dashboard_source_name})
+    set(CTEST_SOURCE_DIRECTORY ${CTEST_DASHBOARD_ROOT}/srcs/${dashboard_source_name})
   else()
     set(CTEST_SOURCE_DIRECTORY ${CTEST_DASHBOARD_ROOT}/CMake)
   endif()
 endif()
 
+# Clone repository if first time
+if(CTEST_UPDATE_COMMAND AND NOT EXISTS "${CTEST_SOURCE_DIRECTORY}")
+  set(CTEST_CHECKOUT_COMMAND "${CTEST_UPDATE_COMMAND} clone -b ${CTEST_PROJECT_BRANCH} git://vtk.org/VES.git ${CTEST_SOURCE_DIRECTORY}")
+endif()
+
 # Select a build directory name.
 if(NOT DEFINED CTEST_BINARY_DIRECTORY)
   if(DEFINED dashboard_binary_name)
-    set(CTEST_BINARY_DIRECTORY ${CTEST_DASHBOARD_ROOT}/${dashboard_binary_name})
+    set(CTEST_BINARY_DIRECTORY ${CTEST_DASHBOARD_ROOT}/builds/${dashboard_binary_name})
   else()
     set(CTEST_BINARY_DIRECTORY ${CTEST_SOURCE_DIRECTORY}-build)
   endif()
