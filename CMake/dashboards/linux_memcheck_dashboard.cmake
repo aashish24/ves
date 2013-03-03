@@ -65,4 +65,7 @@ set(dashboard_cache "
   VES_CXX_FLAGS:STRING=-Wall -Wextra -Wno-unused-variable -O0 -fprofile-arcs -ftest-coverage
 ")
 
+set(CTEST_SOURCE_DIRECTORY ${CTEST_DASHBOARD_ROOT}/srcs/${dashboard_source_name})
+set(CTEST_BINARY_DIRECTORY ${CTEST_DASHBOARD_ROOT}/builds/${dashboard_binary_name})
+
 include(${CTEST_SCRIPT_DIRECTORY}/cmake_common.cmake)
