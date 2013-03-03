@@ -1,4 +1,3 @@
-
 # Query site name
 if (DEFINED ENV{CTEST_SITE})
   set(CTEST_SITE "$ENV{CTEST_SITE}")
@@ -10,13 +9,6 @@ else()
   string(REGEX MATCH "^([^.]*)(\\..*)?$" not_used "${HOSTNAME}")
   set(CTEST_SITE "${CMAKE_MATCH_1}") # Work around CMake bug 13792
 endif()
-
-set(CTEST_BUILD_CONFIGURATION Debug)
-set(CTEST_CMAKE_GENERATOR "Unix Makefiles")
-set(CTEST_BUILD_FLAGS "-j4")
-set(CTEST_TEST_ARGS PARALLEL_LEVEL 6)
-set(CTEST_TEST_TIMEOUT 500)
-set(ENV{DISPLAY} ":0")
 
 # Set dashboard root
 if(DEFINED ENV{CTEST_DASHBOARD_ROOT})
@@ -51,15 +43,7 @@ set(dashboard_binary_name "ves_${CTEST_PROJECT_BRANCH}_${dashboard_model}")
 set(dashboard_do_memcheck TRUE)
 set(dashboard_do_coverage TRUE)
 
-set(${CMAKE_SYSTEM_PROCESSOR})
 set(CTEST_BUILD_NAME "${CTEST_PROJECT_BRANCH}_${dashboard_arch}")
-set(CTEST_MEMORYCHECK_COMMAND "/usr/bin/valgrind")
-set(CTEST_MEMORYCHECK_SUPPRESSIONS_FILE "${CTEST_DASHBOARD_ROOT}/supp.txt")
-set(CTEST_MEMORYCHECK_COMMAND_OPTIONS "-q --leak-check=full --num-callers=50")
-#set(CTEST_MEMORYCHECK_COMMAND_OPTIONS "--gen-suppressions=all --leak-check=full --show-reachable=yes --num-callers=50")
-
-set(CTEST_COVERAGE_COMMAND "/usr/bin/gcov")
-
 set(CTEST_SOURCE_DIRECTORY ${CTEST_DASHBOARD_ROOT}/srcs/${dashboard_source_name})
 set(CTEST_BINARY_DIRECTORY ${CTEST_DASHBOARD_ROOT}/builds/${dashboard_binary_name})
 
