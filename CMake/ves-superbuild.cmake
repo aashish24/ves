@@ -1,11 +1,10 @@
-if(NOT VES_HOST_SUPERBUILD AND NOT VES_ANDROID_SUPERBUILD AND NOT VES_IOS_SUPERBUILD)
-  return()
-endif()
-
 project(VES_SUPERBUILD NONE)
 
 include(ExternalProject)
 
+option(VES_HOST_SUPERBUILD "Build VES and dependent subprojects for host architecture" OFF)
+option(VES_ANDROID_SUPERBUILD "Build VES and dependent subprojects for Android" OFF)
+option(VES_IOS_SUPERBUILD "Build VES and dependent subprojects for iOS" OFF)
 
 set(base "${CMAKE_BINARY_DIR}/CMakeExternals")
 set_property(DIRECTORY PROPERTY EP_BASE ${base})
@@ -39,11 +38,13 @@ set(module_defaults
   -DModule_vtkIOXML:BOOL=ON
   -DModule_vtkIOImage:BOOL=ON
   -DModule_vtkIOPLY:BOOL=ON
+  -DModule_vtkIOInfovis:BOOL=ON
   -DModule_vtkImagingCore:BOOL=ON
   -DModule_vtkParallelCore:BOOL=ON
   -DModule_vtkRenderingCore:BOOL=ON
   -DModule_vtkRenderingFreeType:BOOL=ON
 )
+
 
 macro(force_build proj)
   ExternalProject_Add_Step(${proj} forcebuild
@@ -54,9 +55,10 @@ macro(force_build proj)
   )
 endmacro()
 
+
 macro(install_eigen)
-  set(eigen_url http://www.vtk.org/files/support/eigen-3.1.0-alpha1.tar.gz)
-  set(eigen_md5 c04dedf4ae97b055b6dd2aaa01daf5e9)
+  set(eigen_url http://bitbucket.org/eigen/eigen/get/3.1.2.tar.gz)
+  set(eigen_md5 bb639388192cb80f1ee797f5dbdbe74f)
   ExternalProject_Add(
     eigen
     SOURCE_DIR ${source_prefix}/eigen
@@ -65,6 +67,7 @@ macro(install_eigen)
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND ${CMAKE_COMMAND} -E copy_directory "${source_prefix}/eigen/Eigen" "${install_prefix}/eigen/Eigen"
+                 && ${CMAKE_COMMAND} -E copy_directory "${source_prefix}/eigen/unsupported" "${install_prefix}/eigen/unsupported"
   )
 endmacro()
 
@@ -88,26 +91,6 @@ macro(compile_vtk proj)
   )
 endmacro()
 
-macro(compile_ves proj)
-  ExternalProject_Add(
-    ${proj}
-    SOURCE_DIR ${ves_src}
-    DOWNLOAD_COMMAND ""
-    DEPENDS vtk-host eigen
-    CMAKE_ARGS
-      -DCMAKE_INSTALL_PREFIX:PATH=${install_prefix}/${proj}
-      -DCMAKE_BUILD_TYPE:STRING=${build_type}
-      -DBUILD_TESTING:BOOL=ON
-      -DBUILD_SHARED_LIBS:BOOL=ON
-      -DVES_USE_VTK:BOOL=ON
-      -DVES_USE_DESKTOP_GL:BOOL=ON
-      -DVTK_DIR:PATH=${build_prefix}/vtk-host
-      -DEIGEN_INCLUDE_DIR:PATH=${install_prefix}/eigen
-      -DCMAKE_CXX_FLAGS:STRING=${VES_CXX_FLAGS}
-  )
-
-  force_build(${proj})
-endmacro()
 
 macro(crosscompile_vtk proj toolchain_file)
   ExternalProject_Add(
@@ -127,6 +110,31 @@ macro(crosscompile_vtk proj toolchain_file)
   )
 endmacro()
 
+
+macro(compile_ves proj)
+  set(tag host)
+  ExternalProject_Add(
+    ${proj}
+    SOURCE_DIR ${ves_src}
+    DOWNLOAD_COMMAND ""
+    DEPENDS vtk-${tag} eigen
+    CMAKE_ARGS
+      -DCMAKE_INSTALL_PREFIX:PATH=${install_prefix}/${proj}
+      -DCMAKE_BUILD_TYPE:STRING=${build_type}
+      -DBUILD_TESTING:BOOL=ON
+      -DBUILD_SHARED_LIBS:BOOL=OFF
+      -DVES_USE_VTK:BOOL=ON
+      -DVES_NO_SUPERBUILD:BOOL=ON
+      -DVES_USE_DESKTOP_GL:BOOL=ON
+      -DVTK_DIR:PATH=${build_prefix}/vtk-${tag}
+      -DEIGEN_INCLUDE_DIR:PATH=${install_prefix}/eigen
+      -DCMAKE_CXX_FLAGS:STRING=${VES_CXX_FLAGS} -fPIC
+  )
+
+  force_build(${proj})
+endmacro()
+
+
 macro(crosscompile_ves proj tag toolchain_file)
   ExternalProject_Add(
     ${proj}
@@ -140,6 +148,7 @@ macro(crosscompile_ves proj tag toolchain_file)
       -DCMAKE_CXX_FLAGS:STRING=${VES_CXX_FLAGS}
       -DBUILD_SHARED_LIBS:BOOL=OFF
       -DVES_USE_VTK:BOOL=ON
+      -DVES_NO_SUPERBUILD:BOOL=ON
       -DVTK_DIR:PATH=${build_prefix}/vtk-${tag}
       -DEIGEN_INCLUDE_DIR:PATH=${install_prefix}/eigen
       -DPYTHON_EXECUTABLE:FILEPATH=${PYTHON_EXECUTABLE}
@@ -152,10 +161,10 @@ install_eigen()
 compile_vtk(vtk-host)
 
 if(VES_IOS_SUPERBUILD)
-  crosscompile_vtk(vtk-ios-simulator toolchain-ios-simulator.cmake)
-  crosscompile_vtk(vtk-ios-device toolchain-ios-device.cmake)
-  crosscompile_ves(ves-ios-simulator ios-simulator toolchain-ios-simulator.cmake)
-  crosscompile_ves(ves-ios-device ios-device toolchain-ios-device.cmake)
+  foreach(target ios-simulator ios-device)
+    crosscompile_vtk(vtk-${target} toolchain-${target}.cmake)
+    crosscompile_ves(ves-${target} ${target} toolchain-${target}.cmake)
+  endforeach()
 endif()
 
 if(VES_ANDROID_SUPERBUILD)
@@ -167,7 +176,20 @@ if(VES_HOST_SUPERBUILD)
   compile_ves(ves-host)
 endif()
 
-set(ves_superbuild_enabled ON)
+# create frameworks for OSX
+if(VES_IOS_SUPERBUILD)
+    add_custom_target(vesFramework ALL
+      COMMAND ${CMAKE_SOURCE_DIR}/CMake/makeFramework.sh ves
+      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+      DEPENDS ves-ios-device ves-ios-simulator
+      COMMENT "Creating ves.framework")
+
+    add_custom_target(vtkFramework ALL
+      COMMAND ${CMAKE_SOURCE_DIR}/CMake/makeFramework.sh vtk
+      WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+      DEPENDS vtk-ios-device vtk-ios-simulator
+      COMMENT "Creating vtk.framework")
+endif()
 
 
 # CTestCustom.cmake needs to be placed at the top level build directory
