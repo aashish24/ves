@@ -60,11 +60,6 @@ set(CTEST_MEMORYCHECK_COMMAND_OPTIONS "-q --leak-check=full --num-callers=50")
 
 set(CTEST_COVERAGE_COMMAND "/usr/bin/gcov")
 
-set(dashboard_cache "
-  VES_HOST_SUPERBUILD:BOOL=TRUE
-  VES_CXX_FLAGS:STRING=-Wall -Wextra -Wno-unused-variable -O0 -fprofile-arcs -ftest-coverage
-")
-
 set(CTEST_SOURCE_DIRECTORY ${CTEST_DASHBOARD_ROOT}/srcs/${dashboard_source_name})
 set(CTEST_BINARY_DIRECTORY ${CTEST_DASHBOARD_ROOT}/builds/${dashboard_binary_name})
 
