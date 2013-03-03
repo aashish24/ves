@@ -1,0 +1,57 @@
+####################################################################
+# leaks in calls to X11 and EGL  by TestKiwiViewer
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   ...
+   fun:_ZL13make_x_windowP9_XDisplayPvPKciiiiPmPS1_S5_
+   fun:main
+}
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   ...
+   fun:XLookupString
+   fun:_ZL10event_loopP9_XDisplaymPvS1_
+   fun:main
+}
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   ...
+   fun:eglInitialize
+   fun:main
+}
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   ...
+   fun:eglMakeCurrent
+   fun:main
+}
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   ...
+   obj:*libEGL.so*
+   fun:main
+}
+
+
+
+####################################################################
+# leaks caused by ves calls to OpenGL ES
+
+{
+   <insert_a_suppression_name_here>
+   Memcheck:Leak
+   fun:*alloc
+   ...
+   obj:*libGLESv2.so*
+   ...
+}
