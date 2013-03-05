@@ -1,13 +1,17 @@
 set(CMAKE_SYSTEM_NAME Darwin)
 
+exec_program(/usr/bin/xcode-select ARGS -print-path OUTPUT_VARIABLE XCODE_DEVELOPER_DIR)
+
 find_program(CMAKE_C_COMPILER NAME gcc
   PATHS
+  "${XCODE_DEVELOPER_DIR}/Platforms/iPhoneOS.platform/Developer/usr/bin/"
   /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/
   /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/
   NO_DEFAULT_PATH)
 
 find_program(CMAKE_CXX_COMPILER NAME g++
   PATHS
+  "${XCODE_DEVELOPER_DIR}/Platforms/iPhoneOS.platform/Developer/usr/bin/"
   /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/
   /Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/
   NO_DEFAULT_PATH)
@@ -27,6 +31,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__IPHONE_OS_VERSION_MIN_REQUIRED=40300
 # Set the CMAKE_OSX_SYSROOT to the latest SDK found
 set(CMAKE_OSX_SYSROOT)
 set(possible_sdk_roots
+  "${XCODE_DEVELOPER_DIR}/Platforms/iPhoneOS.platform/Developer/SDKs"
   /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs
   /Developer/Platforms/iPhoneOS.platform/Developer/SDKs
   )
