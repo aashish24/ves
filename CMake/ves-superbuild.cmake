@@ -73,7 +73,11 @@ endmacro()
 
 macro(compile_vtk proj)
   if(NOT VES_HOST_SUPERBUILD)
-    set(vtk_host_build_command BUILD_COMMAND make vtkCompileTools)
+    set(makecmd make)
+    if(CMAKE_GENERATOR MATCHES "NMake Makefiles")
+      set(makecmd nmake)
+    endif()
+    set(vtk_host_build_command BUILD_COMMAND ${makecmd} vtkCompileTools)
   endif()
   ExternalProject_Add(
     ${proj}
