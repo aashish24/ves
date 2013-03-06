@@ -62,22 +62,25 @@ vtkDataArray* vesKiwiDataConversionTools::FindScalarsArray(vtkDataSet* dataSet)
 //----------------------------------------------------------------------------
 vtkUnsignedCharArray* vesKiwiDataConversionTools::FindRGBColorsArray(vtkDataSet* dataSet)
 {
-  vtkUnsignedCharArray* colors = vtkUnsignedCharArray::SafeDownCast(dataSet->GetPointData()->GetArray("rgb_colors"));
-  if (colors && colors->GetNumberOfComponents() == 3)
-    {
-    return colors;
+  for (int i = 0; i < dataSet->GetPointData()->GetNumberOfArrays(); ++i) {
+    vtkUnsignedCharArray* colors = vtkUnsignedCharArray::SafeDownCast(dataSet->GetPointData()->GetArray(i));
+    if (colors && colors->GetNumberOfComponents() == 3) {
+      return colors;
     }
+  }
   return 0;
 }
 
 //----------------------------------------------------------------------------
 vtkDataArray* vesKiwiDataConversionTools::FindTextureCoordinatesArray(vtkDataSet* dataSet)
 {
-  vtkDataArray* tcoords = dataSet->GetPointData()->GetArray("tcoords");
-  if (tcoords && tcoords->GetNumberOfComponents() == 2)
-    {
+  vtkDataArray* tcoords = dataSet->GetPointData()->GetTCoords();
+  if (!tcoords) {
+    tcoords = dataSet->GetPointData()->GetArray("tcoords");
+  }
+  if (tcoords && tcoords->GetNumberOfComponents() == 2) {
     return tcoords;
-    }
+  }
   return 0;
 }
 
@@ -106,6 +109,16 @@ vtkSmartPointer<vtkLookupTable> vesKiwiDataConversionTools::GetRedToBlueLookupTa
   vtkSmartPointer<vtkLookupTable> table = vtkSmartPointer<vtkLookupTable>::New();
   table->SetRange(scalarRange);
   table->SetHueRange(0, 0.666);
+  table->Build();
+  return table;
+}
+
+//----------------------------------------------------------------------------
+vtkSmartPointer<vtkLookupTable> vesKiwiDataConversionTools::GetBlueToRedLookupTable(double scalarRange[2])
+{
+  vtkSmartPointer<vtkLookupTable> table = vtkSmartPointer<vtkLookupTable>::New();
+  table->SetRange(scalarRange);
+  table->SetHueRange(0.666, 0.0);
   table->Build();
   return table;
 }

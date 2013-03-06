@@ -80,9 +80,16 @@ vesShaderProgram::vesShaderProgram() : vesMaterialAttribute()
 
   vesSharedPtr<vesEngineUniform> vertexHasColors (new vesHasVertexColors());
   vesSharedPtr<vesEngineUniform> primitiveType (new vesPrimitiveType());
+  vesSharedPtr<vesEngineUniform> windowSize (new vesWindowSizeEngineUniform());
+  vesSharedPtr<vesEngineUniform> pointSize (new vesPointSizeEngineUniform());
+  vesSharedPtr<vesEngineUniform> lineWidth (new vesLineWidthEngineUniform());
 
   this->m_internal->m_engineUniforms.push_back(vertexHasColors);
   this->m_internal->m_engineUniforms.push_back(primitiveType);
+  this->m_internal->m_engineUniforms.push_back(windowSize);
+  this->m_internal->m_engineUniforms.push_back(pointSize);
+  this->m_internal->m_engineUniforms.push_back(lineWidth);
+  this->addUniform(vesVertexOpacityUniform::Ptr(new vesVertexOpacityUniform));
 
   for (size_t i=0; i < this->m_internal->m_engineUniforms.size(); ++i) {
     this->addUniform(this->m_internal->m_engineUniforms[i]->uniform());
@@ -435,7 +442,7 @@ void vesShaderProgram::bind(const vesRenderState &renderState)
     std::vector< vesSharedPtr<vesShader> >::iterator itr
       = this->m_internal->m_shaders.begin();
     for (; itr != this->m_internal->m_shaders.end(); ++itr) {
-      std::cerr << "INFO: Compiling shaders: " << std::endl;
+      //std::cerr << "INFO: Compiling shaders: " << std::endl;
 
       (*itr)->compileShader();
 

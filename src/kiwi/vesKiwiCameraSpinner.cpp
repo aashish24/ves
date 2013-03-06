@@ -21,11 +21,15 @@
 #include "vesKiwiCameraSpinner.h"
 #include "vesKiwiCameraInteractor.h"
 
+#include <vtkTimerLog.h>
+
 //----------------------------------------------------------------------------
 vesKiwiCameraSpinner::vesKiwiCameraSpinner()
 {
   mIsEnabled = false;
   mLastPanDistance = 0;
+  mLastTime = 0.0;
+  mDeceleration = 100;
   mLastPanDirection = vesVector2d(0, 0);
 }
 
@@ -47,6 +51,18 @@ vesKiwiCameraInteractor::Ptr vesKiwiCameraSpinner::interactor() const
 }
 
 //----------------------------------------------------------------------------
+double vesKiwiCameraSpinner::deceleration() const
+{
+  return mDeceleration;
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiCameraSpinner::setDeceleration(double d)
+{
+  this->mDeceleration = d;
+}
+
+//----------------------------------------------------------------------------
 double vesKiwiCameraSpinner::currentMagnitude() const
 {
   return mLastPanDistance;
@@ -62,6 +78,7 @@ bool vesKiwiCameraSpinner::isEnabled() const
 void vesKiwiCameraSpinner::enable()
 {
   mIsEnabled = true;
+  mLastTime = vtkTimerLog::GetUniversalTime();
 }
 
 //----------------------------------------------------------------------------
@@ -69,6 +86,7 @@ void vesKiwiCameraSpinner::disable()
 {
   mIsEnabled = false;
   mLastPanDistance = 0.0;
+  mLastTime = 0.0;
 }
 
 //----------------------------------------------------------------------------
@@ -92,11 +110,13 @@ void vesKiwiCameraSpinner::updateSpin()
     return;
   }
 
-  vesVector2d panDelta;
+  double newTime = vtkTimerLog::GetUniversalTime();
+  double elapsed = newTime - mLastTime;
+  mLastTime = newTime;
+  mLastPanDistance -= mDeceleration*elapsed;
 
-  if (mLastPanDistance > 1.0) {
-    panDelta = mLastPanDirection * mLastPanDistance;
-    mLastPanDistance *= 0.90;
+  if (mLastPanDistance > 1.0 || mDeceleration == 0) {
+    vesVector2d panDelta = mLastPanDirection * mLastPanDistance * (elapsed*30);
     mInteractor->rotate(panDelta);
   }
   else {

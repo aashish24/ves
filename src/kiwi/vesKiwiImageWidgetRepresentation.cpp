@@ -413,30 +413,3 @@ void vesKiwiImageWidgetRepresentation::removeSelfFromRenderer(
     this->Internal->AllReps[i]->removeSelfFromRenderer(renderer);
   }
 }
-
-//----------------------------------------------------------------------------
-int vesKiwiImageWidgetRepresentation::numberOfFacets()
-{
-  int count = 0;
-  for (size_t i = 0; i < this->Internal->AllReps.size(); ++i)
-    count += this->Internal->AllReps[i]->numberOfFacets();
-  return count;
-}
-
-//----------------------------------------------------------------------------
-int vesKiwiImageWidgetRepresentation::numberOfVertices()
-{
-  int count = 0;
-  for (size_t i = 0; i < this->Internal->AllReps.size(); ++i)
-    count += this->Internal->AllReps[i]->numberOfVertices();
-  return count;
-}
-
-//----------------------------------------------------------------------------
-int vesKiwiImageWidgetRepresentation::numberOfLines()
-{
-  int count = 0;
-  for (size_t i = 0; i < this->Internal->AllReps.size(); ++i)
-    count += this->Internal->AllReps[i]->numberOfLines();
-  return count;
-}

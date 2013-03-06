@@ -69,6 +69,7 @@ void vesRenderer::render()
     this->cullTraverseScene();
 
     vesRenderState renderState;
+    renderState.m_viewSize = vesVector2f(this->m_width, this->m_height);
 
     // Clear all the previous render targets.
     this->m_camera->clearRenderTargets(renderState);
@@ -98,15 +99,15 @@ void vesRenderer::resize(int width, int height, float scale)
 
   this->updateBackgroundViewport();
 
-  this->m_aspect[0] = this->m_camera->viewport()->inverseAspect();
-  this->m_aspect[1] = this->m_camera->viewport()->aspect();
+  this->m_aspect[0] = this->m_camera->viewport()->aspect();
+  this->m_aspect[1] = 1.0;
 }
 
 
 vesVector3f vesRenderer::computeWorldToDisplay(vesVector3f world)
 {
   // WorldToView
-  vesMatrix4x4f proj_mat = this->m_camera->computeProjectionTransform(this->m_aspect[1],
+  vesMatrix4x4f proj_mat = this->m_camera->computeProjectionTransform(this->m_aspect[0],
                                                                     0, 1);
   vesMatrix4x4f view_mat = this->m_camera->computeViewTransform();
   vesMatrix4x4f t(proj_mat * view_mat);
@@ -135,7 +136,7 @@ vesVector3f vesRenderer::computeDisplayToWorld(vesVector3f display)
   view[3] = 1;
 
   // ViewToWorld
-  vesMatrix4x4f proj_mat = this->m_camera->computeProjectionTransform(this->m_aspect[1],
+  vesMatrix4x4f proj_mat = this->m_camera->computeProjectionTransform(this->m_aspect[0],
                                                                     0, 1);
   vesMatrix4x4f view_mat = this->m_camera->computeViewTransform();
   vesMatrix4x4f mat = proj_mat*view_mat;
@@ -309,12 +310,27 @@ void vesRenderer::resetCameraClippingRange(float bounds[6])
 }
 
 
+void vesRenderer::setBackgroundColor(float r, float g, float b)
+{
+  this->setBackgroundColor(vesVector3f(r, g, b));
+}
+
 void vesRenderer::setBackgroundColor(float r, float g, float b, float a)
 {
+  this->setBackgroundColor(vesVector4f(r, g, b, a));
+}
+
+void vesRenderer::setBackgroundColor(const vesVector3f& color)
+{
+  this->setBackgroundColor(vesVector4f(color[0], color[1], color[2], 1.f));
+}
+
+void vesRenderer::setBackgroundColor(const vesVector4f& color)
+{
   if (this->m_background) {
-    this->m_background->setColor(vesVector4f(r, g, b, a));
+    this->m_background->setColor(color);
   }
-  this->m_camera->setClearColor(vesVector4f(r, g, b, a));
+  this->m_camera->setClearColor(color);
 }
 
 
@@ -343,6 +359,36 @@ void vesRenderer::removeActor(vesSharedPtr<vesActor> actor)
   if (actor) {
     this->m_sceneRoot->removeChild(actor);
   }
+}
+
+namespace {
+
+void sceneActorsHelper(std::vector<vesSharedPtr<vesActor> >& actors, vesSharedPtr<vesGroupNode> parent)
+{
+  if (!parent) {
+    return;
+  }
+
+  const std::list<vesSharedPtr<vesNode> >& children = parent->children();
+
+  for (std::list<vesSharedPtr<vesNode> >::const_iterator itr = children.begin(); itr != children.end(); ++itr) {
+    vesSharedPtr<vesActor> actor = std::tr1::dynamic_pointer_cast<vesActor>(*itr);
+    if (actor) {
+      actors.push_back(actor);
+    }
+    else {
+      sceneActorsHelper(actors, std::tr1::dynamic_pointer_cast<vesGroupNode>(*itr));
+    }
+  }
+}
+
+}
+
+std::vector<vesSharedPtr<vesActor> > vesRenderer::sceneActors() const
+{
+  std::vector<vesSharedPtr<vesActor> > actors;
+  sceneActorsHelper(actors, this->sceneRoot());
+  return actors;
 }
 
 

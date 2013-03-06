@@ -176,6 +176,8 @@ public:
 
   virtual int attributeStride(int key) const = 0;
   virtual bool setAttributeStride(int key, int stride) = 0;
+
+  virtual void duplicateElements(const std::vector<unsigned int>& indices) = 0;
 };
 
 /// Generic implementation for the source data
@@ -188,6 +190,15 @@ public:
   virtual ~vesGenericSourceData()
   {
   }
+
+  virtual void duplicateElements(const std::vector<unsigned int>& indices)
+  {
+    size_t nIndices = indices.size();
+    for (size_t i = 0; i < nIndices; ++i) {
+      this->m_data.push_back(this->m_data[indices[i]]);
+    }
+  }
+
 
   /// Use this method with caution
   inline std::vector<T>& arrayReference()
@@ -407,6 +418,41 @@ public:
     this->setNumberOfComponents(vesVertexAttributeKeys::Position, 3);
     this->setSizeOfAttributeDataType(vesVertexAttributeKeys::Position, sizeof(float));
     this->setIsAttributeNormalized(vesVertexAttributeKeys::Position, false);
+  }
+};
+
+class vesGenericSourceData3f : public vesGenericSourceData<vesVector3f>
+{
+public:
+  vesTypeMacro(vesGenericSourceData3f);
+
+  vesGenericSourceData3f(int key) : vesGenericSourceData<vesVector3f>()
+  {
+    const int totalNumberOfFloats = 3;
+    const int stride = sizeof(float) * totalNumberOfFloats;
+
+    this->setAttributeDataType(key, vesDataType::Float);
+    this->setAttributeOffset(key, 0);
+    this->setAttributeStride(key, stride);
+    this->setNumberOfComponents(key, 3);
+    this->setSizeOfAttributeDataType(key, sizeof(float));
+    this->setIsAttributeNormalized(key, false);
+  }
+};
+
+class vesGenericSourceData1f : public vesGenericSourceData<float>
+{
+public:
+  vesTypeMacro(vesGenericSourceData1f);
+
+  vesGenericSourceData1f(int key) : vesGenericSourceData<float>()
+  {
+    this->setAttributeDataType(key, vesDataType::Float);
+    this->setAttributeOffset(key, 0);
+    this->setAttributeStride(key, sizeof(float));
+    this->setNumberOfComponents(key, 1);
+    this->setSizeOfAttributeDataType(key, sizeof(float));
+    this->setIsAttributeNormalized(key, false);
   }
 };
 

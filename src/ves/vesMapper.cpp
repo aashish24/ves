@@ -76,6 +76,8 @@ public:
 vesMapper::vesMapper() : vesBoundingObject(),
   m_initialized(false),
   m_enableWireframe(false),
+  m_pointSize(1),
+  m_lineWidth(1),
   m_maximumTriangleIndicesPerDraw(65535),
   m_internal(0x0)
 {
@@ -105,19 +107,6 @@ void vesMapper::computeBounds()
   this->setBounds(min, max);
 
   this->setBoundsDirty(false);
-}
-
-
-void vesMapper::normalize()
-{
-  float r = this->boundsRadius();
-
-  this->m_normalizedMatrix =
-      makeScaleMatrix4x4(1/r,1/r,1/r)*
-      makeTranslationMatrix4x4(-this->boundsCenter());
-
-  this->setBoundsCenter(transformPoint3f(this->m_normalizedMatrix, this->boundsCenter()));
-  this->setBoundsSize(transformPoint3f(this->m_normalizedMatrix, this->boundsSize()));
 }
 
 
@@ -168,6 +157,30 @@ const float* vesMapper::color() const
   return this->m_internal->color();
 }
 
+//----------------------------------------------------------------------------
+int vesMapper::pointSize() const
+{
+  return m_pointSize;
+}
+
+//----------------------------------------------------------------------------
+void vesMapper::setPointSize(int size)
+{
+  this->m_pointSize = size;
+}
+
+//----------------------------------------------------------------------------
+int vesMapper::lineWidth() const
+{
+  return this->m_lineWidth;
+}
+
+//----------------------------------------------------------------------------
+void vesMapper::setLineWidth(int width)
+{
+  this->m_lineWidth = width;
+}
+
 
 void vesMapper::enableWireframe(bool value)
 {
@@ -194,7 +207,7 @@ void vesMapper::render(const vesRenderState &renderState)
   }
 
   // Fixed vertex color.
-  glVertexAttrib4fv(vesVertexAttributeKeys::Color, this->color());
+  glVertexAttrib3fv(vesVertexAttributeKeys::Color, this->color());
 
   std::map<unsigned int, std::vector<int> >::const_iterator constItr
     = this->m_internal->m_bufferVertexAttributeMap.begin();
@@ -319,7 +332,7 @@ void vesMapper::drawPrimitive(const vesRenderState &renderState,
 {
   // Send the primitive type information out
   renderState.m_material->bindRenderData(
-    renderState, vesRenderData(primitive->primitiveType()));
+    renderState, vesRenderData(primitive->primitiveType(), this->pointSize(), this->lineWidth()));
 
   glDrawElements(primitive->primitiveType(), primitive->numberOfIndices(),
                  primitive->indicesValueType(),  (void*)0);
@@ -347,7 +360,7 @@ void vesMapper::drawTriangles(const vesRenderState &renderState,
 
     // Send the primitive type information out
     renderState.m_material->bindRenderData(
-      renderState, vesRenderData(triangles->primitiveType()));
+      renderState, vesRenderData(triangles->primitiveType(), this->pointSize(), this->lineWidth()));
 
     if (!this->m_enableWireframe) {
       offset = triangles->sizeOfDataType() * drawnIndices;
@@ -386,7 +399,7 @@ void vesMapper::drawPoints(const vesRenderState &renderState,
         m_geometryData->sourceData(vesVertexAttributeKeys::Position);
     // Send the primitive type information out
     renderState.m_material->bindRenderData(
-      renderState, vesRenderData(vesPrimitiveRenderType::Points));
+      renderState, vesRenderData(vesPrimitiveRenderType::Points, this->pointSize(), this->lineWidth()));
     glDrawArrays(points->primitiveType(), 0, data->sizeOfArray());
   }
 }

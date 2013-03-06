@@ -39,6 +39,7 @@
 
 // C++ includes
 #include <string>
+#include <vector>
 
 // Forward declarations
 class vesActor;
@@ -70,7 +71,10 @@ public:
   virtual void resize(int width,int height, float scale);
 
   /// Set background color of the renderer
-  virtual void setBackgroundColor(float r, float g, float b, float a=1.0f);
+  virtual void setBackgroundColor(const vesVector3f &color);
+  virtual void setBackgroundColor(const vesVector4f &color);
+  virtual void setBackgroundColor(float r, float g, float b);
+  virtual void setBackgroundColor(float r, float g, float b, float a);
 
   /// Get background object of the renderer
   vesSharedPtr<vesBackground> background();
@@ -83,6 +87,11 @@ public:
   /// Remove the actor from the collection.This method will
   /// not trigger reset camera.
   virtual void removeActor(vesSharedPtr<vesActor> actor);
+
+  /// Returns a vector containing all actors in the scene.  The vector is created
+  /// by performing a depth first traversal starting at the scene root and adding
+  /// actor nodes to the vector as they are visited.
+  std::vector<vesSharedPtr<vesActor> > sceneActors() const;
 
   /// Get scene root. Do not change scene root or its data unless
   /// required in some special circumstances.

@@ -27,12 +27,14 @@ uniform mediump vec3 lightDirection;
 uniform highp mat4   modelViewMatrix;
 uniform mediump mat3 normalMatrix;
 uniform lowp int     primitiveType;
+uniform lowp float   vertexOpacity;
 uniform highp mat4 projectionMatrix;
 
 // Vertex attributes.
 attribute highp vec3   vertexPosition;
 attribute mediump vec3 vertexNormal;
-attribute lowp vec4    vertexColor;
+attribute lowp vec3    vertexColor;
+
 
 // Varying attributes.
 varying lowp vec4 varColor;
@@ -42,7 +44,7 @@ void main()
   // Save position for shading later.
   highp vec4 position = projectionMatrix * modelViewMatrix * vec4(vertexPosition, 1.0);
 
-  varColor = vertexColor;
+  varColor = vec4(vertexColor, vertexOpacity);
 
   // 1 is line
   if (primitiveType != 1 && primitiveType != 0) {

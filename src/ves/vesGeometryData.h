@@ -64,12 +64,6 @@ public:
   }
 
   /// Get name / ID of the geometry data
-  inline std::string name()
-  {
-    return this->m_name;
-  }
-
-  /// Get name / ID of the geometry data
   inline const std::string& name() const
   {
     return this->m_name;
@@ -100,6 +94,12 @@ public:
     return !success;
   }
 
+  /// Remove a source if it exists in the list of sources.
+  inline void removeSource(vesSharedPtr<vesSourceData> source)
+  {
+    this->m_sources.erase(std::remove(this->m_sources.begin(), this->m_sources.end(), source), this->m_sources.end());
+  }
+
   /// Add a new primitive to the geometry. Return true on success.
   inline bool addPrimitive(vesSharedPtr<vesPrimitive> primitive)
   {
@@ -125,6 +125,12 @@ public:
   inline const vesSharedPtr<vesPrimitive> primitive(unsigned int index) const
   {
     return this->m_primitives[index];
+  }
+
+  /// Remove a primitive if it exists in the list of primitives.
+  inline void removePrimitive(vesSharedPtr<vesPrimitive> primitive)
+  {
+    this->m_primitives.erase(std::remove(this->m_primitives.begin(), this->m_primitives.end(), primitive), this->m_primitives.end());
   }
 
   /// Return a source given a index. Return NULL on failure.
@@ -187,6 +193,8 @@ public:
   /// Return primitive of type lines. Return NULL on failure.
   inline vesSharedPtr<vesPrimitive> lines();
 
+  inline vesSharedPtr<vesPrimitive> points();
+
   /// Return source data given a key. Return NULL on failure.
   inline vesSharedPtr<vesSourceData> sourceData(int key);
 
@@ -235,6 +243,17 @@ vesSharedPtr<vesPrimitive> vesGeometryData::lines()
 {
   for (size_t i=0; i < this->m_primitives.size(); ++i) {
     if (this->m_primitives[i]->primitiveType() == GL_LINES) {
+      return this->m_primitives[i];
+    }
+  }
+
+  return vesPrimitive::Ptr();
+}
+
+vesSharedPtr<vesPrimitive> vesGeometryData::points()
+{
+  for (size_t i=0; i < this->m_primitives.size(); ++i) {
+    if (this->m_primitives[i]->primitiveType() == GL_POINTS) {
       return this->m_primitives[i];
     }
   }

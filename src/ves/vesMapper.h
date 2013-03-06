@@ -72,6 +72,12 @@ public:
   float* color();
   const float* color() const;
 
+  int pointSize() const;
+  void setPointSize(int size);
+
+  int lineWidth() const;
+  void setLineWidth(int width);
+
   /// Enable / Disable wireframe rendering
   void enableWireframe(bool value);
   /// Check whether or not wireframe rendering is enabled
@@ -86,10 +92,6 @@ private:
   virtual void createVertexBufferObjects();
   virtual void deleteVertexBufferObjects();
 
-  //\todo: Why do we need this?
-  void normalize();
-  vesMatrix4x4f m_normalizedMatrix;
-
 protected:
   void drawPrimitive(const vesRenderState &renderState,
                      vesSharedPtr<vesPrimitive> primitive);
@@ -100,6 +102,9 @@ protected:
 
   bool m_initialized;
   bool m_enableWireframe;
+
+  int m_pointSize;
+  int m_lineWidth;
 
   const int m_maximumTriangleIndicesPerDraw;
 

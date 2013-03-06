@@ -59,7 +59,6 @@ public:
     // move the camera for a better default view of the cturtle.vtp dataset
     this->camera()->elevation(180);
     this->camera()->roll(180);
-    this->camera()->dolly(2.5);
   }
 
   void initShader(const std::string& vertexSource, const std::string fragmentSource)

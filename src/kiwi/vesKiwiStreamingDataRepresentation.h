@@ -45,10 +45,6 @@ public:
   virtual void removeSelfFromRenderer(vesSharedPtr<vesRenderer> renderer);
   virtual void willRender(vesSharedPtr<vesRenderer> renderer);
 
-  virtual int numberOfFacets();
-  virtual int numberOfVertices();
-  virtual int numberOfLines();
-
   virtual bool handleSingleTouchTap(int displayX, int displayY);
   virtual bool handleSingleTouchDown(int displayX, int displayY);
   virtual bool handleSingleTouchPanGesture(double deltaX, double deltaY);

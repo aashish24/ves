@@ -71,10 +71,6 @@ public:
   virtual void setShaderProgram(vesSharedPtr<vesShaderProgram> shaderProgram);
   virtual vesSharedPtr<vesShaderProgram> shaderProgram() const;
 
-  virtual int numberOfFacets();
-  virtual int numberOfVertices();
-  virtual int numberOfLines();
-
   // todo:
   // move these back to protected.  This class should provide public api so that
   // the vesActor and vesMapper can remain implementation details that callers do

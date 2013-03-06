@@ -88,14 +88,21 @@ bool vesKiwiDataLoader::isErrorOnMoreThan65kVertices() const
 }
 
 //----------------------------------------------------------------------------
-bool vesKiwiDataLoader::hasEnding(const std::string& fullString, const std::string& ending) const
+bool vesKiwiDataLoader::hasEnding(const std::string& fullString, const std::string& ending)
 {
-  if (fullString.length() > ending.length()) {
-    return (0 == fullString.compare(fullString.length() - ending.length(), ending.length(), ending));
-  }
-  else {
+  size_t sz = ending.length();
+  if (fullString.length() <= sz) {
     return false;
   }
+
+  std::string subStr = fullString.substr(fullString.length() - sz, sz);
+  for (size_t i = 0; i < sz; ++i) {
+    if (tolower(subStr[i]) != tolower(ending[i])) {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 //----------------------------------------------------------------------------

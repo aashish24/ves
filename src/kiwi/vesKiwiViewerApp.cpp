@@ -363,7 +363,7 @@ void vesKiwiViewerApp::handleSingleTouchUp()
 
   if (!this->widgetInteractionIsActive()
       && this->Internal->CameraRotationInertiaIsEnabled
-      && this->Internal->CameraSpinner->currentMagnitude() > 4.0) {
+      && this->Internal->CameraSpinner->currentMagnitude() > 0.0) {
     this->Internal->CameraSpinner->enable();
   }
   else {
@@ -896,13 +896,35 @@ vesKiwiCameraSpinner::Ptr vesKiwiViewerApp::cameraSpinner() const
   return this->Internal->CameraSpinner;
 }
 
+namespace {
+
+// Return a vector containing the geometry data for every
+// visible actor in the renderer scene.
+std::vector<vesGeometryData::Ptr> collectGeometryData(vesRenderer::Ptr renderer)
+{
+  std::vector<vesGeometryData::Ptr> geometryData;
+  std::vector<vesSharedPtr<vesActor> > actors = renderer->sceneActors();
+  for (size_t i = 0; i < actors.size(); ++i) {
+    if (actors[i]->isVisible() && actors[i]->mapper() && actors[i]->mapper()->geometryData()) {
+      geometryData.push_back(actors[i]->mapper()->geometryData());
+    }
+  }
+  return geometryData;
+}
+
+}
+
 //----------------------------------------------------------------------------
 int vesKiwiViewerApp::numberOfModelFacets() const
 {
   int count = 0;
-  for (size_t i = 0; i < this->Internal->DataRepresentations.size(); ++i) {
-    count += this->Internal->DataRepresentations[i]->numberOfFacets();
+  std::vector<vesGeometryData::Ptr> geometryData = collectGeometryData(this->renderer());
+
+  for (size_t i = 0; i < geometryData.size(); ++i) {
+    vesPrimitive::Ptr tris = geometryData[i]->triangles();
+    count += tris ? static_cast<int>(tris->size())/3 : 0;
   }
+
   return count;
 }
 
@@ -910,9 +932,13 @@ int vesKiwiViewerApp::numberOfModelFacets() const
 int vesKiwiViewerApp::numberOfModelVertices() const
 {
   int count = 0;
-  for (size_t i = 0; i < this->Internal->DataRepresentations.size(); ++i) {
-    count += this->Internal->DataRepresentations[i]->numberOfVertices();
+  std::vector<vesGeometryData::Ptr> geometryData = collectGeometryData(this->renderer());
+
+  for (size_t i = 0; i < geometryData.size(); ++i) {
+    vesSourceData::Ptr points = geometryData[i]->sourceData(vesVertexAttributeKeys::Position);
+    count += points ? static_cast<int>(points->sizeOfArray()) : 0;
   }
+
   return count;
 }
 
@@ -920,8 +946,12 @@ int vesKiwiViewerApp::numberOfModelVertices() const
 int vesKiwiViewerApp::numberOfModelLines() const
 {
   int count = 0;
-  for (size_t i = 0; i < this->Internal->DataRepresentations.size(); ++i) {
-    count += this->Internal->DataRepresentations[i]->numberOfLines();
+  std::vector<vesGeometryData::Ptr> geometryData = collectGeometryData(this->renderer());
+
+  for (size_t i = 0; i < geometryData.size(); ++i) {
+    vesPrimitive::Ptr lines = geometryData[i]->lines();
+    count += lines ? static_cast<int>(lines->size()/2) : 0;
   }
+
   return count;
 }

@@ -44,9 +44,12 @@ public:
   virtual ~vesBackground();
 
   /// Set single color for the background.
+  virtual void setColor(const vesVector3f &color);
   virtual void setColor(const vesVector4f &color);
 
   /// Set two colors for the gradient background.
+  virtual void setGradientColor(const vesVector3f &topColor,
+                                const vesVector3f &bottomColor);
   virtual void setGradientColor(const vesVector4f &topColor,
                                 const vesVector4f &bottomColor);
 

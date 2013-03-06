@@ -29,12 +29,18 @@ struct vesRenderData
 {
   vesTypeMacro(vesRenderData);
 
-  vesRenderData(int primitiveType) :
-    m_pritimiveType(primitiveType)
+  vesRenderData(int primitiveType, int pointSize, int lineWidth) :
+    m_pritimiveType(primitiveType),
+    m_pointSize(pointSize),
+    m_lineWidth(lineWidth)
   {
+
   }
 
   int m_pritimiveType;
+
+  int m_pointSize;
+  int m_lineWidth;
 };
 
 #endif // VESRENDERDATA_H

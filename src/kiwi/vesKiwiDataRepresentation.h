@@ -44,10 +44,6 @@ public:
   virtual void removeSelfFromRenderer(vesSharedPtr<vesRenderer> renderer) = 0;
   virtual void willRender(vesSharedPtr<vesRenderer> renderer);
 
-  virtual int numberOfFacets() = 0;
-  virtual int numberOfVertices() = 0;
-  virtual int numberOfLines() = 0;
-
   static void setTransformOnActor(vesSharedPtr<vesActor> actor, vtkTransform* transform);
 
 private:
