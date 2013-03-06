@@ -57,7 +57,7 @@ endmacro()
 
 
 macro(install_eigen)
-  set(eigen_url http://bitbucket.org/eigen/eigen/get/3.1.2.tar.gz)
+  set(eigen_url http://vtk.org/files/support/eigen-3.1.2.tar.gz)
   set(eigen_md5 bb639388192cb80f1ee797f5dbdbe74f)
   ExternalProject_Add(
     eigen
