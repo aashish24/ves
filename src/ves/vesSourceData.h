@@ -150,6 +150,11 @@ public:
   typedef AttributeMap::iterator AttributeIterator;
   typedef AttributeMap::const_iterator AttributeConstIterator;
 
+  virtual ~vesSourceData()
+  {
+    // Nothing to delete
+  }
+
   virtual void* data() = 0;
   virtual unsigned int sizeOfArray() const = 0;
   virtual unsigned int sizeInBytes() const = 0;
