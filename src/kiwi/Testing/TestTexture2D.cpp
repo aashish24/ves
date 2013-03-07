@@ -41,7 +41,10 @@
 
 #include <vtkImageData.h>
 #include <vtkLookupTable.h>
+#include <vtkNew.h>
+#include <vtkPlaneSource.h>
 #include <vtkPolyData.h>
+#include <vtkPolyDataWriter.h>
 #include <vtkSmartPointer.h>
 
 #ifdef VES_QNX
@@ -104,6 +107,21 @@ public:
     vtkSmartPointer<vtkPolyData> polyData =
       vtkPolyData::SafeDownCast(loader.loadDataset(filename));
     assert(polyData.GetPointer());
+
+ #if 0 // Testing
+    vtkNew<vtkPlaneSource> planeSource;
+    planeSource->SetOrigin(0, 0, 0);
+    planeSource->SetPoint1(1, 0, 0);
+    planeSource->SetPoint2(0, 1, 0);
+    planeSource->SetResolution(100, 100);
+    planeSource->Update();
+    vtkSmartPointer<vtkPolyData> polyData = planeSource->GetOutput();
+
+    vtkNew<vtkPolyDataWriter> writer;
+    writer->SetFileName("foo.vtk");
+    writer->SetInputData(polyData);
+    writer->Write();
+#endif
 
     vesKiwiPolyDataRepresentation* rep = new vesKiwiPolyDataRepresentation();
     rep->initializeWithMaterial(this->TextureMaterial);

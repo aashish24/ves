@@ -73,7 +73,14 @@ vtkUnsignedCharArray* vesKiwiDataConversionTools::FindRGBColorsArray(vtkDataSet*
 //----------------------------------------------------------------------------
 vtkDataArray* vesKiwiDataConversionTools::FindTextureCoordinatesArray(vtkDataSet* dataSet)
 {
-  vtkDataArray* tcoords = dataSet->GetPointData()->GetArray("tcoords");
+  // NOTE VTK specifies texture coordinates in two ways
+  vtkDataArray* tcoords = dataSet->GetPointData()->GetArray("TextureCoordinates");
+
+  if (!tcoords)
+    {
+    tcoords = dataSet->GetPointData()->GetArray("tcoords");
+    }
+
   if (tcoords && tcoords->GetNumberOfComponents() == 2)
     {
     return tcoords;
