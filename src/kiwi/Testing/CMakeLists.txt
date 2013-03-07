@@ -1,6 +1,7 @@
 set(tests
     TestGradientBackground
     TestKiwiViewer
+    TestOverlayText
     TestTexturedBackground
     TestTexture
     TestTexture2D
