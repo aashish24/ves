@@ -61,17 +61,17 @@
 //----------------------------------------------------------------------------
 namespace {
 
-class vesTextureApp : public vesKiwiBaseApp {
+class vesTexture2DApp : public vesKiwiBaseApp {
 public:
 
-  vesTextureApp() : vesKiwiBaseApp()
+  vesTexture2DApp() : vesKiwiBaseApp()
   {
     this->IsTesting = false;
     this->setBackgroundColor(63/255.0, 96/255.0, 144/255.0);
     this->DataRep = 0x0;
   }
 
-  ~vesTextureApp()
+  ~vesTexture2DApp()
   {
     this->unloadData();
   }
@@ -227,7 +227,7 @@ public:
 int
 main(int argc, char *argv[])
 {
-  vesTextureApp app;
+  vesTexture2DApp app;
 
   if (!app.initTest(argc, argv)) {
     return -1;
