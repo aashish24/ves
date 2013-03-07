@@ -8,49 +8,55 @@ if [ ! -d $install ]; then
 fi
 
 #------------------------------------------------------------------------------
-make_ves_framework ()
+make_kiwi_framework ()
 {
-  ves_device_libs=`ls $install/ves-ios-device/lib/*.a`
-  ves_sim_libs=`ls $install/ves-ios-simulator/lib/*.a`
-  ves_headers=`find $install/ves-ios-device/include -name \\*.h`
+  device_libs=`ls $install/ves-ios-device/lib/*.a`
+  sim_libs=`ls $install/ves-ios-simulator/lib/*.a`
+  headers=`find $install/ves-ios-device/include -name \\*.h`
+  headers="$headers $install/eigen/Eigen"
 
-  kiwi_framework=$install/ves-ios-device/framework/kiwi.framework
-  mkdir -p $kiwi_framework
-  rm -rf $kiwi_framework/*
-  mkdir $kiwi_framework/Headers
-  cp $ves_headers $kiwi_framework/Headers/
+  libname=kiwi
+  framework=$install/frameworks/kiwi.framework
 
-  libtool -static -o $kiwi_framework/kiwi_device $ves_device_libs
-  libtool -static -o $kiwi_framework/kiwi_sim $ves_sim_libs
-  lipo -create $kiwi_framework/kiwi_device $kiwi_framework/kiwi_sim -output $kiwi_framework/kiwi
-  rm $kiwi_framework/kiwi_*
+  mkdir -p $framework
+  rm -rf $framework/*
+  mkdir $framework/Headers
+  cp -r $headers $framework/Headers/
+
+  libtool -static -o $framework/lib_device $device_libs
+  libtool -static -o $framework/lib_sim $sim_libs
+  lipo -create $framework/lib_device $framework/lib_sim -output $framework/$libname
+  rm $framework/lib_device $framework/lib_sim
 }
 
 
 #------------------------------------------------------------------------------
 make_vtk_framework ()
 {
-  vtk_device_libs=`ls $install/vtk-ios-device/lib/*.a`
-  vtk_sim_libs=`ls $install/vtk-ios-simulator/lib/*.a`
+  device_libs=`ls $install/vtk-ios-device/lib/*.a`
+  sim_libs=`ls $install/vtk-ios-simulator/lib/*.a`
+  headers=$install/vtk-ios-device/include/vtk-6.0
 
-  vtk_framework=$install/vtk-ios-device/framework/vtk.framework
-  mkdir -p $vtk_framework
-  rm -rf $vtk_framework/*
-  mkdir -p $vtk_framework/Headers
-  cp -r $install/vtk-ios-device/include/vtk-6.0/* $vtk_framework/Headers/
+  libname=vtk
+  framework=$install/frameworks/vtk.framework
 
-  libtool -static -o $vtk_framework/vtk_device $vtk_device_libs
-  libtool -static -o $vtk_framework/vtk_sim $vtk_sim_libs
-  lipo -create $vtk_framework/vtk_device $vtk_framework/vtk_sim -output $vtk_framework/vtk
-  rm $vtk_framework/vtk_*
+  mkdir -p $framework
+  rm -rf $framework/*
+  mkdir $framework/Headers
+  cp -r $headers/* $framework/Headers/
+
+  libtool -static -o $framework/lib_device $device_libs
+  libtool -static -o $framework/lib_sim $sim_libs
+  lipo -create $framework/lib_device $framework/lib_sim -output $framework/$libname
+  rm $framework/lib_device $framework/lib_sim
 }
 
 #------------------------------------------------------------------------------
-if [ "$1" == "ves" ]; then
-  make_ves_framework
+if [ "$1" == "kiwi" ]; then
+  make_kiwi_framework
 elif [ "$1" == "vtk" ]; then
   make_vtk_framework
 else
-  echo "Usage: $0 ves|vtk"
+  echo "Usage: $0 kiwi|vtk"
   exit 1
 fi
