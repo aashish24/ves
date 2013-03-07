@@ -3,6 +3,7 @@ set(tests
     TestKiwiViewer
     TestTexturedBackground
     TestTexture
+    TestTexture2D
     TestWireframe
     TestImageClip
 )
