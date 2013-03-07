@@ -32,6 +32,11 @@ class vesBaseIndices
 public:
   vesTypeMacro(vesBaseIndices);
 
+  virtual ~vesBaseIndices()
+  {
+    // Nothing to delete
+  }
+
   virtual void* dataPointer() const = 0;
   virtual unsigned int sizeOfDataType() const = 0;
   virtual unsigned int size() const = 0;

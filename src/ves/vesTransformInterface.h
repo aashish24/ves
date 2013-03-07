@@ -10,6 +10,11 @@ public:
     Absolute = 1
   };
 
+  virtual ~vesTransformInterface()
+  {
+    // Nothing to delete
+  }
+
   /// Set center of transformations
   virtual void setCenter(const vesVector3f &center) = 0;
   /// Get center of transformations
