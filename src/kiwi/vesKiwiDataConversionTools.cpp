@@ -77,7 +77,12 @@ vtkDataArray* vesKiwiDataConversionTools::FindTextureCoordinatesArray(vtkDataSet
   vtkDataArray* tcoords = dataSet->GetPointData()->GetTCoords();
   if (!tcoords) {
     tcoords = dataSet->GetPointData()->GetArray("tcoords");
+
+    if (!tcoords) {
+      tcoords = dataSet->GetPointData()->GetArray("TextureCoordinates");
+    }
   }
+
   if (tcoords && tcoords->GetNumberOfComponents() == 2) {
     return tcoords;
   }
