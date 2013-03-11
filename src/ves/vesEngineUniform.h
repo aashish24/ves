@@ -144,6 +144,8 @@ public:
   virtual void bindRenderData(const vesRenderState &renderState,
                               const vesRenderData  &renderData)
   {
+    vesNotUsed(renderData);
+
     vesVector2f windowSize = renderState.m_viewSize / 2.0;
     this->m_uniform->set(windowSize);
     this->m_uniform->callGL(renderState.m_material->shaderProgram()->

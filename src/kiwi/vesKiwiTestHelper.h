@@ -97,6 +97,9 @@ public:
 
   void handleLeftClickUp(int x, int y)
   {
+    vesNotUsed(x);
+    vesNotUsed(y);
+
     this->app()->handleSingleTouchUp();
   }
 
