@@ -25,6 +25,9 @@
 
 int main(int argc, char *argv[])
 {
+  vesNotUsed(argc);
+  vesNotUsed(argv);
+
   vesKiwiViewerApp app;
   app.resetView();
   return 0;

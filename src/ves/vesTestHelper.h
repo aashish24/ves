@@ -112,18 +112,26 @@ public:
 
   virtual void handleLeftClickDown(int x, int y)
   {
+    vesNotUsed(x);
+    vesNotUsed(y);
   }
 
   virtual void handleLeftClickUp(int x, int y)
   {
+    vesNotUsed(x);
+    vesNotUsed(y);
   }
 
   virtual void handleRightClickUp(int x, int y)
   {
+    vesNotUsed(x);
+    vesNotUsed(y);
   }
 
   virtual void handleRightClickDown(int x, int y)
   {
+    vesNotUsed(x);
+    vesNotUsed(y);
   }
 
 
@@ -175,6 +183,8 @@ void idle(void)
 
 void timerCB(int millisec)
 {
+  vesNotUsed(millisec);
+
   glutTimerFunc(33, timerCB, 33);
   glutPostRedisplay();
 }
