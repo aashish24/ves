@@ -43,6 +43,8 @@ public:
   vesInternal()
   {
     this->TextToImage = vtkSmartPointer<vtkFreeTypeStringToImage>::New();
+    // On ES 1.0 / QNX only power of two textures are supported
+    this->TextToImage->SetScaleToPowerOfTwo(true);
     this->WorldAnchorPointEnabled = false;
     this->AnchorOffset = 0.0;
   }
