@@ -182,17 +182,17 @@ endif()
 
 # create frameworks for OSX
 if(VES_IOS_SUPERBUILD)
-    add_custom_target(vesFramework ALL
-      COMMAND ${CMAKE_SOURCE_DIR}/CMake/makeFramework.sh ves
+    add_custom_target(kiwi-framework ALL
+      COMMAND ${CMAKE_SOURCE_DIR}/CMake/makeFramework.sh kiwi
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
       DEPENDS ves-ios-device ves-ios-simulator
-      COMMENT "Creating ves.framework")
+      COMMENT "Creating kiwi framework")
 
-    add_custom_target(vtkFramework ALL
+    add_custom_target(vtk-framework ALL
       COMMAND ${CMAKE_SOURCE_DIR}/CMake/makeFramework.sh vtk
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
       DEPENDS vtk-ios-device vtk-ios-simulator
-      COMMENT "Creating vtk.framework")
+      COMMENT "Creating vtk framework")
 endif()
 
 
