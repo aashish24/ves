@@ -7,7 +7,7 @@ if(VES_USE_DESKTOP_GL)
   find_package(OpenGL REQUIRED)
   include_directories(${OPENGL_INCLUDE_DIRS})
   add_definitions(-DVES_USE_DESKTOP_GL)
-  set(VES_OPENGL_LIBRARIES ${OPENGL_LIBRARIES} ${GLEW_LIBRARIES})
+  set(VES_OPENGL_LIBRARIES ${OPENGL_LIBRARIES})
   # under Windows Glew library is needed to manage OpenGL extensions
   if(MSVC)
     find_package(GLEW QUIET)
