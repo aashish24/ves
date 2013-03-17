@@ -82,7 +82,7 @@ public:
 
   /// Add new actor to the collection. This is required if the actor
   /// needs to be rendered by the renderer.
-  virtual void addActor   (vesSharedPtr<vesActor> actor);
+  virtual void addActor(vesSharedPtr<vesActor> actor);
 
   /// Remove the actor from the collection.This method will
   /// not trigger reset camera.
@@ -107,10 +107,10 @@ public:
   inline int height()  { return this->m_height; }
 
   /// Transform a vector in world space to display space
-  vesVector3f computeWorldToDisplay(vesVector3f world);
+  vesVector3f computeWorldToDisplay(const vesVector3f &world);
 
   /// Transform a vector in display space to world space
-  vesVector3f computeDisplayToWorld(vesVector3f display);
+  vesVector3f computeDisplayToWorld(const vesVector3f &display);
 
 protected:
 

@@ -23,6 +23,10 @@
 #ifndef __vesEigen_h
 #define __vesEigen_h
 
+#ifdef _WIN32
+  #define EIGEN_DISABLE_UNALIGNED_ARRAY_ASSERT
+  #define EIGEN_DONT_ALIGN
+#endif
 #include "Eigen/Dense"
 
 typedef Eigen::Matrix4f vesMatrix4x4f;

@@ -37,6 +37,8 @@ public:
     m_scale = makeScaleMatrix4x4(scale[0],scale[1],scale[2]);
   }
 
+   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
 private:
   vesMatrix4x4f m_translation;
   vesMatrix4x4f m_center;

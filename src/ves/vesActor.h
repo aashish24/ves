@@ -122,6 +122,8 @@ public:
 
   virtual void computeBounds();
 
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
 protected:
   void setInternals();
 
