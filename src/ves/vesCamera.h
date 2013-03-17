@@ -181,7 +181,7 @@ public:
   void orthogonalizeViewUp();
 
   vesMatrix4x4f computeViewTransform();
-  vesMatrix4x4f computeProjectionTransform(float aspect, float near, float far);
+  vesMatrix4x4f computeProjectionTransform(float aspect, float znear, float zfar);
 
   /// Set the center of the window in viewport coordinates.
   ///

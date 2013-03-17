@@ -34,19 +34,19 @@ vesMatrix4x4f makeRotationMatrix4x4(float angle, float x, float y, float z)
   return t.matrix();
 }
 
-vesMatrix4x4f makeTranslationMatrix4x4(vesVector3f trans)
+vesMatrix4x4f makeTranslationMatrix4x4(const vesVector3f& trans)
 {
   Eigen::Transform<float, 3, Eigen::Affine> t;
   t = Eigen::Translation3f(trans);
   return t.matrix();
 }
 
-vesMatrix4x4f makeTransposeMatrix4x4(vesMatrix4x4f matrix)
+vesMatrix4x4f makeTransposeMatrix4x4(const vesMatrix4x4f& matrix)
 {
   return matrix.transpose();
 }
 
-vesMatrix4x4f makeInverseMatrix4x4(vesMatrix4x4f matrix)
+vesMatrix4x4f makeInverseMatrix4x4(const vesMatrix4x4f& matrix)
 {
   return matrix.inverse();
 }
@@ -55,16 +55,16 @@ vesMatrix4x4f vesOrtho(float left,
                        float right,
                        float bottom,
                        float top,
-                       float near,
-                       float far)
+                       float znear,
+                       float zfar)
 {
   Eigen::Matrix4f m;
   float a = 2.0f / (right - left);
   float b = 2.0f / (top - bottom);
-  float c = -2.0f / (far - near);
+  float c = -2.0f / (zfar - znear);
   float tx = -(right + left) / (right - left);
   float ty = -(top + bottom) / (top - bottom);
-  float tz = -(far + near) / (far - near);
+  float tz = -(zfar + znear) / (zfar - znear);
   m << a,  0,  0,  tx,
        0,  b,  0,  ty,
        0,  0,  c,  tz,
@@ -76,16 +76,16 @@ vesMatrix4x4f vesFrustum(float left,
                          float right,
                          float bottom,
                          float top,
-                         float near,
-                         float far)
+                         float znear,
+                         float zfar)
 {
   Eigen::Matrix4f m;
-  float a = 2 * near / (right - left);
-  float b = 2 * near / (top - bottom);
+  float a = 2 * znear / (right - left);
+  float b = 2 * znear / (top - bottom);
   float c = (right + left) / (right - left);
   float d = (top + bottom) / (top - bottom);
-  float e = - (far + near) / (far - near);
-  float f = -2 * far * near / (far - near);
+  float e = - (zfar + znear) / (zfar - znear);
+  float f = -2 * zfar * znear / (zfar - znear);
   m << a,  0,  c,  0,
        0,  b,  d,  0,
        0,  0,  e,  f,
@@ -93,13 +93,13 @@ vesMatrix4x4f vesFrustum(float left,
   return m;
 }
 
-vesMatrix3x3f makeNormalMatrix3x3f(vesMatrix4x4f matrix)
+vesMatrix3x3f makeNormalMatrix3x3f(const vesMatrix4x4f& matrix)
 {
   Eigen::Matrix3f m(matrix.topLeftCorner<3, 3>());
   return m;
 }
 
-vesMatrix4x4f makeNormalizedMatrix4x4(vesMatrix4x4f matrix)
+vesMatrix4x4f makeNormalizedMatrix4x4(const vesMatrix4x4f& matrix)
 {
   vesMatrix4x4f mat = matrix;
   float length = sqrt(mat(0, 0) * mat(0, 0) + mat(0, 1) * mat(0, 1)
@@ -122,7 +122,7 @@ vesMatrix4x4f makeNormalizedMatrix4x4(vesMatrix4x4f matrix)
   return mat;
 }
 
-vesVector3f transformPoint3f(vesMatrix4x4f matrix, vesVector3f vec)
+vesVector3f transformPoint3f(const vesMatrix4x4f& matrix, const vesVector3f& vec)
 {
   return Eigen::Affine3f(matrix) * vec;
 }
@@ -133,9 +133,9 @@ float deg2Rad(float degree)
   return 0.0174532925 * degree;
 }
 
-vesMatrix4x4f vesLookAt(vesVector3f position,
-                        vesVector3f focalPoint,
-                        vesVector3f viewUp)
+vesMatrix4x4f vesLookAt(const vesVector3f& position,
+                        const vesVector3f& focalPoint,
+                        const vesVector3f& viewUp)
 {
   Eigen::Matrix4f matrix;
   matrix.setIdentity();
@@ -175,7 +175,7 @@ vesMatrix4x4f vesLookAt(vesVector3f position,
   return matrix;
 }
 
-vesMatrix4x4f vesPerspective(float fovY,float aspect, float zNear,float zFar)
+vesMatrix4x4f vesPerspective(float fovY, float aspect, float zNear, float zFar)
 {
   float width, height;
   height = tan( deg2Rad(fovY)/2 ) * zNear;

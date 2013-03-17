@@ -10,29 +10,29 @@ public:
       * m_scale * m_scaleOrientationInv * m_centerInv;
   }
 
-  void setTranslation(vesVector3f trans)
+  void setTranslation(vesVector3f& trans)
   {
     m_translation = makeTranslationMatrix4x4(trans);
   }
 
-  void setCenter(vesVector3f center)
+  void setCenter(vesVector3f& center)
   {
     m_center = makeTranslationMatrix4x4(center);
     m_centerInv = makeInverseMatrix4x4(m_center);
   }
 
-  void setRotation(vesVector4f rot)
+  void setRotation(vesVector4f& rot)
   {
     m_rotation = makeRotationMatrix4x4(rot[3], rot[0], rot[1], rot[2]);
   }
 
-  void setScaleOrientation(vesVector4f sr)
+  void setScaleOrientation(vesVector4f& sr)
   {
     m_scaleOrientation = makeRotationMatrix4x4(sr[3], sr[0], sr[1], sr[2]);
     m_scaleOrientationInv = makeInverseMatrix4x4(m_scaleOrientation);
   }
 
-  void setScale(vesVector3f scale)
+  void setScale(vesVector3f& scale)
   {
     m_scale = makeScaleMatrix4x4(scale[0],scale[1],scale[2]);
   }

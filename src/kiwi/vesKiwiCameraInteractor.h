@@ -53,12 +53,12 @@ public:
 
   /// Convert a 2D translation in screen coordinates into a 3D camera rotation
   /// about the camera focal point and apply it to the camera.
-  void rotate(vesVector2d screenTranslation);
+  void rotate(vesVector2d& screenTranslation);
 
   /// Convert a 2D translation in screen coordinates into a 3D camera pan,
   /// moving the camera position and camera focal point by the same amount.
   /// p0 and p1 define the end points of a movement on the screen.
-  void pan(vesVector2d p0, vesVector2d p1);
+  void pan(vesVector2d& p0, vesVector2d& p1);
 
 private:
 
