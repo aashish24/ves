@@ -156,8 +156,7 @@ void vesKiwiPlaneWidget::initializeWithShader(vesSharedPtr<vesShaderProgram> geo
   this->Internal->NormalRep->setPolyData(this->Internal->Handle->GetOutput());
 
   // make the handle bigger so that it is easier to pick
-  this->Internal->SphereSource->SetRadius(0.3);
-  this->Internal->Handle->Update();
+  this->setHandleSize(0.3);
 
   this->Internal->AllReps.push_back(this->Internal->PlaneRep);
   this->Internal->AllReps.push_back(this->Internal->NormalRep);
@@ -184,6 +183,27 @@ void vesKiwiPlaneWidget::planeEquation(double equation[4])
   equation[1] = -normal[1];
   equation[2] = -normal[2];
   equation[3] = normal.dot(origin);
+}
+
+//----------------------------------------------------------------------------
+vtkTransform* vesKiwiPlaneWidget::widgetTransform()
+{
+  return this->Internal->WidgetTransform;
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiPlaneWidget::onTransformModified()
+{
+  this->setTransformOnActor(this->Internal->PlaneRep->actor(), this->Internal->WidgetTransform);
+  this->setTransformOnActor(this->Internal->NormalRep->actor(), this->Internal->WidgetTransform);
+  this->Internal->updatePlaneFunction();
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiPlaneWidget::setHandleSize(double size)
+{
+  this->Internal->SphereSource->SetRadius(size);
+  this->Internal->Handle->Update();
 }
 
 //----------------------------------------------------------------------------
@@ -252,9 +272,7 @@ bool vesKiwiPlaneWidget::handleSingleTouchPanGesture(double deltaX, double delta
                                                centerOfRotation[2]);
   }
 
-  this->setTransformOnActor(this->Internal->PlaneRep->actor(), this->Internal->WidgetTransform);
-  this->setTransformOnActor(this->Internal->NormalRep->actor(), this->Internal->WidgetTransform);
-  this->Internal->updatePlaneFunction();
+  this->onTransformModified();
 
   return true;
 }

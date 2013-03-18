@@ -51,6 +51,10 @@ public:
   virtual bool handleSingleTouchPanGesture(double deltaX, double deltaY);
   virtual bool handleSingleTouchUp();
 
+  vtkTransform* widgetTransform();
+  void onTransformModified();
+  void setHandleSize(double size);
+
 protected:
 
   void updatePlaneFunction();
