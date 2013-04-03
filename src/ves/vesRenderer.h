@@ -39,6 +39,7 @@
 
 // C++ includes
 #include <string>
+#include <vector>
 
 // Forward declarations
 class vesActor;
@@ -102,6 +103,9 @@ public:
 
   /// Transform a vector in display space to world space
   vesVector3f computeDisplayToWorld(vesVector3f display);
+
+  /// Get list of all actors contained by this renderer
+  std::vector< vesSharedPtr<vesActor> > sceneActors() const;
 
 protected:
 

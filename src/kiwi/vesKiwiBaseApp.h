@@ -152,6 +152,15 @@ public:
   /// touch gestures.
   vesSharedPtr<vesKiwiCameraInteractor> cameraInteractor() const;
 
+  /// Set viewport rectangle for the rendering
+  void setViewRect(int index, int x, int y, int width, int height);
+
+  /// Add a new viewport for the rendering
+  void addViewRect(int x, int y, int width, int height);
+
+  /// Synchonize multiple viewports
+  void syncViewports();
+
 protected:
 
   // Subclasses may override these methods to perform actions before and after

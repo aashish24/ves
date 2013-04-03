@@ -166,6 +166,33 @@ vesVector3f vesRenderer::computeDisplayToWorld(vesVector3f display)
 }
 
 
+void sceneActorsHelper(std::vector<vesSharedPtr<vesActor> >& actors, vesSharedPtr<vesGroupNode> parent)
+{
+  if (!parent) {
+    return;
+  }
+
+  const std::list<vesSharedPtr<vesNode> >& children = parent->children();
+
+  for (std::list<vesSharedPtr<vesNode> >::const_iterator itr = children.begin(); itr != children.end(); ++itr) {
+    vesSharedPtr<vesActor> actor = std::tr1::dynamic_pointer_cast<vesActor>(*itr);
+    if (actor) {
+      actors.push_back(actor);
+    }
+    else {
+      sceneActorsHelper(actors, std::tr1::dynamic_pointer_cast<vesGroupNode>(*itr));
+    }
+  }
+}
+
+std::vector<vesSharedPtr<vesActor> > vesRenderer::sceneActors() const
+{
+  std::vector< vesSharedPtr<vesActor> > actors;
+  sceneActorsHelper(actors, this->sceneRoot());
+  return actors;
+}
+
+
 void vesRenderer::resetCamera()
 {
   if (!this->m_sceneRoot) {

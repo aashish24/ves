@@ -20,12 +20,16 @@
 
 #include <vesKiwiBaseApp.h>
 #include <vesKiwiCameraInteractor.h>
+#include <vesActor.h>
+#include <vesBackground.h>
 #include <vesCamera.h>
 #include <vesOpenGLSupport.h>
 #include <vesRenderer.h>
 #include <vesSetGet.h>
+#include <vesStateAttributeBits.h>
 #include <vesVertexAttribute.h>
 #include <vesVertexAttributeKeys.h>
+#include <vesViewport.h>
 
 #include <cassert>
 #include <cmath>
@@ -41,6 +45,7 @@ public:
   {
     this->GLSupport = vesOpenGLSupport::Ptr(new vesOpenGLSupport());
     this->Renderer = vesRenderer::Ptr(new vesRenderer());
+    this->Renderers.push_back(this->Renderer);
     this->CameraInteractor = vesKiwiCameraInteractor::Ptr(new vesKiwiCameraInteractor);
     this->CameraInteractor->setRenderer(this->Renderer);
   }
@@ -51,6 +56,7 @@ public:
 
   vesOpenGLSupport::Ptr GLSupport;
   vesRenderer::Ptr Renderer;
+  std::vector<vesRenderer::Ptr> Renderers;
   vesKiwiCameraInteractor::Ptr CameraInteractor;
 
   std::vector< vesSharedPtr<vesMaterial> > Materials;
@@ -107,6 +113,16 @@ void vesKiwiBaseApp::render()
   this->willRender();
   this->Internal->Renderer->resetCameraClippingRange();
   this->Internal->Renderer->render();
+
+  for (size_t i = 0; i < this->Internal->Renderers.size(); ++i) {
+
+    if (this->Internal->Renderer == this->Internal->Renderers[i]) {
+      continue;
+    }
+
+    this->Internal->Renderers[i]->resetCameraClippingRange();
+    this->Internal->Renderers[i]->render();
+  }
   this->didRender();
 }
 
@@ -126,6 +142,76 @@ void vesKiwiBaseApp::resetView()
 vesKiwiCameraInteractor::Ptr vesKiwiBaseApp::cameraInteractor() const
 {
   return this->Internal->CameraInteractor;
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiBaseApp::setViewRect(int index, int x, int y, int width, int height)
+{
+  if (index >= static_cast<int>(this->Internal->Renderers.size())) {
+    std::cerr << "error: Invalid index " << index << " for the viewport "
+              << std::endl;
+  }
+  this->resizeView(width, height);
+  this->resetView();
+  this->Internal->Renderers[index]->camera()->viewport()->setViewport(
+    x, y, width, height);
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiBaseApp::addViewRect(int x, int y, int width, int height)
+{
+  vesRenderer::Ptr ren = vesRenderer::Ptr(new vesRenderer());
+  ren->setBackgroundColor(1.0, 1.0, 0.0);
+  ren->background()->setClearMask(vesStateAttributeBits::DepthBufferBit);
+  ren->camera()->setClearMask(vesStateAttributeBits::DepthBufferBit);
+  ren->resize(width, height, 1.0f);
+
+  // Use main camera parameters as initial values for
+  // new renderer camera parameters
+  ren->camera()->setPosition(
+        this->Internal->Renderer->camera()->position());
+  ren->camera()->setFocalPoint(
+        this->Internal->Renderer->camera()->focalPoint());
+  ren->camera()->setViewUp(
+        this->Internal->Renderer->camera()->viewUp());
+  ren->camera()->setViewPlaneNormal(
+        this->Internal->Renderer->camera()->viewPlaneNormal());
+  ren->camera()->viewport()->setViewport(
+    x, y, width, height);
+  ren->background()->viewport()->setViewport(
+    x, y, width, height);
+
+  this->Internal->Renderers.push_back(ren);
+
+  this->Internal->Renderer->background()->setClearMask(
+    vesStateAttributeBits::ColorBufferBit |
+    vesStateAttributeBits::DepthBufferBit);
+  this->Internal->Renderer->camera()->setClearMask(
+    vesStateAttributeBits::ColorBufferBit |
+    vesStateAttributeBits::DepthBufferBit);
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiBaseApp::syncViewports()
+{
+  std::vector<vesActor::Ptr> actors = this->Internal->Renderer->sceneActors();
+
+  for (size_t i = 0; i < this->Internal->Renderers.size(); ++i) {
+
+    if (this->Internal->Renderer == this->Internal->Renderers[i]) {
+      continue;
+    }
+
+    for (size_t j = 0; j < actors.size(); ++j) {
+      vesActor::Ptr newActor = vesActor::Ptr(new vesActor());
+      vesMapper::Ptr newMapper = vesMapper::Ptr(new vesMapper());
+      newMapper->setGeometryData(actors[j]->mapper()->geometryData());
+      newActor->setMaterial(actors[j]->material());
+      newActor->setMapper(newMapper);
+
+      this->Internal->Renderers[i]->addActor(newActor);
+    }
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -293,6 +379,14 @@ vesSharedPtr<vesVertexAttribute> vesKiwiBaseApp::addVertexTextureCoordinateAttri
 void vesKiwiBaseApp::setBackgroundColor(double r, double g, double b)
 {
   this->Internal->Renderer->setBackgroundColor(r, g, b, 1.0);
+
+  for (size_t i = 0; i < this->Internal->Renderers.size(); ++i) {
+
+    if (this->Internal->Renderer == this->Internal->Renderers[i]) {
+      continue;
+    }
+    this->Internal->Renderers[i]->setBackgroundColor(r, g, b, 1.0);
+  }
 }
 
 //----------------------------------------------------------------------------

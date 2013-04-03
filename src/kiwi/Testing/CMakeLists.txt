@@ -5,6 +5,7 @@ set(tests
     TestTexturedBackground
     TestTexture
     TestTexture2D
+    TestViewports
     TestWireframe
     TestImageClip
 )

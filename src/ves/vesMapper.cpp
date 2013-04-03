@@ -193,7 +193,7 @@ bool vesMapper::isEnabledWireframe() const
   return this->m_enableWireframe;
 }
 
-#include <iostream>
+
 void vesMapper::render(const vesRenderState &renderState)
 {
   assert(this->m_geometryData);
@@ -201,7 +201,6 @@ void vesMapper::render(const vesRenderState &renderState)
   if (!this->m_initialized) {
     this->setupDrawObjects(renderState);
   }
-
 
   if (renderState.m_material->binNumber() == vesMaterial::Overlay) {
     glDisable(GL_DEPTH_TEST);

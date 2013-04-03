@@ -26,6 +26,8 @@
 #include "vesMath.h"
 #include "vesSetGet.h"
 
+#include <iostream>
+
 // Forward declarations
 class vesMapper;
 class vesMaterial;
@@ -78,7 +80,7 @@ public:
       renderState.applyMapper(this->m_mapper);
 
       this->m_material->render(renderState);
-      this->m_mapper->render  (renderState);
+      this->m_mapper->render(renderState);
     }
   }
 
