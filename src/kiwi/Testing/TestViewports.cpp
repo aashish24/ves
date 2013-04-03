@@ -43,18 +43,17 @@
 //----------------------------------------------------------------------------
 namespace {
 
-
-class vesGradientBackgroundApp : public vesKiwiBaseApp {
+class vesMultipleViewports : public vesKiwiBaseApp {
 public:
 
-  vesGradientBackgroundApp()
+  vesMultipleViewports()
   {
     this->DataRep = 0;
     this->IsTesting = false;
     this->setBackgroundColor(63/255.0, 96/255.0, 144/255.0);
   }
 
-  ~vesGradientBackgroundApp()
+  ~vesMultipleViewports()
   {
     this->unloadData();
   }
@@ -195,7 +194,7 @@ public:
 int
 main(int argc, char *argv[])
 {
-  vesGradientBackgroundApp app;
+  vesMultipleViewports app;
 
   if (!app.initTest(argc, argv)) {
     return -1;
