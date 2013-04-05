@@ -98,11 +98,26 @@ vesMidasClient::~vesMidasClient()
   curl_easy_cleanup(this->m_curl);
 }
 
+/** Join arguments into a single string, escaping each parameter name and value.
+  *
+  * Escaping should only be done for data encoded
+  * as application/x-www-form-urlencoded and
+  * not multipart/formdata. This is safe for
+  * data sent via CURLOPT_COPYPOSTFIELDS but
+  * not CURLOPT_POSTFIELDS when CURLOPT_CUSTOMREQUEST
+  * sets the content type to multipart/formdata.
+  */
 std::string vesMidasClient::argList(const RequestArgs& args)
 {
   std::stringstream argString;
+  char* escParam;
+  char* escValue;
   for (RequestArgs::const_iterator iter = args.begin(); iter != args.end(); ++iter) {
-    argString << "&" << iter->first << "=" << iter->second;
+    escParam = curl_easy_escape(this->m_curl, iter->first.c_str(), iter->first.size());
+    escValue = curl_easy_escape(this->m_curl, iter->second.c_str(), iter->second.size());
+    argString << "&" << escParam << "=" << escValue;
+    curl_free(escParam);
+    curl_free(escValue);
   }
   return argString.str();
 }
