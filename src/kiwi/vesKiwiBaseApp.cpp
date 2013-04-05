@@ -54,6 +54,9 @@ public:
   {
   }
 
+  int Width;
+  int Height;
+
   vesOpenGLSupport::Ptr GLSupport;
   vesRenderer::Ptr Renderer;
   std::vector<vesRenderer::Ptr> Renderers;
@@ -123,6 +126,9 @@ void vesKiwiBaseApp::render()
 //----------------------------------------------------------------------------
 void vesKiwiBaseApp::resizeView(int width, int height)
 {
+  this->Internal->Width = width;
+  this->Internal->Height = height;
+
   this->Internal->Renderer->resize(width, height, 1.0f);
 
   for (size_t i = 0; i < this->Internal->Renderers.size(); ++i) {
@@ -154,8 +160,6 @@ void vesKiwiBaseApp::setViewRect(int index, int x, int y, int width, int height)
     std::cerr << "error: Invalid index " << index << " for the viewport "
               << std::endl;
   }
-  this->resizeView(width, height);
-  this->resetView();
   this->Internal->Renderers[index]->camera()->viewport()->setViewport(
     x, y, width, height);
   this->Internal->Renderers[index]->background()->viewport()->setViewport(
@@ -374,13 +378,13 @@ void vesKiwiBaseApp::setBackgroundColor(float r, float g, float b)
 //----------------------------------------------------------------------------
 int vesKiwiBaseApp::viewWidth() const
 {
-  return this->Internal->Renderer->width();
+  return this->Internal->Width;
 }
 
 //----------------------------------------------------------------------------
 int vesKiwiBaseApp::viewHeight() const
 {
-  return this->Internal->Renderer->height();
+  return this->Internal->Height;
 }
 
 //----------------------------------------------------------------------------
