@@ -43,6 +43,9 @@ public:
   vesBackground();
   virtual ~vesBackground();
 
+  /// Get single color for the background.
+  virtual void color(vesVector4f &color);
+
   /// Set single color for the background.
   virtual void setColor(const vesVector4f &color);
 

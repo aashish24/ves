@@ -102,12 +102,6 @@ std::tr1::shared_ptr<vesCamera> vesKiwiBaseApp::camera() const
 }
 
 //----------------------------------------------------------------------------
-vesSharedPtr<vesRenderer> vesKiwiBaseApp::renderer() const
-{
-  return this->Internal->Renderer;
-}
-
-//----------------------------------------------------------------------------
 void vesKiwiBaseApp::render()
 {
   this->willRender();
@@ -130,6 +124,15 @@ void vesKiwiBaseApp::render()
 void vesKiwiBaseApp::resizeView(int width, int height)
 {
   this->Internal->Renderer->resize(width, height, 1.0f);
+
+  for (size_t i = 0; i < this->Internal->Renderers.size(); ++i) {
+
+    if (this->Internal->Renderer == this->Internal->Renderers[i]) {
+      continue;
+    }
+
+    this->Internal->Renderers[i]->resize(width, height, 1.0f);
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -155,33 +158,21 @@ void vesKiwiBaseApp::setViewRect(int index, int x, int y, int width, int height)
   this->resetView();
   this->Internal->Renderers[index]->camera()->viewport()->setViewport(
     x, y, width, height);
+  this->Internal->Renderers[index]->background()->viewport()->setViewport(
+    x, y, width, height);
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiBaseApp::addViewRect(int x, int y, int width, int height)
+void vesKiwiBaseApp::addRenderer(vesSharedPtr<vesRenderer> ren)
 {
-  vesRenderer::Ptr ren = vesRenderer::Ptr(new vesRenderer());
-  ren->setBackgroundColor(1.0, 1.0, 0.0);
+  vesVector4f color;
+  // Set the same background color on the new renderer. Also make sure
+  // to set the transparency to 0 or else it will get blended with the
+  // other one
+  ren->setBackgroundColor(0.0, 0.0, 0.0, 0.0);
+
   ren->background()->setClearMask(vesStateAttributeBits::DepthBufferBit);
   ren->camera()->setClearMask(vesStateAttributeBits::DepthBufferBit);
-  ren->resize(width, height, 1.0f);
-
-  // Use main camera parameters as initial values for
-  // new renderer camera parameters
-  ren->camera()->setPosition(
-        this->Internal->Renderer->camera()->position());
-  ren->camera()->setFocalPoint(
-        this->Internal->Renderer->camera()->focalPoint());
-  ren->camera()->setViewUp(
-        this->Internal->Renderer->camera()->viewUp());
-  ren->camera()->setViewPlaneNormal(
-        this->Internal->Renderer->camera()->viewPlaneNormal());
-  ren->camera()->viewport()->setViewport(
-    x, y, width, height);
-  ren->background()->viewport()->setViewport(
-    x, y, width, height);
-
-  this->Internal->Renderers.push_back(ren);
 
   this->Internal->Renderer->background()->setClearMask(
     vesStateAttributeBits::ColorBufferBit |
@@ -189,29 +180,18 @@ void vesKiwiBaseApp::addViewRect(int x, int y, int width, int height)
   this->Internal->Renderer->camera()->setClearMask(
     vesStateAttributeBits::ColorBufferBit |
     vesStateAttributeBits::DepthBufferBit);
+  this->Internal->Renderers.push_back(ren);
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiBaseApp::syncViewports()
+vesSharedPtr<vesRenderer> vesKiwiBaseApp::renderer(int index) const
 {
-  std::vector<vesActor::Ptr> actors = this->Internal->Renderer->sceneActors();
-
-  for (size_t i = 0; i < this->Internal->Renderers.size(); ++i) {
-
-    if (this->Internal->Renderer == this->Internal->Renderers[i]) {
-      continue;
-    }
-
-    for (size_t j = 0; j < actors.size(); ++j) {
-      vesActor::Ptr newActor = vesActor::Ptr(new vesActor());
-      vesMapper::Ptr newMapper = vesMapper::Ptr(new vesMapper());
-      newMapper->setGeometryData(actors[j]->mapper()->geometryData());
-      newActor->setMaterial(actors[j]->material());
-      newActor->setMapper(newMapper);
-
-      this->Internal->Renderers[i]->addActor(newActor);
-    }
+  if (index >=  static_cast<int>(this->Internal->Renderers.size())) {
+    std::cerr << "error: Invalid index " << index << std::endl;
+    return vesRenderer::Ptr();
   }
+
+  return this->Internal->Renderers[index];
 }
 
 //----------------------------------------------------------------------------
@@ -223,24 +203,25 @@ void vesKiwiBaseApp::resetView(const vesVector3f& viewDirection, const vesVector
   // a reasonable portion of the screen.
   // the ResetCamera function will overwrite view up
   // so we have to call things in this strange order.
-
   //
   // set direction to look from
-  vesSharedPtr<vesRenderer> renderer = this->Internal->Renderer;
+  for (size_t i = 0; i < this->Internal->Renderers.size(); ++i) {
 
-  renderer->camera()->setViewPlaneNormal(-viewDirection);
+    vesSharedPtr<vesRenderer> renderer = this->Internal->Renderers[i];
+    renderer->camera()->setViewPlaneNormal(-viewDirection);
 
-  // dolly so that scene fits window
-  renderer->resetCamera();
+    // dolly so that scene fits window
+    renderer->resetCamera();
 
-  // The current ResetCamera() method pulls the camera back further than
-  // required.  ResetCamera should be fixed.  Until then, perform a dolly
-  // with a scale factor of 1.5 (a magic number).
-  renderer->camera()->dolly(1.5);
+    // The current ResetCamera() method pulls the camera back further than
+    // required.  ResetCamera should be fixed.  Until then, perform a dolly
+    // with a scale factor of 1.5 (a magic number).
+    renderer->camera()->dolly(1.5);
 
-  // now set the view plane normal
-  renderer->camera()->setViewUp(viewUp);
-  renderer->camera()->orthogonalizeViewUp();
+    // now set the view plane normal
+    renderer->camera()->setViewUp(viewUp);
+    renderer->camera()->orthogonalizeViewUp();
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -376,15 +357,16 @@ vesSharedPtr<vesVertexAttribute> vesKiwiBaseApp::addVertexTextureCoordinateAttri
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiBaseApp::setBackgroundColor(double r, double g, double b)
+void vesKiwiBaseApp::backgroundColor(float &r, float &g, float &b)
 {
-  this->Internal->Renderer->setBackgroundColor(r, g, b, 1.0);
+  float alpha;
+  this->Internal->Renderer->backgroundColor(r, g, b, alpha);
+}
 
+//----------------------------------------------------------------------------
+void vesKiwiBaseApp::setBackgroundColor(float r, float g, float b)
+{
   for (size_t i = 0; i < this->Internal->Renderers.size(); ++i) {
-
-    if (this->Internal->Renderer == this->Internal->Renderers[i]) {
-      continue;
-    }
     this->Internal->Renderers[i]->setBackgroundColor(r, g, b, 1.0);
   }
 }

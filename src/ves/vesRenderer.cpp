@@ -354,6 +354,26 @@ void vesRenderer::resetCameraClippingRange(float bounds[6])
 }
 
 
+void vesRenderer::backgroundColor(float& r, float& g, float& b, float& a)
+{
+  vesVector4f color;
+
+  if (this->m_background) {
+    this->m_background->color(color);
+  }
+  else {
+    color = this->m_camera->clearColor();
+  }
+
+  r = color[0];
+  g = color[1];
+  b = color[2];
+  a = color[3];
+
+  return;
+}
+
+
 void vesRenderer::setBackgroundColor(float r, float g, float b, float a)
 {
   if (this->m_background) {

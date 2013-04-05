@@ -205,6 +205,15 @@ vesBackground::~vesBackground()
 }
 
 
+void vesBackground::color(vesVector4f &color)
+{
+  color[0] = this->m_topColor[0];
+  color[1] = this->m_topColor[1];
+  color[2] = this->m_topColor[2];
+  color[3] = this->m_topColor[3];
+}
+
+
 void vesBackground::setColor(const vesVector4f &color)
 {
   this->setGradientColor(color, color);

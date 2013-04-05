@@ -114,8 +114,11 @@ public:
   /// Handle a long press event.  The default implementation is a no-op.
   virtual void handleLongPress(int displayX, int displayY);
 
+  /// Get the background color of the renderer
+  void backgroundColor(float& r, float& g, float& b);
+
   /// Set the background color of the renderer.
-  void setBackgroundColor(double r, double g, double b);
+  void setBackgroundColor(float r, float g, float b);
 
   /// Get the width of the renderer.
   /// \see resizeView()
@@ -155,11 +158,11 @@ public:
   /// Set viewport rectangle for the rendering
   void setViewRect(int index, int x, int y, int width, int height);
 
-  /// Add a new viewport for the rendering
-  void addViewRect(int x, int y, int width, int height);
+  /// Add a new renderer to the app
+  void addRenderer(vesSharedPtr<vesRenderer> ren);
 
-  /// Synchonize multiple viewports
-  void syncViewports();
+  /// Get a particular renderer
+  vesSharedPtr<vesRenderer> renderer(int index=0) const;
 
 protected:
 
@@ -185,9 +188,6 @@ protected:
   /// that wrap the API. The goal is to allow the VES API to be refactored
   /// without breaking clients of this class (only this class breaks)
   vesSharedPtr<vesCamera> camera() const;
-
-  /// \copydoc camera()
-  vesSharedPtr<vesRenderer> renderer() const;
 
 private:
 

@@ -70,6 +70,9 @@ public:
   /// Resize viewport based on the new width and height of the window
   virtual void resize(int width,int height, float scale);
 
+  /// Get background color of the renderer
+  virtual void backgroundColor(float& r, float& g, float& b, float& a);
+
   /// Set background color of the renderer
   virtual void setBackgroundColor(float r, float g, float b, float a=1.0f);
 

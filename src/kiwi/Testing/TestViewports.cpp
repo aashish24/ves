@@ -50,7 +50,7 @@ public:
   {
     this->DataRep = 0;
     this->IsTesting = false;
-    this->setBackgroundColor(63/255.0, 96/255.0, 144/255.0);
+    this->setBackgroundColor(0, 0.0, 144/255.0);
   }
 
   ~vesMultipleViewports()
@@ -91,6 +91,14 @@ public:
     rep->initializeWithMaterial(this->ClipMaterial);
     rep->setPolyData(polyData);
     rep->addSelfToRenderer(this->renderer());
+
+    vesRenderer::Ptr ren = vesRenderer::Ptr(new vesRenderer());
+    vesKiwiPolyDataRepresentation* rep2 = new vesKiwiPolyDataRepresentation();
+    rep2->initializeWithMaterial(this->ClipMaterial);
+    rep2->setPolyData(polyData);
+    rep2->addSelfToRenderer(ren);
+    this->addRenderer(ren);
+
     rep->actor()->mapper()->enableWireframe(true);
     this->DataRep = rep;
   }
@@ -213,9 +221,9 @@ main(int argc, char *argv[])
   app.loadDefaultData();
   app.resizeView(testDriver.width(), testDriver.height());
   app.resetView();
+
   app.setViewRect(0, 0, 0, 400, 600);
-  app.addViewRect(400, 0, 400, 600);
-  app.syncViewports();
+  app.setViewRect(1, 400, 0, 400, 600);
 
   testDriver.render();
 

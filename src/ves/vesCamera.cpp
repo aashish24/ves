@@ -436,6 +436,7 @@ const vesVector4f& vesCamera::clearColor() const
   return this->m_clearColor;
 }
 
+
 void vesCamera::setClearDepth(double depth)
 {
   this->m_clearDepth = depth;
