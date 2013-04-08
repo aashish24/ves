@@ -128,23 +128,27 @@ void vesKiwiBaseApp::render()
 //----------------------------------------------------------------------------
 void vesKiwiBaseApp::resizeView(int width, int height)
 {
-  std::cerr << "Resize view " << std::endl;
-
   double percChangeX = 1;
   double percChangeY = 1;
 
   if (this->Internal->Width > 0.0 && this->Internal->Height > 0.0) {
     percChangeX = static_cast<double>(width) / this->Internal->Width;
     percChangeY = static_cast<double>(height) / this->Internal->Height;
+
+    for (size_t i = 0; i < this->Internal->Renderers.size(); ++i) {
+        this->Internal->Renderers[i]->resize(
+          percChangeX * this->Internal->Renderers[i]->x(),
+          percChangeY * this->Internal->Renderers[i]->y(),
+          percChangeX * this->Internal->Renderers[i]->width(),
+          percChangeY * this->Internal->Renderers[i]->height(), 1.0f);
+    }
+  }
+  else {
+    for (size_t i = 0; i < this->Internal->Renderers.size(); ++i) {
+        this->Internal->Renderers[i]->resize(0.0, 0.0, width, height, 1.0f);
+    }
   }
 
-  for (size_t i = 0; i < this->Internal->Renderers.size(); ++i) {
-      this->Internal->Renderers[i]->resize(
-        percChangeX * this->Internal->Renderers[i]->x(),
-        percChangeY * this->Internal->Renderers[i]->y(),
-        percChangeX * this->Internal->Renderers[i]->width(),
-        percChangeY * this->Internal->Renderers[i]->height(), 1.0f);
-  }
 
   this->Internal->Width = width;
   this->Internal->Height = height;
