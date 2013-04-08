@@ -43,6 +43,8 @@ public:
 
   vesInternal()
   {
+    this->Width = 0.0;
+    this->Height = 0.0;
     this->GLSupport = vesOpenGLSupport::Ptr(new vesOpenGLSupport());
     this->Renderer = vesRenderer::Ptr(new vesRenderer());
     this->Renderers.push_back(this->Renderer);
@@ -126,19 +128,26 @@ void vesKiwiBaseApp::render()
 //----------------------------------------------------------------------------
 void vesKiwiBaseApp::resizeView(int width, int height)
 {
-  this->Internal->Width = width;
-  this->Internal->Height = height;
+  std::cerr << "Resize view " << std::endl;
 
-  this->Internal->Renderer->resize(width, height, 1.0f);
+  double percChangeX = 1;
+  double percChangeY = 1;
+
+  if (this->Internal->Width > 0.0 && this->Internal->Height > 0.0) {
+    percChangeX = static_cast<double>(width) / this->Internal->Width;
+    percChangeY = static_cast<double>(height) / this->Internal->Height;
+  }
 
   for (size_t i = 0; i < this->Internal->Renderers.size(); ++i) {
-
-    if (this->Internal->Renderer == this->Internal->Renderers[i]) {
-      continue;
-    }
-
-    this->Internal->Renderers[i]->resize(width, height, 1.0f);
+      this->Internal->Renderers[i]->resize(
+        percChangeX * this->Internal->Renderers[i]->x(),
+        percChangeY * this->Internal->Renderers[i]->y(),
+        percChangeX * this->Internal->Renderers[i]->width(),
+        percChangeY * this->Internal->Renderers[i]->height(), 1.0f);
   }
+
+  this->Internal->Width = width;
+  this->Internal->Height = height;
 }
 
 //----------------------------------------------------------------------------
@@ -160,21 +169,12 @@ void vesKiwiBaseApp::setViewRect(int index, int x, int y, int width, int height)
     std::cerr << "error: Invalid index " << index << " for the viewport "
               << std::endl;
   }
-  this->Internal->Renderers[index]->camera()->viewport()->setViewport(
-    x, y, width, height);
-  this->Internal->Renderers[index]->background()->viewport()->setViewport(
-    x, y, width, height);
+  this->Internal->Renderers[index]->resize(x, y, width, height, 1.0f);
 }
 
 //----------------------------------------------------------------------------
 void vesKiwiBaseApp::addRenderer(vesSharedPtr<vesRenderer> ren)
 {
-  vesVector4f color;
-  // Set the same background color on the new renderer. Also make sure
-  // to set the transparency to 0 or else it will get blended with the
-  // other one
-  ren->setBackgroundColor(0.0, 0.0, 0.0, 0.0);
-
   ren->background()->setClearMask(vesStateAttributeBits::DepthBufferBit);
   ren->camera()->setClearMask(vesStateAttributeBits::DepthBufferBit);
 
@@ -182,7 +182,6 @@ void vesKiwiBaseApp::addRenderer(vesSharedPtr<vesRenderer> ren)
     vesStateAttributeBits::ColorBufferBit |
     vesStateAttributeBits::DepthBufferBit);
   this->Internal->Renderer->camera()->setClearMask(
-    vesStateAttributeBits::ColorBufferBit |
     vesStateAttributeBits::DepthBufferBit);
   this->Internal->Renderers.push_back(ren);
 }

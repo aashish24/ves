@@ -35,6 +35,8 @@
 #include <string>
 
 vesRenderer::vesRenderer():
+  m_x(0),
+  m_y(0),
   m_width(100),
   m_height(100),
   m_camera(new vesCamera()),
@@ -112,7 +114,27 @@ void vesRenderer::resize(int width, int height, float scale)
   this->m_width  = (width  > 0) ? width  : 1;
   this->m_height = (height > 0) ? height : 1;
 
-  this->m_camera->viewport()->setViewport(0, 0, this->m_width, this->m_height);
+  this->m_camera->viewport()->setViewport(this->m_x, this->m_y,
+                                          this->m_width, this->m_height);
+
+  this->updateBackgroundViewport();
+
+  this->m_aspect[0] = this->m_camera->viewport()->inverseAspect();
+  this->m_aspect[1] = this->m_camera->viewport()->aspect();
+}
+
+
+void vesRenderer::resize(int x, int y, int width, int height, float scale)
+{
+  vesNotUsed(scale);
+
+  this->m_x = (x > 0) ? x : 0;
+  this->m_y = (y > 0) ? y : 0;
+  this->m_width  = (width  > 0) ? width  : 1;
+  this->m_height = (height > 0) ? height : 1;
+
+  this->m_camera->viewport()->setViewport(this->m_x, this->m_y,
+                                          this->m_width, this->m_height);
 
   this->updateBackgroundViewport();
 

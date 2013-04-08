@@ -248,7 +248,7 @@ public:
            redraw = 1;
            break;
         case ConfigureNotify:
-//           this->m_test->resizeView(event.xconfigure.width, event.xconfigure.height);
+           this->m_test->resizeView(event.xconfigure.width, event.xconfigure.height);
            break;
 
         case ButtonPress:

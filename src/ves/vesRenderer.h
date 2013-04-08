@@ -68,7 +68,10 @@ public:
   virtual void resetCameraClippingRange();
 
   /// Resize viewport based on the new width and height of the window
-  virtual void resize(int width,int height, float scale);
+  virtual void resize(int width, int height, float scale);
+
+  /// Resize viewport based on the new width and height of the window
+  virtual void resize(int x, int y, int width,int height, float scale);
 
   /// Get background color of the renderer
   virtual void backgroundColor(float& r, float& g, float& b, float& a);
@@ -94,6 +97,12 @@ public:
 
   /// Get camera of the renderer
   inline vesSharedPtr<vesCamera> camera(){ return this->m_camera; }
+
+  /// Get lower left corner of the renderer along the X axis
+  inline int x()   { return this->m_x;  }
+
+  /// Get lower left corner of the renderer along the Y axis
+  inline int y()  { return this->m_y; }
 
   /// Get width of the window last set
   inline int width()   { return this->m_width;  }
@@ -121,6 +130,8 @@ protected:
 
 private:
   double m_aspect[2];
+  int m_x;
+  int m_y;
   int m_width;
   int m_height;
 

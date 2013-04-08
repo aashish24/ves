@@ -50,7 +50,7 @@ public:
   {
     this->DataRep = 0;
     this->IsTesting = false;
-    this->setBackgroundColor(0, 0.0, 144/255.0);
+    this->setBackgroundColor(0.8, 0.6, 0.6);
   }
 
   ~vesMultipleViewports()
@@ -101,6 +101,9 @@ public:
 
     rep->actor()->mapper()->enableWireframe(true);
     this->DataRep = rep;
+
+    // This should make the background color same for both renderers
+    // this->setBackgroundColor(0.8, 0.6, 0.9);
   }
 
   std::string sourceDirectory() {
@@ -222,8 +225,8 @@ main(int argc, char *argv[])
   app.resizeView(testDriver.width(), testDriver.height());
   app.resetView();
 
-  app.setViewRect(0, 0, 0, 400, 600);
-  app.setViewRect(1, 400, 0, 400, 600);
+  app.setViewRect(0, 0, 0, 500, 600);
+  app.setViewRect(1, 500, 0, 300, 600);
 
   testDriver.render();
 
