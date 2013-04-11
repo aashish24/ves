@@ -327,7 +327,7 @@ namespace {
 
   NSString* srcFile = [[NSBundle mainBundle] pathForResource:filename ofType:nil];
   NSString* destFile = [destDir stringByAppendingPathComponent:filename];
-  if ([[NSFileManager defaultManager] copyItemAtPath:srcFile toPath:destFile error:nil]) {
+  if (srcFile && [[NSFileManager defaultManager] copyItemAtPath:srcFile toPath:destFile error:nil]) {
     return destFile;
   }
 
