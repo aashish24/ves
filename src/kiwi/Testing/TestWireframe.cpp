@@ -44,17 +44,17 @@
 namespace {
 
 
-class vesGradientBackgroundApp : public vesKiwiBaseApp {
+class vesWireframeApp : public vesKiwiBaseApp {
 public:
 
-  vesGradientBackgroundApp()
+  vesWireframeApp()
   {
     this->DataRep = 0;
     this->IsTesting = false;
     this->setBackgroundColor(63/255.0, 96/255.0, 144/255.0);
   }
 
-  ~vesGradientBackgroundApp()
+  ~vesWireframeApp()
   {
     this->unloadData();
   }
@@ -196,7 +196,7 @@ public:
 int
 main(int argc, char *argv[])
 {
-  vesGradientBackgroundApp app;
+  vesWireframeApp app;
 
   if (!app.initTest(argc, argv)) {
     return -1;
