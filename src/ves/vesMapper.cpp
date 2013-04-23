@@ -203,7 +203,9 @@ void vesMapper::render(const vesRenderState &renderState)
   }
 
   if (renderState.m_material->binNumber() == vesMaterial::Overlay) {
-    renderState.getGlobalRenderState().disable(GL_DEPTH_TEST);
+    // @note: We would like this to taken care at the render state level
+    // but for now just make a direct call to GL
+    glDisable(GL_DEPTH_TEST);
   }
 
   if (!this->m_geometryData->sourceData(vesVertexAttributeKeys::Color)) {
