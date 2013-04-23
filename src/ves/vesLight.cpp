@@ -28,7 +28,8 @@
 #include <iostream>
 
 vesLight::vesLight() : vesMaterialAttribute(),
-  m_wasEnabled(false)
+  m_wasEnabled(false),
+  m_wasColorMaterialEnabled(false)
 {
   this->m_type = Light;
   this->m_binding = BindMinimal;
@@ -48,11 +49,14 @@ void vesLight::bind(const vesRenderState &renderState)
   // TODO Got undefined error for QNX
   this->m_wasEnabled = renderState.getGlobalRenderState().isEnabled(
     GL_LIGHTING);
+  this->m_wasColorMaterialEnabled = renderState.getGlobalRenderState().isEnabled(
+    GL_COLOR_MATERIAL);
 
   if (this->m_enable) {
      renderState.getGlobalRenderState().enable(GL_LIGHTING);
   } else {
     renderState.getGlobalRenderState().disable(GL_LIGHTING);
+    renderState.getGlobalRenderState().disable(GL_COLOR_MATERIAL);
   }
 }
 
@@ -65,6 +69,10 @@ void vesLight::unbind(const vesRenderState &renderState)
     renderState.getGlobalRenderState().enable(GL_LIGHTING);
   } else {
     renderState.getGlobalRenderState().disable(GL_LIGHTING);
+  }
+
+  if (this->m_wasColorMaterialEnabled && !this->m_enable) {
+    renderState.getGlobalRenderState().enable(GL_COLOR_MATERIAL);
   }
 
   this->setDirtyStateOff();

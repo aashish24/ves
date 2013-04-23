@@ -74,8 +74,6 @@ void vesRenderer::render()
   const GLfloat light0Position[] = {0.0, 0.0, 1.0, 0.0};
   glLightfv(GL_LIGHT0, GL_POSITION, light0Position);
 
-  glEnable(GL_COLOR_MATERIAL);
-
   if (this->m_sceneRoot) {
 
     // Update traversal.
@@ -87,6 +85,7 @@ void vesRenderer::render()
     vesRenderState renderState;
     renderState.getGlobalRenderState().enable(GL_DEPTH_TEST);
     renderState.getGlobalRenderState().enable(GL_LIGHTING);
+    renderState.getGlobalRenderState().enable(GL_COLOR_MATERIAL);
 
     // Clear all the previous render targets.
     this->m_camera->clearRenderTargets(renderState);

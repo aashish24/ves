@@ -146,6 +146,7 @@ public:
     rep2->addSelfToRenderer(this->renderer());
     rep2->actor()->mapper()->enableWireframe(true);
     rep2->actor()->setTranslation(vesVector3f(0.1, 0.0, 0.0));
+    rep2->setColor(0.1, 0.9, 0.9, 1.0);
     this->DataRep2 = rep2;
 
     vesKiwiPolyDataRepresentation* rep3 = new vesKiwiPolyDataRepresentation();

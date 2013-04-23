@@ -39,14 +39,14 @@ public:
   void enable(int cap)
   {
     glEnable(cap);
-    m_attributesState[cap] = 1;
+    this->m_attributesState[cap] = 1;
   }
 
 
   void disable(int cap)
   {
-    glDisable(cap );
-    m_attributesState[cap] = 0;
+    glDisable(cap);
+    this->m_attributesState[cap] = 0;
   }
 
 

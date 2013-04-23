@@ -42,6 +42,7 @@ public:
 
 protected:
   bool m_wasEnabled;
+  bool m_wasColorMaterialEnabled;
 };
 
 #endif // VESLIGHT_H
