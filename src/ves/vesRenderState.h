@@ -130,7 +130,7 @@ public:
   /// is a const
   inline vesGlobalRenderState& getGlobalRenderState() const
   {
-    return const_cast<vesGlobalRenderState&>(this->m_globalRenderState);
+    return this->m_globalRenderState;
   }
 
   vesSharedPtr<vesMaterial> m_material;
@@ -140,7 +140,7 @@ public:
   vesMatrix4x4f *m_projectionMatrix;
   vesMatrix4x4f *m_modelViewMatrix;
 
-  vesGlobalRenderState m_globalRenderState;
+  mutable vesGlobalRenderState m_globalRenderState;
 };
 
 #endif // VESRENDERSTATE_H
