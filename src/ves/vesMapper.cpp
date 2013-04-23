@@ -42,7 +42,7 @@ class EnableMaterialColor
 {
 public:
   EnableMaterialColor(const float* const color) {
-    glDisable(GL_COLOR_MATERIAL);
+    glColor4f(color[0], color[1], color[2], color[3]);
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
   }
 
@@ -203,14 +203,10 @@ void vesMapper::render(const vesRenderState &renderState)
   }
 
   if (renderState.m_material->binNumber() == vesMaterial::Overlay) {
-    glDisable(GL_DEPTH_TEST);
+    renderState.getGlobalRenderState().disable(GL_DEPTH_TEST);
   }
 
-  // TODO Fixed vertex color.
-  //glVertexAttrib4fv(vesVertexAttributeKeys::Color, this->color());
-
   if (!this->m_geometryData->sourceData(vesVertexAttributeKeys::Color)) {
-    // Will be disabled when destroyed
     EnableMaterialColor matColor(this->color());
   }
 
