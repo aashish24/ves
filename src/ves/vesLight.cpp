@@ -1,3 +1,5 @@
+
+#include "vesLight.h"
 /*========================================================================
   VES --- VTK OpenGL ES Rendering Toolkit
 
@@ -18,58 +20,52 @@
   limitations under the License.
  ========================================================================*/
 
-#include "vesBlend.h"
-
+// VES includes.
+#include "vesGL.h"
 #include "vesRenderState.h"
 
-// C/C++ includes
+// C/C++ includes.
 #include <iostream>
 
-vesBlend::vesBlend() : vesMaterialAttribute(),
-  m_wasEnabled(false),
-  m_blendFunction(vesBlendFunction::SrcAlpha, vesBlendFunction::OneMinusSrcAlpha)
+vesLight::vesLight() : vesMaterialAttribute(),
+  m_wasEnabled(false)
 {
-  this->m_type = Blend;
+  this->m_type = Light;
   this->m_binding = BindMinimal;
 }
 
 
-vesBlend::~vesBlend()
+vesLight::~vesLight()
 {
 }
 
 
-void vesBlend::setBlendFunction(const vesBlendFunction &blendFunction)
+void vesLight::bind(const vesRenderState &renderState)
 {
-  this->m_blendFunction = blendFunction;
-  this->setDirtyStateOn();
-}
+  vesNotUsed(renderState);
 
-
-void vesBlend::bind(const vesRenderState &renderState)
-{
-  this->m_wasEnabled = renderState.getGlobalRenderState().isEnabled(GL_BLEND);
+  // Save current state.
+  // TODO Got undefined error for QNX
+  this->m_wasEnabled = renderState.getGlobalRenderState().isEnabled(
+    GL_LIGHTING);
 
   if (this->m_enable) {
-    renderState.getGlobalRenderState().enable(GL_BLEND);
-    this->m_blendFunction.apply(renderState);
+     renderState.getGlobalRenderState().enable(GL_LIGHTING);
   } else {
-    renderState.getGlobalRenderState().disable(GL_BLEND);
+    renderState.getGlobalRenderState().disable(GL_LIGHTING);
   }
 }
 
 
-void vesBlend::unbind(const vesRenderState &renderState)
+void vesLight::unbind(const vesRenderState &renderState)
 {
   vesNotUsed(renderState);
 
   if (this->m_wasEnabled) {
-    renderState.getGlobalRenderState().enable(GL_BLEND);
+    renderState.getGlobalRenderState().enable(GL_LIGHTING);
   } else {
-    renderState.getGlobalRenderState().disable(GL_BLEND);
+    renderState.getGlobalRenderState().disable(GL_LIGHTING);
   }
 
   this->setDirtyStateOff();
 }
-
-

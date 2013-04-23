@@ -59,11 +59,7 @@ vesRenderer::~vesRenderer()
 
 void vesRenderer::render()
 {
-  // By default enable depth test.
-  glEnable(GL_DEPTH_TEST);
-
   // TODO Hardcoded values right now
-  glEnable(GL_LIGHTING);
   glEnable(GL_LIGHT0);
 
   const GLfloat light0Ambient[] = {0.0, 0.0, 0.0, 1.0};
@@ -89,6 +85,8 @@ void vesRenderer::render()
     this->cullTraverseScene();
 
     vesRenderState renderState;
+    renderState.getGlobalRenderState().enable(GL_DEPTH_TEST);
+    renderState.getGlobalRenderState().enable(GL_LIGHTING);
 
     // Clear all the previous render targets.
     this->m_camera->clearRenderTargets(renderState);

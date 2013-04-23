@@ -15,6 +15,7 @@ set(headers
   vesGLTypes.h
   vesGroupNode.h
   vesImage.h
+  vesLight.h
   vesMapper.h
   vesMaterial.h
   vesMaterialAttribute.h

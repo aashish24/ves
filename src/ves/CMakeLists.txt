@@ -17,6 +17,7 @@ set(sources
   vesEigen.cpp
   vesGeometryData.cpp
   vesGroupNode.cpp
+  vesLight.cpp
   vesMapper.cpp
   vesMaterial.cpp
   vesNode.cpp

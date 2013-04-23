@@ -44,16 +44,17 @@ public:
 
   enum AttributeType
   {
-    Undefined = 0x0,
-    Shader = 0x1,
-    Texture = 0x2,
-    Blend = 0x3,
-    Depth = 0x4,
-    VertexPositionAttribute = 0x5,
-    VertexNormalAttribute = 0x6,
-    VertexColorAttribute = 0x7,
-    VertexTexCoordAttribute = 0x8,
-    ClipPlane = 0x9
+    Undefined = 0,
+    Shader = 1,
+    Texture = 2,
+    Blend = 3,
+    Depth = 4,
+    VertexPositionAttribute = 5,
+    VertexNormalAttribute = 6,
+    VertexColorAttribute = 7,
+    VertexTexCoordAttribute = 8,
+    ClipPlane = 9,
+    Light = 10
   };
 
 

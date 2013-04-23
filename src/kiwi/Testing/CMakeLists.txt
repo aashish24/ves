@@ -8,6 +8,7 @@ set(tests
     TestViewports
     TestWireframe
     TestImageClip
+    TestLightAttribute
 )
 
 if ("${CMAKE_CXX_PLATFORM_ID}" STREQUAL "QNX")

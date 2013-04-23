@@ -23,12 +23,46 @@
 #define VESRENDERSTATE_H
 
 // VES includes
+#include "vesGL.h"
 #include "vesMaterial.h"
 #include "vesMath.h"
 #include "vesSetGet.h"
 
+#include <map>
+
 // Forward declarations
 class vesMapper;
+
+class vesGlobalRenderState
+{
+public:
+  void enable(int cap)
+  {
+    glEnable(cap);
+    m_attributesState[cap] = 1;
+  }
+
+
+  void disable(int cap)
+  {
+    glDisable(cap );
+    m_attributesState[cap] = 0;
+  }
+
+
+  bool isEnabled(int cap)
+  {
+    std::map<int, int>::iterator itr = m_attributesState.find(cap);
+    if (itr != m_attributesState.end())
+    {
+      return static_cast<bool>(itr->second);
+    }
+
+    return false;
+  }
+
+  std::map<int, int> m_attributesState;
+};
 
 /*! Data structure to hold objects and states related to rendering. */
 class vesRenderState
@@ -91,12 +125,22 @@ public:
     }
   }
 
+  /// Return global render state
+  /// @note Its Ok to modify the global state even if the render state
+  /// is a const
+  inline vesGlobalRenderState& getGlobalRenderState() const
+  {
+    return const_cast<vesGlobalRenderState&>(this->m_globalRenderState);
+  }
+
   vesSharedPtr<vesMaterial> m_material;
   vesSharedPtr<vesMapper> m_mapper;
 
   vesMatrix4x4f *m_identity;
   vesMatrix4x4f *m_projectionMatrix;
   vesMatrix4x4f *m_modelViewMatrix;
+
+  vesGlobalRenderState m_globalRenderState;
 };
 
 #endif // VESRENDERSTATE_H
