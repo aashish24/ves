@@ -87,6 +87,7 @@ void vesRenderer::render()
     renderState.getGlobalRenderState().enable(GL_LIGHTING);
     renderState.getGlobalRenderState().enable(GL_COLOR_MATERIAL);
     renderState.getGlobalRenderState().disable(GL_BLEND);
+    renderState.getGlobalRenderState().set(GL_DEPTH_WRITEMASK, true);
 
     // Clear all the previous render targets.
     this->m_camera->clearRenderTargets(renderState);

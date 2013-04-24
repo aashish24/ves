@@ -53,12 +53,29 @@ public:
   bool isEnabled(int cap)
   {
     std::map<int, int>::iterator itr = m_attributesState.find(cap);
-    if (itr != m_attributesState.end())
-    {
+    if (itr != m_attributesState.end()) {
       return static_cast<bool>(itr->second);
     }
 
     return false;
+  }
+
+
+  void get(int cap, bool& flag)
+  {
+    std::map<int, int>::iterator itr = m_attributesState.find(cap);
+    if (itr != m_attributesState.end()) {
+      flag = static_cast<bool>(itr->second);
+    }
+
+    flag = false;
+  }
+
+
+  bool set(int cap, bool flag)
+  {
+    this->m_attributesState[cap] = static_cast<int>(flag);
+    return true;
   }
 
   std::map<int, int> m_attributesState;

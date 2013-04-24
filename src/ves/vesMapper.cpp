@@ -42,6 +42,7 @@ class EnableMaterialColor
 {
 public:
   EnableMaterialColor(const float* const color) {
+    glDisable(GL_COLOR_MATERIAL);
     glColor4f(color[0], color[1], color[2], color[3]);
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
   }

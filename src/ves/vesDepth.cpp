@@ -52,14 +52,16 @@ void vesDepth::bind(const vesRenderState &renderState)
     GL_DEPTH_TEST);
 
   // Save current depth mask for restoration later.
-//  glGet(GL_DEPTH_WRITEMASK, &this->m_previousDepthWriteMask);
+  renderState.getGlobalRenderState().get(GL_DEPTH_WRITEMASK,
+                                         this->m_previousDepthWriteMask);
 
-  if (this->m_enable) {
-     renderState.getGlobalRenderState().enable(GL_DEPTH_TEST);
-//    glDepthMask((GLboolean) this->m_depthWriteMask);
-  } else {
+  if (this->m_enable && !this->m_wasEnabled) {
+    renderState.getGlobalRenderState().enable(GL_DEPTH_TEST);
+    } else if (!this->m_enable && this->m_wasEnabled) {
     renderState.getGlobalRenderState().disable(GL_DEPTH_TEST);
   }
+
+  glDepthMask((GLboolean) this->m_depthWriteMask);
 }
 
 
@@ -67,18 +69,14 @@ void vesDepth::unbind(const vesRenderState &renderState)
 {
   vesNotUsed(renderState);
 
-  // Don't bother restoring state for now since ES 1.0
-  // does not support querying GL states
-
-  if (this->m_wasEnabled) {
+  if (this->m_wasEnabled && !this->m_enable) {
     renderState.getGlobalRenderState().enable(GL_DEPTH_TEST);
-//    glDepthMask((GLboolean) this->m_depthWriteMask);
-  } else {
+    } else if (this->m_enable && !this->m_wasEnabled){
     renderState.getGlobalRenderState().disable(GL_DEPTH_TEST);
   }
 
   // Restore previous depth mask.
-//  glDepthMask(this->m_previousDepthWriteMask);
+  glDepthMask(this->m_previousDepthWriteMask);
 
   this->setDirtyStateOff();
 }
