@@ -580,6 +580,11 @@ void vesKiwiViewerApp::handleSingleTouchDown(int displayX, int displayY)
 void vesKiwiViewerApp::handleTwoTouchPanGesture(double x0, double y0, double x1, double y1)
 {
   this->Internal->CameraSpinner->disable();
+
+  if (vesKiwiWidgetInteractionDelegate::handleTwoTouchPanGesture(x0, y0, x1, y1, this->Internal->DataRepresentations)) {
+    return;
+  }
+
   this->Superclass::handleTwoTouchPanGesture(x0, y0, x1, y1);
 }
 
@@ -587,6 +592,11 @@ void vesKiwiViewerApp::handleTwoTouchPanGesture(double x0, double y0, double x1,
 void vesKiwiViewerApp::handleTwoTouchPinchGesture(double scale)
 {
   this->Internal->CameraSpinner->disable();
+
+  if (vesKiwiWidgetInteractionDelegate::handleTwoTouchPinchGesture(scale, this->Internal->DataRepresentations)) {
+    return;
+  }
+
   this->Superclass::handleTwoTouchPinchGesture(scale);
 }
 
@@ -594,6 +604,11 @@ void vesKiwiViewerApp::handleTwoTouchPinchGesture(double scale)
 void vesKiwiViewerApp::handleTwoTouchRotationGesture(double rotation)
 {
   this->Internal->CameraSpinner->disable();
+
+  if (vesKiwiWidgetInteractionDelegate::handleTwoTouchRotationGesture(rotation, this->Internal->DataRepresentations)) {
+    return;
+  }
+
   this->Superclass::handleTwoTouchRotationGesture(rotation);
 }
 

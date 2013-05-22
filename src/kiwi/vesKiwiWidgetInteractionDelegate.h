@@ -47,10 +47,20 @@ public:
 
   static bool handleSingleTouchDown(int displayX, int displayY, std::vector<vesSharedPtr<vesKiwiDataRepresentation> > reps);
 
+  static bool handleTwoTouchPanGesture(double x0, double y0, double x1, double y1, std::vector<vesSharedPtr<vesKiwiDataRepresentation> > reps);
+
+  static bool handleTwoTouchPinchGesture(double scale, std::vector<vesSharedPtr<vesKiwiDataRepresentation> > reps);
+
+  static bool handleTwoTouchRotationGesture(double rotation, std::vector<vesSharedPtr<vesKiwiDataRepresentation> > reps);
 
   static bool handleDoubleTap(int displayX, int displayY, std::vector<vesSharedPtr<vesKiwiDataRepresentation> > reps);
 
   static bool handleLongPress(int displayX, int displayY, std::vector<vesSharedPtr<vesKiwiDataRepresentation> > reps);
+
+
+
+
+
 
   static bool interactionIsActive(std::vector<vesSharedPtr<vesKiwiDataRepresentation> > reps);
 

@@ -85,6 +85,50 @@ bool vesKiwiWidgetInteractionDelegate::handleSingleTouchDown(int displayX, int d
   return false;
 }
 
+//----------------------------------------------------------------------------
+bool vesKiwiWidgetInteractionDelegate::handleTwoTouchPanGesture(double x0, double y0, double x1, double y1, std::vector<vesSharedPtr<vesKiwiDataRepresentation> > reps)
+{
+  for (size_t i = 0; i < reps.size(); ++i) {
+    vesKiwiWidgetRepresentation::Ptr rep = dynamic_pointer_cast<vesKiwiWidgetRepresentation>(reps[i]);
+    if (rep) {
+      if (rep->handleTwoTouchPanGesture(x0, y0, x1, y1)) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+//----------------------------------------------------------------------------
+bool vesKiwiWidgetInteractionDelegate::handleTwoTouchPinchGesture(double scale, std::vector<vesSharedPtr<vesKiwiDataRepresentation> > reps)
+{
+  for (size_t i = 0; i < reps.size(); ++i) {
+    vesKiwiWidgetRepresentation::Ptr rep = dynamic_pointer_cast<vesKiwiWidgetRepresentation>(reps[i]);
+    if (rep) {
+      if (rep->handleTwoTouchPinchGesture(scale)) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
+//----------------------------------------------------------------------------
+bool vesKiwiWidgetInteractionDelegate::handleTwoTouchRotationGesture(double rotation, std::vector<vesSharedPtr<vesKiwiDataRepresentation> > reps)
+{
+  for (size_t i = 0; i < reps.size(); ++i) {
+    vesKiwiWidgetRepresentation::Ptr rep = dynamic_pointer_cast<vesKiwiWidgetRepresentation>(reps[i]);
+    if (rep) {
+      if (rep->handleTwoTouchRotationGesture(rotation)) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
 
 //----------------------------------------------------------------------------
 bool vesKiwiWidgetInteractionDelegate::handleDoubleTap(int displayX, int displayY, std::vector<vesKiwiDataRepresentation::Ptr> reps)

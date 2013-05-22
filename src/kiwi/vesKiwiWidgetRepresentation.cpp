@@ -75,6 +75,30 @@ bool vesKiwiWidgetRepresentation::handleSingleTouchTap(int displayX, int display
 }
 
 //----------------------------------------------------------------------------
+bool vesKiwiWidgetRepresentation::handleTwoTouchPanGesture(double x0, double y0, double x1, double y1)
+{
+  vesNotUsed(x0);
+  vesNotUsed(y0);
+  vesNotUsed(x1);
+  vesNotUsed(y1);
+  return false;
+}
+
+//----------------------------------------------------------------------------
+bool vesKiwiWidgetRepresentation::handleTwoTouchPinchGesture(double scale)
+{
+  vesNotUsed(scale);
+  return false;
+}
+
+//----------------------------------------------------------------------------
+bool vesKiwiWidgetRepresentation::handleTwoTouchRotationGesture(double rotation)
+{
+  vesNotUsed(rotation);
+  return false;
+}
+
+//----------------------------------------------------------------------------
 bool vesKiwiWidgetRepresentation::handleDoubleTap(int displayX, int displayY)
 {
   vesNotUsed(displayX);
