@@ -89,6 +89,9 @@ public:
     }
   }
 
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
+
   int m_depth;
   int m_bin;
 

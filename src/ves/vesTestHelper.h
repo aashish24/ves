@@ -37,6 +37,10 @@
 #endif
 #endif
 
+#ifdef _WIN32
+  #include <GL/glew.h>
+#endif
+
 #include "vesRenderer.h"
 
 #include <iostream>
@@ -215,6 +219,9 @@ void vesTestHelper::init(int* argcp, char** argv, int windowWidth, int windowHei
   glutDisplayFunc(vesTestHelperGlobals::display);
   glutReshapeFunc(vesTestHelperGlobals::reshape);
   glutIdleFunc(vesTestHelperGlobals::idle);
+#ifdef _WIN32
+  glewInit();
+#endif
 }
 
 void vesTestHelper::startMainLoop()

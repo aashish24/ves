@@ -238,10 +238,10 @@ void vesCamera::setWindowCenter(double x, double y)
 }
 
 
-void vesCamera::setClippingRange(float near, float far)
+void vesCamera::setClippingRange(float znear, float zfar)
 {
-  this->m_clippingRange[0] = near;
-  this->m_clippingRange[1] = far;
+  this->m_clippingRange[0] = znear;
+  this->m_clippingRange[1] = zfar;
 }
 
 

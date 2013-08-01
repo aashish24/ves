@@ -92,6 +92,8 @@ public:
     }
   }
 
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
   vesSharedPtr<vesMaterial> m_material;
   vesSharedPtr<vesMapper> m_mapper;
 

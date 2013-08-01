@@ -27,10 +27,19 @@
     #include <OpenGL/glext.h>
   #else
     #define GL_GLEXT_PROTOTYPES
-    #include <GL/gl.h>
-    #include <GL/glext.h>
+    #ifdef _WIN32
+       #define NOMINMAX
+       #include <windows.h>
+       #include <GL/glew.h>
+       #include <GL/gl.h>
+    #else
+       #include <GL/gl.h>
+       #include <GL/glext.h>
+    #endif
   #endif
-  #define glClearDepthf glClearDepth
+  #ifndef glClearDepthf
+    #define glClearDepthf glClearDepth
+  #endif
 #else
   // Setup for OpenGL ES
   #ifdef __APPLE__
