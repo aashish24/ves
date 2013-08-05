@@ -55,8 +55,11 @@ public:
   /// Get center of transformations
   const vesVector3f& center() const;
 
-  /// Set rotation as described by angle (in radians) and axis
-  /// ( axis(x, y, z), angle )
+  /// Constructs and initialize the angle-axis rotation from an \a angle in radian
+  /// and an \a axis which \b must \b be \b normalized.
+  ///
+  /// \warning If the \a axis vector is not normalized, then the angle-axis object
+  /// represents an invalid rotation.
   void setRotation(const vesVector4f &rotation);
 
   /// Get rotation as described by angle (in radians) and axis

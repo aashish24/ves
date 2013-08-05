@@ -20,6 +20,7 @@
  ========================================================================*/
 /// \class vesTexture
 /// \ingroup ves
+/// \brief Texture class provides interface to specify a texture image
 /// \see vesMaterialAttribute vesMaterial
 
 #ifndef __vesTexture_h

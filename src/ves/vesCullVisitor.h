@@ -19,6 +19,7 @@
  ========================================================================*/
 /// \class vesCullVisitor
 /// \ingroup ves
+/// \brief CullVisitor class provides implementation for cull stage
 /// \see vesVisitor
 
 #ifndef VESCULLVISITOR_H

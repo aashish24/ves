@@ -19,6 +19,7 @@
  ========================================================================*/
 /// \class vesUniform
 /// \ingroup ves
+/// \brief Uniform class provides interface to create a uniform for prog. pipeline
 /// \see vesShaderProgram vesShader
 
 // \note: Eventually we can make this class use templates. But for simplicity
