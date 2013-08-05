@@ -19,6 +19,7 @@
  ========================================================================*/
 /// \class vesBlend
 /// \ingroup ves
+/// \brief Material attribute to provide blend ability
 /// \see vesMaterial vesMaterialAttribute vesBlendFunction
 
 #ifndef VESBLEND_H

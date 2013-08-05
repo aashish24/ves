@@ -19,6 +19,7 @@
  ========================================================================*/
 /// \class vesBackground
 /// \ingroup ves
+/// \brief Special camera node to render background scene
 /// \see vesCamera
 
 #ifndef VESBACKGROUND_H

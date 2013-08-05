@@ -19,6 +19,7 @@
  ========================================================================*/
 /// \class vesViewport
 /// \ingroup ves
+/// \brief Class to specify render viewport
 /// \see vesCamera
 
 #ifndef vesViewport_H

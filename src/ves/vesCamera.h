@@ -20,7 +20,7 @@
  ========================================================================*/
 /// \class vesCamera
 /// \ingroup ves
-/// \brief Transform node  that provides an interface for camera settings
+/// \brief Transform node that provides an interface for camera settings
 ///
 /// vesCamera is a transform node that encapsulate various camera settings.
 /// These settings affects how scene is going to get rendered by the underlying
