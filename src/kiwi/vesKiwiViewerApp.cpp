@@ -240,7 +240,6 @@ vesKiwiViewerApp::~vesKiwiViewerApp()
 void vesKiwiViewerApp::initGL()
 {
   this->vesKiwiBaseApp::initGL();
-  this->Internal->DataLoader.setErrorOnMoreThan65kVertices(!this->glSupport()->isSupportedIndexUnsignedInt());
   #ifdef VES_USE_DESKTOP_GL
   glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
   #endif

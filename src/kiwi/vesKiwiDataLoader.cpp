@@ -72,18 +72,6 @@ vesKiwiDataLoader::~vesKiwiDataLoader()
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiDataLoader::setErrorOnMoreThan65kVertices(bool isEnabled)
-{
-  this->Internal->IsErrorOnMoreThan65kVertices = isEnabled;
-}
-
-//----------------------------------------------------------------------------
-bool vesKiwiDataLoader::isErrorOnMoreThan65kVertices() const
-{
-  return this->Internal->IsErrorOnMoreThan65kVertices;
-}
-
-//----------------------------------------------------------------------------
 bool vesKiwiDataLoader::hasEnding(const std::string& fullString, const std::string& ending)
 {
   size_t sz = ending.length();
