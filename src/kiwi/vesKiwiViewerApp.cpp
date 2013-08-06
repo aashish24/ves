@@ -711,8 +711,7 @@ vtkSmartPointer<vtkPolyData> ExtractPolyDataPiece(vtkPolyData* polyData, int pie
 void RecursiveSplitMesh(vtkPolyData* polyData, std::vector<vtkSmartPointer<vtkPolyData> >& pieces)
 {
   // base case
-  const vtkIdType maximumNumberOfPoints = 65536;
-  if (polyData->GetNumberOfPoints() < maximumNumberOfPoints) {
+  if (polyData->GetNumberOfPoints() < vesMapper::maximumNumberOfVertices()) {
     pieces.push_back(polyData);
     return;
   }

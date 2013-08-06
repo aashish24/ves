@@ -38,7 +38,7 @@
 #include <cstdio>
 #include <stdint.h>
 
-int vesMapper::s_maximumNumberOfVertices = 65536;
+int vesMapper::s_maximumNumberOfVertices = 65535;
 
 class vesMapper::vesInternal
 {
