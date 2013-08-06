@@ -33,6 +33,7 @@ set(deps
   vtkFiltersSources
   vtkFiltersGeometry
   vtkFiltersModeling
+  vtkFiltersParallel
   vtkImagingCore
   vtkRenderingCore
   vtkRenderingFreeType

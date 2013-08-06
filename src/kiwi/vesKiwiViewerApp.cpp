@@ -744,7 +744,7 @@ vesKiwiPolyDataRepresentation* vesKiwiViewerApp::addPolyDataRepresentation(
   glSupport.initialize();
   bool needToSplitMesh = (glSupport.isSupportedIndexUnsignedInt() &&
     polyData->GetNumberOfPoints() >
-    vesKiwiPolyDataRepresentation::maximumNumberOfPoints);
+    vesMapper::maximumNumberOfVertices());
 
 
   std::vector<vtkSmartPointer<vtkPolyData> > pieces;
@@ -871,7 +871,7 @@ bool vesKiwiViewerApp::loadBlueMarble(const std::string& filename)
 //----------------------------------------------------------------------------
 bool vesKiwiViewerApp::loadDatasetWithCustomBehavior(const std::string& filename)
 {
-  // These demos are currently disabled because they depend on external data 
+  // These demos are currently disabled because they depend on external data
   //if (vtksys::SystemTools::GetFilenameName(filename) == "model_info.txt") {
   //  return loadBrainAtlas(filename);
   //}
