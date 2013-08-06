@@ -31,6 +31,7 @@ set(module_defaults
   -DVTK_Group_Rendering:BOOL=OFF
   -DModule_vtkFiltersCore:BOOL=ON
   -DModule_vtkFiltersModeling:BOOL=ON
+  -DModule_vtkFiltersParallel:BOOL=ON
   -DModule_vtkFiltersSources:BOOL=ON
   -DModule_vtkFiltersGeometry:BOOL=ON
   -DModule_vtkIOGeometry:BOOL=ON
