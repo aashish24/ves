@@ -381,9 +381,10 @@ vesSharedPtr<vesGeometryData> vesKiwiDataConversionTools::ConvertPoints(vtkPolyD
 vesSharedPtr<vesGeometryData> vesKiwiDataConversionTools::Convert(
   vtkPolyData* input)
 {
-  const vtkIdType maximumNumberOfPoints = 65536;
+  vesOpenGLSupport::Ptr glSupport (new vesOpenGLSupport());
+  glSupport->initialize();
 
-  if (input->GetNumberOfPoints() > maximumNumberOfPoints) {
+  if (glSupport->isSupportedIndexUnsignedInt()) {
     return vesKiwiDataConversionTools::GenericConvert<unsigned int>(input);
   }
   else {

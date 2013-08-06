@@ -53,12 +53,8 @@ class vesKiwiDataLoader::vesInternal
 {
 public:
 
-  vesInternal()
-  {
-    this->IsErrorOnMoreThan65kVertices = true;
-  }
+  vesInternal() {}
 
-  bool IsErrorOnMoreThan65kVertices;
   std::string ErrorTitle;
   std::string ErrorMessage;
 };
@@ -141,25 +137,11 @@ vtkSmartPointer<vtkDataSet> vesKiwiDataLoader::datasetFromAlgorithm(vtkAlgorithm
   // If the dataset is not vtkPolyData or vtkImageData
   // then use the surface filter to convert it to vtkPolyData
   if (!vtkPolyData::SafeDownCast(dataset) && !vtkImageData::SafeDownCast(dataset)) {
-    vtkSmartPointer<vtkDataSetSurfaceFilter> surfaceFilter = vtkSmartPointer<vtkDataSetSurfaceFilter>::New();
+    vtkSmartPointer<vtkDataSetSurfaceFilter> surfaceFilter =
+      vtkSmartPointer<vtkDataSetSurfaceFilter>::New();
     surfaceFilter->SetInputConnection(algorithm->GetOutputPort());
     return datasetFromAlgorithm(surfaceFilter);
   }
-
-  const vtkIdType maximumNumberOfPoints = 65536;
-
-  // If we have a polydata with elements other than vertices, and it has
-  // more than 65K points, then we require the opengl extension to support
-  // unsigned int element indices, otherwise we throw an error at this point.
-  vtkPolyData* polyData = vtkPolyData::SafeDownCast(dataset);
-  if (polyData
-      && (polyData->GetNumberOfPoints() > maximumNumberOfPoints)
-      && (polyData->GetNumberOfPolys() || polyData->GetNumberOfLines() || polyData->GetNumberOfStrips())
-      && this->isErrorOnMoreThan65kVertices())
-    {
-    this->setMaximumNumberOfPointsErrorMessage();
-    return 0;
-    }
 
   if (!dataset->GetNumberOfPoints())
     {

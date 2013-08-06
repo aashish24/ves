@@ -52,6 +52,8 @@ class vesMapper : public vesBoundingObject
 public:
   vesTypeMacro(vesMapper);
 
+  static int maximumNumberOfVertices();
+
   vesMapper();
   virtual ~vesMapper();
 
@@ -106,7 +108,7 @@ protected:
   int m_pointSize;
   int m_lineWidth;
 
-  const int m_maximumTriangleIndicesPerDraw;
+  static int s_maximumNumberOfVertices;
 
   vesSharedPtr<vesGeometryData> m_geometryData;
 

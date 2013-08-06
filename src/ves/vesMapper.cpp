@@ -38,6 +38,8 @@
 #include <cstdio>
 #include <stdint.h>
 
+int vesMapper::s_maximumNumberOfVertices = 65536;
+
 class vesMapper::vesInternal
 {
 public:
@@ -72,13 +74,16 @@ public:
   std::map< unsigned int, std::vector<int> > m_bufferVertexAttributeMap;
 };
 
+int vesMapper::maximumNumberOfVertices()
+{
+  return s_maximumNumberOfVertices;
+}
 
 vesMapper::vesMapper() : vesBoundingObject(),
   m_initialized(false),
   m_enableWireframe(false),
   m_pointSize(1),
   m_lineWidth(1),
-  m_maximumTriangleIndicesPerDraw(65535),
   m_internal(0x0)
 {
   this->m_internal = new vesInternal();
@@ -352,8 +357,8 @@ void vesMapper::drawTriangles(const vesRenderState &renderState,
   while (drawnIndices < numberOfIndices) {
     int numberOfIndicesToDraw = numberOfIndices - drawnIndices;
 
-    if (numberOfIndicesToDraw > this->m_maximumTriangleIndicesPerDraw) {
-      numberOfIndicesToDraw = this->m_maximumTriangleIndicesPerDraw;
+    if (numberOfIndicesToDraw > this->s_maximumNumberOfVertices) {
+      numberOfIndicesToDraw = this->s_maximumNumberOfVertices;
     }
 
     uintptr_t offset = 0;

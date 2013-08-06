@@ -742,10 +742,10 @@ vesKiwiPolyDataRepresentation* vesKiwiViewerApp::addPolyDataRepresentation(
 
   vesOpenGLSupport glSupport;
   glSupport.initialize();
-  bool needToSplitMesh = glSupport.isSupportedIndexUnsignedInt();
+  bool needToSplitMesh = (glSupport.isSupportedIndexUnsignedInt() &&
+    polyData->GetNumberOfPoints() >
+    vesKiwiPolyDataRepresentation::maximumNumberOfPoints);
 
-  // For testing, lets force needToSplitMesh to TRUE
-  needToSplitMesh = true;
 
   std::vector<vtkSmartPointer<vtkPolyData> > pieces;
   if (needToSplitMesh) {
