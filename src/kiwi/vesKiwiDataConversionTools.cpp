@@ -20,7 +20,7 @@
 
 #include "vesKiwiDataConversionTools.h"
 
-// VES includes
+// VES/VTK includes
 #include "vtkCellArray.h"
 #include "vtkDiscretizableColorTransferFunction.h"
 #include "vesGeometryData.h"
@@ -31,6 +31,7 @@
 #include "vtkLookupTable.h"
 #include "vesMath.h"
 #include "vtkNew.h"
+#include "vesOpenGLSupport.h"
 #include "vtkPointData.h"
 #include "vtkPolyData.h"
 #include "vtkUnsignedCharArray.h"
