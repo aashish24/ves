@@ -41,13 +41,17 @@
 #include <vtkMatrix4x4.h>
 
 #include <vtkErrorCode.h>
-#include <vtkPCDReader.h>
+
+#include <vesKiwiOptions.h>
+#ifdef VES_USE_PCL
+#  include <vtkPCDReader.h>
+#endif
 
 #include <iostream>
 #include <iomanip>
 
 #include <TargetConditionals.h>
-#define USE_PCL !(TARGET_IPHONE_SIMULATOR)
+#define TARGET_HAS_PCL TARGET_OS_IPHONE
 
 
 class kiwiApp : public vesKiwiViewerApp
@@ -132,9 +136,12 @@ public:
 
   bool loadDatasetWithCustomBehavior(const std::string& filename)
   {
-    #if USE_PCL
+  // PCL is only supported on the iOS device, not the simulator.
+  // You may change the definition of TARGET_HAS_PCL above if you
+  // have built a PCL framework targeted to the iOS simulator
+  // instead.
     if (vesKiwiDataLoader::hasEnding(filename, "pcd")) {
-
+#if defined(VES_USE_PCL) && TARGET_HAS_PCL
       vtkNew<vtkPCDReader> pcdReader;
       pcdReader->SetFileName(filename.c_str());
       pcdReader->Update();
@@ -159,13 +166,12 @@ public:
 
 
       return true;
+#else // no PCL:
+      this->setErrorMessage("Unsupported", "PCL support has not been included for this platform.");
+      return false;
+#endif
     }
-    else {
-      return kiwiApp::loadDatasetWithCustomBehavior(filename);
-    }
-    #else
-      return kiwiApp::loadDatasetWithCustomBehavior(filename);
-    #endif
+    return kiwiApp::loadDatasetWithCustomBehavior(filename);
   }
 
   void printError()

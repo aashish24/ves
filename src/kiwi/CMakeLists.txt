@@ -83,6 +83,11 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/vesKiwiVersion.h.in
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/vesKiwiOptions.h.in
   ${CMAKE_CURRENT_BINARY_DIR}/vesKiwiOptions.h)
 
+list(APPEND headers
+  ${CMAKE_CURRENT_BINARY_DIR}/vesKiwiVersion.h
+  ${CMAKE_CURRENT_BINARY_DIR}/vesKiwiOptions.h
+  )
+
 # ... now add the location of the configured files to the build
 include_directories(${CMAKE_CURRENT_BINARY_DIR})
 

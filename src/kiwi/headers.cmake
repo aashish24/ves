@@ -30,6 +30,10 @@ set(headers
   vesPVWebDataSet.h
   )
 
+set(build_headers
+  vesKiwiOptions.h
+  )
+
 set(header_dirs
   .
   )
