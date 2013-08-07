@@ -17,6 +17,10 @@
   See the License for the specific language governing permissions and
   limitations under the License.
  ========================================================================*/
+/// \class vesBooleanUniform
+/// \ingroup ves
+/// \brief BooleanUniform provides interface for uniforms of boolean type
+/// \see vesUniform vesMaterialAttribute
 
 #ifndef VESBOOLEANUNIFORM_H
 #define VESBOOLEANUNIFORM_H

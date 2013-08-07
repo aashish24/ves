@@ -1,4 +1,3 @@
-
 find_package(VTK REQUIRED)
 include(${VTK_USE_FILE})
 
@@ -72,11 +71,13 @@ if(VES_USE_PCL)
   include_directories("${CMAKE_CURRENT_SOURCE_DIR}/pcl")
 endif()
 
+file(GLOB headers *.h)
+
 # Configure version file
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/vesKiwiVersion.h.in
   ${CMAKE_CURRENT_BINARY_DIR}/vesKiwiVersion.h @ONLY)
 
-ves_add_library(kiwi "${sources}" "${deps}")
+ves_add_library(kiwi "${sources};${headers}" "${deps}")
 
 # Add version info to the target. Currently using a single global version string.
 set_target_properties(kiwi PROPERTIES SOVERSION ${VES_VERSION_STR}

@@ -21,6 +21,7 @@
 #include "vesKiwiBaselineImageTester.h"
 #include "vesGL.h"
 #include "vesGLTypes.h"
+#include "vesOpenGLSupport.h"
 #include "vesKiwiBaseApp.h"
 
 #include <vtkErrorCode.h>
@@ -92,7 +93,9 @@ vtkSmartPointer<vtkImageData> vesKiwiBaselineImageTester::imageFromRenderView()
   image->AllocateScalars(VTK_UNSIGNED_CHAR, 3);
 
   unsigned char* outPtr = static_cast<unsigned char*>(image->GetScalarPointer(0, 0, 0));
-  glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE, (void*)outPtr);
+  vesOpenGLSupport::readBuffer(0, 0, width, height, vesColorDataType::RGB,
+                               vesColorDataType::UnsignedByte, (void*)outPtr,
+                               vesBufferType::Back);
   return image;
 }
 

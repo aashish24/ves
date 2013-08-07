@@ -144,6 +144,8 @@ public:
   void setClearDepth(double depth);
   double clearDepth() const;
 
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
 private:
   vesSharedPtr<vesViewport> m_viewport;
 

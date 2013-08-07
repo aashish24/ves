@@ -198,6 +198,8 @@ public:
   /// Return source data given a key. Return NULL on failure.
   inline vesSharedPtr<vesSourceData> sourceData(int key);
 
+   EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
 private:
   void addAndUpdateNormal(unsigned int index, float n1, float n2, float n3,
                           void *data, unsigned int stride, unsigned int offset,

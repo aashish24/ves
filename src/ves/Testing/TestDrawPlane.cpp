@@ -235,13 +235,11 @@ int main(int argc, char *argv[])
     return 1;
   }
 
-
   const int windowWidth = 800;
   const int windowHeight = 600;
   MyTestHelper helper;
   helper.init(&argc, argv, windowWidth, windowHeight, "TestDrawPlane");
   helper.mApp.init();
-
 
   int printInfo = 1;
   if (printInfo) {

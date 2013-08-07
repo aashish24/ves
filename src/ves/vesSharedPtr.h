@@ -22,7 +22,11 @@
 #define VESSHAREDPTR_H
 
 // C/C++ includes
+#ifdef _WIN32
+#include <memory>
+#else
 #include <tr1/memory>
+#endif
 
 #define vesSharedPtr std::tr1::shared_ptr
 #define vesWeakPtr std::tr1::weak_ptr

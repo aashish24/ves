@@ -16,7 +16,7 @@ set(tests
   )
 
 find_package(GLUT REQUIRED)
-include_directories(${GLUT_INCLUDE_DIRS})
+include_directories(${GLUT_INCLUDE_DIR})
 
 macro(ves_add_test name)
   set(deps kiwi ${GLUT_glut_LIBRARY})

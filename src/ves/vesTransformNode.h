@@ -103,6 +103,7 @@ public:
   virtual bool computeWorldToLocalMatrix(vesMatrix4x4f& matrix,
                                          vesVisitor& visitor);
 
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 protected:
   void updateBounds(vesNode &child);
 

@@ -20,7 +20,7 @@
  ========================================================================*/
 /// \class vesCamera
 /// \ingroup ves
-/// \brief Transform node  that provides an interface for camera settings
+/// \brief Transform node that provides an interface for camera settings
 ///
 /// vesCamera is a transform node that encapsulate various camera settings.
 /// These settings affects how scene is going to get rendered by the underlying
@@ -181,7 +181,7 @@ public:
   void orthogonalizeViewUp();
 
   vesMatrix4x4f computeViewTransform();
-  vesMatrix4x4f computeProjectionTransform(float aspect, float near, float far);
+  vesMatrix4x4f computeProjectionTransform(float aspect, float znear, float zfar);
 
   /// Set the center of the window in viewport coordinates.
   ///
@@ -273,6 +273,7 @@ public:
   virtual bool computeWorldToLocalMatrix(vesMatrix4x4f& matrix,
                                          vesVisitor& visitor);
 
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
 protected:
   void computeDistance();
   void computeViewPlaneNormal();

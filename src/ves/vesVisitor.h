@@ -19,6 +19,8 @@
  ========================================================================*/
 /// \class vesVisitor
 /// \ingroup ves
+/// \brief Visitor class is the base of all visitors
+///
 /// \see vesRenderer
 
 #ifndef VESVISITOR_H

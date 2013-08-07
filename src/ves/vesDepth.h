@@ -19,6 +19,7 @@
  ========================================================================*/
 /// \class vesDepth
 /// \ingroup ves
+/// \brief Material attribute to specify attributes for depth buffer
 /// \see vesMaterialAttribute vesMaterial
 
 #ifndef VESDEPTH_H

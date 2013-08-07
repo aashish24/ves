@@ -104,7 +104,7 @@ void vesRenderer::resize(int width, int height, float scale)
 }
 
 
-vesVector3f vesRenderer::computeWorldToDisplay(vesVector3f world)
+vesVector3f vesRenderer::computeWorldToDisplay(const vesVector3f &world)
 {
   // WorldToView
   vesMatrix4x4f proj_mat = this->m_camera->computeProjectionTransform(this->m_aspect[0],
@@ -126,7 +126,7 @@ vesVector3f vesRenderer::computeWorldToDisplay(vesVector3f world)
 }
 
 
-vesVector3f vesRenderer::computeDisplayToWorld(vesVector3f display)
+vesVector3f vesRenderer::computeDisplayToWorld(const vesVector3f &display)
 {
   // DisplayToView
   vesVector4f view;

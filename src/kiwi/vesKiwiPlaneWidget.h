@@ -56,6 +56,10 @@ public:
   virtual std::vector<std::string> actions() const;
   virtual bool handleAction(const std::string& action);
 
+  vtkTransform* widgetTransform();
+  void onTransformModified();
+  void setHandleSize(double size);
+
 protected:
 
   void updatePlaneFunction();

@@ -91,3 +91,13 @@ bool vesOpenGLSupport::isSupportedIndexUnsignedInt() const
   return this->isSupported("GL_OES_element_index_uint");
 #endif
 }
+
+void vesOpenGLSupport::readBuffer(int x, int y, int width, int height,
+                                  int format, int type, void* data,
+                                  int bufferType)
+{
+#ifdef VES_USE_DESKTOP_GL
+  glReadBuffer(bufferType);
+#endif
+  glReadPixels(x, y, width, height, format, type, data);
+}
