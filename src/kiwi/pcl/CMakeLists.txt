@@ -1,6 +1,3 @@
-
-set(build_target "android")
-
 if(NOT DEFINED PCL_SUPERBUILD_DIR)
   message(FATAL_ERROR "Please set the cmake variable PCL_SUPERBUILD_DIR")
 endif()
@@ -11,13 +8,18 @@ if(NOT IS_DIRECTORY ${pcl_deps_install_dir})
 endif()
 
 list(APPEND CMAKE_FIND_ROOT_PATH
-  ${pcl_deps_install_dir}/boost-${build_target}
-  ${pcl_deps_install_dir}/flann-${build_target}
-  ${pcl_deps_install_dir}/pcl-${build_target})
+  ${pcl_deps_install_dir}/boost-${PCL_BUILD_TARGET}
+  ${pcl_deps_install_dir}/flann-${PCL_BUILD_TARGET}
+  ${pcl_deps_install_dir}/pcl-${PCL_BUILD_TARGET})
 
-set(PCL_DIR ${pcl_deps_install_dir}/pcl-${build_target}/share/pcl-1.6)
+set(PCL_DIR ${pcl_deps_install_dir}/pcl-${PCL_BUILD_TARGET}/share/pcl-1.6)
 
-find_package(PCL REQUIRED)
+find_package(PCL)
+if (NOT PCL_FOUND)
+  # Some target architectures don't have PCL (iOS simulator)
+  # Ignore them
+  return()
+endif()
 include_directories(${PCL_INCLUDE_DIRS})
 
 

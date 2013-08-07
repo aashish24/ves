@@ -4,6 +4,14 @@ include(ExternalProject)
 
 option(VES_USE_LIBARCHIVE "Should VES include libarchive support" OFF)
 option(VES_USE_CURL "Should VES include cURL support" OFF)
+option(VES_USE_PCL "Should VES include PCL support" OFF)
+set(PCL_SUPERBUILD_DIR "PCL_SUPERBUILD_DIR-NOTFOUND" CACHE PATH
+  "Directory containing CMakeExternals/Install with PCL and its dependencies")
+if (VES_USE_PCL)
+  mark_as_advanced(CLEAR PCL_SUPERBUILD_DIR)
+else()
+  mark_as_advanced(FORCE PCL_SUPERBUILD_DIR)
+endif()
 
 option(VES_HOST_SUPERBUILD "Build VES and dependent subprojects for host architecture" OFF)
 option(VES_ANDROID_SUPERBUILD "Build VES and dependent subprojects for Android" OFF)
@@ -250,7 +258,8 @@ macro(compile_ves proj)
   set(tag host)
   list(APPEND VES_SUPERBUILD_${tag}_OPTS
     "-DVES_USE_CURL:BOOL=${VES_USE_CURL}";
-    "-DVES_USE_LIBARCHIVE:BOOL=${VES_USE_LIBARCHIVE}"
+    "-DVES_USE_LIBARCHIVE:BOOL=${VES_USE_LIBARCHIVE}";
+    "-DVES_USE_PCL:BOOL=${VES_USE_PCL}"
     )
   if (VES_USE_CURL)
     list(APPEND VES_SUPERBUILD_${tag}_DEPS curl-${tag})
@@ -261,6 +270,12 @@ macro(compile_ves proj)
       "-DLibArchive_INCLUDE_DIR:PATH=${install_prefix}/libarchive-${tag}/include"
       )
     list(APPEND VES_SUPERBUILD_${tag}_DEPS libarchive-${tag})
+  endif()
+  if (VES_USE_PCL)
+    list(APPEND VES_SUPERBUILD_${tag}_OPTS
+      "-DPCL_SUPERBUILD_DIR:PATH=${PCL_SUPERBUILD_DIR}";
+      "-DPCL_BUILD_TARGET:STRING=${tag}"
+      )
   endif()
   ExternalProject_Add(
     ${proj}
@@ -289,6 +304,7 @@ macro(crosscompile_ves proj tag toolchain_file)
   list(APPEND VES_SUPERBUILD_${tag}_OPTS
     "-DVES_USE_CURL:BOOL=${VES_USE_CURL}";
     "-DVES_USE_LIBARCHIVE:BOOL=${VES_USE_LIBARCHIVE}"
+    "-DVES_USE_PCL:BOOL=${VES_USE_PCL}"
     )
   if (VES_USE_CURL)
     list(APPEND VES_SUPERBUILD_${tag}_OPTS
@@ -303,6 +319,12 @@ macro(crosscompile_ves proj tag toolchain_file)
       "-DLibArchive_INCLUDE_DIR:PATH=${install_prefix}/libarchive-${tag}/include"
       )
     list(APPEND VES_SUPERBUILD_${tag}_DEPS libarchive-${tag})
+  endif()
+  if (VES_USE_PCL)
+    list(APPEND VES_SUPERBUILD_${tag}_OPTS
+      "-DPCL_SUPERBUILD_DIR:PATH=${PCL_SUPERBUILD_DIR}";
+      "-DPCL_BUILD_TARGET:STRING=${tag}"
+      )
   endif()
   ExternalProject_Add(
     ${proj}
