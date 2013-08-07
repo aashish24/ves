@@ -82,7 +82,6 @@ macro(download_libarchive)
     GIT_REPOSITORY git://github.com/libarchive/libarchive.git
 #    GIT_TAG 8076b31
     GIT_TAG v3.0.4
-    PATCH_COMMAND git apply ${ves_src}/CMake/libarchive_patch.diff
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND ""
@@ -203,6 +202,8 @@ macro(compile_vtk proj)
     set(makecmd make)
     if(CMAKE_GENERATOR MATCHES "NMake Makefiles")
       set(makecmd nmake)
+    elseif(CMAKE_GENERATOR MATCHES "Ninja")
+      set(makecmd ninja)
     endif()
     set(vtk_host_build_command BUILD_COMMAND ${makecmd} vtkCompileTools)
   endif()
@@ -254,6 +255,8 @@ macro(compile_ves proj)
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
       -DBUILD_TESTING:BOOL=ON
       -DBUILD_SHARED_LIBS:BOOL=OFF
+      -DLibArchive_LIBRARY:PATH=${install_prefix}/libarchive-${tag}/lib/libarchive.a
+      -DLibArchive_INCLUDE_DIR:PATH=${install_prefix}/libarchive-${tag}/include
       -DVES_USE_VTK:BOOL=ON
       -DVES_NO_SUPERBUILD:BOOL=ON
       -DVES_USE_DESKTOP_GL:BOOL=ON
