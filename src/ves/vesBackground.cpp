@@ -131,6 +131,9 @@ public:
     fragShaderText = fragmentShaderSource;
   }
 
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
+
   vesSharedPtr<vesActor> m_backgroundActor;
   vesSharedPtr<vesMapper> m_backgroundMapper;
   vesSharedPtr<vesMaterial> m_backgroundMaterial;

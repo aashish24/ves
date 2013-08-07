@@ -20,6 +20,7 @@
  ========================================================================*/
 /// \class vesShaderProgram
 /// \ingroup ves
+/// \brief ShaderProgram class provides interface to create program object
 /// \see vesMaterialAttribute vesMaterial
 
 #ifndef VESSHADER_PROGRAM_H

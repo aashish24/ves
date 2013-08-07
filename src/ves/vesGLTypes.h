@@ -79,4 +79,14 @@ struct vesDataType
   };
 };
 
+
+struct vesBufferType
+{
+  enum Mode
+  {
+    Front = GL_FRONT,
+    Back = GL_BACK
+  };
+};
+
 #endif // VESGLTYPES_H

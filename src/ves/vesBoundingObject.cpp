@@ -22,6 +22,7 @@
 
 // C/C++ includes
 #include <limits>
+#include <algorithm>
 
 vesBoundingObject::vesBoundingObject() : vesObject(),
   m_boundsDirty(true)

@@ -24,7 +24,11 @@
 
 #include "vesSharedPtr.h"
 
-#define vesNotUsed(x) (void)x
+#ifndef _WIN32
+  #define vesNotUsed(x) (void)x
+#else
+  #define vesNotUsed(x)
+#endif
 
 #define vesTypeMacro(className) \
   typedef vesSharedPtr< className > Ptr; \

@@ -5,9 +5,6 @@ set(tests
   TestKiwiViewer
   TestNoContext
   TestPointCloud
-  TestPVRemote
-  TestPVWeb
-  TestKiwiMidas
   TestKiwiImage
   TestStreamingDataRepresentation
   TestTexture
@@ -15,8 +12,16 @@ set(tests
   TestWireframe
   )
 
+if (VES_USE_CURL)
+  list(APPEND tests
+    TestKiwiMidas
+    TestPVRemote
+    TestPVWeb
+    )
+endif()
+
 find_package(GLUT REQUIRED)
-include_directories(${GLUT_INCLUDE_DIRS})
+include_directories(${GLUT_INCLUDE_DIR})
 
 macro(ves_add_test name)
   set(deps kiwi ${GLUT_glut_LIBRARY})

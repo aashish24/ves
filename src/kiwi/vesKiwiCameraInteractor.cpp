@@ -67,7 +67,7 @@ void vesKiwiCameraInteractor::roll(double rotation)
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiCameraInteractor::rotate(vesVector2d screenTranslation)
+void vesKiwiCameraInteractor::rotate(const vesVector2d& screenTranslation)
 {
   //
   // Rotate camera
@@ -88,7 +88,7 @@ void vesKiwiCameraInteractor::rotate(vesVector2d screenTranslation)
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiCameraInteractor::pan(vesVector2d p0, vesVector2d p1)
+void vesKiwiCameraInteractor::pan(const vesVector2d& p0, const vesVector2d& p1)
 {
   // calculate the focal depth so we'll know how far to move
   vesCamera::Ptr camera = mRenderer->camera();

@@ -19,6 +19,7 @@
  ========================================================================*/
 /// \class vesBlendFunction
 /// \ingroup ves
+/// \brief Class to specify pixel arithemetic
 /// \see vesMaterial vesMaterialAttribute vesBlend
 
 #ifndef VESBLENDFUNCTION_H

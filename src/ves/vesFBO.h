@@ -19,6 +19,7 @@
  ========================================================================*/
 /// \class vesFBO
 /// \ingroup ves
+/// \brief FBO class provides interface to create frame buffer objects
 /// \see vesObject
 
 #ifndef VESFBO_H

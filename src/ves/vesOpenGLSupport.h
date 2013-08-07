@@ -22,6 +22,8 @@
 
 #include "vesSetGet.h"
 
+#include "vesGLTypes.h"
+
 // C/C++ includes
 #include <set>
 #include <string>
@@ -55,6 +57,9 @@ public:
 
   bool isSupportedIndexUnsignedInt() const;
 
+  static void readBuffer(int x, int y, int width, int height,
+                         int format, int type, void* data,
+                         int bufferType=vesBufferType::Back);
 private:
 
 

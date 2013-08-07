@@ -20,7 +20,6 @@
 
 #include "vesKiwiViewerApp.h"
 #include "vesKiwiCameraSpinner.h"
-#include "vesKiwiCurlDownloader.h"
 #include "vesKiwiDataConversionTools.h"
 #include "vesKiwiDataLoader.h"
 #include "vesKiwiDataRepresentation.h"
@@ -52,12 +51,17 @@
 #include "vesOpenGLSupport.h"
 #include "vesBuiltinShaders.h"
 
-#include "vesPVWebClient.h"
-#include "vesPVWebDataSet.h"
+#include "vesKiwiOptions.h"
+#ifdef VES_USE_CURL
+#  include "vesKiwiCurlDownloader.h"
+#  include "vesKiwiPVRemoteRepresentation.h"
+#  include "vesPVWebClient.h"
+#  include "vesPVWebDataSet.h"
+#endif
+#ifdef VES_USE_LIBARCHIVE
+#  include "vesKiwiArchiveUtils.h"
+#endif
 
-#include "vesKiwiArchiveUtils.h"
-
-#include "vesKiwiPVRemoteRepresentation.h"
 
 #include <vtkNew.h>
 #include <vtkPolyData.h>
@@ -238,15 +242,21 @@ void vesKiwiViewerApp::initGL()
 }
 
 //----------------------------------------------------------------------------
-bool vesKiwiViewerApp::checkForPVWebError(vesPVWebClient::Ptr client)
+bool vesKiwiViewerApp::checkForPVWebError(vesSharedPtr<vesPVWebClient> client)
 {
+#ifdef VES_USE_CURL
   this->setErrorMessage(client->errorTitle(), client->errorMessage());
   return !client->errorMessage().empty();
+#else
+  this->setErrorMessage("Unsupported", "ParaViewWeb requires cURL support, which was not included.");
+  return false;
+#endif
 }
 
 //----------------------------------------------------------------------------
-bool vesKiwiViewerApp::loadPVWebDataSet(vesPVWebDataSet::Ptr dataset)
+bool vesKiwiViewerApp::loadPVWebDataSet(vesSharedPtr<vesPVWebDataSet> dataset)
 {
+#ifdef VES_USE_CURL
   if (!dataset)
     return false;
 
@@ -278,22 +288,30 @@ bool vesKiwiViewerApp::loadPVWebDataSet(vesPVWebDataSet::Ptr dataset)
   rep->addSelfToRenderer(this->renderer());
   this->addManagedDataRepresentation(rep);
   return true;
+#else
+  return false;
+#endif // VES_USE_CURL
 }
 
 //----------------------------------------------------------------------------
 bool vesKiwiViewerApp::loadPVWebDataSet(const std::string& filename)
 {
+#ifdef VES_USE_CURL
   vesPVWebDataSet::Ptr dataset = vesPVWebDataSet::loadDataSetFromFile(filename);
   if (!dataset) {
     return false;
   }
 
   return this->loadPVWebDataSet(dataset);
+#else
+  return false;
+#endif // VES_USE_CURL
 }
 
 //----------------------------------------------------------------------------
 bool vesKiwiViewerApp::doPVWebTest(const std::string& host, const std::string& sessionId)
 {
+#ifdef VES_USE_CURL
   this->resetScene();
 
   vesPVWebClient::Ptr client(new vesPVWebClient);
@@ -347,20 +365,26 @@ bool vesKiwiViewerApp::doPVWebTest(const std::string& host, const std::string& s
   this->resetView();
 
   return true;
+#else
+  return false;
+#endif // VES_USE_CURL
 }
 
 //----------------------------------------------------------------------------
-vesKiwiPVRemoteRepresentation::Ptr vesKiwiViewerApp::pvRemoteRep()
+vesSharedPtr<vesKiwiPVRemoteRepresentation> vesKiwiViewerApp::pvRemoteRep()
 {
+#ifdef VES_USE_CURL
   if (this->Internal->DataRepresentations.size()) {
     return dynamic_pointer_cast<vesKiwiPVRemoteRepresentation>(this->Internal->DataRepresentations[0]);
   }
-  return vesKiwiPVRemoteRepresentation::Ptr();
+#endif // VES_USE_CURL
+  return vesSharedPtr<vesKiwiPVRemoteRepresentation>();
 }
 
 //----------------------------------------------------------------------------
 bool vesKiwiViewerApp::doPVRemote(const std::string& host, int port)
 {
+#ifdef VES_USE_CURL
   this->resetScene();
 
   vesKiwiPVRemoteRepresentation::Ptr rep = vesKiwiPVRemoteRepresentation::Ptr(new vesKiwiPVRemoteRepresentation);
@@ -381,11 +405,15 @@ bool vesKiwiViewerApp::doPVRemote(const std::string& host, int port)
   this->resetView();
 
   return true;
+#else
+  return false;
+#endif // VES_USE_CURL
 }
 
 //----------------------------------------------------------------------------
 std::string vesKiwiViewerApp::downloadFile(const std::string& url, const std::string& downloadDir)
 {
+#ifdef VES_USE_CURL
   vesKiwiCurlDownloader downloader;
   std::string result = downloader.downloadUrlToDirectory(url, downloadDir);
   if (!result.size()) {
@@ -393,6 +421,10 @@ std::string vesKiwiViewerApp::downloadFile(const std::string& url, const std::st
   }
 
   return result;
+#else
+  this->setErrorMessage("Unsupported", "Kiwi was not built with cURL support.");
+  return this->Internal->ErrorMessage;
+#endif // VES_USE_CURL
 }
 
 //----------------------------------------------------------------------------
@@ -1003,6 +1035,7 @@ bool vesKiwiViewerApp::loadArchive(const std::string& archiveFile)
 {
   std::string baseDir = vtksys::SystemTools::GetFilenamePath(archiveFile);
 
+#ifdef VES_USE_LIBARCHIVE
   vesKiwiArchiveUtils archiveLoader;
 
   bool result = archiveLoader.extractArchive(archiveFile, baseDir);
@@ -1029,6 +1062,9 @@ bool vesKiwiViewerApp::loadArchive(const std::string& archiveFile)
       this->loadDataset(entries[i]);
     }
   }
+#else
+  this->setErrorMessage("Unsupported", "Kiwi not built with libarchive support.");
+#endif // VES_USE_LIBARCHIVE
 
   return this->Internal->ErrorMessage.empty();
 }

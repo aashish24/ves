@@ -59,6 +59,8 @@ public:
 
   void resetBounds();
 
+  EIGEN_MAKE_ALIGNED_OPERATOR_NEW
+
 protected:
   bool m_boundsDirty;
 
