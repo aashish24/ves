@@ -29,7 +29,6 @@
 #include "vesBackground.h"
 #include "vesTexture.h"
 #include "vesKiwiColorMapCollection.h"
-#include "vesKiwiCurlDownloader.h"
 #include "vesKiwiDataLoader.h"
 #include "vesKiwiDataConversionTools.h"
 #include "vesKiwiText2DRepresentation.h"
@@ -38,6 +37,11 @@
 #include "vesKiwiImageWidgetRepresentation.h"
 #include "vesKiwiImagePlaneDataRepresentation.h"
 #include "vesEigen.h"
+
+#include "vesKiwiOptions.h"
+#ifdef VES_USE_CURL
+#  include "vesKiwiCurlDownloader.h"
+#endif
 
 #include <vtkNew.h>
 #include <vtkBoundingBox.h>
@@ -449,11 +453,15 @@ public:
     filename = this->BaseDir + "/" + filename;
 
     if (!url.empty() && !vtksys::SystemTools::FileExists(filename.c_str(), true)) {
+#ifdef VES_USE_CURL
       vesKiwiCurlDownloader downloader;
       if (!downloader.downloadUrlToFile(url, filename)) {
         this->setError(downloader.errorTitle(), downloader.errorMessage());
         return false;
       }
+#else
+      return false;
+#endif // VES_USE_CURL
     }
 
     vesKiwiDataRepresentation::Ptr rep = this->loadDataset(filename, objectJson);

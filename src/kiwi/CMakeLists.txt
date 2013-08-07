@@ -3,7 +3,6 @@ include(${VTK_USE_FILE})
 
 set(sources
   cJSON.c
-  vesKiwiArchiveUtils.cpp
   vesKiwiAnimationRepresentation.cpp
   vesKiwiBaseApp.cpp
   vesKiwiBaselineImageTester.cpp
@@ -11,7 +10,6 @@ set(sources
   vesKiwiCameraSpinner.cpp
   vesKiwiCameraInteractor.cpp
   vesKiwiColorMapCollection.cpp
-  vesKiwiCurlDownloader.cpp
   vesKiwiDataConversionTools.cpp
   vesKiwiDataLoader.cpp
   vesKiwiDataRepresentation.cpp
@@ -25,12 +23,6 @@ set(sources
   vesKiwiViewerApp.cpp
   vesKiwiWidgetInteractionDelegate.cpp
   vesKiwiWidgetRepresentation.cpp
-
-
-  vesMidasClient.cpp
-  vesKiwiPVRemoteRepresentation.cpp
-  vesPVWebClient.cpp
-  vesPVWebDataSet.cpp
   )
 
 set(deps
@@ -50,18 +42,28 @@ set(deps
   vtkRenderingFreeType
   )
 
-set(VES_USE_CURL TRUE)
+option(VES_USE_CURL "Build VES with cURL support?" ON)
 if(VES_USE_CURL)
   find_package(CURL REQUIRED)
   include_directories(${CURL_INCLUDE_DIRS})
   list(APPEND deps ${CURL_LIBRARIES})
+  list(APPEND sources
+    vesKiwiCurlDownloader.cpp
+    vesKiwiPVRemoteRepresentation.cpp
+    vesPVWebClient.cpp
+    vesPVWebDataSet.cpp
+    vesMidasClient.cpp
+    )
 endif()
 
-set(VES_USE_LIBARCHIVE TRUE)
+option(VES_USE_LIBARCHIVE "Build VES with libarchive support?" ON)
 if(VES_USE_LIBARCHIVE)
   find_package(LibArchive REQUIRED)
   include_directories(${LibArchive_INCLUDE_DIRS})
   list(APPEND deps ${LibArchive_LIBRARIES})
+  list(APPEND sources
+    vesKiwiArchiveUtils.cpp
+    )
 endif()
 
 option(VES_USE_PCL "Build kiwi with PCL support" OFF)
@@ -76,6 +78,13 @@ file(GLOB headers *.h)
 # Configure version file
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/vesKiwiVersion.h.in
   ${CMAKE_CURRENT_BINARY_DIR}/vesKiwiVersion.h @ONLY)
+
+# Configure options file
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/vesKiwiOptions.h.in
+  ${CMAKE_CURRENT_BINARY_DIR}/vesKiwiOptions.h)
+
+# ... now add the location of the configured files to the build
+include_directories(${CMAKE_CURRENT_BINARY_DIR})
 
 ves_add_library(kiwi "${sources};${headers}" "${deps}")
 

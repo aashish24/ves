@@ -24,7 +24,11 @@
 #include "vesImage.h"
 #include "vesTexture.h"
 #include "vesMath.h"
-#include "vesPVWebDataSet.h"
+
+#include "vesKiwiOptions.h"
+#ifdef VES_USE_CURL
+#  include "vesPVWebDataSet.h"
+#endif // VES_USE_CURL
 
 #include "vtkCellArray.h"
 #include "vtkDiscretizableColorTransferFunction.h"
@@ -674,6 +678,7 @@ vesSharedPtr<vesGeometryData> vesKiwiDataConversionTools::ConvertPVWebData(vesSh
   vesSharedPtr<vesGeometryData> geometryData = vesSharedPtr<vesGeometryData>(new vesGeometryData);
   geometryData->setName("PolyData");
 
+#ifdef VES_USE_CURL
   const int numberOfVerts = dataset->m_numberOfVerts;
 
 
@@ -776,6 +781,7 @@ vesSharedPtr<vesGeometryData> vesKiwiDataConversionTools::ConvertPVWebData(vesSh
     }
 
   geometryData->addSource(colorSourceData);
+#endif // VES_USE_CURL
   return geometryData;
 }
 

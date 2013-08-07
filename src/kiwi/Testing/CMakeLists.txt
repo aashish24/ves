@@ -5,15 +5,20 @@ set(tests
   TestKiwiViewer
   TestNoContext
   TestPointCloud
-  TestPVRemote
-  TestPVWeb
-  TestKiwiMidas
   TestKiwiImage
   TestStreamingDataRepresentation
   TestTexture
   TestTexturedBackground
   TestWireframe
   )
+
+if (VES_USE_CURL)
+  list(APPEND tests
+    TestKiwiMidas
+    TestPVRemote
+    TestPVWeb
+    )
+endif()
 
 find_package(GLUT REQUIRED)
 include_directories(${GLUT_INCLUDE_DIR})

@@ -2,6 +2,9 @@ project(VES_SUPERBUILD NONE)
 
 include(ExternalProject)
 
+option(VES_USE_LIBARCHIVE "Should VES include libarchive support" OFF)
+option(VES_USE_CURL "Should VES include cURL support" OFF)
+
 option(VES_HOST_SUPERBUILD "Build VES and dependent subprojects for host architecture" OFF)
 option(VES_ANDROID_SUPERBUILD "Build VES and dependent subprojects for Android" OFF)
 option(VES_IOS_SUPERBUILD "Build VES and dependent subprojects for iOS" OFF)
@@ -245,18 +248,31 @@ endmacro()
 
 macro(compile_ves proj)
   set(tag host)
+  list(APPEND VES_SUPERBUILD_${tag}_OPTS
+    "-DVES_USE_CURL:BOOL=${VES_USE_CURL}";
+    "-DVES_USE_LIBARCHIVE:BOOL=${VES_USE_LIBARCHIVE}"
+    )
+  if (VES_USE_CURL)
+    list(APPEND VES_SUPERBUILD_${tag}_DEPS curl-${tag})
+  endif()
+  if (VES_USE_LIBARCHIVE)
+    list(APPEND VES_SUPERBUILD_${tag}_OPTS
+      "-DLibArchive_LIBRARY:PATH=${install_prefix}/libarchive-${tag}/lib/libarchive.a";
+      "-DLibArchive_INCLUDE_DIR:PATH=${install_prefix}/libarchive-${tag}/include"
+      )
+    list(APPEND VES_SUPERBUILD_${tag}_DEPS libarchive-${tag})
+  endif()
   ExternalProject_Add(
     ${proj}
     SOURCE_DIR ${ves_src}
     DOWNLOAD_COMMAND ""
-    DEPENDS vtk-${tag} eigen curl-${tag} libarchive-${tag}
+    DEPENDS vtk-${tag} eigen ${VES_SUPERBUILD_${tag}_DEPS}
     CMAKE_ARGS
       -DCMAKE_INSTALL_PREFIX:PATH=${install_prefix}/${proj}
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
       -DBUILD_TESTING:BOOL=ON
       -DBUILD_SHARED_LIBS:BOOL=OFF
-      -DLibArchive_LIBRARY:PATH=${install_prefix}/libarchive-${tag}/lib/libarchive.a
-      -DLibArchive_INCLUDE_DIR:PATH=${install_prefix}/libarchive-${tag}/include
+      ${VES_SUPERBUILD_${tag}_OPTS}
       -DVES_USE_VTK:BOOL=ON
       -DVES_NO_SUPERBUILD:BOOL=ON
       -DVES_USE_DESKTOP_GL:BOOL=ON
@@ -270,11 +286,29 @@ endmacro()
 
 
 macro(crosscompile_ves proj tag toolchain_file)
+  list(APPEND VES_SUPERBUILD_${tag}_OPTS
+    "-DVES_USE_CURL:BOOL=${VES_USE_CURL}";
+    "-DVES_USE_LIBARCHIVE:BOOL=${VES_USE_LIBARCHIVE}"
+    )
+  if (VES_USE_CURL)
+    list(APPEND VES_SUPERBUILD_${tag}_OPTS
+      "-DCURL_INCLUDE_DIR:PATH=${install_prefix}/curl-${tag}/include";
+      "-DCURL_LIBRARY:PATH=${install_prefix}/curl-${tag}/lib/libcurl.a"
+      )
+    list(APPEND VES_SUPERBUILD_${tag}_DEPS curl-${tag})
+  endif()
+  if (VES_USE_LIBARCHIVE)
+    list(APPEND VES_SUPERBUILD_${tag}_OPTS
+      "-DLibArchive_LIBRARY:PATH=${install_prefix}/libarchive-${tag}/lib/libarchive.a";
+      "-DLibArchive_INCLUDE_DIR:PATH=${install_prefix}/libarchive-${tag}/include"
+      )
+    list(APPEND VES_SUPERBUILD_${tag}_DEPS libarchive-${tag})
+  endif()
   ExternalProject_Add(
     ${proj}
     SOURCE_DIR ${ves_src}
     DOWNLOAD_COMMAND ""
-    DEPENDS vtk-${tag} eigen curl-${tag} libarchive-${tag}
+    DEPENDS vtk-${tag} eigen ${VES_SUPERBUILD_${tag}_DEPS}
     CMAKE_ARGS
       -DCMAKE_INSTALL_PREFIX:PATH=${install_prefix}/${proj}
       -DCMAKE_BUILD_TYPE:STRING=${build_type}
@@ -284,10 +318,7 @@ macro(crosscompile_ves proj tag toolchain_file)
       -DVES_USE_VTK:BOOL=ON
       -DVES_NO_SUPERBUILD:BOOL=ON
       -DVTK_DIR:PATH=${build_prefix}/vtk-${tag}
-      -DCURL_INCLUDE_DIR:PATH=${install_prefix}/curl-${tag}/include
-      -DCURL_LIBRARY:PATH=${install_prefix}/curl-${tag}/lib/libcurl.a
-      -DLibArchive_LIBRARY:PATH=${install_prefix}/libarchive-${tag}/lib/libarchive.a
-      -DLibArchive_INCLUDE_DIR:PATH=${install_prefix}/libarchive-${tag}/include
+      ${VES_SUPERBUILD_${tag}_OPTS}
       -DEIGEN_INCLUDE_DIR:PATH=${install_prefix}/eigen
       -DPYTHON_EXECUTABLE:FILEPATH=${PYTHON_EXECUTABLE}
   )
@@ -297,29 +328,45 @@ endmacro()
 
 
 install_eigen()
-download_curl()
-download_libarchive()
+if (VES_USE_CURL)
+  download_curl()
+endif()
+if (VES_USE_LIBARCHIVE)
+  download_libarchive()
+endif()
 compile_vtk(vtk-host)
 
 if(VES_IOS_SUPERBUILD)
   foreach(target ios-simulator ios-device)
-    crosscompile_curl(curl-${target} toolchain-${target}.cmake)
-    crosscompile_libarchive(libarchive-${target} toolchain-${target}.cmake)
+    if (VES_USE_CURL)
+      crosscompile_curl(curl-${target} toolchain-${target}.cmake)
+    endif()
+    if (VES_USE_LIBARCHIVE)
+      crosscompile_libarchive(libarchive-${target} toolchain-${target}.cmake)
+    endif()
     crosscompile_vtk(vtk-${target} toolchain-${target}.cmake)
     crosscompile_ves(ves-${target} ${target} toolchain-${target}.cmake)
   endforeach()
 endif()
 
 if(VES_ANDROID_SUPERBUILD)
-  crosscompile_curl(curl-android android.toolchain.cmake)
-  crosscompile_libarchive(libarchive-android android.toolchain.cmake)
+  if (VES_USE_CURL)
+    crosscompile_curl(curl-${target} toolchain-${target}.cmake)
+  endif()
+  if (VES_USE_LIBARCHIVE)
+    crosscompile_libarchive(libarchive-android android.toolchain.cmake)
+  endif()
   crosscompile_vtk(vtk-android android.toolchain.cmake)
   crosscompile_ves(ves-android android android.toolchain.cmake)
 endif()
 
 if(VES_HOST_SUPERBUILD)
-  compile_curl(host)
-  compile_libarchive(host)
+  if (VES_USE_CURL)
+    compile_curl(host)
+  endif()
+  if (VES_USE_LIBARCHIVE)
+    compile_libarchive(host)
+  endif()
   compile_ves(ves-host)
 endif()
 

@@ -1,0 +1,8 @@
+#ifndef __vesKiwiOptions_h
+#define __vesKiwiOptions_h
+
+#cmakedefine VES_USE_CURL
+#cmakedefine VES_USE_LIBARCHIVE
+#cmakedefine VES_USE_PCL
+
+#endif // __vesKiwiOptions_h
