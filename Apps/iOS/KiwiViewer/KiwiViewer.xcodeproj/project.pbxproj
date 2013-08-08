@@ -52,7 +52,6 @@
 		437239E616179F7600F99013 /* kiwiCloudApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 437239E416179F7600F99013 /* kiwiCloudApp.cpp */; };
 		4388BE28161E95AB00913505 /* DocumentsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4388BE27161E95AB00913505 /* DocumentsTableViewController.m */; };
 		438DFFA716228CFE000AAE07 /* MyTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 438DFFA616228CFE000AAE07 /* MyTabBarController.m */; };
-		4390E14D16A1762700B5C2A2 /* pcl.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4390E14C16A1762700B5C2A2 /* pcl.framework */; };
 		43A08E9116254287002B8B99 /* SettingsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 43A08E9016254287002B8B99 /* SettingsTableViewController.m */; };
 		43A2AC941697AF8100FAC622 /* delete_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 43A2AC931697AF8100FAC622 /* delete_icon.png */; };
 		43BCD8C81627BCC800C3D85F /* DefaultSettings.plist in Resources */ = {isa = PBXBuildFile; fileRef = 43BCD8C71627BCC800C3D85F /* DefaultSettings.plist */; };
@@ -218,7 +217,6 @@
 				43FA4ECA1617749C000FB153 /* UIKit.framework in Frameworks */,
 				43FA4ECC1617749C000FB153 /* Foundation.framework in Frameworks */,
 				43FA4ECE1617749C000FB153 /* CoreGraphics.framework in Frameworks */,
-				4390E14D16A1762700B5C2A2 /* pcl.framework in Frameworks */,
 				4348B39616A5645B008D0A6B /* DropboxSDK.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
