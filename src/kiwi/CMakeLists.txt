@@ -58,9 +58,23 @@ endif()
 
 option(VES_USE_LIBARCHIVE "Build VES with libarchive support?" ON)
 if(VES_USE_LIBARCHIVE)
-  find_package(LibArchive REQUIRED)
+  # If we are given LibArchive_DIR, assume we are building as part
+  # of a VES superbuild (see ../../CMake/ves-superbuild.cmake) and
+  # should use the LibArchiveConfig.cmake file provided rather than
+  # CMake's FindLibArchive.cmake script, which does not provide
+  # transitive link libraries for the static libarchive library.
+  if (LibArchive_DIR)
+    set(_fparg "NO_MODULE")
+  else()
+    set(_fparg "")
+  endif()
+  find_package(LibArchive REQUIRED ${_fparg})
   include_directories(${LibArchive_INCLUDE_DIRS})
-  list(APPEND deps ${LibArchive_LIBRARIES})
+  if (LibArchive_DIR)
+    list(APPEND deps archive_static)
+  else()
+    list(APPEND deps ${LibArchive_LIBRARIES})
+  endif()
   list(APPEND sources
     vesKiwiArchiveUtils.cpp
     )

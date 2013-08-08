@@ -93,6 +93,7 @@ macro(download_libarchive)
     GIT_REPOSITORY git://github.com/libarchive/libarchive.git
 #    GIT_TAG 8076b31
     GIT_TAG v3.0.4
+    PATCH_COMMAND git apply ${ves_src}/CMake/libarchive.patch
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND ""
@@ -266,8 +267,7 @@ macro(compile_ves proj)
   endif()
   if (VES_USE_LIBARCHIVE)
     list(APPEND VES_SUPERBUILD_${tag}_OPTS
-      "-DLibArchive_LIBRARY:PATH=${install_prefix}/libarchive-${tag}/lib/libarchive.a";
-      "-DLibArchive_INCLUDE_DIR:PATH=${install_prefix}/libarchive-${tag}/include"
+      "-DLibArchive_DIR:PATH=${install_prefix}/libarchive-${tag}/lib/LibArchive/cmake";
       )
     list(APPEND VES_SUPERBUILD_${tag}_DEPS libarchive-${tag})
   endif()
@@ -315,8 +315,7 @@ macro(crosscompile_ves proj tag toolchain_file)
   endif()
   if (VES_USE_LIBARCHIVE)
     list(APPEND VES_SUPERBUILD_${tag}_OPTS
-      "-DLibArchive_LIBRARY:PATH=${install_prefix}/libarchive-${tag}/lib/libarchive.a";
-      "-DLibArchive_INCLUDE_DIR:PATH=${install_prefix}/libarchive-${tag}/include"
+      "-DLibArchive_DIR:PATH=${install_prefix}/libarchive-${tag}/lib/LibArchive/cmake";
       )
     list(APPEND VES_SUPERBUILD_${tag}_DEPS libarchive-${tag})
   endif()
