@@ -39,7 +39,6 @@
 #include <cassert>
 #include <fstream>
 
-#define USE_PCL 1
 #if USE_PCL
   #include <vtkPCDReader.h>
 #endif

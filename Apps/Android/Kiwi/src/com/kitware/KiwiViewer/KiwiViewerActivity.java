@@ -278,27 +278,25 @@ public class KiwiViewerActivity extends Activity {
     protected void initBuiltinDatasetNames() {
 
       if (mBuiltinDatasetNames == null) {
-          //int numberOfDatasets = KiwiNative.getNumberOfBuiltinDatasets();
           mBuiltinDatasetNames = new ArrayList<String>();
-          //for(int i = 0; i < numberOfDatasets; ++i) {
-          //  mBuiltinDatasetNames.add(KiwiNative.getDatasetName(i));
-          //}
-
-          mBuiltinDatasetNames.add("Can Simulation.zip");
-          mBuiltinDatasetNames.add("Kinect Point Cloud.pcd");
-          mBuiltinDatasetNames.add("Molecule PDB-7WGA.pdb");
-          mBuiltinDatasetNames.add("NA-MIC Knee Atlas.vtp");
-          mBuiltinDatasetNames.add("NASA Blue Marble.zip");
-          mBuiltinDatasetNames.add("NLM Visible Human Project.vti");
-          mBuiltinDatasetNames.add("PHASTA Blood Flow Sim.zip");
-          mBuiltinDatasetNames.add("SPL-PNL Brain Atlas.zip");
-          mBuiltinDatasetNames.add("Velodyne Lidar.zip");
+          mBuiltinDatasetNames.add("teapot.vtp");
+          mBuiltinDatasetNames.add("bunny.vtp");
+          mBuiltinDatasetNames.add("visible-woman-hand.vtp");
+          mBuiltinDatasetNames.add("AppendedKneeData.vtp");
+          mBuiltinDatasetNames.add("cturtle.vtp");
+          mBuiltinDatasetNames.add("MountStHelen.vtp");
+          mBuiltinDatasetNames.add("shuttle.vtp");
+          //http://visibleearth.nasa.gov/view.php?id=57730
+          mBuiltinDatasetNames.add("nasa-blue-marble.kiwi");
+          mBuiltinDatasetNames.add("Buckyball.vtp");
+          mBuiltinDatasetNames.add("caffeine.pdb");
+          mBuiltinDatasetNames.add("head.vti");
+          mBuiltinDatasetNames.add("kiwi.png");
 
           mBuiltinDatasetNames.add(getString(R.string.pvremote_text));
           mBuiltinDatasetNames.add(getString(R.string.pvweb_text));
           mBuiltinDatasetNames.add(getString(R.string.pointcloudstreaming_text));
           mBuiltinDatasetNames.add(getString(R.string.download_file_text));
-          //mBuiltinDatasetNames.add(getString(R.string.midas_text));
       }
     }
 
