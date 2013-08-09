@@ -304,7 +304,7 @@ public class KiwiViewerActivity extends Activity {
 
       if (getIntent().getData() == null) {
         String storageDir = getExternalFilesDir(null).getAbsolutePath();
-        //mView.postLoadDefaultDataset(this, storageDir);
+        mView.postLoadDefaultDataset(this, storageDir);
       }
       else {
         KiwiNative.clearExistingDataset();
