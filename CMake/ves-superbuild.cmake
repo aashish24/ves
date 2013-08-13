@@ -20,6 +20,8 @@ set(build_type ${CMAKE_BUILD_TYPE})
 set(source_prefix ${base}/Source)
 set(build_prefix ${base}/Build)
 set(install_prefix ${base}/Install)
+set(download_prefix ${base}/Downloads CACHE PATH "Download directory for
+  external projects sources")
 
 set(toolchain_dir "${CMAKE_CURRENT_SOURCE_DIR}/CMake/toolchains")
 set(ves_src "${CMAKE_CURRENT_SOURCE_DIR}")
@@ -72,8 +74,9 @@ macro(compile_vtk proj)
   ExternalProject_Add(
     ${proj}
     SOURCE_DIR ${source_prefix}/vtk
-    GIT_REPOSITORY git://github.com/aashish24/VTK.git
-    GIT_TAG 8e4e14e822d8
+    URL http://www.vtk.org/files/release/6.0/vtk-6.0.0.tar.gz
+    URL_MD5 72ede4812c90bdc55172702f0cad02bb
+    DOWNLOAD_DIR ${download_prefix}
     INSTALL_COMMAND ""
     CMAKE_ARGS
       -DCMAKE_INSTALL_PREFIX:PATH=${install_prefix}/${proj}
@@ -108,6 +111,7 @@ macro(crosscompile_vtk proj toolchain_file)
   ExternalProject_Add(
     ${proj}
     SOURCE_DIR ${base}/Source/vtk
+    DOWNLOAD_DIR ${download_prefix}
     DOWNLOAD_COMMAND ""
     INSTALL_COMMAND ""
     DEPENDS vtk-host
