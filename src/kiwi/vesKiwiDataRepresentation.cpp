@@ -19,14 +19,33 @@
  ========================================================================*/
 
 #include "vesKiwiDataRepresentation.h"
+#include "vesKiwiColorMapCollection.h"
 #include "vesActor.h"
 
 #include <vtkTransform.h>
 
 //----------------------------------------------------------------------------
+vesKiwiDataRepresentation::vesKiwiDataRepresentation() : mColorMapCollection(new vesKiwiColorMapCollection)
+{
+
+}
+
+//----------------------------------------------------------------------------
 void vesKiwiDataRepresentation::willRender(vesSharedPtr<vesRenderer> renderer)
 {
   vesNotUsed(renderer);
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiDataRepresentation::setColorMapCollection(vesSharedPtr<vesKiwiColorMapCollection> collection)
+{
+  this->mColorMapCollection = collection;
+}
+
+//----------------------------------------------------------------------------
+vesSharedPtr<vesKiwiColorMapCollection> vesKiwiDataRepresentation::colorMapCollection() const
+{
+  return this->mColorMapCollection;
 }
 
 //----------------------------------------------------------------------------

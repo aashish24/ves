@@ -347,7 +347,7 @@ bool vesKiwiPlaneWidget::handleSingleTouchTap(int displayX, int displayY)
   displayY = ren->height() - displayY;
 
   int cornerSize = 80;
-  if (displayX < cornerSize && (ren->height() - displayY) < cornerSize) {
+  if (false && displayX < cornerSize && (ren->height() - displayY) < cornerSize) {
 
     this->Internal->WidgetVisibility = !this->Internal->WidgetVisibility;
     if (this->Internal->WidgetVisibility) {
@@ -358,6 +358,35 @@ bool vesKiwiPlaneWidget::handleSingleTouchTap(int displayX, int displayY)
       this->Internal->PlaneRep->removeSelfFromRenderer(ren);
       this->Internal->NormalRep->removeSelfFromRenderer(ren);
     }
+    return true;
+  }
+
+  return false;
+}
+
+//----------------------------------------------------------------------------
+std::vector<std::string> vesKiwiPlaneWidget::actions() const
+{
+  std::string action = this->Internal->WidgetVisibility ? "Hide Clip Plane" : "Show Clip Plane";
+  std::vector<std::string> actions;
+  actions.push_back(action);
+  return actions;
+}
+
+//----------------------------------------------------------------------------
+bool vesKiwiPlaneWidget::handleAction(const std::string& action)
+{
+  vesSharedPtr<vesRenderer> ren = this->renderer();
+  if (action == "Show Clip Plane" && !this->Internal->WidgetVisibility) {
+    this->Internal->WidgetVisibility = true;
+    this->Internal->PlaneRep->addSelfToRenderer(ren);
+    this->Internal->NormalRep->addSelfToRenderer(ren);
+    return true;
+  }
+  else if (action == "Hide Clip Plane" && this->Internal->WidgetVisibility) {
+    this->Internal->WidgetVisibility = false;
+    this->Internal->PlaneRep->removeSelfFromRenderer(ren);
+    this->Internal->NormalRep->removeSelfFromRenderer(ren);
     return true;
   }
 

@@ -15,6 +15,8 @@ set(shaders
   vesTestTexture_vert.glsl
   vesToonShader_frag.glsl
   vesToonShader_vert.glsl
+  vesWireframeShader_frag.glsl
+  vesWireframeShader_vert.glsl
   )
 
 find_package(PythonInterp REQUIRED)

@@ -24,8 +24,9 @@
 
 #include "vesKiwiDataRepresentation.h"
 
-// VES includes
-#include <vesSharedPtr.h>
+
+#include <vtkSmartPointer.h>
+#include <vector>
 
 class vesGeometryData;
 class vesActor;
@@ -38,6 +39,7 @@ class vtkPolyData;
 class vtkScalarsToColors;
 class vtkDataArray;
 
+
 class vesKiwiPolyDataRepresentation : public vesKiwiDataRepresentation
 {
 public:
@@ -49,7 +51,7 @@ public:
 
   void initializeWithShader(vesSharedPtr<vesShaderProgram> shaderProgram);
 
-  void setPolyData(vtkPolyData* polyData, vtkScalarsToColors* scalarsToColors=NULL);
+  void setPolyData(vtkPolyData* polyData);
 
   void addTextureCoordinates(vtkDataArray* textureCoordinates);
 
@@ -60,6 +62,15 @@ public:
 
   void setColor(double r, double g, double b, double a);
   vesVector4f color();
+
+  double opacity() const;
+  void setOpacity(double opacity);
+
+  int pointSize() const;
+  void setPointSize(int size);
+
+  int lineWidth() const;
+  void setLineWidth(int width);
 
   void setTexture(vesSharedPtr<vesTexture> texture);
   vesSharedPtr<vesTexture> texture() const;
@@ -77,6 +88,43 @@ public:
   // not have to access.
   vesSharedPtr<vesMapper> mapper() const;
   vesSharedPtr<vesActor> actor() const;
+
+  void colorByDefault();
+  void colorByTexture();
+  void colorByRGBArray();
+  void colorBySolidColor();
+  void colorByScalars();
+  void colorByScalars(const std::string& arrayName);
+  //void colorByScalars(vtkDataArray* scalars, vtkScalarsToColors* scalarsToColors);
+  //void colorByTexture(vtkDataArray* tcoords);
+  void convertVertexArrays(vtkPolyData* polyData);
+
+  void pointsOn();
+  void surfaceOn();
+  void wireframeOn();
+  void surfaceWithEdgesOn();
+  void setSurfaceShader(vesSharedPtr<vesShaderProgram> shader);
+  void setWireframeShader(vesSharedPtr<vesShaderProgram> shader);
+  void setSurfaceWithEdgesShader(vesSharedPtr<vesShaderProgram> shader);
+  void setTextureSurfaceShader(vesSharedPtr<vesShaderProgram> shader);
+  int geometryMode() const;
+
+  std::vector<std::string> colorModes();
+  void setColorMode(const std::string& colorMode);
+  std::string colorMode() const;
+
+  enum
+  {
+    SURFACE_MODE = 0,
+    SURFACE_WITH_EDGES_MODE,
+    WIREFRAME_MODE,
+    POINTS_MODE
+  };
+
+  const std::string& name() const;
+  void setName(const std::string& name);
+
+  void assignColorsInternal();
 
 protected:
 

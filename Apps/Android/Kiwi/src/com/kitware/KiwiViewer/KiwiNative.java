@@ -53,6 +53,11 @@ public class KiwiNative {
      public static native synchronized String getLoadDatasetErrorTitle();
      public static native synchronized String getLoadDatasetErrorMessage();
 
+     public static native synchronized boolean doPVWeb(String host, String sessionId);
+     public static native synchronized boolean doPVRemote(String host, int port);
+     public static native synchronized boolean doPointCloudStreaming(String host, int port);
+     public static native synchronized boolean downloadAndOpenFile(String url, String downloadDir);
+
      public static native synchronized int getNumberOfTriangles();
      public static native synchronized int getNumberOfLines();
      public static native synchronized int getNumberOfVertices();

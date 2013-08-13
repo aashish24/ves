@@ -32,6 +32,8 @@ class vesKiwiPlaneWidget : public vesKiwiWidgetRepresentation
 {
 public:
 
+  vesTypeMacro(vesKiwiPlaneWidget);
+
   typedef vesKiwiWidgetRepresentation Superclass;
   vesKiwiPlaneWidget();
   ~vesKiwiPlaneWidget();
@@ -50,6 +52,9 @@ public:
   virtual bool handleSingleTouchDown(int displayX, int displayY);
   virtual bool handleSingleTouchPanGesture(double deltaX, double deltaY);
   virtual bool handleSingleTouchUp();
+
+  virtual std::vector<std::string> actions() const;
+  virtual bool handleAction(const std::string& action);
 
   vtkTransform* widgetTransform();
   void onTransformModified();

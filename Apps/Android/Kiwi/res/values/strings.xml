@@ -8,6 +8,12 @@
     <string name="copyright_text">\u00A9 2011 <a href='http://www.kitware.com'>Kitware, Inc.</a></string>
     <string name="license_link"><a href='http://kiwiviewer.org/kiwiviewer/project/parti.html'>Acknowledgements</a></string>
 
+    <string name="pvremote_text">ParaView mobile remote control</string>
+    <string name="pvweb_text">ParaViewWeb</string>
+    <string name="pointcloudstreaming_text">Point Cloud Streaming</string>
+    <string name="midas_text">...more data from Midas</string>
+    <string name="download_file_text">Open URL</string>
+
     <string name="brainatlas_title">SPL-PNL Brain Atlas</string>
     <string name="brainatlas_message">
 The brain atlas is distributed under the Slicer license.  For more information please visit http://www.slicer.org/publications/item/view/1265\n\n

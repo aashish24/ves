@@ -1,0 +1,8 @@
+{
+    "objects": [
+        {
+            "filename": "textured_sphere.vtp",
+            "texture": "earth.jpg"
+        }
+    ]
+}

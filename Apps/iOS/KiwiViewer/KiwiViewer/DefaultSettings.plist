@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>UseBackgroundGradient</key>
+	<true/>
+	<key>CameraProjectionMode</key>
+	<integer>0</integer>
+	<key>GeometryMode</key>
+	<integer>0</integer>
+	<key>UnpackSampleData</key>
+	<true/>
+	<key>PVWebHost</key>
+	<string>http://paraviewweb.kitware.com</string>
+	<key>PVWebSession</key>
+	<string></string>
+	<key>DownloadURL</key>
+	<string></string>
+	<key>CameraSpinDeceleration</key>
+	<integer>100</integer>
+	<key>ClearSceneAutomatically</key>
+	<true/>
+	<key>MidasHost</key>
+	<string>http://midas3.kitware.com/midas</string>
+	<key>PVRemoteHost</key>
+	<string></string>
+	<key>EnableMultisampling</key>
+	<true/>
+	<key>Username</key>
+	<string></string>
+	<key>Password</key>
+	<string></string>
+	<key>PointSize</key>
+	<integer>1</integer>
+	<key>LineWidth</key>
+	<integer>1</integer>
+</dict>
+</plist>

@@ -43,8 +43,8 @@ public:
     this->DataRep = 0;
 
     this->renderer()->background()->setGradientColor(
-      vesVector4f(0.0f/255.0f, 0.0f/255.0f, 2.0f/255.0f, 1.0),
-      vesVector4f(55.0f/255.0f, 55.0f/255.0f, 113.0f/255.0f, 1.0));
+      vesVector3f(0.0f/255.0f, 0.0f/255.0f, 2.0f/255.0f),
+      vesVector3f(55.0f/255.0f, 55.0f/255.0f, 113.0f/255.0f));
   }
 
   ~vesGradientBackgroundApp()

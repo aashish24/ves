@@ -22,6 +22,8 @@
 #include "vesCamera.h"
 #include "vesRenderer.h"
 
+#include <cstdio>
+
 //----------------------------------------------------------------------------
 vesKiwiCameraInteractor::vesKiwiCameraInteractor()
 {
@@ -47,7 +49,13 @@ vesRenderer::Ptr vesKiwiCameraInteractor::renderer() const
 //----------------------------------------------------------------------------
 void vesKiwiCameraInteractor::dolly(double scale)
 {
-  mRenderer->camera()->dolly(scale);
+  vesCamera::Ptr camera = mRenderer->camera();
+  if (camera->parallelProjection()) {
+    camera->setParallelScale((1.0/scale)*camera->parallelScale());
+  }
+  else {
+    mRenderer->camera()->dolly(scale);
+  }
 }
 
 //----------------------------------------------------------------------------

@@ -156,6 +156,15 @@ public:
   /// touch gestures.
   vesSharedPtr<vesKiwiCameraInteractor> cameraInteractor() const;
 
+  /// This accessor is protected so that clients of this class do not use the
+  /// API of the returned object. Instead, this class should provide public methods
+  /// that wrap the API. The goal is to allow the VES API to be refactored
+  /// without breaking clients of this class (only this class breaks)
+  vesSharedPtr<vesCamera> camera() const;
+
+  /// \copydoc camera()
+  vesSharedPtr<vesRenderer> renderer() const;
+
 protected:
 
   // Subclasses may override these methods to perform actions before and after
@@ -184,14 +193,7 @@ protected:
   vesSharedPtr<vesVertexAttribute> addVertexTextureCoordinateAttribute(
     vesSharedPtr<vesShaderProgram> program, const std::string& name=std::string());
 
-  /// This accessor is protected so that clients of this class do not use the
-  /// API of the returned object. Instead, this class should provide public methods
-  /// that wrap the API. The goal is to allow the VES API to be refactored
-  /// without breaking clients of this class (only this class breaks)
-  vesSharedPtr<vesCamera> camera() const;
 
-  /// \copydoc camera()
-  vesSharedPtr<vesRenderer> renderer() const;
 
 private:
 

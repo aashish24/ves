@@ -1,0 +1,91 @@
+From 3805686cc4b460df2049a83037d54eb701b19df9 Mon Sep 17 00:00:00 2001
+From: David Thompson <david.thompson@kitware.com>
+Date: Thu, 8 Aug 2013 18:48:36 -0400
+Subject: [PATCH] Generate a CMake package config file.
+
+The config file has proper transitive link dependencies
+for `archive_static`, unlike the `FindLibArchive.cmake`
+script distributed with CMake. External projects should
+
+    FindPackage(LibArchive NO_MODULE)
+
+to prefer the config file and add "archive" or
+"archive_static" to targets that use libarchive rather than
+using ${LibArchive_LIBRARIES}.
+---
+ libarchive/CMakeLists.txt            | 34 +++++++++++++++++++++++++++++++---
+ libarchive/LibArchiveConfig.cmake.in | 10 ++++++++++
+ 2 files changed, 41 insertions(+), 3 deletions(-)
+ create mode 100644 libarchive/LibArchiveConfig.cmake.in
+
+diff --git a/libarchive/CMakeLists.txt b/libarchive/CMakeLists.txt
+index 73d9baf..df7cddc 100644
+--- a/libarchive/CMakeLists.txt
++++ b/libarchive/CMakeLists.txt
+@@ -161,17 +161,45 @@ SET_TARGET_PROPERTIES(archive PROPERTIES SOVERSION ${SOVERSION})
+ ADD_LIBRARY(archive_static STATIC ${libarchive_SOURCES} ${include_HEADERS})
+ SET_TARGET_PROPERTIES(archive_static PROPERTIES COMPILE_DEFINITIONS
+   LIBARCHIVE_STATIC)
++# The static library has transitive dependencies on ADDITIONAL_LIBS:
++TARGET_LINK_LIBRARIES(archive_static ${ADDITIONAL_LIBS})
+ # On Posix systems, libarchive.so and libarchive.a can co-exist.
+ IF(NOT WIN32 OR CYGWIN)
+   SET_TARGET_PROPERTIES(archive_static PROPERTIES OUTPUT_NAME archive)
+ ENDIF(NOT WIN32 OR CYGWIN)
+
+ # How to install the libraries
++INCLUDE(CMakePackageConfigHelpers) # Handle install-time relocations
++SET(INCLUDE_INSTALL_DIR include/ )
++SET(LIBRARY_INSTALL_DIR lib/ )
++SET(BINARY_INSTALL_DIR bin/ )
+ INSTALL(TARGETS archive archive_static
+-        RUNTIME DESTINATION bin
+-        LIBRARY DESTINATION lib
+-        ARCHIVE DESTINATION lib)
++  EXPORT LibArchiveTargets
++  RUNTIME DESTINATION ${BINARY_INSTALL_DIR}
++  LIBRARY DESTINATION ${LIBRARY_INSTALL_DIR}
++  ARCHIVE DESTINATION ${LIBRARY_INSTALL_DIR}
++  )
+ INSTALL_MAN(${libarchive_MANS})
+ INSTALL(FILES ${include_HEADERS} DESTINATION include)
++# Write out files external CMake projects can use to import libarchive
++# without using FindLibArchive.cmake. Projects should use
++#     FindPackage(LibArchive NO_MODULE)
++# to force the use of this config file. The config file properly handles
++# transitive dependencies for archive_static.
++CONFIGURE_PACKAGE_CONFIG_FILE(LibArchiveConfig.cmake.in
++  ${CMAKE_CURRENT_BINARY_DIR}/LibArchiveConfig.cmake
++  INSTALL_DESTINATION ${LIBRARY_INSTALL_DIR}/LibArchive/cmake
++  PATH_VARS INCLUDE_INSTALL_DIR LIBRARY_INSTALL_DIR)
++WRITE_BASIC_PACKAGE_VERSION_FILE(
++  ${CMAKE_CURRENT_BINARY_DIR}/LibArchiveConfigVersion.cmake
++  VERSION "${LIBARCHIVE_VERSION_NUMBER}"
++  COMPATIBILITY SameMajorVersion)
++INSTALL(FILES
++  ${CMAKE_CURRENT_BINARY_DIR}/LibArchiveConfig.cmake
++  ${CMAKE_CURRENT_BINARY_DIR}/LibArchiveConfigVersion.cmake
++  DESTINATION ${LIBRARY_INSTALL_DIR}/LibArchive/cmake)
++INSTALL(EXPORT LibArchiveTargets
++  DESTINATION ${LIBRARY_INSTALL_DIR}/LibArchive/cmake)
++
+
+ add_subdirectory(test)
+diff --git a/libarchive/LibArchiveConfig.cmake.in b/libarchive/LibArchiveConfig.cmake.in
+new file mode 100644
+index 0000000..9e8e59d
+--- /dev/null
++++ b/libarchive/LibArchiveConfig.cmake.in
+@@ -0,0 +1,10 @@
++set(LibArchive_VERSION ${LIBARCHIVE_VERSION_NUMBER})
++
++@PACKAGE_INIT@
++
++include("@PACKAGE_LIBRARY_INSTALL_DIR@/LibArchive/cmake/LibArchiveTargets.cmake")
++set_and_check(LibArchive_INCLUDE_DIRS "@PACKAGE_INCLUDE_INSTALL_DIR@")
++set(LibArchive_EXTRA_LIBRARIES "@ADDITIONAL_LIBS@")
++set(LibArchive_LIBRARIES "archive;${LibArchive_EXTRA_LIBRARIES}")
++
++check_required_components(LibArchive)
+--
+1.7.11.4

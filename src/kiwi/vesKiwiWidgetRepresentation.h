@@ -24,9 +24,14 @@
 
 #include "vesKiwiDataRepresentation.h"
 
+#include <vector>
+#include <string>
+
 class vesKiwiWidgetRepresentation : public vesKiwiDataRepresentation
 {
 public:
+
+  vesTypeMacro(vesKiwiWidgetRepresentation);
 
   vesKiwiWidgetRepresentation();
   ~vesKiwiWidgetRepresentation();
@@ -39,6 +44,9 @@ public:
   virtual bool handleLongPress(int displayX, int displayY);
 
   bool interactionIsActive() const;
+
+  virtual std::vector<std::string> actions() const;
+  virtual bool handleAction(const std::string& action);
 
   // HACK
   // A renderer should be passed into all the methods that require a renderer.

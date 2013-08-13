@@ -77,6 +77,7 @@ public:
 
   vtkNew<vtkMultiThreader> MultiThreader;
   vtkNew<vtkMutexLock> Lock;
+  vtkNew<vtkMutexLock> ExitLock;
 
   vesKiwiPolyDataRepresentation::Ptr PolyDataRep;
   vesShaderProgram::Ptr GeometryShader;
@@ -94,6 +95,8 @@ vesKiwiStreamingDataRepresentation::~vesKiwiStreamingDataRepresentation()
   this->Internal->Lock->Lock();
   this->Internal->ShouldQuit = true;
   this->Internal->Lock->Unlock();
+  this->Internal->ExitLock->Lock();
+  this->Internal->ExitLock->Unlock();
   delete this->Internal;
 }
 
@@ -182,6 +185,8 @@ VTK_THREAD_RETURN_TYPE ClientLoop(void* arg)
   vesKiwiStreamingDataRepresentation::vesInternal* selfInternal =
     static_cast<vesKiwiStreamingDataRepresentation::vesInternal*>(threadInfo->UserData);
 
+  selfInternal->ExitLock->Lock();
+
   bool shouldQuit = false;
   while (!shouldQuit) {
 
@@ -198,6 +203,7 @@ VTK_THREAD_RETURN_TYPE ClientLoop(void* arg)
       selfInternal->Lock->Unlock();
   }
 
+  selfInternal->ExitLock->Unlock();
   return VTK_THREAD_RETURN_VALUE;
 }
 
@@ -212,6 +218,7 @@ void vesKiwiStreamingDataRepresentation::initializeWithShader(
   this->Internal->PolyDataRep = vesKiwiPolyDataRepresentation::Ptr(new vesKiwiPolyDataRepresentation);
   this->Internal->PolyDataRep->initializeWithShader(this->Internal->GeometryShader);
   this->Internal->PolyDataRep->mapper()->setGeometryData(ReceiveGeometryData(this->Internal->Comm.GetPointer()));
+  this->Internal->PolyDataRep->setPointSize(2.0);
 
 
   this->Internal->ClientThreadId = this->Internal->MultiThreader->SpawnThread(ClientLoop, this->Internal);

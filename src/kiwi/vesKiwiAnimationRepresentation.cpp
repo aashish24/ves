@@ -26,6 +26,7 @@
 #include "vesActor.h"
 #include "vesShaderProgram.h"
 #include "vesTexture.h"
+#include "vesKiwiColorMapCollection.h"
 #include "vesKiwiDataLoader.h"
 #include "vesKiwiDataConversionTools.h"
 #include "vesKiwiText2DRepresentation.h"
@@ -37,6 +38,7 @@
 #include <vtkNew.h>
 #include <vtkDoubleArray.h>
 #include <vtkUnsignedCharArray.h>
+#include <vtkLookupTable.h>
 
 #include <vtksys/SystemTools.hxx>
 
@@ -62,13 +64,12 @@ public:
     this->AnimationT0 = 0.0;
     this->AnimationFrameStart = 0;
     this->AnimationFramesPerSecond = 24;
+    this->EnableTapToPlay = false;
   }
 
   ~vesInternal()
   {
-    for (size_t i = 0; i < this->AllReps.size(); ++i) {
-      delete this->AllReps[i];
-    }
+
   }
 
   int CurrentFrame;
@@ -76,6 +77,7 @@ public:
   int AnimationFrameStart;
   int NumberOfFrames;
   bool PlayMode;
+  bool EnableTapToPlay;
 
   double AnimationT0;
   double AnimationFramesPerSecond;
@@ -84,10 +86,10 @@ public:
 
   vesKiwiText2DRepresentation* PlayRep;
 
-  std::vector<vesKiwiDataRepresentation*> AllReps;
-  std::vector<vesKiwiPolyDataRepresentation*> FrameReps;
+  std::vector<vesKiwiDataRepresentation::Ptr> AllReps;
+  std::vector<vesKiwiPolyDataRepresentation::Ptr> FrameReps;
 
-  vtkSmartPointer<vtkUnsignedCharArray> ColorTable;
+  //vtkSmartPointer<vtkUnsignedCharArray> ColorTable;
 
   vesSharedPtr<vesShaderProgram> GeometryShader;
   vesSharedPtr<vesShaderProgram> TextureShader;
@@ -114,87 +116,45 @@ void vesKiwiAnimationRepresentation::initializeWithShader(
   this->Internal->GeometryShader = geometryShader;
   this->Internal->TextureShader = gouraudTextureShader;
 
+  /*
   this->Internal->TextRep = new vesKiwiText2DRepresentation();
   this->Internal->TextRep->initializeWithShader(textureShader);
   this->Internal->TextRep->setDisplayPosition(vesVector2f(10, 10));
   this->Internal->TextRep->setText("Time: 0.000 s");
   this->Internal->AllReps.push_back(this->Internal->TextRep);
 
+
   this->Internal->PlayRep = new vesKiwiText2DRepresentation();
   this->Internal->PlayRep->initializeWithShader(textureShader);
   this->Internal->PlayRep->setText("[Play]");
-  this->Internal->AllReps.push_back(this->Internal->PlayRep);
+  if (this->Internal->EnableTapToPlay) {
+    this->Internal->AllReps.push_back(this->Internal->PlayRep);
+  }
+  */
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiAnimationRepresentation::loadData(const std::string& filename)
+void vesKiwiAnimationRepresentation::setRepresentations(const std::vector<vesKiwiPolyDataRepresentation::Ptr> reps)
 {
-
-  std::string dataDir = vtksys::SystemTools::GetFilenamePath(filename);
-
-  std::vector<std::string> filenames;
-  for (int i = 0; i < 44; ++i) {
-    std::stringstream str;
-    str << "can" << setfill ('0') << setw(4) << i << ".vtp";
-    filenames.push_back(str.str());
-  }
-
-  vesKiwiDataLoader dataLoader;
-
-  double scalarRange[2] = {0.0, 6000.0};
-  vtkSmartPointer<vtkScalarsToColors> scalarsToColors = vesKiwiDataConversionTools::GetBlackBodyRadiationColorMap(scalarRange);
-
-  int colorTableResolution = 256;
-  vtkNew<vtkDoubleArray> scalarRangeValues;
-  scalarRangeValues->SetNumberOfComponents(1);
-  scalarRangeValues->SetNumberOfTuples(colorTableResolution);
-  double scalarRangeDist = scalarRange[1] - scalarRange[0];
-  double colorTableScalarRangeStep = scalarRangeDist/(colorTableResolution-1);
-  for (int i = 0; i < colorTableResolution; ++i) {
-    double scalarRangeValue = scalarRange[0] + (i*colorTableScalarRangeStep);
-    scalarRangeValues->SetValue(i, scalarRangeValue);
-  }
-
-  this->Internal->ColorTable = vesKiwiDataConversionTools::MapScalars(scalarRangeValues.GetPointer(), scalarsToColors);
-
-  for (size_t i = 0; i < filenames.size(); ++i) {
-
-    std::string modelFile = dataDir + "/" + filenames[i];
-
-    vtkSmartPointer<vtkPolyData> polyData = vtkPolyData::SafeDownCast(dataLoader.loadDataset(modelFile));
-    if (!polyData) {
-      printf("Failed to read: %s\n", modelFile.c_str());
-      continue;
-    }
-
-    vesKiwiPolyDataRepresentation* rep = new vesKiwiPolyDataRepresentation();
-    rep->initializeWithShader(this->Internal->GeometryShader);
-    rep->setPolyData(polyData, scalarsToColors);
-
-    vtkDataArray* scalars = vesKiwiDataConversionTools::FindScalarsArray(polyData);
-    assert(scalars);
-    const vtkIdType nTuples = scalars->GetNumberOfTuples();
-    vtkNew<vtkDoubleArray> tcoords;
-    tcoords->SetNumberOfComponents(2);
-    tcoords->SetNumberOfTuples(nTuples);
-    for (vtkIdType k = 0; k < nTuples; ++k) {
-      double scalarValue = scalars->GetComponent(k, 0);
-      double lookupTableValue = (scalarValue - scalarRange[0]) / (scalarRange[1] - scalarRange[0]);
-      lookupTableValue = lookupTableValue > 1.0 ? 1.0 : (lookupTableValue < 0.0 ? 0.0 : lookupTableValue);
-      tcoords->SetTuple2(k, lookupTableValue, 0);
-    }
-
-    rep->addTextureCoordinates(tcoords.GetPointer());
-
-    vesTexture::Ptr texture = vesTexture::Ptr(new vesTexture());
-    vesKiwiDataConversionTools::SetTextureData(this->Internal->ColorTable, texture, this->Internal->ColorTable->GetNumberOfTuples(), 1);
-    rep->setTexture(texture);
-
-    this->Internal->AllReps.push_back(rep);
-    this->Internal->FrameReps.push_back(rep);
-  }
-
+  this->Internal->FrameReps = reps;
   this->Internal->NumberOfFrames = static_cast<int>(this->Internal->FrameReps.size());
+}
+
+//----------------------------------------------------------------------------
+bool vesKiwiAnimationRepresentation::handleDoubleTap(int displayX, int displayY)
+{
+  if (this->Internal->PlayMode) {
+    this->onPause();
+  }
+  else {
+    this->onPlay();
+  }
+}
+
+//----------------------------------------------------------------------------
+bool vesKiwiAnimationRepresentation::playMode() const
+{
+  return this->Internal->PlayMode;
 }
 
 //----------------------------------------------------------------------------
@@ -226,22 +186,42 @@ bool vesKiwiAnimationRepresentation::handleSingleTouchUp()
 }
 
 //----------------------------------------------------------------------------
+void vesKiwiAnimationRepresentation::onPause()
+{
+  this->Internal->PlayMode = false;
+
+//  std::string playText = this->Internal->PlayMode ? "[Pause]" : "[Play]";
+//  this->Internal->PlayRep->setText(playText);
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiAnimationRepresentation::onPlay()
+{
+  this->Internal->PlayMode = true;
+
+  this->Internal->AnimationT0 = vtkTimerLog::GetUniversalTime();
+  this->Internal->AnimationFrameStart = this->Internal->CurrentFrame;
+
+//  std::string playText = this->Internal->PlayMode ? "[Pause]" : "[Play]";
+//  this->Internal->PlayRep->setText(playText);
+}
+
+//----------------------------------------------------------------------------
 bool vesKiwiAnimationRepresentation::handleSingleTouchTap(int displayX, int displayY)
 {
+/*
   vesVector2f textSize = this->Internal->PlayRep->textureSize();
   double margin = 30;
   textSize += vesVector2f(margin, margin);
 
-  if (displayX <= textSize[0] && displayY <= textSize[1]) {
+  if (this->Internal->EnableTapToPlay && displayX <= textSize[0] && displayY <= textSize[1]) {
 
-    this->Internal->PlayMode = !this->Internal->PlayMode;
     if (this->Internal->PlayMode) {
-      this->Internal->AnimationT0 = vtkTimerLog::GetUniversalTime();
-      this->Internal->AnimationFrameStart = this->Internal->CurrentFrame;
+      this->onPause();
     }
-
-    std::string playText = this->Internal->PlayMode ? "[Pause]" : "[Play]";
-    this->Internal->PlayRep->setText(playText);
+    else {
+      this->onPlay();
+    }
 
     return true;
   }
@@ -257,7 +237,7 @@ bool vesKiwiAnimationRepresentation::handleSingleTouchTap(int displayX, int disp
     }
 
   }
-
+*/
   return false;
 }
 
@@ -270,44 +250,80 @@ bool vesKiwiAnimationRepresentation::handleSingleTouchPanGesture(double deltaX, 
     return false;
   }
 
-
   if (this->Internal->PlayMode) {
 
-    double delta = deltaY *= -1;
-    this->Internal->AnimationFramesPerSecond += delta * 0.1;
-
-    if (this->Internal->AnimationFramesPerSecond > 120) {
-      this->Internal->AnimationFramesPerSecond = 120;
-    }
-    else if (this->Internal->AnimationFramesPerSecond <= 1) {
-      this->Internal->AnimationFramesPerSecond = 1;
-    }
+    double framesDelta = (-deltaY/this->renderer()->height()) * 40;
+    this->setFramesPerSecond(this->Internal->AnimationFramesPerSecond + framesDelta);
 
   }
   else {
 
-    double delta = deltaY;
+    double framesDelta = (deltaY/this->renderer()->height()) * 80;
+
     int currentFrame = this->Internal->CurrentFrame;
-    if (currentFrame >= this->Internal->NumberOfFrames-1 && delta > 0) {
+    if (currentFrame >= this->Internal->NumberOfFrames-1 && framesDelta > 0) {
       return true;
     }
-    else if (currentFrame <= 0 && delta < 0) {
+    else if (currentFrame <= 0 && framesDelta < 0) {
       return true;
     }
 
-    this->Internal->InteractionDelta += delta * 0.1;
+    this->Internal->InteractionDelta += framesDelta;
+
     int deltaFrames = static_cast<int>(this->Internal->InteractionDelta);
     if (deltaFrames != 0) {
       this->Internal->InteractionDelta = 0;
-      currentFrame += deltaFrames;
-      int maxFrameIndex = this->Internal->NumberOfFrames - 1;
-      currentFrame = currentFrame > maxFrameIndex ? maxFrameIndex : (currentFrame < 0 ? 0 : currentFrame);
-      this->Internal->CurrentFrame = currentFrame;
+      this->setCurrentFrame(currentFrame + deltaFrames);
     }
   }
 
 
   return true;
+}
+
+//----------------------------------------------------------------------------
+std::vector<std::string> vesKiwiAnimationRepresentation::actions() const
+{
+  std::string action = this->Internal->PlayMode ? "Pause" : "Play";
+  std::vector<std::string> actions;
+  actions.push_back(action);
+  return actions;
+}
+
+//----------------------------------------------------------------------------
+bool vesKiwiAnimationRepresentation::handleAction(const std::string& action)
+{
+  if (action == "Play" && !this->Internal->PlayMode) {
+    this->onPlay();
+    return true;
+  }
+  else if (action == "Pause" && this->Internal->PlayMode) {
+    this->onPause();
+    return true;
+  }
+
+  return false;
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiAnimationRepresentation::setFramesPerSecond(float fps)
+{
+  this->Internal->AnimationFramesPerSecond = fps;
+
+  if (this->Internal->AnimationFramesPerSecond > 120) {
+    this->Internal->AnimationFramesPerSecond = 120;
+  }
+  else if (this->Internal->AnimationFramesPerSecond <= 1) {
+    this->Internal->AnimationFramesPerSecond = 1;
+  }
+}
+
+//----------------------------------------------------------------------------
+void vesKiwiAnimationRepresentation::setCurrentFrame(int frameIndex)
+{
+  int maxFrameIndex = this->Internal->NumberOfFrames - 1;
+  frameIndex = frameIndex > maxFrameIndex ? maxFrameIndex : (frameIndex < 0 ? 0 : frameIndex);
+  this->Internal->CurrentFrame = frameIndex;
 }
 
 //----------------------------------------------------------------------------
@@ -331,18 +347,21 @@ void vesKiwiAnimationRepresentation::willRender(vesSharedPtr<vesRenderer> render
     }
   }
 
+/*
   int screenHeight = this->renderer()->height();
   double margin = 10;
   vesVector2f textSize = this->Internal->PlayRep->textureSize();
   this->Internal->PlayRep->setDisplayPosition(vesVector2f(margin, screenHeight - (margin + textSize[1])));
+*/
 
+  if (this->Internal->FrameReps.size() && this->Internal->LastFrame != this->Internal->CurrentFrame) {
 
-  if (this->Internal->LastFrame != this->Internal->CurrentFrame) {
-
+    /*
     std::stringstream str;
     str.precision(4);
     str << "Time: " << std::fixed << 0.0001*this->Internal->CurrentFrame << " s";
     this->Internal->TextRep->setText(str.str());
+    */
 
     this->Internal->FrameReps[this->Internal->LastFrame]->removeSelfFromRenderer(this->renderer());
     this->Internal->FrameReps[this->Internal->CurrentFrame]->addSelfToRenderer(this->renderer());
@@ -351,12 +370,12 @@ void vesKiwiAnimationRepresentation::willRender(vesSharedPtr<vesRenderer> render
 }
 
 //----------------------------------------------------------------------------
-vesKiwiPolyDataRepresentation* vesKiwiAnimationRepresentation::currentFrameRepresentation()
+vesKiwiPolyDataRepresentation::Ptr vesKiwiAnimationRepresentation::currentFrameRepresentation()
 {
   if (this->Internal->FrameReps.size()) {
     return this->Internal->FrameReps[this->Internal->CurrentFrame];
   }
-  return NULL;
+  return vesKiwiPolyDataRepresentation::Ptr();
 }
 
 //----------------------------------------------------------------------------
@@ -367,8 +386,13 @@ void vesKiwiAnimationRepresentation::addSelfToRenderer(vesSharedPtr<vesRenderer>
     this->currentFrameRepresentation()->addSelfToRenderer(renderer);
   }
 
+/*
   this->Internal->TextRep->addSelfToRenderer(renderer);
-  this->Internal->PlayRep->addSelfToRenderer(renderer);
+
+  if (this->Internal->EnableTapToPlay) {
+    this->Internal->PlayRep->addSelfToRenderer(renderer);
+  }
+*/
 }
 
 //----------------------------------------------------------------------------
@@ -379,6 +403,11 @@ void vesKiwiAnimationRepresentation::removeSelfFromRenderer(vesSharedPtr<vesRend
     this->currentFrameRepresentation()->removeSelfFromRenderer(renderer);
   }
 
+/*
   this->Internal->TextRep->removeSelfFromRenderer(renderer);
-  this->Internal->PlayRep->removeSelfFromRenderer(renderer);
+
+  if (this->Internal->EnableTapToPlay) {
+    this->Internal->PlayRep->removeSelfFromRenderer(renderer);
+  }
+*/
 }

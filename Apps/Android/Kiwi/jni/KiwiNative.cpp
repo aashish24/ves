@@ -24,13 +24,24 @@
 
 #include <vesKiwiViewerApp.h>
 #include <vesKiwiCameraSpinner.h>
+#include <vesKiwiStreamingDataRepresentation.h>
+#include <vesKiwiDataLoader.h>
+#include <vesKiwiPolyDataRepresentation.h>
+#include <vesKiwiAnimationRepresentation.h>
 
 #include <vtksys/SystemTools.hxx>
 #include <vtkTimerLog.h>
+#include <vtkMatrix4x4.h>
+#include <vtkNew.h>
+#include <vtkErrorCode.h>
+#include <vtkTransform.h>
 
 #include <cassert>
 #include <fstream>
 
+#if USE_PCL
+  #include <vtkPCDReader.h>
+#endif
 
 #define  LOG_TAG    "KiwiViewer"
 #define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
@@ -54,8 +65,108 @@ public:
   vesVector3f cameraViewUp;
 };
 
+
+class kiwiApp : public vesKiwiViewerApp {
+public:
+
+  void unloadStreamingData()
+  {
+    if (mStreamingRep) {
+      mStreamingRep->removeSelfFromRenderer(this->renderer());
+      mStreamingRep.reset();
+    }
+  }
+
+  bool doPointCloudStreaming(const std::string& host, int port)
+  {
+    vesKiwiStreamingDataRepresentation::Ptr rep = vesKiwiStreamingDataRepresentation::Ptr(new vesKiwiStreamingDataRepresentation);
+    if (!rep->connectToServer(host, port)) {
+      this->setErrorMessage("Connection failed", "Could not connect to server.");
+      return false;
+    }
+
+    mStreamingRep = rep;
+    mStreamingRep->initializeWithShader(this->shaderProgram());
+    mStreamingRep->addSelfToRenderer(this->renderer());
+    this->resetView();
+    return true;
+  }
+
+  void checkForAnimation()
+  {
+    for (size_t i = 0; i < this->dataRepresentations().size(); ++i) {
+      if (std::tr1::dynamic_pointer_cast<vesKiwiAnimationRepresentation>(this->dataRepresentations()[i])) {
+        this->setAnimating(true);
+        break;
+      }
+    }
+
+  }
+  virtual void resetScene()
+  {
+    this->vesKiwiViewerApp::resetScene();
+    this->unloadStreamingData();
+  }
+
+  virtual bool isAnimating()
+  {
+    if (this->mStreamingRep)
+      return true;
+    return this->vesKiwiViewerApp::isAnimating();
+  }
+
+  virtual void willRender()
+  {
+    this->vesKiwiViewerApp::willRender();
+    if (this->mStreamingRep)
+      this->mStreamingRep->willRender(this->renderer());
+  }
+
+  virtual bool loadDatasetWithCustomBehavior(const std::string& filename)
+  {
+    #if USE_PCL
+    if (vesKiwiDataLoader::hasEnding(filename, "pcd")) {
+
+      vtkNew<vtkPCDReader> pcdReader;
+      pcdReader->SetFileName(filename.c_str());
+      pcdReader->Update();
+      if (pcdReader->GetErrorCode() != vtkErrorCode::NoError) {
+        this->setErrorMessage("Could not read file", "Could not read the file specified");
+        return false;
+      }
+
+      vesKiwiPolyDataRepresentation::Ptr rep = this->addPolyDataRepresentation(pcdReader->GetOutput(), this->shaderProgram());
+
+      vtkMatrix4x4* mat = pcdReader->GetTransform()->GetMatrix();
+
+      vesVector3f viewDirection(-mat->GetElement (0, 2),
+                                -mat->GetElement (1, 2),
+                                -mat->GetElement (2, 2));
+
+      vesVector3f viewUp(mat->GetElement (0, 1),
+                         mat->GetElement (1, 1),
+                         mat->GetElement (2, 1));
+
+      this->setDefaultCameraParameters(viewDirection, viewUp);
+
+
+      return true;
+    }
+    else {
+      return this->vesKiwiViewerApp::loadDatasetWithCustomBehavior(filename);
+    }
+    #else
+      return this->vesKiwiViewerApp::loadDatasetWithCustomBehavior(filename);
+    #endif
+  }
+
+protected:
+  vesKiwiStreamingDataRepresentation::Ptr mStreamingRep;
+
+};
+
 //----------------------------------------------------------------------------
-vesKiwiViewerApp* app;
+kiwiApp* app;
 AndroidAppState appState;
 
 int lastFps;
@@ -81,10 +192,13 @@ bool loadDataset(const std::string& filename, int builtinDatasetIndex)
   appState.currentDataset = filename;
   appState.builtinDatasetIndex = builtinDatasetIndex;
 
+  app->resetScene();
   bool result = app->loadDataset(filename);
+  app->checkForAnimation();
   if (result) {
     resetView();
   }
+
   return result;
 }
 
@@ -130,11 +244,12 @@ bool setupGraphics(int w, int h)
   // Pipe VTK messages into the android log
   vtkAndroidOutputWindow::Install();
 
-  app = new vesKiwiViewerApp();
+  app = new kiwiApp();
   app->initGL();
   app->resizeView(w, h);
 
   if (isResume && !appState.currentDataset.empty()) {
+    app->resetScene();
     app->loadDataset(appState.currentDataset);
     restoreCameraState();
   }
@@ -176,10 +291,27 @@ extern "C" {
   JNIEXPORT jstring JNICALL Java_com_kitware_KiwiViewer_KiwiNative_getLoadDatasetErrorTitle(JNIEnv* env, jobject obj);
   JNIEXPORT jstring JNICALL Java_com_kitware_KiwiViewer_KiwiNative_getLoadDatasetErrorMessage(JNIEnv* env, jobject obj);
 
+  JNIEXPORT jboolean JNICALL Java_com_kitware_KiwiViewer_KiwiNative_doPVWeb(JNIEnv* env, jobject obj, jstring host, jstring sessionId);
+  JNIEXPORT jboolean JNICALL Java_com_kitware_KiwiViewer_KiwiNative_doPVRemote(JNIEnv* env, jobject obj, jstring host, jint port);
+  JNIEXPORT jboolean JNICALL Java_com_kitware_KiwiViewer_KiwiNative_doPointCloudStreaming(JNIEnv* env, jobject obj, jstring host, jint port);
+  JNIEXPORT jboolean JNICALL Java_com_kitware_KiwiViewer_KiwiNative_downloadAndOpenFile(JNIEnv* env, jobject obj, jstring url, jstring downloadDir);
+
   JNIEXPORT jint JNICALL Java_com_kitware_KiwiViewer_KiwiNative_getNumberOfTriangles(JNIEnv* env, jobject obj);
   JNIEXPORT jint JNICALL Java_com_kitware_KiwiViewer_KiwiNative_getNumberOfLines(JNIEnv* env, jobject obj);
   JNIEXPORT jint JNICALL Java_com_kitware_KiwiViewer_KiwiNative_getNumberOfVertices(JNIEnv* env, jobject obj);
   JNIEXPORT jint JNICALL Java_com_kitware_KiwiViewer_KiwiNative_getFramesPerSecond(JNIEnv* env, jobject obj);
+
+  // we have a libtiff dependency because we want to use vtk's tiff image reader.
+  // libtiff requires lfind, but it is missing in Android's libc
+  void* lfind( const void * key, const void * base, size_t num, size_t width, int (*fncomparison)(const void *, const void * ) )
+  {
+    char* Ptr = (char*)base;
+    for ( size_t i = 0; i != num; i++, Ptr+=width ) {
+      if ( fncomparison( key, Ptr ) == 0 ) return Ptr;
+    }
+    return NULL;
+  }
+
 };
 
 //-----------------------------------------------------------------------------
@@ -323,6 +455,67 @@ JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_checkForAdditional
     app->checkForAdditionalData(storageDirStr);
   }
 }
+
+JNIEXPORT jboolean JNICALL Java_com_kitware_KiwiViewer_KiwiNative_doPVWeb(JNIEnv* env, jobject obj, jstring host, jstring sessionId)
+{
+  bool result = false;
+  const char *hostStr = env->GetStringUTFChars(host, NULL);
+  const char *sessionIdStr = env->GetStringUTFChars(sessionId, NULL);
+  if (hostStr && sessionIdStr) {
+    clearExistingDataset();
+    result = app->doPVWebTest(hostStr, sessionIdStr);
+    env->ReleaseStringUTFChars(host, hostStr);
+    env->ReleaseStringUTFChars(sessionId, sessionIdStr);
+  }
+  return result;
+}
+
+JNIEXPORT jboolean JNICALL Java_com_kitware_KiwiViewer_KiwiNative_doPVRemote(JNIEnv* env, jobject obj, jstring host, jint port)
+{
+  bool result = false;
+  const char *hostStr = env->GetStringUTFChars(host, NULL);
+  if (hostStr) {
+    clearExistingDataset();
+
+    LOGI("doPVRemote(%s, %d)", hostStr, port);
+    result = app->doPVRemote(hostStr, port);
+    env->ReleaseStringUTFChars(host, hostStr);
+  }
+  return result;
+}
+
+JNIEXPORT jboolean JNICALL Java_com_kitware_KiwiViewer_KiwiNative_doPointCloudStreaming(JNIEnv* env, jobject obj, jstring host, jint port)
+{
+  bool result = false;
+  const char *hostStr = env->GetStringUTFChars(host, NULL);
+  if (hostStr) {
+    clearExistingDataset();
+
+    LOGI("doPointCloudStreaming(%s, %d)", hostStr, port);
+    result = app->doPointCloudStreaming(hostStr, port);
+    result = true;
+    env->ReleaseStringUTFChars(host, hostStr);
+  }
+  return result;
+}
+
+JNIEXPORT jboolean JNICALL Java_com_kitware_KiwiViewer_KiwiNative_downloadAndOpenFile(JNIEnv* env, jobject obj, jstring url, jstring downloadDir)
+{
+  std::string filename;
+  const char *urlStr = env->GetStringUTFChars(url, NULL);
+  const char *downloadDirStr = env->GetStringUTFChars(downloadDir, NULL);
+  if (urlStr && downloadDirStr) {
+    filename = app->downloadFile(urlStr, downloadDirStr);
+    env->ReleaseStringUTFChars(url, urlStr);
+    env->ReleaseStringUTFChars(downloadDir, downloadDirStr);
+  }
+
+  if (!filename.empty()) {
+    return loadDataset(filename, -1);
+  }
+  return false;
+}
+
 
 JNIEXPORT jstring JNICALL Java_com_kitware_KiwiViewer_KiwiNative_getLoadDatasetErrorTitle(JNIEnv* env, jobject obj)
 {

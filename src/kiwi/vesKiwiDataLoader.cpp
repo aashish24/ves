@@ -26,6 +26,8 @@
 #include <vtkXMLUnstructuredGridReader.h>
 #include <vtkPNGReader.h>
 #include <vtkJPEGReader.h>
+#include <vtkBMPReader.h>
+#include <vtkTIFFReader.h>
 #include <vtkPolyDataReader.h>
 #include <vtkOBJReader.h>
 #include <vtkSTLReader.h>
@@ -266,9 +268,21 @@ vtkSmartPointer<vtkDataSet> vesKiwiDataLoader::loadDataset(const std::string& fi
     reader->SetFileName(filename.c_str());
     return datasetFromAlgorithm(reader);
     }
-  else if (this->hasEnding(filename, "jpg"))
+  else if (this->hasEnding(filename, "jpg") || this->hasEnding(filename, "jpeg"))
     {
     vtkSmartPointer<vtkJPEGReader> reader = vtkSmartPointer<vtkJPEGReader>::New();
+    reader->SetFileName(filename.c_str());
+    return datasetFromAlgorithm(reader);
+    }
+  else if (this->hasEnding(filename, "bmp"))
+    {
+    vtkSmartPointer<vtkBMPReader> reader = vtkSmartPointer<vtkBMPReader>::New();
+    reader->SetFileName(filename.c_str());
+    return datasetFromAlgorithm(reader);
+    }
+  else if (this->hasEnding(filename, "tiff") || this->hasEnding(filename, "tif"))
+    {
+    vtkSmartPointer<vtkTIFFReader> reader = vtkSmartPointer<vtkTIFFReader>::New();
     reader->SetFileName(filename.c_str());
     return datasetFromAlgorithm(reader);
     }

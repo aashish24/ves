@@ -10,8 +10,22 @@ fi
 #------------------------------------------------------------------------------
 make_kiwi_framework ()
 {
-  device_libs=`ls $install/ves-ios-device/lib/*.a`
-  sim_libs=`ls $install/ves-ios-simulator/lib/*.a`
+  if [ -d $install/libarchive-ios-device/lib ]; then
+    device_archive_libs=`ls $install/libarchive-ios-device/lib/*.a`
+  fi
+  if [ -d $install/curl-ios-device/lib ]; then
+    device_curl_libs=`ls $install/curl-ios-device/lib/*.a`
+  fi
+  device_libs=`ls $install/ves-ios-device/lib/*.a $device_archive_libs $device_curl_libs`
+
+  if [ -d $install/libarchive-ios-simulator/lib ]; then
+    sim_archive_libs=`ls $install/libarchive-ios-simulator/lib/*.a`
+  fi
+  if [ -d $install/curl-ios-simulator/lib ]; then
+    sim_curl_libs=`ls $install/curl-ios-simulator/lib/*.a`
+  fi
+  sim_libs=`ls $install/ves-ios-simulator/lib/*.a $sim_archive_libs $sim_curl_libs`
+
   headers=`find $install/ves-ios-device/include -name \\*.h`
   headers="$headers $install/eigen/Eigen"
 

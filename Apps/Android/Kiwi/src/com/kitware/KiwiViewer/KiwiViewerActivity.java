@@ -70,6 +70,7 @@ public class KiwiViewerActivity extends Activity {
     protected ArrayList<String> mBuiltinDatasetNames;
 
     protected String fileToOpen;
+    protected String urlToOpen;
     protected int datasetToOpen = -1;
 
     protected ProgressDialog mProgressDialog = null;
@@ -219,6 +220,36 @@ public class KiwiViewerActivity extends Activity {
       dialog.show();
     }
 
+    public void showDownloadFileDialog(final String startUrl) {
+
+
+      final EditText urlInput = new EditText(this);
+      urlInput.setText(startUrl);
+      urlInput.setSingleLine();
+      urlInput.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI);
+
+      AlertDialog dialog = new AlertDialog.Builder(this).create();
+      dialog.setTitle(getString(R.string.download_file_text));
+      dialog.setView(urlInput);
+      dialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Cancel",  new DialogInterface.OnClickListener() {
+        public void onClick(DialogInterface dialog, int which) {
+        return;
+        }});
+
+      dialog.setButton(AlertDialog.BUTTON_POSITIVE, "Download",  new DialogInterface.OnClickListener() {
+        public void onClick(DialogInterface dialog, int which) {
+            String url = urlInput.getText().toString();
+            if (!url.startsWith("http://")) {
+              showErrorDialog("Unhandled URL", "The URL must begin with http://");
+            }
+            else {
+              downloadAndOpenFile(url);
+            }
+        }});
+
+      dialog.show();
+    }
+
     protected void openUrlInBrowser(String url) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         startActivity(intent);
@@ -229,6 +260,9 @@ public class KiwiViewerActivity extends Activity {
       if (uri != null) {
         if (uri.getScheme().equals("file")) {
           fileToOpen = uri.getPath();
+        }
+        else if (uri.getScheme().equals("http")) {
+          urlToOpen = uri.toString();
         }
       }
     }
@@ -244,11 +278,25 @@ public class KiwiViewerActivity extends Activity {
     protected void initBuiltinDatasetNames() {
 
       if (mBuiltinDatasetNames == null) {
-          int numberOfDatasets = KiwiNative.getNumberOfBuiltinDatasets();
           mBuiltinDatasetNames = new ArrayList<String>();
-          for(int i = 0; i < numberOfDatasets; ++i) {
-            mBuiltinDatasetNames.add(KiwiNative.getDatasetName(i));
-          }
+          mBuiltinDatasetNames.add("teapot.vtp");
+          mBuiltinDatasetNames.add("bunny.vtp");
+          mBuiltinDatasetNames.add("visible-woman-hand.vtp");
+          mBuiltinDatasetNames.add("AppendedKneeData.vtp");
+          mBuiltinDatasetNames.add("cturtle.vtp");
+          mBuiltinDatasetNames.add("MountStHelen.vtp");
+          mBuiltinDatasetNames.add("shuttle.vtp");
+          //http://visibleearth.nasa.gov/view.php?id=57730
+          mBuiltinDatasetNames.add("nasa-blue-marble.kiwi");
+          mBuiltinDatasetNames.add("Buckyball.vtp");
+          mBuiltinDatasetNames.add("caffeine.pdb");
+          mBuiltinDatasetNames.add("head.vti");
+          mBuiltinDatasetNames.add("kiwi.png");
+
+          mBuiltinDatasetNames.add(getString(R.string.pvremote_text));
+          mBuiltinDatasetNames.add(getString(R.string.pvweb_text));
+          mBuiltinDatasetNames.add(getString(R.string.pointcloudstreaming_text));
+          mBuiltinDatasetNames.add(getString(R.string.download_file_text));
       }
     }
 
@@ -274,6 +322,8 @@ public class KiwiViewerActivity extends Activity {
     @Override
     protected void onCreate(Bundle bundle) {
       super.onCreate(bundle);
+
+      initBuiltinDatasetNames();
 
       handleUriFromIntent(getIntent().getData());
 
@@ -303,7 +353,6 @@ public class KiwiViewerActivity extends Activity {
           public void onClick(View v) {
               Intent datasetTableIntent = new Intent();
               datasetTableIntent.setClass(KiwiViewerActivity.this, DatasetListActivity.class);
-              initBuiltinDatasetNames();
               datasetTableIntent.putExtra("com.kitware.KiwiViewer.bundle.DatasetList", mBuiltinDatasetNames);
               startActivityForResult(datasetTableIntent, DATASETTABLE_REQUEST_CODE);
           }
@@ -382,9 +431,9 @@ public class KiwiViewerActivity extends Activity {
 
       protected String doInBackground(String... filename) {
 
-        if (filename[0].equals("textured_sphere.vtp")) {
-          copyEarthAssets();
-        }
+        //if (filename[0].equals("textured_sphere.vtp")) {
+        //  copyEarthAssets();
+        //}
 
         return copyAssetFileToStorage(filename[0]);
       }
@@ -394,14 +443,108 @@ public class KiwiViewerActivity extends Activity {
       }
 
       protected void onPostExecute(String filename) {
-        mView.loadDataset(filename, mBuiltinDatasetIndex, KiwiViewerActivity.this);
+        mView.loadDataset(filename, -1, KiwiViewerActivity.this);
       }
     }
 
 
+    public void doPointCloudStreaming() {
+
+      LayoutInflater factory = LayoutInflater.from(this);
+      final View pvremoteDialog = factory.inflate(R.layout.pointcloudstreaming_dialog, null);
+      new AlertDialog.Builder(KiwiViewerActivity.this)
+          //.setIcon(R.drawable.paraview_logo)
+          .setTitle("Connect to streaming server:")
+          .setView(pvremoteDialog)
+          .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+              public void onClick(DialogInterface dialog, int whichButton) {
+                EditText hostEdit = (EditText) pvremoteDialog.findViewById(R.id.host_edit);
+                EditText sessionIdEdit = (EditText) pvremoteDialog.findViewById(R.id.sessionid_edit);
+
+                String host = hostEdit.getText().toString();
+                int port =  Integer.parseInt(sessionIdEdit.getText().toString());
+
+                showProgressDialog("Connecting to server...");
+                mView.doPointCloudStreaming(host, port, KiwiViewerActivity.this);
+              }
+          })
+          .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+              public void onClick(DialogInterface dialog, int whichButton) {
+
+              }
+          })
+          .show();
+
+
+    }
+
+    public void doPVWeb() {
+
+      LayoutInflater factory = LayoutInflater.from(this);
+      final View pvwebDialog = factory.inflate(R.layout.pvweb_dialog, null);
+      new AlertDialog.Builder(KiwiViewerActivity.this)
+          .setIcon(R.drawable.paraview_logo)
+          .setTitle("Join a ParaView Web session:")
+          .setView(pvwebDialog)
+          .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+              public void onClick(DialogInterface dialog, int whichButton) {
+                EditText hostEdit = (EditText) pvwebDialog.findViewById(R.id.host_edit);
+                EditText sessionIdEdit = (EditText) pvwebDialog.findViewById(R.id.sessionid_edit);
+
+                String host = hostEdit.getText().toString();
+                String sessionId = sessionIdEdit.getText().toString();
+
+                showProgressDialog("Contacting ParaView Web...");
+                mView.doPVWeb(host, sessionId, KiwiViewerActivity.this);
+              }
+          })
+          .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+              public void onClick(DialogInterface dialog, int whichButton) {
+
+              }
+          })
+          .show();
+
+    }
+
+    public void doPVRemote() {
+
+      LayoutInflater factory = LayoutInflater.from(this);
+      final View pvremoteDialog = factory.inflate(R.layout.pvremote_dialog, null);
+      new AlertDialog.Builder(KiwiViewerActivity.this)
+          .setIcon(R.drawable.paraview_logo)
+          .setTitle("Setup ParaView Remote:")
+          .setView(pvremoteDialog)
+          .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+              public void onClick(DialogInterface dialog, int whichButton) {
+                EditText hostEdit = (EditText) pvremoteDialog.findViewById(R.id.host_edit);
+                EditText sessionIdEdit = (EditText) pvremoteDialog.findViewById(R.id.sessionid_edit);
+
+                String host = hostEdit.getText().toString();
+                int port =  Integer.parseInt(sessionIdEdit.getText().toString());
+
+                showProgressDialog("Connecting to ParaView...");
+                mView.doPVRemote(host, port, KiwiViewerActivity.this);
+              }
+          })
+          .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+              public void onClick(DialogInterface dialog, int whichButton) {
+
+              }
+          })
+          .show();
+
+    }
+
     public void loadDataset(int builtinDatasetIndex) {
 
-      String filename = KiwiNative.getDatasetFilename(builtinDatasetIndex);
+      //String filename = KiwiNative.getDatasetFilename(builtinDatasetIndex);
+      String filename = mBuiltinDatasetNames.get(builtinDatasetIndex);
+
+      if (filename.equals("pvweb")) {
+        doPVWeb();
+        return;
+      }
 
       // don't attempt to open large asset files on android api 8
       int sdkVersion = Build.VERSION.SDK_INT;
@@ -414,6 +557,7 @@ public class KiwiViewerActivity extends Activity {
         return;
       }
 
+      Log.w(TAG, String.format("execute: %s %d", filename, builtinDatasetIndex));
       new BuiltinDataLoader(builtinDatasetIndex).execute(filename);
     }
 
@@ -421,6 +565,17 @@ public class KiwiViewerActivity extends Activity {
     public void loadDataset(String filename) {
       showProgressDialog();
       mView.loadDataset(filename, KiwiViewerActivity.this);
+    }
+
+    public void downloadAndOpenFile(String url) {
+
+      String downloadDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
+
+      Log.i(TAG, String.format("have download dir: %s", downloadDir));
+      Log.i(TAG, String.format("have url: %s", url));
+
+      showProgressDialog("Downloading file...");
+      mView.downloadAndOpenFile(url, downloadDir, KiwiViewerActivity.this);
     }
 
     public void postLoadDataset(String filename, boolean result, String errorTitle, String errorMessage) {
@@ -455,6 +610,10 @@ public class KiwiViewerActivity extends Activity {
           loadDataset(fileToOpen);
           fileToOpen = null;
         }
+        if (urlToOpen != null) {
+          showDownloadFileDialog(urlToOpen);
+          urlToOpen = null;
+        }
         else if (datasetToOpen >= 0) {
           loadDataset(datasetToOpen);
           datasetToOpen = -1;
@@ -476,7 +635,25 @@ public class KiwiViewerActivity extends Activity {
 
         String name = curBundle.getString("com.kitware.KiwiViewer.bundle.DatasetName");
         int offset = curBundle.getInt("com.kitware.KiwiViewer.bundle.DatasetOffset");
-        datasetToOpen = offset;
+
+        if (mBuiltinDatasetNames.get(offset).equals(getString(R.string.midas_text))) {
+          openUrlInBrowser(getString(R.string.external_data_url));
+        }
+        else if (mBuiltinDatasetNames.get(offset).equals(getString(R.string.download_file_text))) {
+          showDownloadFileDialog(new String());
+        }
+        else if (mBuiltinDatasetNames.get(offset).equals(getString(R.string.pvremote_text))) {
+          doPVRemote();
+        }
+        else if (mBuiltinDatasetNames.get(offset).equals(getString(R.string.pvweb_text))) {
+          doPVWeb();
+        }
+        else if (mBuiltinDatasetNames.get(offset).equals(getString(R.string.pointcloudstreaming_text))) {
+          doPointCloudStreaming();
+        }
+        else {
+          datasetToOpen = offset;
+        }
       }
 
       super.onActivityResult(requestCode, resultCode, data);

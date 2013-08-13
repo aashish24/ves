@@ -97,6 +97,19 @@ bool vesKiwiWidgetRepresentation::handleSingleTouchUp()
 }
 
 //----------------------------------------------------------------------------
+std::vector<std::string> vesKiwiWidgetRepresentation::actions() const
+{
+  return std::vector<std::string>();
+}
+
+//----------------------------------------------------------------------------
+bool vesKiwiWidgetRepresentation::handleAction(const std::string& action)
+{
+  vesNotUsed(action);
+  return false;
+}
+
+//----------------------------------------------------------------------------
 void vesKiwiWidgetRepresentation::addSelfToRenderer(vesSharedPtr<vesRenderer> renderer)
 {
   this->m_renderer = renderer;

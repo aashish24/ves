@@ -31,15 +31,17 @@ class vesKiwiAnimationRepresentation : public vesKiwiWidgetRepresentation
 {
 public:
 
+  vesTypeMacro(vesKiwiAnimationRepresentation);
+
   typedef vesKiwiWidgetRepresentation Superclass;
   vesKiwiAnimationRepresentation();
   ~vesKiwiAnimationRepresentation();
 
+  void setRepresentations(const std::vector<vesSharedPtr<vesKiwiPolyDataRepresentation> > reps);
+
   void initializeWithShader(vesSharedPtr<vesShaderProgram> geometryShader, 
     vesSharedPtr<vesShaderProgram> textureShader,
     vesSharedPtr<vesShaderProgram> gouraudTextureShader);
-
-  void loadData(const std::string& filename);
 
   virtual void addSelfToRenderer(vesSharedPtr<vesRenderer> renderer);
   virtual void removeSelfFromRenderer(vesSharedPtr<vesRenderer> renderer);
@@ -49,10 +51,22 @@ public:
   virtual bool handleSingleTouchDown(int displayX, int displayY);
   virtual bool handleSingleTouchPanGesture(double deltaX, double deltaY);
   virtual bool handleSingleTouchUp();
+  virtual bool handleDoubleTap(int displayX, int displayY);
+
+  virtual std::vector<std::string> actions() const;
+  virtual bool handleAction(const std::string& action);
+
+  void setFramesPerSecond(float fps);
+  void setCurrentFrame(int frameIndex);
+
+  void onPlay();
+  void onPause();
+
+  bool playMode() const;
 
 protected:
 
-  vesKiwiPolyDataRepresentation* currentFrameRepresentation();
+  vesSharedPtr<vesKiwiPolyDataRepresentation> currentFrameRepresentation();
 
 private:
 

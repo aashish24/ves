@@ -110,6 +110,7 @@ void vesKiwiBrainAtlasRepresentation::initializeWithShader(vesSharedPtr<vesShade
 
   this->Internal->TextRep = vesKiwiText2DRepresentation::Ptr(new vesKiwiText2DRepresentation);
   this->Internal->TextRep->initializeWithShader(textureShader);
+  this->Internal->TextRep->setTextureSurfaceShader(textureShader);
   this->Internal->TextRep->setWorldAnchorPointEnabled(true);
   this->Internal->AllReps.push_back(this->Internal->TextRep);
 
@@ -128,7 +129,7 @@ void vesKiwiBrainAtlasRepresentation::loadData(const std::string& filename)
   std::string modelInfoFile = filename;
   std::string dataDir = vtksys::SystemTools::GetFilenamePath(modelInfoFile);
 
-  std::cout << "Reading model info file: " << modelInfoFile << std::endl;
+  //std::cout << "Reading model info file: " << modelInfoFile << std::endl;
 
   f.open(modelInfoFile.c_str());
 
@@ -234,11 +235,8 @@ std::string GetHumanReadableName(std::string name)
 } //end namespace
 
 //----------------------------------------------------------------------------
-bool vesKiwiBrainAtlasRepresentation::handleLongPress(int displayX, int displayY)
+void vesKiwiBrainAtlasRepresentation::showHiddenModels()
 {
-  vesNotUsed(displayX);
-  vesNotUsed(displayY);
-
   this->deselectModel();
 
   // show all models
@@ -249,8 +247,36 @@ bool vesKiwiBrainAtlasRepresentation::handleLongPress(int displayX, int displayY
       this->Internal->ModelSceneStatus[i] = true;
     }
   }
+}
+
+//----------------------------------------------------------------------------
+bool vesKiwiBrainAtlasRepresentation::handleLongPress(int displayX, int displayY)
+{
+  vesNotUsed(displayX);
+  vesNotUsed(displayY);
+
+  this->showHiddenModels();
 
   return true;
+}
+
+//----------------------------------------------------------------------------
+std::vector<std::string> vesKiwiBrainAtlasRepresentation::actions() const
+{
+  std::vector<std::string> actions;
+  actions.push_back("Reset Models");
+  return actions;
+}
+
+//----------------------------------------------------------------------------
+bool vesKiwiBrainAtlasRepresentation::handleAction(const std::string& action)
+{
+  if (action == "Reset Models") {
+    this->showHiddenModels();
+    return true;
+  }
+
+  return false;
 }
 
 //----------------------------------------------------------------------------

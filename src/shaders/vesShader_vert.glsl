@@ -22,11 +22,11 @@
 /// \ingroup shaders
 
 // Uniforms.
-uniform bool    hasVertexColors;
 uniform mediump vec3 lightDirection;
 uniform highp mat4   modelViewMatrix;
 uniform mediump mat3 normalMatrix;
 uniform lowp int     primitiveType;
+uniform lowp int     pointSize;
 uniform lowp float   vertexOpacity;
 uniform highp mat4 projectionMatrix;
 
@@ -62,6 +62,6 @@ void main()
     varColor = vec4(varColor.xyz * nDotL, varColor.w);
   }
 
-  gl_PointSize = 1.0;
+  gl_PointSize = float(pointSize);
   gl_Position = position;
 }

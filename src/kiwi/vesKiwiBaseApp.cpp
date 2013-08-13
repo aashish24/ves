@@ -341,7 +341,7 @@ vesSharedPtr<vesVertexAttribute> vesKiwiBaseApp::addVertexTextureCoordinateAttri
 //----------------------------------------------------------------------------
 void vesKiwiBaseApp::setBackgroundColor(double r, double g, double b)
 {
-  this->Internal->Renderer->setBackgroundColor(r, g, b, 1.0);
+  this->Internal->Renderer->setBackgroundColor(r, g, b);
 }
 
 //----------------------------------------------------------------------------
