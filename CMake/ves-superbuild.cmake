@@ -6,7 +6,6 @@ project(VES_SUPERBUILD NONE)
 
 include(ExternalProject)
 
-
 set(base "${CMAKE_BINARY_DIR}/CMakeExternals")
 set_property(DIRECTORY PROPERTY EP_BASE ${base})
 
