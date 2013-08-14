@@ -63,6 +63,7 @@ macro(install_eigen)
   ExternalProject_Add(
     eigen
     SOURCE_DIR ${source_prefix}/eigen
+    DOWNLOAD_DIR ${download_prefix}
     URL ${eigen_url}
     URL_MD5 ${eigen_md5}
     CONFIGURE_COMMAND ""
