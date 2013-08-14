@@ -16,11 +16,13 @@ endif()
 set(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING "Build configuration type" FORCE)
 set(build_type ${CMAKE_BUILD_TYPE})
 
+set(VES_DOWNLOAD_PREFIX ${base}/Downloads CACHE PATH "Download directory for
+  external projects sources")
+
 set(source_prefix ${base}/Source)
 set(build_prefix ${base}/Build)
 set(install_prefix ${base}/Install)
-set(download_prefix ${base}/Downloads CACHE PATH "Download directory for
-  external projects sources")
+set(download_prefix ${VES_DOWNLOAD_PREFIX})
 
 set(toolchain_dir "${CMAKE_CURRENT_SOURCE_DIR}/CMake/toolchains")
 set(ves_src "${CMAKE_CURRENT_SOURCE_DIR}")
