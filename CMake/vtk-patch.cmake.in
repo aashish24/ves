@@ -5,10 +5,12 @@ foreach(pattern_file ${pattern_files})
    COMMAND @CMAKE_COMMAND@ -E copy_if_different @ves_patch_dir@/freetype/${pattern_file}
      @vtk_src_dir@/Rendering/FreeType/${pattern_file}
   )
- execute_process(
-   COMMAND @CMAKE_COMMAND@ -E copy_if_different @ves_patch_dir@/freetype/${pattern_file}
-     @vtk_crosscompile_src_dir@/Rendering/FreeType/${pattern_file}
- )
+  if(VTK_CROSS_COMPILE)
+    execute_process(
+      COMMAND @CMAKE_COMMAND@ -E copy_if_different @ves_patch_dir@/freetype/${pattern_file}
+        @vtk_crosscompile_src_dir@/Rendering/FreeType/${pattern_file}
+    )
+  endif()
 endforeach()
 
 # Patch vtksys
@@ -18,9 +20,10 @@ foreach(pattern_file ${pattern_files})
     COMMAND @CMAKE_COMMAND@ -E copy_if_different @ves_patch_dir@/vtksys/${pattern_file}
       @vtk_src_dir@/Utilities/KWSys/vtksys/${pattern_file}
   )
-  execute_process(
-    COMMAND @CMAKE_COMMAND@ -E copy_if_different @ves_patch_dir@/vtksys/${pattern_file}
-     @vtk_crosscompile_src_dir@/Utilities/KWSys/vtksys/${pattern_file}
-  )
-
+  if(VTK_CROSS_COMPILE)
+    execute_process(
+      COMMAND @CMAKE_COMMAND@ -E copy_if_different @ves_patch_dir@/vtksys/${pattern_file}
+        @vtk_crosscompile_src_dir@/Utilities/KWSys/vtksys/${pattern_file}
+    )
+  endif()
 endforeach()
