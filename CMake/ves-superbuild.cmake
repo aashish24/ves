@@ -27,7 +27,7 @@ set(download_prefix ${VES_DOWNLOAD_PREFIX})
 set(toolchain_dir "${CMAKE_CURRENT_SOURCE_DIR}/CMake/toolchains")
 set(ves_src "${CMAKE_CURRENT_SOURCE_DIR}")
 set(ves_patch_dir "${CMAKE_CURRENT_SOURCE_DIR}/CMake/patches")
-set(vtk_source_dir ${source_prefix}/vtk)
+set(vtk_src_dir ${source_prefix}/vtk)
 set(vtk_crosscompile_src_dir ${base}/Source/vtk)
 set(vtk_patch_file ${CMAKE_BINARY_DIR}/vtk-patch.cmake)
 configure_file(${CMAKE_SOURCE_DIR}/CMake/vtk-patch.cmake.in
@@ -80,7 +80,7 @@ endmacro()
 macro(compile_vtk proj)
   ExternalProject_Add(
     ${proj}
-    SOURCE_DIR ${source_prefix}/vtk
+    SOURCE_DIR ${vtk_src_dir}
     URL http://www.vtk.org/files/release/6.0/vtk-6.0.0.tar.gz
     URL_MD5 72ede4812c90bdc55172702f0cad02bb
     DOWNLOAD_DIR ${download_prefix}
@@ -118,7 +118,7 @@ endmacro()
 macro(crosscompile_vtk proj toolchain_file)
   ExternalProject_Add(
     ${proj}
-    SOURCE_DIR ${base}/Source/vtk
+    SOURCE_DIR ${vtk_crosscompile_src_dir}
     DOWNLOAD_DIR ${download_prefix}
     DOWNLOAD_COMMAND ""
     PATCH_COMMAND ${CMAKE_COMMAND} -P ${vtk_patch_file}

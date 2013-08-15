@@ -2,9 +2,13 @@
 file(GLOB pattern_files RELATIVE @ves_patch_dir@/freetype "@ves_patch_dir@/freetype/*.*" )
 foreach(pattern_file ${pattern_files})
   execute_process(
-    COMMAND @CMAKE_COMMAND@ -E copy_if_different @ves_patch_dir@/freetype/${pattern_file}
-     @vtk_source_dir@/Rendering/FreeType/${pattern_file}
+   COMMAND @CMAKE_COMMAND@ -E copy_if_different @ves_patch_dir@/freetype/${pattern_file}
+     @vtk_src_dir@/Rendering/FreeType/${pattern_file}
   )
+ execute_process(
+   COMMAND @CMAKE_COMMAND@ -E copy_if_different @ves_patch_dir@/freetype/${pattern_file}
+     @vtk_crosscompile_src_dir@/Rendering/FreeType/${pattern_file}
+ )
 endforeach()
 
 # Patch vtksys
@@ -12,6 +16,11 @@ file(GLOB pattern_files RELATIVE @ves_patch_dir@/vtksys "@ves_patch_dir@/vtksys/
 foreach(pattern_file ${pattern_files})
   execute_process(
     COMMAND @CMAKE_COMMAND@ -E copy_if_different @ves_patch_dir@/vtksys/${pattern_file}
-     @vtk_source_dir@/Utilities/KWSys/vtksys/${pattern_file}
+      @vtk_src_dir@/Utilities/KWSys/vtksys/${pattern_file}
   )
+  execute_process(
+    COMMAND @CMAKE_COMMAND@ -E copy_if_different @ves_patch_dir@/vtksys/${pattern_file}
+     @vtk_crosscompile_src_dir@/Utilities/KWSys/vtksys/${pattern_file}
+  )
+
 endforeach()
