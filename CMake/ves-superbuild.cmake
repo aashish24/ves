@@ -26,8 +26,13 @@ set(download_prefix ${VES_DOWNLOAD_PREFIX})
 
 set(toolchain_dir "${CMAKE_CURRENT_SOURCE_DIR}/CMake/toolchains")
 set(ves_src "${CMAKE_CURRENT_SOURCE_DIR}")
+set(ves_patch_dir "${CMAKE_CURRENT_SOURCE_DIR}/CMake/patches")
+set(vtk_source_dir ${source_prefix}/vtk)
+set(vtk_crosscompile_src_dir ${base}/Source/vtk)
+set(vtk_patch_file ${CMAKE_BINARY_DIR}/vtk-patch.cmake)
+configure_file(${CMAKE_SOURCE_DIR}/CMake/vtk-patch.cmake.in
+               ${vtk_patch_file} @ONLY)
 
-find_package(PythonInterp REQUIRED)
 find_package(Git REQUIRED)
 
 set(module_defaults
@@ -79,6 +84,7 @@ macro(compile_vtk proj)
     URL http://www.vtk.org/files/release/6.0/vtk-6.0.0.tar.gz
     URL_MD5 72ede4812c90bdc55172702f0cad02bb
     DOWNLOAD_DIR ${download_prefix}
+    PATCH_COMMAND ${CMAKE_COMMAND} -P ${vtk_patch_file}
     INSTALL_COMMAND ""
     CMAKE_ARGS
       -DCMAKE_INSTALL_PREFIX:PATH=${install_prefix}/${proj}
@@ -115,6 +121,7 @@ macro(crosscompile_vtk proj toolchain_file)
     SOURCE_DIR ${base}/Source/vtk
     DOWNLOAD_DIR ${download_prefix}
     DOWNLOAD_COMMAND ""
+    PATCH_COMMAND ${CMAKE_COMMAND} -P ${vtk_patch_file}
     INSTALL_COMMAND ""
     DEPENDS vtk-host
     CMAKE_ARGS
