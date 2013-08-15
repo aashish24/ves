@@ -119,9 +119,7 @@ macro(crosscompile_vtk proj toolchain_file)
   ExternalProject_Add(
     ${proj}
     SOURCE_DIR ${vtk_crosscompile_src_dir}
-    DOWNLOAD_DIR ${download_prefix}
     DOWNLOAD_COMMAND ""
-    PATCH_COMMAND ${CMAKE_COMMAND} -P ${vtk_patch_file} -DVTK_CROSS_COMPILE=ON
     INSTALL_COMMAND ""
     DEPENDS vtk-host
     CMAKE_ARGS
