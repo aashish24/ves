@@ -78,13 +78,13 @@ public:
 
     vesVector3f viewDirection(-0.65814518, -0.65814518,  0.36563621);
     vesVector3f viewUp(-0.25127214, -0.25127214, -0.93473238);
-    mKiwiApp->resetView(viewDirection, viewUp);
+    mKiwiApp->resetView(viewDirection, viewUp, false);
   }
 
   void setViewDirectionAndParallelScale(vesVector3f viewDirection, vesVector3f viewUp, double width, double height)
   {
     this->start2DImageView();
-    mKiwiApp->resetView(viewDirection, viewUp);
+    mKiwiApp->resetView(viewDirection, viewUp, false);
     vesCamera::Ptr camera = mKiwiApp->camera();
     double aspectRatio = static_cast<double>(mKiwiApp->viewWidth())/mKiwiApp->viewHeight();
     double parallelScale = std::max(width/aspectRatio, height) / 2.0;

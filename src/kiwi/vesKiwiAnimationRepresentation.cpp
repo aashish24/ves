@@ -149,6 +149,7 @@ bool vesKiwiAnimationRepresentation::handleDoubleTap(int displayX, int displayY)
   else {
     this->onPlay();
   }
+  return true;
 }
 
 //----------------------------------------------------------------------------

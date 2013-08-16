@@ -121,14 +121,14 @@ public:
 
   void checkForAdditionalData(const std::string& dirname);
 
-  void applyBuiltinDatasetCameraParameters(int index);
+  void applyBuiltinDatasetCameraParameters(int index, bool withTransition = true);
 
   const vesSharedPtr<vesShaderProgram> shaderProgram() const;
   vesSharedPtr<vesShaderProgram> shaderProgram();
 
   /// Override superclass method in order to stop the camera spinner if needed.
   using Superclass::resetView;
-  virtual void resetView();
+  virtual void resetView(bool withTransition = true);
 
   /// Set/Get whether or not the app should use camera rotation inertia at the
   /// end of single touch pan gestures.

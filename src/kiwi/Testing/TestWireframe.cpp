@@ -114,7 +114,7 @@ public:
       std::string("/Apps/iOS/Kiwi/Kiwi/Data/bunny.vtp");
 
     mTestApp->loadData(filename);
-    mTestApp->resetView();
+    mTestApp->resetView(false);
   }
 
   void initApp()
@@ -131,7 +131,7 @@ public:
     return true;
   }
 
-  void resetView()
+  void resetView(bool withTransition)
   {
     mTestApp->setCameraPosition(vesVector3f(-0.25, 0.25, 0.25));
     mTestApp->setCameraFocalPoint(vesVector3f(0.0, 0.1, 0.0));

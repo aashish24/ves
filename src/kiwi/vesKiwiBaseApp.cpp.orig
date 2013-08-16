@@ -32,14 +32,10 @@
 #include <vesNormalMatrixUniform.h>
 #include <vesProjectionUniform.h>
 #include <vesVertexAttributeKeys.h>
-#include <vesKiwiCameraTransition.h>
-
-#include "vtkTimerLog.h"
 
 #include <cassert>
 #include <cmath>
 #include <vector>
-#include <set>
 #include <iostream>
 
 //----------------------------------------------------------------------------
@@ -67,8 +63,6 @@ public:
   std::vector< vesSharedPtr<vesShader> > Shaders;
   std::vector< vesSharedPtr<vesUniform> > Uniforms;
   std::vector< vesSharedPtr<vesVertexAttribute> > VertexAttributes;
-  typedef std::set<vesKiwiTransition::Ptr> TransitionSet;
-  TransitionSet Transitions;
 };
 
 //----------------------------------------------------------------------------
@@ -115,50 +109,10 @@ vesSharedPtr<vesRenderer> vesKiwiBaseApp::renderer() const
   return this->Internal->Renderer;
 }
 
-//------------------------------------------------------------------------------
-vesKiwiTransition::Ptr vesKiwiBaseApp::addTransition(vesKiwiTransition::Ptr transition)
-{
-  double curTime = vtkTimerLog::GetUniversalTime();
-  if (transition->begin(curTime, this))
-    {
-    this->Internal->Transitions.insert(transition);
-    }
-  return transition;
-}
-
-//----------------------------------------------------------------------------
-/**\brief Give each active transition the opportunity to prepare for a render.
- *
- * This method is called by render() after willRender() and before the
- * camera clipping range is reset.
- *
- * If a transition indicates it has completed since the previous frame,
- * this method will also dequeue it and queue any transitions chained
- * to start upon its completion.
- */
-void vesKiwiBaseApp::updateTransitions()
-{
-  vesInternal::TransitionSet::iterator it;
-  vesInternal::TransitionSet dead;
-  double curTime = vtkTimerLog::GetUniversalTime();
-  for (it = this->Internal->Transitions.begin(); it != this->Internal->Transitions.end(); ++it)
-    {
-    if (!(*it)->update(curTime, this))
-      {
-      dead.insert(*it);
-      }
-    }
-  for (it = dead.begin(); it != dead.end(); ++it)
-    {
-    this->Internal->Transitions.erase(*it);
-    }
-}
-
 //----------------------------------------------------------------------------
 void vesKiwiBaseApp::render()
 {
   this->willRender();
-  this->updateTransitions();
   this->Internal->Renderer->resetCameraClippingRange();
   this->Internal->Renderer->render();
   this->didRender();
@@ -171,9 +125,9 @@ void vesKiwiBaseApp::resizeView(int width, int height)
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiBaseApp::resetView(bool withTransition)
+void vesKiwiBaseApp::resetView()
 {
-  this->resetView(vesVector3f(0.0, 0.0, -1.0), vesVector3f(0.0, 1.0, 0.0), withTransition);
+  this->resetView(vesVector3f(0.0, 0.0, -1.0), vesVector3f(0.0, 1.0, 0.0));
 }
 
 //----------------------------------------------------------------------------
@@ -183,7 +137,7 @@ vesKiwiCameraInteractor::Ptr vesKiwiBaseApp::cameraInteractor() const
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiBaseApp::resetView(const vesVector3f& viewDirection, const vesVector3f& viewUp, bool withTransition)
+void vesKiwiBaseApp::resetView(const vesVector3f& viewDirection, const vesVector3f& viewUp)
 {
   // this is just confusing...
   // We want to set the direction to look from and view up
@@ -192,30 +146,18 @@ void vesKiwiBaseApp::resetView(const vesVector3f& viewDirection, const vesVector
   // the ResetCamera function will overwrite view up
   // so we have to call things in this strange order.
 
-  vesSharedPtr<vesRenderer> renderer = this->Internal->Renderer;
-  vesCamera::Ptr camera = renderer->camera();
-  vesKiwiCameraTransition::Ptr transition =
-    vesKiwiCameraTransition::create(camera);
-  transition
-    ->takeInitialFrame()
-    ->setDuration(1.0);
-
   //
   // set direction to look from
-  camera->setViewPlaneNormal(-viewDirection);
+  vesSharedPtr<vesRenderer> renderer = this->Internal->Renderer;
+
+  renderer->camera()->setViewPlaneNormal(-viewDirection);
 
   // dolly so that scene fits window
   renderer->resetCamera();
 
-  // now set the up vector
+  // now set the view plane normal
   renderer->camera()->setViewUp(viewUp);
   renderer->camera()->orthogonalizeViewUp();
-
-  if (withTransition)
-    {
-    transition->setFinalFrame(camera->position(), camera->focalPoint(), viewUp);
-    this->addTransition(transition);
-    }
 }
 
 //----------------------------------------------------------------------------

@@ -1,6 +1,8 @@
 set(tests
+  TestAnimation
   TestCap
   TestClipPlane
+  TestEasings
   TestGradientBackground
   TestKiwiViewer
   TestNoContext
@@ -9,6 +11,7 @@ set(tests
   TestStreamingDataRepresentation
   TestTexture
   TestTexturedBackground
+  TestTransitions
   TestWireframe
   )
 

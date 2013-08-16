@@ -114,7 +114,7 @@ public:
       std::string("/Apps/iOS/Kiwi/Kiwi/Data/bunny.vtp");
 
     mCapApp->loadData(filename);
-    mCapApp->resetView();
+    mCapApp->resetView(false);
   }
 
   void initApp()

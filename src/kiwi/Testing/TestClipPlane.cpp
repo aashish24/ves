@@ -111,7 +111,7 @@ public:
       std::string("/Apps/iOS/Kiwi/Kiwi/Data/bunny.vtp");
 
     mClipApp->loadData(filename);
-    mClipApp->resetView();
+    mClipApp->resetView(false);
   }
 
   void initApp()
