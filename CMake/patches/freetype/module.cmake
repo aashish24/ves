@@ -1,14 +1,11 @@
 vtk_module(vtkRenderingFreeType
-  IMPLEMENTS
-    vtkRenderingCore
   GROUPS
     Rendering
   DEPENDS
     vtkRenderingCore
     vtkfreetype
-    vtkftgl
+    #vtkftgl
   TEST_DEPENDS
-    vtkRenderingMatplotlib
     vtkTestingRendering
     vtkViewsContext2D
   )

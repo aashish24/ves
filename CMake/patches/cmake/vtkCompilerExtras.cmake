@@ -25,7 +25,7 @@ if(CMAKE_COMPILER_IS_GNUCXX)
   # Now check if we can use visibility to selectively export symbols
   exec_program(${CMAKE_C_COMPILER} ARGS --version OUTPUT_VARIABLE
     _gcc_version_info)
-  string (REGEX MATCH "[345]\\.[0-9]\\.[0-9]"
+  string (REGEX MATCH "[345]\\.[0-9]\\.[0-9]*"
     _gcc_version "${_gcc_version_info}")
   if(NOT _gcc_version)
     string (REGEX REPLACE ".*\\(GCC\\).* ([34]\\.[0-9]) .*" "\\1.0"

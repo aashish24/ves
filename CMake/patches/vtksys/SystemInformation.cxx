@@ -130,7 +130,7 @@ typedef int siginfo_t;
 #   define KWSYS_SYSTEMINFORMATION_IMPLEMENT_FQDN
 #  endif
 # endif
-# if defined(__GNUG__)
+# if defined(__GNUG__) && !defined(ANDROID)
 #  include <execinfo.h>
 #  if !(defined(__LSB_VERSION__) && __LSB_VERSION__ < 41)
 #   define KWSYS_SYSTEMINFORMATION_HAVE_BACKTRACE
@@ -3340,7 +3340,7 @@ when set print stack trace in response to common signals.
 */
 void SystemInformationImplementation::SetStackTraceOnError(int enable)
 {
-#if !defined(_WIN32) && !defined(__MINGW32__) && !defined(__CYGWIN__)
+#if !defined(_WIN32) && !defined(__MINGW32__) && !defined(__CYGWIN__) && !defined(__QNX__)
   static int saOrigValid=0;
   static struct sigaction saSEGVOrig;
   static struct sigaction saTERMOrig;
