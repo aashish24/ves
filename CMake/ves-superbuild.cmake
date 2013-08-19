@@ -35,7 +35,7 @@ set(install_prefix ${base}/Install)
 
 set(toolchain_dir "${CMAKE_CURRENT_SOURCE_DIR}/CMake/toolchains")
 set(ves_src_dir "${CMAKE_CURRENT_SOURCE_DIR}")
-
+set(ves_patch_dir "${ves_src_dir}/CMake/patches")
 set(vtk_src_dir "${source_prefix}/vtk")
 set(vtk_patch_file ${CMAKE_BINARY_DIR}/vtk-patch.cmake)
 configure_file(${CMAKE_SOURCE_DIR}/CMake/vtk-patch.cmake.in

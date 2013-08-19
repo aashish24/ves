@@ -15,3 +15,12 @@ foreach(pattern_file ${pattern_files})
       @vtk_src_dir@/Utilities/KWSys/vtksys/${pattern_file}
   )
 endforeach()
+
+# Patch cmake
+file(GLOB pattern_files RELATIVE @ves_patch_dir@/cmake "@ves_patch_dir@/cmake/*.*" )
+foreach(pattern_file ${pattern_files})
+  execute_process(
+    COMMAND @CMAKE_COMMAND@ -E copy_if_different @ves_patch_dir@/cmake/${pattern_file}
+      @vtk_src_dir@/CMake/${pattern_file}
+  )
+endforeach()
