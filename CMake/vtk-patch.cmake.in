@@ -7,6 +7,15 @@ foreach(pattern_file ${pattern_files})
   )
 endforeach()
 
+file(GLOB pattern_files RELATIVE @ves_patch_dir@/freetype "@ves_patch_dir@/freetype/vtkfreetype/*.*" )
+message(${pattern_files})
+foreach(pattern_file ${pattern_files})
+  execute_process(
+   COMMAND @CMAKE_COMMAND@ -E copy_if_different @ves_patch_dir@/freetype/${pattern_file}
+     @vtk_src_dir@/ThirdParty/freetype/${pattern_file}
+  )
+endforeach()
+
 # Patch vtksys
 file(GLOB pattern_files RELATIVE @ves_patch_dir@/vtksys "@ves_patch_dir@/vtksys/*.*" )
 foreach(pattern_file ${pattern_files})
