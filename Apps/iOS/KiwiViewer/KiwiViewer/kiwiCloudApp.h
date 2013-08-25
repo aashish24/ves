@@ -217,14 +217,14 @@ public:
       imageRep->setPlaneVisibility(2, true);
       imageRep->setOutlineVisible(true);
       imageRep->refreshTextures();
-      this->resetView();
+      this->resetView(true);
     }
   }
 
   void setViewDirectionAndParallelScale(vesVector3f viewDirection, vesVector3f viewUp, double width, double height)
   {
     this->start2DImageView();
-    this->resetView(viewDirection, viewUp);
+    this->resetView(viewDirection, viewUp, true);
     double aspectRatio = static_cast<double>(this->viewWidth())/this->viewHeight();
     double parallelScale = std::max(width/aspectRatio, height) / 2.0;
     this->camera()->setParallelScale(parallelScale);
@@ -439,7 +439,7 @@ public:
     else if (action == "\xe2\x86\xbb")
       this->onCameraRoll();
     else if (action == "Reset Camera")
-      this->resetView();
+      this->resetView(true);
     else if (action == "Refresh Scene") {
       this->pvRemoteRep()->requestScene();
     }
@@ -639,7 +639,7 @@ public:
     mDataRep = rep;
     mDataRep->initializeWithShader(this->shaderProgram());
     mDataRep->addSelfToRenderer(this->renderer());
-    this->resetView();
+    this->resetView(false);
     return true;
   }
 
