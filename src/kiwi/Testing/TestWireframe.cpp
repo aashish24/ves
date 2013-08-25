@@ -131,7 +131,7 @@ public:
     return true;
   }
 
-  void resetView(bool withTransition)
+  void resetView(bool vtkNotUsed(withTransition))
   {
     mTestApp->setCameraPosition(vesVector3f(-0.25, 0.25, 0.25));
     mTestApp->setCameraFocalPoint(vesVector3f(0.0, 0.1, 0.0));
