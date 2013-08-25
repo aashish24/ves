@@ -372,15 +372,18 @@ public:
       }
     else if (t < (2/2.75))
       {
-      return 1. - (7.5625*(t-=(1.5/2.75))*t + .75);
+      t-=(1.5/2.75);
+      return 1. - (7.5625*t*t + .75);
       }
     else if (t < (2.5/2.75))
       {
-      return 1. - (7.5625*(t-=(2.25/2.75))*t + .9375);
+      t-=(2.25/2.75);
+      return 1. - (7.5625*t*t + .9375);
       }
     else
       {
-      return 1. - (7.5625*(t-=(2.625/2.75))*t + .984375);
+      t-=(2.625/2.75);
+      return 1. - (7.5625*t*t + .984375);
       }
     }
   vesKiwiEasingEvaluate(vesKiwiBounceInEasing);
@@ -402,15 +405,18 @@ public:
       }
     else if (t < (2/2.75))
       {
-      return 7.5625*(t-=(1.5/2.75))*t + .75;
+      t-=(1.5/2.75);
+      return 7.5625*t*t + .75;
       }
     else if (t < (2.5/2.75))
       {
-      return 7.5625*(t-=(2.25/2.75))*t + .9375;
+      t-=(2.25/2.75);
+      return 7.5625*t*t + .9375;
       }
     else
       {
-      return 7.5625*(t-=(2.625/2.75))*t + .984375;
+      t-=(2.625/2.75);
+      return 7.5625*t*t + .984375;
       }
     }
   vesKiwiEasingEvaluate(vesKiwiBounceOutEasing);
