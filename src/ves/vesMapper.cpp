@@ -22,6 +22,7 @@
 #include "vesMapper.h"
 
 // VES includes
+#include "vesEigen.h"
 #include "vesMaterial.h"
 #include "vesGeometryData.h"
 #include "vesGLTypes.h"
@@ -43,7 +44,6 @@ class vesMapper::vesInternal
 public:
   vesInternal()
   {
-    this->m_color.resize(4);
   }
 
   ~vesInternal()
@@ -51,15 +51,21 @@ public:
     this->cleanUpDrawObjects();
   }
 
-  void setColor(const float &r, const float &g, const float &b, const float &a)
+  void setColor(const vesVector4f& rgba)
   {
-    m_color[0] = r; m_color[1] = g; m_color[2] = b; m_color[3] = a;
+    this->m_color = rgba;
+  }
+
+  float* color()
+  {
+    return this->m_color.data();
   }
 
   const float* color() const
   {
-    return &(this->m_color.front());
+    return this->m_color.data();
   }
+
 
   void cleanUpDrawObjects()
   {
@@ -67,7 +73,7 @@ public:
     this->m_buffers.clear();
   }
 
-  std::vector< float >                       m_color;
+  vesVector4f                                m_color;
   std::vector< unsigned int >                m_buffers;
   std::map< unsigned int, std::vector<int> > m_bufferVertexAttributeMap;
 };
@@ -140,21 +146,31 @@ const vesSharedPtr<vesGeometryData> vesMapper::geometryData() const
 }
 
 
-void vesMapper::setColor(float r, float g, float b, float a)
+void vesMapper::setColor(const vesVector4f& rgba)
 {
-  this->m_internal->setColor(r, g, b, a);
+  this->m_internal->setColor(rgba);
 }
 
 
 float* vesMapper::color()
 {
-  return const_cast<float*>(this->m_internal->color());
+  return this->m_internal->color();
 }
 
 
 const float* vesMapper::color() const
 {
   return this->m_internal->color();
+}
+
+vesVector4f& vesMapper::colorVector()
+{
+  return this->m_internal->m_color;
+}
+
+const vesVector4f& vesMapper::colorVector() const
+{
+  return this->m_internal->m_color;
 }
 
 //----------------------------------------------------------------------------
