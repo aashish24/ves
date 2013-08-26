@@ -188,13 +188,15 @@ public:
   /// Add the given transition to the app upon this transition's completion.
   virtual vesKiwiTransition::Ptr followedBy(vesKiwiTransition::Ptr next)
     {
-    return this->chain(next, QUEUE_AT_COMPLETION);
+    this->chain(next, QUEUE_AT_COMPLETION);
+    return shared_from_this();
     }
 
   /// Add the given transition to the app as soon as this transition starts.
   virtual vesKiwiTransition::Ptr alsoStart(vesKiwiTransition::Ptr next)
     {
-    return this->chain(next, QUEUE_AT_STARTUP);
+    this->chain(next, QUEUE_AT_STARTUP);
+    return shared_from_this();
     }
 
   /// Add a transition to a queue for later addition to the app.
