@@ -145,7 +145,6 @@ public:
               ->setDuration(0.75)
               ->followedBy(
                 vesKiwiPolyDataColorTransition::create(rep)
-                ->setInitialValue(vesVector4f(1., 1., 1., 1.))
                 ->setFinalValue(vesVector4f(1., 1., 1., 1.))
                 ->setEasing(vesKiwiQuadraticInOutEasing::create())
                 ->setDuration(0.75)
