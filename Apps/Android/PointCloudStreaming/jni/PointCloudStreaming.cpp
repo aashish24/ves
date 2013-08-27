@@ -169,7 +169,7 @@ public:
     mIsConnected = true;
     mDataRep->initializeWithShader(mShader);
     mDataRep->addSelfToRenderer(this->renderer());
-    this->resetView();
+    this->resetView(false);
     return true;
   }
 
