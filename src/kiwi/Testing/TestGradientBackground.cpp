@@ -21,7 +21,7 @@
 #include <vesBackground.h>
 #include <vesKiwiBaseApp.h>
 #include <vesKiwiDataLoader.h>
-#include <vesKiwiIVarTransition.h>
+#include <vesKiwiSceneTransitions.h>
 #include <vesKiwiPolyDataRepresentation.h>
 #include <vesKiwiTestHelper.h>
 #include <vesRenderer.h>
