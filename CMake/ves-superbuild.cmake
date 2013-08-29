@@ -406,7 +406,7 @@ if(VES_IOS_SUPERBUILD)
       COMMAND ${CMAKE_SOURCE_DIR}/CMake/makeFramework.sh kiwi
       WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
       COMMENT "Creating kiwi framework")
-    add_dependencies(kiwi-framework ves-ios-simulator ves-ios-device)
+    add_dependencies(kiwi-framework ves-ios-simulator ves-ios-device eigen)
 
     add_custom_target(vtk-framework ALL
       COMMAND ${CMAKE_SOURCE_DIR}/CMake/makeFramework.sh vtk
