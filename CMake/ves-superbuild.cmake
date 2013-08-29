@@ -16,6 +16,8 @@ endif()
 option(VES_HOST_SUPERBUILD "Build VES and dependent subprojects for host architecture" OFF)
 option(VES_ANDROID_SUPERBUILD "Build VES and dependent subprojects for Android" OFF)
 option(VES_IOS_SUPERBUILD "Build VES and dependent subprojects for iOS" OFF)
+set(VES_DOWNLOAD_PREFIX "${CMAKE_BINARY_DIR}/downloads" CACHE PATH
+  "Directory to store and extract tarballs of external dependencies")
 
 set(base "${CMAKE_BINARY_DIR}/CMakeExternals")
 set_property(DIRECTORY PROPERTY EP_BASE ${base})
@@ -32,7 +34,12 @@ set(build_prefix ${base}/Build)
 set(install_prefix ${base}/Install)
 
 set(toolchain_dir "${CMAKE_CURRENT_SOURCE_DIR}/CMake/toolchains")
-set(ves_src "${CMAKE_CURRENT_SOURCE_DIR}")
+set(ves_src_dir "${CMAKE_CURRENT_SOURCE_DIR}")
+set(ves_patch_dir "${ves_src_dir}/CMake/patches")
+set(vtk_src_dir "${source_prefix}/vtk")
+set(vtk_patch_file ${CMAKE_BINARY_DIR}/vtk-patch.cmake)
+configure_file(${CMAKE_SOURCE_DIR}/CMake/vtk-patch.cmake.in
+               ${vtk_patch_file} @ONLY)
 
 find_package(PythonInterp REQUIRED)
 find_package(Git REQUIRED)
@@ -73,6 +80,7 @@ macro(install_eigen)
   ExternalProject_Add(
     eigen
     SOURCE_DIR ${source_prefix}/eigen
+    DOWNLOAD_DIR ${VES_DOWNLOAD_PREFIX}
     URL ${eigen_url}
     URL_MD5 ${eigen_md5}
     CONFIGURE_COMMAND ""
@@ -91,9 +99,8 @@ macro(download_libarchive)
     libarchive-download
     SOURCE_DIR ${source_prefix}/libarchive
     GIT_REPOSITORY git://github.com/libarchive/libarchive.git
-#    GIT_TAG 8076b31
     GIT_TAG v3.0.4
-    PATCH_COMMAND git apply ${ves_src}/CMake/libarchive.patch
+    PATCH_COMMAND git apply ${ves_src_dir}/CMake/libarchive.patch
     CONFIGURE_COMMAND ""
     BUILD_COMMAND ""
     INSTALL_COMMAND ""
@@ -221,9 +228,11 @@ macro(compile_vtk proj)
   endif()
   ExternalProject_Add(
     ${proj}
-    SOURCE_DIR ${source_prefix}/vtk
-    GIT_REPOSITORY git://github.com/patmarion/VTK.git
-    GIT_TAG ce4a267
+    SOURCE_DIR ${vtk_src_dir}
+    DOWNLOAD_DIR ${VES_DOWNLOAD_PREFIX}
+    URL http://www.vtk.org/files/release/6.0/vtk-6.0.0.tar.gz
+    URL_MD5 72ede4812c90bdc55172702f0cad02bb
+    PATCH_COMMAND ${CMAKE_COMMAND} -P ${vtk_patch_file}
     INSTALL_COMMAND ""
     ${vtk_host_build_command}
     CMAKE_ARGS
@@ -239,7 +248,7 @@ endmacro()
 macro(crosscompile_vtk proj toolchain_file)
   ExternalProject_Add(
     ${proj}
-    SOURCE_DIR ${base}/Source/vtk
+    SOURCE_DIR ${vtk_src_dir}
     DOWNLOAD_COMMAND ""
     DEPENDS vtk-host
     CMAKE_ARGS
@@ -279,7 +288,7 @@ macro(compile_ves proj)
   endif()
   ExternalProject_Add(
     ${proj}
-    SOURCE_DIR ${ves_src}
+    SOURCE_DIR ${ves_src_dir}
     DOWNLOAD_COMMAND ""
     DEPENDS vtk-${tag} eigen ${VES_SUPERBUILD_${tag}_DEPS}
     CMAKE_ARGS
@@ -327,7 +336,7 @@ macro(crosscompile_ves proj tag toolchain_file)
   endif()
   ExternalProject_Add(
     ${proj}
-    SOURCE_DIR ${ves_src}
+    SOURCE_DIR ${ves_src_dir}
     DOWNLOAD_COMMAND ""
     DEPENDS vtk-${tag} eigen ${VES_SUPERBUILD_${tag}_DEPS}
     CMAKE_ARGS
