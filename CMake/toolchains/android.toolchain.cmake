@@ -1064,6 +1064,11 @@ if( ANDROID_SET_OBSOLETE_VARIABLES )
 endif()
 
 
+set_property(GLOBAL APPEND
+   PROPERTY
+     ECLIPSE_EXTRA_NATURES org.android.ide.eclipse.adt.AndroidNature)
+
+
 # Variables controlling behavior or set by cmake toolchain:
 #   ANDROID_ABI : "armeabi-v7a" (default), "armeabi", "armeabi-v7a with NEON", "armeabi-v7a with VFPV3", "armeabi-v6 with VFP", "x86", "mips"
 #   ANDROID_NATIVE_API_LEVEL : 3,4,5,8,9,14 (depends on NDK version)
