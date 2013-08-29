@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-project(KiwiViewer)
+project(KiwiViewer CXX Java)
 
 if (CMAKE_BINARY_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
   message(FATAL_ERROR "Kiwi does not support in-source builds :) .")
