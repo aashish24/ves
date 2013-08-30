@@ -55,17 +55,43 @@ add_custom_target(kiwi-ant-configure ALL
   WORKING_DIRECTORY
           "${CMAKE_CURRENT_BINARY_DIR}")
 
+# For Android-Eclipse we need to copy resource dir to binary dir
+# or else it will not find resources.
+
+if("${CMAKE_EXTRA_GENERATOR}" STREQUAL "Eclipse CDT4")
+  # Remove existing resource directory if any in the binary dir
+  add_custom_target(kiwi-apk-rm-resource ALL
+    COMMAND ${CMAKE_COMMAND} -E remove_directory
+            "${CMAKE_CURRENT_BINARY_DIR}/res")
+  add_dependencies(kiwi-apk-rm-resource
+    kiwi-ant-configure
+    KiwiNative)
+
+  # Copy res from the source dir to binary dir
+  add_custom_target(kiwi-apk-resource ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${CMAKE_CURRENT_SOURCE_DIR}/res"
+            "${CMAKE_CURRENT_BINARY_DIR}/res")
+  add_dependencies(kiwi-apk-resource
+    kiwi-apk-rm-resource
+    kiwi-ant-configure
+    KiwiNative)
+endif()
+
 add_custom_target(kiwi-apk-release ALL
   COMMAND ant
           -file "${CMAKE_CURRENT_BINARY_DIR}/build.xml"
           release)
 add_dependencies(kiwi-apk-release
   kiwi-ant-configure
-  KiwiNative)
+  KiwiNative
+  kiwi-apk-resource)
+
 add_custom_target(kiwi-apk-debug ALL
   COMMAND ant
           -file "${CMAKE_CURRENT_BINARY_DIR}/build.xml"
           debug)
 add_dependencies(kiwi-apk-debug
   kiwi-ant-configure
-  KiwiNative)
+  KiwiNative
+  kiwi-apk-resource)
