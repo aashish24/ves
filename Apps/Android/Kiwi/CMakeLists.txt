@@ -54,6 +54,8 @@ add_custom_target(kiwi-ant-configure ALL
           "${CMAKE_CURRENT_SOURCE_DIR}/proguard-project.txt"
   WORKING_DIRECTORY
           "${CMAKE_CURRENT_BINARY_DIR}")
+add_dependencies(kiwi-ant-configure
+  KiwiNative)
 
 # For Android-Eclipse we need to copy resource dir to binary dir
 # or else it will not find resources.
@@ -92,6 +94,7 @@ add_custom_target(kiwi-apk-debug ALL
           -file "${CMAKE_CURRENT_BINARY_DIR}/build.xml"
           debug)
 add_dependencies(kiwi-apk-debug
+  kiwi-apk-release
   kiwi-ant-configure
   KiwiNative
   kiwi-apk-resource)
