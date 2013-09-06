@@ -2,34 +2,49 @@
 file(GLOB pattern_files RELATIVE @ves_patch_dir@/freetype "@ves_patch_dir@/freetype/*.*" )
 foreach(pattern_file ${pattern_files})
   execute_process(
-   COMMAND @CMAKE_COMMAND@ -E copy_if_different @ves_patch_dir@/freetype/${pattern_file}
-     @vtk_src_dir@/Rendering/FreeType/${pattern_file}
+    COMMAND "@CMAKE_COMMAND@" -E copy_if_different @ves_patch_dir@/freetype/${pattern_file}
+      @vtk_src_dir@/Rendering/FreeType/${pattern_file}
+    OUTPUT_VARIABLE out
+    RESULT_VARIABLE res
+    ERROR_VARIABLE err
   )
+  message("Finished patching freetype. Output: ${out} Result: ${res}; Error: ${err}")
 endforeach()
 
 file(GLOB pattern_files RELATIVE @ves_patch_dir@/freetype "@ves_patch_dir@/freetype/vtkfreetype/*.*" )
-message(${pattern_files})
 foreach(pattern_file ${pattern_files})
   execute_process(
-   COMMAND @CMAKE_COMMAND@ -E copy_if_different @ves_patch_dir@/freetype/${pattern_file}
-     @vtk_src_dir@/ThirdParty/freetype/${pattern_file}
+    COMMAND "@CMAKE_COMMAND@" -E copy_if_different @ves_patch_dir@/freetype/${pattern_file}
+      @vtk_src_dir@/ThirdParty/freetype/${pattern_file}
+    OUTPUT_VARIABLE out
+    RESULT_VARIABLE res
+    ERROR_VARIABLE err
   )
+  message("Finished patching vtkfreetype. Output: ${out} Result: ${res}; Error: ${err}")
 endforeach()
 
 # Patch vtksys
 file(GLOB pattern_files RELATIVE @ves_patch_dir@/vtksys "@ves_patch_dir@/vtksys/*.*" )
 foreach(pattern_file ${pattern_files})
   execute_process(
-    COMMAND @CMAKE_COMMAND@ -E copy_if_different @ves_patch_dir@/vtksys/${pattern_file}
+    COMMAND "@CMAKE_COMMAND@" -E copy_if_different @ves_patch_dir@/vtksys/${pattern_file}
       @vtk_src_dir@/Utilities/KWSys/vtksys/${pattern_file}
+    OUTPUT_VARIABLE out
+    RESULT_VARIABLE res
+    ERROR_VARIABLE err
   )
+  message("Finished patching vtksys. Output: ${out} Result: ${res}; Error: ${err}")
 endforeach()
 
 # Patch cmake
 file(GLOB pattern_files RELATIVE @ves_patch_dir@/cmake "@ves_patch_dir@/cmake/*.*" )
 foreach(pattern_file ${pattern_files})
   execute_process(
-    COMMAND @CMAKE_COMMAND@ -E copy_if_different @ves_patch_dir@/cmake/${pattern_file}
+    COMMAND "@CMAKE_COMMAND@" -E copy_if_different @ves_patch_dir@/cmake/${pattern_file}
       @vtk_src_dir@/CMake/${pattern_file}
+    OUTPUT_VARIABLE out
+    RESULT_VARIABLE res
+    ERROR_VARIABLE err
   )
+  message("Finished patching cmake. Output: ${out} Result: ${res}; Error: ${err}")
 endforeach()
