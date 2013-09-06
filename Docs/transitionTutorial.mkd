@@ -1,3 +1,44 @@
+The VES/Kiwi development team has added a new feature to the
+kiwi library for use in iOS and Android applications:
+animated transitions.
+
+_Transitions_ are animations of a change in the scene graph over time.
+They are useful because they provide users with information about
+how items in the two scene graphs (the initial and final ones) are
+related to each other.
+[Heer and Robertson](http://vis.berkeley.edu/papers/animated_transitions/)
+have a thorough discussion of transitions and present a taxonomy of
+transition types in scientific visualization.
+
+In the kiwi library, transitions are transient in nature;
+once you construct a transition and
+queue it for the application to process, you need never inspect it again;
+the object representing the transition is reference-counted and disowned
+by the application once the animation is complete.
+
+Transition objects hold the initial and final state of one or more
+scene graph node properties (e.g. a color) and compute intermediate
+values based on the amount of time elapsed since the transition was
+queued.
+Any transition can be run in series or in parallel with other transitions.
+When run in parallel -- as long as they don't set the same attribute on
+the same scene-graph node -- the changes will appear simultaneously.
+When run in series, one transition starts as its predecessor completes,
+making complex sequences of actions possible.
+
+The new transitions also provide _easings_, which are ways to
+alter the rate at which a transition occurs relative to the actual
+elapsed time.
+These are frequently used in traditional (hand) animation to
+achieve realistic motion and/or add "character" to motion.
+Instead of linearly interpolating a property between its initial and final values
+according to &Delta;t (the time since the transition began),
+the time is composed with a nonlinear easing function.
+Many easing functions are illustrated on [easings.net](http://easings.net/)
+and most of them are available in the kiwi library.
+
+What follows is a tutorial on the specific way transitions are implemented in kiwi.
+
 # Animated transitions by example
 
 ## Basics
@@ -6,7 +47,7 @@ The kiwi library provides animated transitions for you to use.
 They are not dissimilar to [D3](https://github.com/mbostock/d3/wiki/Transitions)'s transitions.
 The one you are most probably interested in is the one that moves the camera: `vesKiwiCameraTransition`.
 Transitions should be created using their static `create` method, which returns a shared pointer
-to a new transition instance. See [](shared_pointers.mkd) for more information.
+to a new transition instance.
 
     vesKiwiCameraTransition::Ptr transition =
       vesKiwiCameraTransition::create(camera);
@@ -91,8 +132,10 @@ This example sets the duration of one transition to match another one:
 
 Transitions do their best to obtain initial conditions from the **current state** of the objects they will be animating
 **at the time they are queued** by the application, **not** at their construction time.
-Most also provide a means for you to manually set the initial state, however this can lead to discontinuities
-at the beginning of a transition, so be careful.
+The queue time and construction time can be different, specifically when transitions are run in series
+using the `followedBy()` method.
+Most transitions also provide a means for you to manually set the initial state,
+however this can lead to discontinuities at the beginning of a transition, so be careful.
 
 ## Final conditions
 
@@ -117,7 +160,8 @@ In this situation, you can force initial/final state settings during constructio
     tx1->takeFinalOrientation();
 
 Methods for forcing a transition to sample the current state of an object
-are generally named `take` and do not accept arguments.
+to obtain an initial or final value generally have names beginning with `take`
+and do not accept arguments.
 
 ## Transition time versus progress
 
@@ -130,10 +174,7 @@ Kiwi provides several functions, all derived from `vesKiwiEasing`.
 Each one takes a progress indicator number between 0 and 1 and returns a modified number between 0 and 1.
 The modified number is passed to the transition, which uses it as a "fraction completed".
 
-## Transition esoterica
-
-**FIXME**:
-Ongoing "transitions"? The discussion below needs to be cleaned up and an interface presented.
+## Non-transitions
 
 Sometimes you need a transition for which no completion time is known a priori.
 One example would be showing FTP download progress when the file size is unavailable;
@@ -149,7 +190,7 @@ In the future, a method may be available to obtain the time since the last rende
 
 ## Specific transitions
 
-### Camera
+### Camera Transition
 
 Camera transitions allow you to *independently* change the following
 
@@ -165,30 +206,41 @@ Camera transitions also allow you to set the entire initial or final
 See `src/kiwi/Testing/TestAnimation.cpp` for an example of how to
 use this class.
 
-### Transform
+### Actor Transitions
 
-This transition is not implemented yet.
+There are three classes you can use to transform actors:
 
-+ orientation
-+ translation
++ `vesActorTranslationTransition` provides a way to transition the `translation` property of a `vesActor` instance.
++ `vesActorCenterTransition` provides a way to transition the `center` property of a `vesActor` instance controlling its center of rotation.
++ `vesActorRotationTransition` provides a way to transition the `rotation` property of a `vesActor` instance.
 
-When implemented, it should behave roughly like the camera transition
-except for `vesActor` nodes.
+These are all simply template-specializations of the `vesKiwiIVarTransition` class,
+which uses get- and set-methods to obtain initial values and prepare intermediate states.
 
-### Color
+See `src/kiwi/Testing/TestGradientBackground.cpp` for an example.
 
-This transition is not implemented yet.
+## Representation Color Transitions
 
-+ Path through a color space (HSV, RGB, CIELab, ...).
-+ Opacity
+The `vesKiwiPolyDataRepresentation` class provides methods to set the color
+and opacity of VTK polydata. As with actor transitions, we provide typedefs
+to template specializations of the `vesKiwiIVarTransition` class to control
+color and opacity:
 
-Take a "bind" function object used to set the color on some instance.
++ `vesKiwiPolyDataColorTransition`
++ `vesKiwiPolyDataOpacityTransition`
+
+Note that currently the kiwi library ignores opacity, so transitioning it
+is not likely to be useful.
 
 ## Scalar value
 
+Finally, you can transition any variable that uses a primitive storage type
+given just its address.
 The `vesKiwiScalarTransition` is a template class that takes a pointer
 to a primitive storage type (e.g., `double` or `int`) and transitions
 the value stored.
+Note that you must guarantee that the address is valid for the duration of
+the transition.
 
 See `src/kiwi/Testing/TestTransitions.cpp` for an example of how to
 use this class.

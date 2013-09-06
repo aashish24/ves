@@ -5,18 +5,19 @@
 #include "vtkQuaternion.h"
 #include "vesCamera.h"
 
-/*!\brief A transition that refocuses and reorients the camera.
- *
- * By default, both the initial and final camera state
- * (orientation, focus, distance from the focus to the camera, and
- * -- when parallel projection is turned on -- the parallel scale)
- * are set to the current camera state, making the transition
- * a no-operation. You need only set camera parameters you wish
- * to change.
- *
- * The transition will not switch between perspective and
- * parallel projection.
- */
+/// \class vesKiwiCameraTransition
+/// \ingroup KiwiPlatform
+/// \brief A transition that refocuses and reorients the camera.
+///
+/// By default, both the initial and final camera state
+/// (orientation, focus, distance from the focus to the camera, and
+/// -- when parallel projection is turned on -- the parallel scale)
+/// are set to the current camera state, making the transition
+/// a no-operation. You need only set camera parameters you wish
+/// to change.
+///
+/// The transition will not switch between perspective and
+/// parallel projection.
 class vesKiwiCameraTransition : public vesKiwiTransition
 {
 public:

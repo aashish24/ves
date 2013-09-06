@@ -53,6 +53,7 @@ vesKiwiTransition::Ptr vesKiwiTransition::setDuration(double d)
   return shared_from_this();
 }
 
+/// \brief Called by the application as the transition starts.
 int vesKiwiTransition::begin(double t, vesKiwiBaseApp* app)
 {
   // First, queue other transitions that should start with us.
@@ -72,7 +73,7 @@ int vesKiwiTransition::begin(double t, vesKiwiBaseApp* app)
   return this->respondToSubclass(status, app);
 }
 
-/// Called by application when a render is about to occur.
+/// \brief Called by the application before each rendering pass through the scene graph.
 int vesKiwiTransition::update(double t, vesKiwiBaseApp* app)
 {
   double curTime = (t - this->mBeginTime) / this->mDuration;
@@ -93,6 +94,7 @@ int vesKiwiTransition::update(double t, vesKiwiBaseApp* app)
   return this->respondToSubclass(status, app);
 }
 
+/// \brief Add a transition to a queue for later addition to the app.
 vesKiwiTransition::Ptr vesKiwiTransition::chain(
   vesKiwiTransition::Ptr next, TransitionDisposition queue)
 {
@@ -107,7 +109,7 @@ vesKiwiTransition::Ptr vesKiwiTransition::chain(
   return next;
 }
 
-/// Update the application's transition queue based on virtual method return values.
+/// \brief Update the application's transition queue based on virtual method return values.
 int vesKiwiTransition::respondToSubclass(TransitionStatus status, vesKiwiBaseApp* app)
 {
   switch (status)
@@ -132,7 +134,7 @@ int vesKiwiTransition::respondToSubclass(TransitionStatus status, vesKiwiBaseApp
   return 1;
 }
 
-/// Add transitions to the application's queue from a chain held by the transition.
+/// \brief Add transitions to the application's queue from a chain held by the transition.
 void vesKiwiTransition::queueChain(
   TransitionDisposition queue, vesKiwiBaseApp* app)
 {

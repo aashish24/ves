@@ -6,11 +6,14 @@
 #include "vesActor.h"
 #include "vesMapper.h"
 
-// This file contains typedefs of template specializations
-// for use in transitioning scene graph nodes or representations
-// that hold scene graph nodes.
+/// \file vesKiwiSceneTransitions.h
+/// This file contains typedefs for template specializations
+/// of vesKiwiIVarTransition to be used in transitioning
+/// scene graph nodes or representations that hold scene graph nodes.
 
-/// Specialize a transition that alters a polydata-representation's color.
+/// \class vesKiwiPolyDataColorTransition
+/// \ingroup KiwiPlatform
+/// \brief Alters a polydata-representation's color by specializing vesKiwiIVarTransition.
 typedef vesKiwiIVarTransition<
   vesKiwiIVarHelper<
     vesVector4f,
@@ -20,7 +23,9 @@ typedef vesKiwiIVarTransition<
   >
 > vesKiwiPolyDataColorTransition;
 
-/// Specialize a transition that alters a polydata-representation's opacity.
+/// \class vesKiwiPolyDataOpacityTransition
+/// \ingroup KiwiPlatform
+/// \brief Alters a polydata-representation's opacity by specializing vesKiwiIVarTransition.
 typedef vesKiwiIVarTransition<
   vesKiwiIVarHelper<
     double,
@@ -30,7 +35,10 @@ typedef vesKiwiIVarTransition<
   >
 > vesKiwiPolyDataOpacityTransition;
 
-/// Specialize a transition that rotates an actor.
+/// \class vesKiwiActorRotationTransition
+/// \ingroup KiwiPlatform
+/// \brief Specialize a transition that rotates an actor.
+/// \brief Rotate an actor by specializing vesKiwiIVarTransition.
 typedef vesKiwiIVarTransition<
   vesKiwiIVarHelper<
     vesVector4f,
@@ -40,7 +48,9 @@ typedef vesKiwiIVarTransition<
   >
 > vesActorRotationTransition;
 
-/// Specialize a transition that translates an actor's center of rotation.
+/// \class vesKiwiActorCenterTransition
+/// \ingroup KiwiPlatform
+/// \brief Translate an actor's center of rotation by specializing vesKiwiIVarTransition.
 typedef vesKiwiIVarTransition<
   vesKiwiIVarHelper<
     vesVector3f,
@@ -50,7 +60,9 @@ typedef vesKiwiIVarTransition<
   >
 > vesActorCenterTransition;
 
-/// Specialize a transition that translates an actor.
+/// \class vesKiwiActorTranslationTransition
+/// \ingroup KiwiPlatform
+/// \brief Translate an actor by specializing vesKiwiIVarTransition.
 typedef vesKiwiIVarTransition<
   vesKiwiIVarHelper<
     vesVector3f,

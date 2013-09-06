@@ -3,6 +3,7 @@
 
 #include <iostream>
 
+/// This constructor is private; call the static create() method instead.
 vesKiwiCameraTransition::vesKiwiCameraTransition(vesCamera::Ptr camera)
 {
   if (!camera)
@@ -29,6 +30,11 @@ vesKiwiCameraTransition::~vesKiwiCameraTransition()
 {
 }
 
+/// \brief Construct a transition to animate the given \a camera.
+///
+/// The optional \a ref argument is filled with the created transition
+/// (also the return value) when present.
+//@{
 vesKiwiCameraTransition::Ptr vesKiwiCameraTransition::create(vesCamera::Ptr cam)
 {
   return vesSharedPtrHelper(
@@ -40,7 +46,14 @@ vesKiwiCameraTransition::Ptr vesKiwiCameraTransition::create(vesCamera::Ptr cam,
   ref = vesKiwiCameraTransition::create(cam);
   return ref;
 }
+//@}
 
+/// Camera orientation.
+//@{
+/// \brief Set the initial orientation of the camera.
+///
+/// This is specified as a quaternion, which is used to construct
+/// a rotation matrix to apply to the view transform stack.
 vesKiwiCameraTransition::Ptr vesKiwiCameraTransition::setInitialOrientation(
   const vtkQuaternionf& orientation)
 {
@@ -49,11 +62,17 @@ vesKiwiCameraTransition::Ptr vesKiwiCameraTransition::setInitialOrientation(
   return shared_from_this();
 }
 
+/// \brief Take the orientation of the camera at the start of the transition
+/// to be the camera's current orientation.
 vesKiwiCameraTransition::Ptr vesKiwiCameraTransition::takeInitialOrientation()
 {
   return this->setInitialOrientation(this->currentOrientation());
 }
 
+/// \brief Set the final orientation of the camera.
+///
+/// This is specified as a quaternion, which is used to construct
+/// a rotation matrix to apply to the view transform stack.
 vesKiwiCameraTransition::Ptr vesKiwiCameraTransition::setFinalOrientation(
   const vtkQuaternionf& orientation)
 {
@@ -62,11 +81,17 @@ vesKiwiCameraTransition::Ptr vesKiwiCameraTransition::setFinalOrientation(
   return shared_from_this();
 }
 
+/// \brief Take the orientation of the camera at the end of the transition
+/// to be the camera's current orientation.
 vesKiwiCameraTransition::Ptr vesKiwiCameraTransition::takeFinalOrientation()
 {
   return this->setFinalOrientation(this->currentOrientation());
 }
+//@}
 
+/// Camera focal point (i.e., the point where the camera is aimed).
+//@{
+/// \brief Set the initial focal point to \a focus.
 vesKiwiCameraTransition::Ptr vesKiwiCameraTransition::setInitialFocus(
   const vesVector3f& focus)
 {
@@ -75,11 +100,13 @@ vesKiwiCameraTransition::Ptr vesKiwiCameraTransition::setInitialFocus(
   return shared_from_this();
 }
 
+/// \brief Take the initial focal point to be the camera's current focal point.
 vesKiwiCameraTransition::Ptr vesKiwiCameraTransition::takeInitialFocus()
 {
   return this->setInitialFocus(this->mCamera->focalPoint());
 }
 
+/// \brief Set the final focal point to \a focus.
 vesKiwiCameraTransition::Ptr vesKiwiCameraTransition::setFinalFocus(
   const vesVector3f& focus)
 {
@@ -88,11 +115,16 @@ vesKiwiCameraTransition::Ptr vesKiwiCameraTransition::setFinalFocus(
   return shared_from_this();
 }
 
+/// \brief Take the final focal point to be the camera's current focal point.
 vesKiwiCameraTransition::Ptr vesKiwiCameraTransition::takeFinalFocus()
 {
   return this->setFinalFocus(this->mCamera->focalPoint());
 }
+//@}
 
+/// Camera distance (from the focal point to the lens, a.k.a. the eye-aim distance).
+//@{
+/// \brief Set the distance from the focal point to the camera at the start of the transition.
 vesKiwiCameraTransition::Ptr vesKiwiCameraTransition::setInitialDistance(
   double distance)
 {
@@ -101,12 +133,14 @@ vesKiwiCameraTransition::Ptr vesKiwiCameraTransition::setInitialDistance(
   return shared_from_this();
 }
 
+/// \brief Use the camera's current distance from its focal point at the start of the transition.
 vesKiwiCameraTransition::Ptr vesKiwiCameraTransition::takeInitialDistance()
 {
   return this->setInitialDistance(
     (this->mCamera->focalPoint() - this->mCamera->position()).norm());
 }
 
+/// \brief Set the distance from the focal point to the camera at the end of the transition.
 vesKiwiCameraTransition::Ptr vesKiwiCameraTransition::setFinalDistance(
   double distance)
 {
@@ -115,12 +149,17 @@ vesKiwiCameraTransition::Ptr vesKiwiCameraTransition::setFinalDistance(
   return shared_from_this();
 }
 
+/// \brief Use the camera's current distance from its focal point at the end of the transition.
 vesKiwiCameraTransition::Ptr vesKiwiCameraTransition::takeFinalDistance()
 {
   return this->setFinalDistance(
     (this->mCamera->focalPoint() - this->mCamera->position()).norm());
 }
+//@}
 
+/// Parallel scale control (the zoom factor when perspective projection is disabled).
+//@{
+/// \brief Set the viewport scaling factor to use at the start of the transition.
 vesKiwiCameraTransition::Ptr vesKiwiCameraTransition::setInitialParallelScale(
   double distance)
 {
@@ -129,6 +168,8 @@ vesKiwiCameraTransition::Ptr vesKiwiCameraTransition::setInitialParallelScale(
   return shared_from_this();
 }
 
+/// \brief Instruct on the transition to use the camera's current
+/// viewport scaling factor at the start of the transition.
 vesKiwiCameraTransition::Ptr vesKiwiCameraTransition::takeInitialParallelScale()
 {
   return this->setInitialParallelScale(
@@ -137,6 +178,7 @@ vesKiwiCameraTransition::Ptr vesKiwiCameraTransition::takeInitialParallelScale()
     -1.);
 }
 
+/// \brief Set the viewport scaling factor to use at the end of the transition.
 vesKiwiCameraTransition::Ptr vesKiwiCameraTransition::setFinalParallelScale(
   double distance)
 {
@@ -145,6 +187,8 @@ vesKiwiCameraTransition::Ptr vesKiwiCameraTransition::setFinalParallelScale(
   return shared_from_this();
 }
 
+/// \brief Instruct on the transition to use the camera's current
+/// viewport scaling factor at the end of the transition.
 vesKiwiCameraTransition::Ptr vesKiwiCameraTransition::takeFinalParallelScale()
 {
   return this->setFinalParallelScale(
@@ -152,7 +196,15 @@ vesKiwiCameraTransition::Ptr vesKiwiCameraTransition::takeFinalParallelScale()
     this->mCamera->parallelScale() :
     -1.);
 }
+//@}
 
+
+/// Setting the entire camera pose at once.
+//@{
+/// \brief Use the given vectors to set the camera's orientation,
+/// position, and focal point at the start of the transition.
+///
+/// This does <emph>not</emph> set the parallel scale.
 vesKiwiCameraTransition::Ptr vesKiwiCameraTransition::setInitialFrame(
   const vesVector3f& cameraPosn,
   const vesVector3f& focalPoint,
@@ -170,6 +222,9 @@ vesKiwiCameraTransition::Ptr vesKiwiCameraTransition::setInitialFrame(
   return shared_from_this();
 }
 
+/// \brief A convenience method that sets the transition's initial state all at once.
+///
+/// This <emph>does</emph> set the parallel scale.
 vesKiwiCameraTransition::Ptr vesKiwiCameraTransition::takeInitialFrame()
 {
   this->takeInitialFocus();
@@ -179,6 +234,10 @@ vesKiwiCameraTransition::Ptr vesKiwiCameraTransition::takeInitialFrame()
   return shared_from_this();
 }
 
+/// \brief Use the given vectors to set the camera's orientation,
+/// position, and focal point at the end of the transition.
+///
+/// This does <emph>not</emph> set the parallel scale.
 vesKiwiCameraTransition::Ptr vesKiwiCameraTransition::setFinalFrame(
   const vesVector3f& cameraPosn,
   const vesVector3f& focalPoint,
@@ -196,6 +255,9 @@ vesKiwiCameraTransition::Ptr vesKiwiCameraTransition::setFinalFrame(
   return shared_from_this();
 }
 
+/// \brief A convenience method that sets the transition's final state all at once.
+///
+/// This <emph>does</emph> set the parallel scale.
 vesKiwiCameraTransition::Ptr vesKiwiCameraTransition::takeFinalFrame()
 {
   this->takeFinalFocus();
@@ -204,6 +266,7 @@ vesKiwiCameraTransition::Ptr vesKiwiCameraTransition::takeFinalFrame()
   this->takeFinalParallelScale();
   return shared_from_this();
 }
+//@}
 
 vesKiwiTransition::TransitionStatus vesKiwiCameraTransition::willBegin()
 {
@@ -327,6 +390,7 @@ void vesKiwiCameraTransition::didEnd(bool finishedEarly)
   this->mDuration = this->mUnmodulatedDuration;
 }
 
+/// \brief A utility routine to obtain a quaternion from a rotation matrix.
 vtkQuaternionf vesKiwiCameraTransition::currentOrientation() const
 {
   vesMatrix3x3f camFrame =
@@ -340,6 +404,7 @@ vtkQuaternionf vesKiwiCameraTransition::currentOrientation() const
   return orientation;
 }
 
+/// \brief A utility routine to obtain the current eye-aim distance from the camera.
 double vesKiwiCameraTransition::currentDistance() const
 {
   return (this->mCamera->position() - this->mCamera->focalPoint()).norm();

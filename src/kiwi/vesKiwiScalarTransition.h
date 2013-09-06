@@ -3,14 +3,15 @@
 
 #include "vesKiwiTransition.h"
 
-/**\brief A transition updates a single scalar value.
-  *
-  * This templated class takes a pointer to a scalar value
-  * of a primitive type (e.g., double, int).
-  *
-  * You are responsible for ensuring that the pointer is
-  * valid for as long as the transition exists.
-  */
+/// \class vesKiwiScalarTransition
+/// \ingroup KiwiPlatform
+/// \brief A transition which updates a single scalar value.
+///
+/// This templated class takes a pointer to a scalar value
+/// of a primitive type (e.g., double, int).
+///
+/// You are responsible for ensuring that the pointer is
+/// valid for as long as the transition exists.
 template<typename T>
 class vesKiwiScalarTransition : public vesKiwiTransition
 {
@@ -26,16 +27,18 @@ public:
   virtual ~vesKiwiScalarTransition();
 
   /// Set/get/take the initial value for the scalar.
+  //@{
   virtual vesKiwiScalarTransition<T>::Ptr setInitialValue(const T& d);
   virtual vesKiwiScalarTransition<T>::Ptr takeInitialValue();
-  T initialValue()
-    { return this->InitialValue; }
+  T initialValue() { return this->InitialValue; }
+  //@}
 
   /// Set/get/take the final value for the scalar.
+  //@{
   virtual vesKiwiScalarTransition<T>::Ptr setFinalValue(const T& d);
   virtual vesKiwiScalarTransition<T>::Ptr takeFinalValue();
-  T finalValue()
-    { return this->FinalValue; }
+  T finalValue() { return this->FinalValue; }
+  //@}
 
   virtual vesKiwiTransition::TransitionStatus willBegin();
   virtual vesKiwiTransition::TransitionStatus prepareState(double state);
@@ -50,6 +53,8 @@ protected:
   bool FinalValueSet;
 };
 
+/// A public, static method to construct instance of this transition class.
+//@{
 template<typename T>
 typename vesKiwiScalarTransition<T>::Ptr vesKiwiScalarTransition<T>::create(T* value)
 {
@@ -68,7 +73,9 @@ typename vesKiwiScalarTransition<T>::Ptr vesKiwiScalarTransition<T>::create(
 
   return transition;
 }
+//@}
 
+/// A private constructor. Use the static \a create method instead.
 template<typename T>
 vesKiwiScalarTransition<T>::vesKiwiScalarTransition(T* value)
 {
@@ -84,6 +91,8 @@ vesKiwiScalarTransition<T>::~vesKiwiScalarTransition()
   this->Value = NULL;
 }
 
+/// \brief Set/take the value of the variable to impose at the start of the transition.
+//@{
 template<typename T>
 typename vesKiwiScalarTransition<T>::Ptr vesKiwiScalarTransition<T>::setInitialValue(const T& v)
 {
@@ -99,7 +108,10 @@ typename vesKiwiScalarTransition<T>::Ptr vesKiwiScalarTransition<T>::takeInitial
   this->InitialValueSet = true;
   return shared_from_this();
 }
+//@}
 
+/// \brief Set/take the value of the variable to impose at the end of the transition.
+//@{
 template<typename T>
 typename vesKiwiScalarTransition<T>::Ptr vesKiwiScalarTransition<T>::setFinalValue(const T& v)
 {
@@ -115,6 +127,7 @@ typename vesKiwiScalarTransition<T>::Ptr vesKiwiScalarTransition<T>::takeFinalVa
   this->FinalValueSet = true;
   return shared_from_this();
 }
+//@}
 
 template<typename T>
 vesKiwiTransition::TransitionStatus vesKiwiScalarTransition<T>::willBegin()

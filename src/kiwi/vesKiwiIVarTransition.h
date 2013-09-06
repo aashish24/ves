@@ -3,7 +3,9 @@
 
 #include "vesKiwiTransition.h"
 
-/// A helper object used bt vesKiwiIVarTransition to get and set class member values.
+/// \class vesKiwiIVarHelper
+/// \ingroup KiwiPlatform
+/// \brief A helper object used by vesKiwiIVarTransition to get and set class member values.
 template<typename T, class C, const T& (C::*G)() const, void (C::*S)(const T&)>
 struct vesKiwiIVarHelper
 {
@@ -12,31 +14,19 @@ struct vesKiwiIVarHelper
   typedef vesSharedPtr<C> ClassPtrType;
 
   vesKiwiIVarHelper(vesSharedPtr<C> instance)
-    : Instance(instance)
-    {
-    }
+    : Instance(instance) { }
 
   vesKiwiIVarHelper(const vesKiwiIVarHelper<T,C,G,S>& other)
-    : Instance(other.Instance)
-    {
-    }
+    : Instance(other.Instance) { }
 
-  T get()
-    {
-    return ((*this->Instance).*G)();
-    }
-
-  void set(const T& value)
-    {
-    ((*this->Instance).*S)(value);
-    }
+  T get() { return ((*this->Instance).*G)(); }
+  void set(const T& value) { ((*this->Instance).*S)(value); }
 
 protected:
   vesSharedPtr<C> Instance;
 };
 
-/**\brief A transition that updates a single member variable on a single instance.
-  */
+/// \brief A transition that updates a single member variable on a single instance.
 template<typename T>
 class vesKiwiIVarTransition : public vesKiwiTransition
 {
@@ -53,17 +43,15 @@ public:
   vesKiwiIVarTransition(const T& ivarHelper);
   virtual ~vesKiwiIVarTransition();
 
-  /// Set/get/take the initial value for the scalar.
+  /// \brief Set/get/take the initial value for the scalar.
   virtual vesKiwiIVarTransition<T>::Ptr setInitialValue(const typename T::ValueType& d);
   virtual vesKiwiIVarTransition<T>::Ptr takeInitialValue();
-  typename T::ValueType initialValue()
-    { return this->InitialValue; }
+  typename T::ValueType initialValue() { return this->InitialValue; }
 
-  /// Set/get/take the final value for the scalar.
+  /// \brief Set/get/take the final value for the scalar.
   virtual vesKiwiIVarTransition<T>::Ptr setFinalValue(const typename T::ValueType& d);
   virtual vesKiwiIVarTransition<T>::Ptr takeFinalValue();
-  typename T::ValueType finalValue()
-    { return this->FinalValue; }
+  typename T::ValueType finalValue() { return this->FinalValue; }
 
   virtual vesKiwiTransition::TransitionStatus willBegin();
   virtual vesKiwiTransition::TransitionStatus prepareState(double state);
@@ -113,7 +101,8 @@ vesKiwiIVarTransition<T>::~vesKiwiIVarTransition()
 }
 
 template<typename T>
-typename vesKiwiIVarTransition<T>::Ptr vesKiwiIVarTransition<T>::setInitialValue(const typename T::ValueType& v)
+typename vesKiwiIVarTransition<T>::Ptr
+vesKiwiIVarTransition<T>::setInitialValue(const typename T::ValueType& v)
 {
   this->InitialValue = v;
   this->InitialValueSet = true;
@@ -121,7 +110,8 @@ typename vesKiwiIVarTransition<T>::Ptr vesKiwiIVarTransition<T>::setInitialValue
 }
 
 template<typename T>
-typename vesKiwiIVarTransition<T>::Ptr vesKiwiIVarTransition<T>::takeInitialValue()
+typename vesKiwiIVarTransition<T>::Ptr
+vesKiwiIVarTransition<T>::takeInitialValue()
 {
   this->InitialValue = this->Helper.get();
   this->InitialValueSet = true;
@@ -129,7 +119,8 @@ typename vesKiwiIVarTransition<T>::Ptr vesKiwiIVarTransition<T>::takeInitialValu
 }
 
 template<typename T>
-typename vesKiwiIVarTransition<T>::Ptr vesKiwiIVarTransition<T>::setFinalValue(const typename T::ValueType& v)
+typename vesKiwiIVarTransition<T>::Ptr
+vesKiwiIVarTransition<T>::setFinalValue(const typename T::ValueType& v)
 {
   this->FinalValue = v;
   this->FinalValueSet = true;
@@ -137,7 +128,8 @@ typename vesKiwiIVarTransition<T>::Ptr vesKiwiIVarTransition<T>::setFinalValue(c
 }
 
 template<typename T>
-typename vesKiwiIVarTransition<T>::Ptr vesKiwiIVarTransition<T>::takeFinalValue()
+typename vesKiwiIVarTransition<T>::Ptr
+vesKiwiIVarTransition<T>::takeFinalValue()
 {
   this->FinalValue = this->Helper.get();
   this->FinalValueSet = true;
@@ -159,7 +151,8 @@ vesKiwiTransition::TransitionStatus vesKiwiIVarTransition<T>::willBegin()
 }
 
 template<typename T>
-vesKiwiTransition::TransitionStatus vesKiwiIVarTransition<T>::prepareState(double state)
+vesKiwiTransition::TransitionStatus
+vesKiwiIVarTransition<T>::prepareState(double state)
 {
   this->Helper.set(state * this->FinalValue + (1. - state) * this->InitialValue);
   return vesKiwiTransition::TRANSITION_OK;
