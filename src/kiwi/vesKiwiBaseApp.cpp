@@ -126,6 +126,13 @@ vesKiwiTransition::Ptr vesKiwiBaseApp::addTransition(vesKiwiTransition::Ptr tran
   return transition;
 }
 
+/// Return the currently-running transitions.
+/// You may not modify the set but you may call methods on the transitions.
+const std::set<vesKiwiTransition::Ptr>& vesKiwiBaseApp::activeTransitions() const
+{
+  return this->Internal->Transitions;
+}
+
 //----------------------------------------------------------------------------
 /**\brief Give each active transition the opportunity to prepare for a render.
  *

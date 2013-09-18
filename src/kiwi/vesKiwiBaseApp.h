@@ -169,6 +169,8 @@ public:
   /// Add a transition animation to be rendered.
   virtual vesKiwiTransition::Ptr addTransition(vesKiwiTransition::Ptr transition);
 
+  const std::set<vesKiwiTransition::Ptr>& activeTransitions() const;
+
 protected:
 
   virtual void updateTransitions();

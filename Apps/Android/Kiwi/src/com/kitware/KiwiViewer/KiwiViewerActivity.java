@@ -369,7 +369,7 @@ public class KiwiViewerActivity extends Activity {
 
       mResetViewButton.setOnClickListener(new Button.OnClickListener() {
           public void onClick(View v) {
-              mView.resetCamera();
+              mView.resetCamera(true);
           }
       });
 

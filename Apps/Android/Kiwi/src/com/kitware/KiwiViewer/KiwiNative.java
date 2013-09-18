@@ -40,7 +40,7 @@ public class KiwiNative {
      public static native synchronized void handleDoubleTap(float x, float y);
      public static native synchronized void handleLongPress(float x, float y);
      public static native synchronized boolean render();
-     public static native synchronized void resetCamera();
+     public static native synchronized void resetCamera(boolean withTransition);
      public static native synchronized void stopInertialMotion();
      public static native synchronized String getDatasetName(int offset);
      public static native synchronized String getDatasetFilename(int offset);
