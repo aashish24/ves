@@ -116,43 +116,75 @@ public:
     std::string filename = this->sourceDirectory() +
       std::string("/Apps/iOS/Kiwi/Kiwi/Data/bunny.vtp");
 
-    vesKiwiPolyDataRepresentation::Ptr rep =
+    this->mRep =
     mTestApp->loadData(filename);
     mTestApp->resetView(false);
     if (!isTesting())
       {
+      this->hop();
+      }
+  }
+
+  void hop()
+    {
       mTestApp->addTransition(
-        vesKiwiPolyDataOpacityTransition::create(rep)
-          ->setInitialValue(0.)
-          ->setFinalValue(1.)
+        vesActorTranslationTransition::create(mRep->actor())
+          ->setInitialValue(vesVector3f(0., 0.2, 0.))
+          ->setFinalValue(vesVector3f(0., 0.0, 0.))
+          ->setEasing(vesKiwiBounceOutEasing::create())
           ->setDuration(0.75)
-          ->alsoStart(
-            vesActorTranslationTransition::create(rep->actor())
-            ->setInitialValue(vesVector3f(0., 0.2, 0.))
-            ->setFinalValue(vesVector3f(0., 0.0, 0.))
-            ->setEasing(vesKiwiBounceOutEasing::create())
-            ->setDuration(0.75)
-          )
           ->followedBy(
-            vesKiwiPolyDataColorTransition::create(rep)
+            vesKiwiPolyDataColorTransition::create(mRep)
             ->setFinalValue(vesVector4f(1., 1., 0.5, 1.))
             ->setEasing(vesKiwiQuadraticInOutEasing::create())
             ->setDuration(0.75)
             ->followedBy(
-              vesKiwiPolyDataColorTransition::create(rep)
+              vesKiwiPolyDataColorTransition::create(mRep)
               ->setFinalValue(vesVector4f(1., 0.8, 1., 1.))
               ->setEasing(vesKiwiQuadraticInOutEasing::create())
               ->setDuration(0.75)
               ->followedBy(
-                vesKiwiPolyDataColorTransition::create(rep)
+                vesKiwiPolyDataColorTransition::create(mRep)
                 ->setFinalValue(vesVector4f(1., 1., 1., 1.))
                 ->setEasing(vesKiwiQuadraticInOutEasing::create())
                 ->setDuration(0.75)
               )
             )
+            ->alsoStart(
+              vesActorTranslationTransition::create(mRep->actor())
+              ->setFinalValue(vesVector3f(0., 0.2, 0.))
+              ->setEasing(vesKiwiQuadraticOutEasing::create())
+              ->setDuration(0.5)
+              ->followedBy(
+                vesActorTranslationTransition::create(mRep->actor())
+                ->setFinalValue(vesVector3f(0., 0.0, 0.))
+                ->setEasing(vesKiwiBounceOutEasing::create())
+                ->setDuration(0.75)
+                ->followedBy(
+                  vesActorTranslationTransition::create(mRep->actor())
+                  ->setFinalValue(vesVector3f(0., 0.2, 0.))
+                  ->setEasing(vesKiwiQuadraticOutEasing::create())
+                  ->setDuration(0.5)
+                  ->followedBy(
+                    vesActorTranslationTransition::create(mRep->actor())
+                    ->setFinalValue(vesVector3f(0., 0.0, 0.))
+                    ->setEasing(vesKiwiBounceOutEasing::create())
+                    ->setDuration(0.75)
+                  )
+                )
+              )
+            )
           )
         );
-      }
+    }
+
+  void handleKeyboard(unsigned char key, int x, int y)
+  {
+    if (key == 'h') {
+      this->hop();
+    } else {
+      vesKiwiTestHelper::handleKeyboard(key, x, y);
+    }
   }
 
   void initApp()
@@ -175,6 +207,7 @@ public:
   }
 
   vesGradientBackgroundApp::Ptr mTestApp;
+  vesKiwiPolyDataRepresentation::Ptr mRep;
 };
 
 
