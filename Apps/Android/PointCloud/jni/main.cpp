@@ -84,9 +84,9 @@ public:
     this->unloadData();
   }
 
-  void resetView()
+  void resetView(bool withTransitions)
   {
-    this->vesKiwiViewerApp::resetView();
+    this->vesKiwiViewerApp::resetView(withTransitions);
 
     // move the camera for a better default view of the cturtle.vtp dataset
     this->camera()->elevation(180);
@@ -313,7 +313,7 @@ static int engine_init_display(struct engine* engine) {
     std::string filename = "cturtle.vtp";
     filename = copyAssetToExternalStorage(filename);
     kiwiApp->loadData(filename);
-    kiwiApp->resetView();
+    kiwiApp->resetView(false);
 
     return 0;
 }

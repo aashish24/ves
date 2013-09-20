@@ -9,6 +9,7 @@ set(sources
   vesKiwiBrainAtlasRepresentation.cpp
   vesKiwiCameraSpinner.cpp
   vesKiwiCameraInteractor.cpp
+  vesKiwiCameraTransition.cpp
   vesKiwiColorMapCollection.cpp
   vesKiwiDataConversionTools.cpp
   vesKiwiDataLoader.cpp
@@ -20,6 +21,7 @@ set(sources
   vesKiwiSceneRepresentation.cpp
   vesKiwiStreamingDataRepresentation.cpp
   vesKiwiText2DRepresentation.cpp
+  vesKiwiTransition.cpp
   vesKiwiViewerApp.cpp
   vesKiwiWidgetInteractionDelegate.cpp
   vesKiwiWidgetRepresentation.cpp

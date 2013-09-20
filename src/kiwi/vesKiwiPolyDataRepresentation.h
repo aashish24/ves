@@ -60,11 +60,14 @@ public:
   virtual void addSelfToRenderer(vesSharedPtr<vesRenderer> renderer);
   virtual void removeSelfFromRenderer(vesSharedPtr<vesRenderer>);
 
+  void setColor(const vesVector4f& rgba)
+    { this->setColor(rgba[0], rgba[1], rgba[2], rgba[3]); }
   void setColor(double r, double g, double b, double a);
-  vesVector4f color();
+  const vesVector4f& color() const;
+  vesVector4f& color();
 
-  double opacity() const;
-  void setOpacity(double opacity);
+  const double& opacity() const;
+  void setOpacity(const double& opacity);
 
   int pointSize() const;
   void setPointSize(int size);

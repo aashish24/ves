@@ -30,6 +30,7 @@
 #include <vesMath.h>
 #include <vesSharedPtr.h>
 #include <vesSetGet.h>
+#include <vesKiwiTransition.h>
 
 #include <string>
 
@@ -70,14 +71,14 @@ public:
   /// the bounds of all visible objects in the renderer and the camera is
   /// dollied away from the focal point so that all objects are visible in the view.
   /// \see vesCamera::resetCamera()
-  virtual void resetView();
+  virtual void resetView(bool withTransition = true);
 
   /// Reset the camera to a default position using the given view direction
   /// and view up vector. The camera focal point is set to the center of
   /// the bounds of all visible objects in the renderer and the camera is
   /// dollied away from the focal point so that all objects are visible in the view.
   /// \see vesCamera::resetCamera()
-  virtual void resetView(const vesVector3f& viewDirection, const vesVector3f& viewUp);
+  virtual void resetView(const vesVector3f& viewDirection, const vesVector3f& viewUp, bool withTransition);
 
   /// Resizes the renderer to the given width and height.
   virtual void resizeView(int width, int height);
@@ -165,7 +166,14 @@ public:
   /// \copydoc camera()
   vesSharedPtr<vesRenderer> renderer() const;
 
+  /// Add a transition animation to be rendered.
+  virtual vesKiwiTransition::Ptr addTransition(vesKiwiTransition::Ptr transition);
+
+  const std::set<vesKiwiTransition::Ptr>& activeTransitions() const;
+
 protected:
+
+  virtual void updateTransitions();
 
   // Subclasses may override these methods to perform actions before and after
   // rendering.

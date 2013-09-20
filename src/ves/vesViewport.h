@@ -33,7 +33,7 @@
 // Forward declarations
 class vesRenderState;
 
-class vesViewport : vesObject
+class vesViewport : public vesObject
 {
 public:
   vesTypeMacro(vesViewport);

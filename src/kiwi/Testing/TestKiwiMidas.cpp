@@ -151,7 +151,7 @@ int main(int argc, char *argv[])
 
   // render once
   helper.app()->resizeView(windowWidth, windowHeight);
-  helper.app()->resetView();
+  helper.app()->resetView(false);
   helper.app()->render();
 
   // begin the event loop if not in testing mode

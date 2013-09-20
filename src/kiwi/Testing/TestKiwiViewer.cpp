@@ -33,13 +33,13 @@ public:
     this->setApp(mKiwiApp);
   }
 
-  void resetView()
+  void resetView(bool withTransition)
   {
     if (mCurrentDataset >= 0) {
-      mKiwiApp->applyBuiltinDatasetCameraParameters(mCurrentDataset);
+      mKiwiApp->applyBuiltinDatasetCameraParameters(mCurrentDataset, withTransition);
     }
     else {
-      mKiwiApp->resetView();
+      mKiwiApp->resetView(withTransition);
     }
   }
 
@@ -127,7 +127,7 @@ public:
       std::cout << "load data error: " << mKiwiApp->loadDatasetErrorTitle()
                 << ": " << mKiwiApp->loadDatasetErrorMessage() << std::endl;
     }
-    this->resetView();
+    this->resetView(false);
   }
 
   void loadData(int index)

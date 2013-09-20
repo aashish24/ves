@@ -28,7 +28,162 @@
 #include <tr1/memory>
 #endif
 
+/**\brief An abbreviation for a shared pointer to a class.
+  *
+  * Use this macro like so: <pre>
+  *   class X;
+  *   vesSharedPtr<X> = vesSharedPtr<X>(new X);</pre>
+  *
+  * It is possible on some platforms this might get defined
+  * to something other than std::tr1::shared_ptr (such as
+  * boost_ptr). But mainly this macro exists because it
+  * is easier to type.
+  */
 #define vesSharedPtr std::tr1::shared_ptr
+
+/**\brief An abbreviation for a weak pointer to a class.
+  *
+  * \sa vesSharedPtr
+  */
 #define vesWeakPtr std::tr1::weak_ptr
+
+/**\brief Add static create() methods to a class.
+  *
+  * This macro takes a single parameter naming either
+  * the class of interest (if no ancestor classes use
+  * enable_shared_from_this() or vesEnableSharedPtr())
+  * or the first -- and only -- ancestor class that inherits
+  * enable_shared_from_this() or vesEnableSharedPtr().
+  *
+  * This macro also requires the use of vesTypeMacro()
+  * as it needs SelfType defined.
+  *
+  * Two static class functions are declared: both return
+  * a shared pointer to a newly created class instance
+  * but one takes no arguments and the other takes one.
+  * The 1-argument version also sets the passed shared
+  * pointer to refer to the newly created instance.
+  * This is useful in declarative APIs for referring
+  * back to an instance created as part of a statement
+  * whose value is transformed before the returned value
+  * can be assigned to a variable.
+  */
+#define vesCreateMacro(...) \
+  static vesSharedPtr<SelfType> create() \
+    { \
+    vesSharedPtr< __VA_ARGS__ > shared(new SelfType); \
+    return std::tr1::static_pointer_cast<SelfType>(shared); \
+    } \
+  /* variant for declarative programming: */ \
+  static vesSharedPtr<SelfType> create(vesSharedPtr<SelfType>& ref) \
+    { \
+    ref = SelfType::create(); \
+    return ref; \
+    }
+
+/**\brief An abbreviation for enabling shared pointers.
+  *
+  * Use like so:<pre>
+  * class X : vesEnableSharedPtr(X)
+  * {
+  * public:
+  *   vesTypeMacro(X);
+  *   vesCreateMacro(X);
+  * };
+  * </pre>
+  * Note that this may be complicated on some systems by the
+  * C preprocessor's inability to handle macros whose arguments
+  * include a multiple-parameter template. (The comma separating
+  * the template parameters is taken as an additional macro
+  * argument.)
+  * However, in general shared pointers will be enabled on
+  * non-templated base classes from which templated classes may
+  * be derived.
+  *
+  * It is recommended that you make constructors protected or private
+  * to avoid heap allocation of objects that may return shared pointers.
+  *
+  * For non-abstract classes, it is recommended that you
+  * call vesCreateMacro() as a safe way to expose public construction.
+  */
+#define vesEnableSharedPtr(...) \
+  public std::tr1::enable_shared_from_this< __VA_ARGS__ >
+
+/**\brief A macro to help with derived classes whose bases enable shared_from_this().
+  *
+  * Use like so:<pre>
+  * class X : vesEnableSharedPtr(X)
+  * {
+  * public:
+  *   vesTypeMacro(X);
+  * };
+  *
+  * class Y : public X
+  * {
+  * public:
+  *   vesTypeMacro(Y);
+  *   vesSharedFromThisMacro(X);
+  *   ...
+  *   Y::Ptr method()
+  *     {
+  *     return shared_from_this();
+  *     }
+  * };
+  * </pre>
+  *
+  * Note that the macro argument is the <b>base class</b>
+  * on which shared pointers are enabled (or another
+  * inherited class in between which also defines a
+  * shared_from_this() method).
+  *
+  * This macro implements a shared_from_this() method
+  * in the derived class that returns a shared pointer
+  * of the proper type.
+  */
+#define vesSharedFromThisMacro(...) \
+  typedef __VA_ARGS__ SharedPtrBaseType; \
+  vesSharedPtr<SelfType> shared_from_this() \
+    { \
+    return std::tr1::static_pointer_cast<SelfType>( \
+      SharedPtrBaseType::shared_from_this()); \
+    }
+
+/// A convenience macro for declaring shared_from_this and create methods.
+#define vesSharedPtrCreateMacro(...) \
+  vesSharedFromThisMacro( __VA_ARGS__ ); \
+  vesCreateMacro( __VA_ARGS__ );
+
+/**\brief A convenience macro to use in the body of create methods that take arguments.
+  *
+  * This macro acts like a function that takes a pointer
+  * to an instance of your class and returns a shared pointer
+  * to the instance. For example: <pre>
+  * class X : vesEnabledSharedPtr(X)
+  * {
+  * public:
+  *   vesTypeMacro(X);
+  *   static Ptr create(int a, double b);
+  * protected:
+  *   X(int a, double b);
+  * };
+  *
+  * X::Ptr create(int a, double b)
+  * {
+  *   return vesSharedPtrHelper(
+  *     new X(a, b));
+  * }
+  * </pre>
+  *
+  * It is important to use this method in classes derived
+  * from those that use vesEnabledSharedPtr rather than
+  * naively constructing a shared pointer of the proper type,
+  * since that will likely result in an exception being thrown.
+  */
+#define vesSharedPtrHelper(...) \
+  std::tr1::static_pointer_cast<SelfType>( \
+    SharedPtrBaseType::Ptr( \
+    __VA_ARGS__ \
+    ) \
+  );
 
 #endif // VESSHAREDPTR_H

@@ -88,7 +88,7 @@ public:
     mStreamingRep = rep;
     mStreamingRep->initializeWithShader(this->shaderProgram());
     mStreamingRep->addSelfToRenderer(this->renderer());
-    this->resetView();
+    this->resetView(false);
     return true;
   }
 
@@ -111,6 +111,8 @@ public:
   virtual bool isAnimating()
   {
     if (this->mStreamingRep)
+      return true;
+    if (!this->activeTransitions().empty())
       return true;
     return this->vesKiwiViewerApp::isAnimating();
   }
@@ -174,13 +176,13 @@ int fpsFrames;
 double fpsT0;
 
 //----------------------------------------------------------------------------
-void resetView()
+void resetView(bool withTransitions)
 {
   if (appState.builtinDatasetIndex >= 0) {
     app->applyBuiltinDatasetCameraParameters(appState.builtinDatasetIndex);
   }
   else {
-    app->resetView();
+    app->resetView(withTransitions);
   }
 }
 
@@ -196,7 +198,7 @@ bool loadDataset(const std::string& filename, int builtinDatasetIndex)
   bool result = app->loadDataset(filename);
   app->checkForAnimation();
   if (result) {
-    resetView();
+    resetView(false);
   }
 
   return result;
@@ -278,7 +280,7 @@ extern "C" {
   JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_handleDoubleTap(JNIEnv * env, jobject obj,  jfloat x, jfloat y);
   JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_handleLongPress(JNIEnv * env, jobject obj,  jfloat x, jfloat y);
   JNIEXPORT jboolean JNICALL Java_com_kitware_KiwiViewer_KiwiNative_render(JNIEnv * env, jobject obj);
-  JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_resetCamera(JNIEnv * env, jobject obj);
+  JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_resetCamera(JNIEnv * env, jobject obj, jboolean withTransitions);
   JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_stopInertialMotion(JNIEnv * env, jobject obj);
   JNIEXPORT jstring JNICALL Java_com_kitware_KiwiViewer_KiwiNative_getDatasetName(JNIEnv* env, jobject obj, jint offset);
   JNIEXPORT jstring JNICALL Java_com_kitware_KiwiViewer_KiwiNative_getDatasetFilename(JNIEnv* env, jobject obj, jint offset);
@@ -391,9 +393,9 @@ JNIEXPORT jboolean JNICALL Java_com_kitware_KiwiViewer_KiwiNative_render(JNIEnv 
   return app->cameraSpinner()->isEnabled() || app->isAnimating();
 }
 
-JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_resetCamera(JNIEnv * env, jobject obj)
+JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_resetCamera(JNIEnv * env, jobject obj, jboolean withTransitions)
 {
-  resetView();
+  resetView(withTransitions);
 }
 
 JNIEXPORT void JNICALL Java_com_kitware_KiwiViewer_KiwiNative_stopInertialMotion(JNIEnv * env, jobject obj)

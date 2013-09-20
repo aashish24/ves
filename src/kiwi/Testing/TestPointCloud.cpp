@@ -52,9 +52,9 @@ public:
     this->unloadData();
   }
 
-  void resetView()
+  void resetView(bool withTransition)
   {
-    this->vesKiwiBaseApp::resetView();
+    this->vesKiwiBaseApp::resetView(withTransition);
 
     // move the camera for a better default view of the cturtle.vtp dataset
     this->camera()->elevation(180);
@@ -119,7 +119,7 @@ public:
       std::string("/Apps/iOS/Kiwi/Kiwi/Data/cturtle.vtp");
 
     mTestApp->loadData(filename);
-    mTestApp->resetView();
+    mTestApp->resetView(false);
   }
 
   void initApp()
