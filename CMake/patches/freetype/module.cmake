@@ -1,0 +1,11 @@
+vtk_module(vtkRenderingFreeType
+  GROUPS
+    Rendering
+  DEPENDS
+    vtkRenderingCore
+    vtkfreetype
+    #vtkftgl
+  TEST_DEPENDS
+    vtkTestingRendering
+    vtkViewsContext2D
+  )
