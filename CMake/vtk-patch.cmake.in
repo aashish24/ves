@@ -75,3 +75,19 @@ foreach(pattern_file ${pattern_files})
     message("Output: ${out}; Result: ${res}; Error: ${err}")
   endif()
 endforeach()
+
+# Patch tiff
+file(GLOB pattern_files RELATIVE @ves_patch_dir@/vtktiff "@ves_patch_dir@/vtktiff/*.*" )
+foreach(pattern_file ${pattern_files})
+  execute_process(
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different @ves_patch_dir@/vtktiff/${pattern_file}
+      @vtk_src_dir@/ThirdParty/tiff/vtktiff/${pattern_file}
+    OUTPUT_VARIABLE out
+    RESULT_VARIABLE res
+    ERROR_VARIABLE err
+  )
+  if(NOT ${res} EQUAL 0)
+    message(FATAL_ERROR "Error applying patch for vtktiff")
+    message("Output: ${out}; Result: ${res}; Error: ${err}")
+  endif()
+endforeach()
