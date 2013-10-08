@@ -2,8 +2,8 @@ project(VES_SUPERBUILD NONE)
 
 include(ExternalProject)
 
-option(VES_USE_LIBARCHIVE "Should VES include libarchive support" OFF)
-option(VES_USE_CURL "Should VES include cURL support" OFF)
+option(VES_USE_LIBARCHIVE "Should VES include libarchive support" ON)
+option(VES_USE_CURL "Should VES include cURL support" ON)
 option(VES_USE_PCL "Should VES include PCL support" OFF)
 set(PCL_SUPERBUILD_DIR "PCL_SUPERBUILD_DIR-NOTFOUND" CACHE PATH
   "Directory containing CMakeExternals/Install with PCL and its dependencies")

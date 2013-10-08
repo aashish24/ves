@@ -24,6 +24,7 @@
 		43FA4EE61617749D000FB153 /* MainStoryboard_iPad.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 43FA4EE41617749D000FB153 /* MainStoryboard_iPad.storyboard */; };
 		43FA4F3E16178B22000FB153 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43FA4F3D16178B22000FB153 /* GLKit.framework */; };
 		43FA4F4016178B2A000FB153 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43FA4F3F16178B2A000FB153 /* OpenGLES.framework */; settings = {ATTRIBUTES = (Required, ); }; };
+		C3DE2B5C17F36C6D00984423 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C3DE2B5B17F36C6D00984423 /* libxml2.dylib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -51,6 +52,7 @@
 		43FA4F3A16178A80000FB153 /* MyGLKViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyGLKViewController.h; sourceTree = "<group>"; };
 		43FA4F3D16178B22000FB153 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
 		43FA4F3F16178B2A000FB153 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		C3DE2B5B17F36C6D00984423 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +60,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C3DE2B5C17F36C6D00984423 /* libxml2.dylib in Frameworks */,
 				43F86E4816E5BAAB00024CF6 /* libz.dylib in Frameworks */,
 				435E0B40161950C6007C19DF /* libbz2.dylib in Frameworks */,
 				437239E31617979800F99013 /* vtk.framework in Frameworks */,
@@ -94,6 +97,7 @@
 			isa = PBXGroup;
 			children = (
 				435E0B3F161950C6007C19DF /* libbz2.dylib */,
+				C3DE2B5B17F36C6D00984423 /* libxml2.dylib */,
 				43F86E4716E5BAAA00024CF6 /* libz.dylib */,
 				437239E21617979800F99013 /* vtk.framework */,
 				437239E01617969200F99013 /* kiwi.framework */,
@@ -251,12 +255,13 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
 				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
@@ -279,6 +284,8 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
