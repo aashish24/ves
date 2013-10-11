@@ -381,7 +381,7 @@ endif()
 
 if(VES_ANDROID_SUPERBUILD)
   if (VES_USE_CURL)
-    crosscompile_curl(curl-android toolchain-android.cmake)
+    crosscompile_curl(curl-android android.toolchain.cmake)
   endif()
   if (VES_USE_LIBARCHIVE)
     crosscompile_libarchive(libarchive-android android.toolchain.cmake)
