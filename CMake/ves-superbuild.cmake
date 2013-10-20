@@ -267,8 +267,8 @@ endmacro()
 macro(compile_ves proj)
   set(tag host)
   list(APPEND VES_SUPERBUILD_${tag}_OPTS
-    "-DVES_USE_CURL:BOOL=${VES_USE_CURL}";
-    "-DVES_USE_LIBARCHIVE:BOOL=${VES_USE_LIBARCHIVE}";
+    "-DVES_USE_CURL:BOOL=${VES_USE_CURL}"
+    "-DVES_USE_LIBARCHIVE:BOOL=${VES_USE_LIBARCHIVE}"
     "-DVES_USE_PCL:BOOL=${VES_USE_PCL}"
     )
   if (VES_USE_CURL)
@@ -276,13 +276,13 @@ macro(compile_ves proj)
   endif()
   if (VES_USE_LIBARCHIVE)
     list(APPEND VES_SUPERBUILD_${tag}_OPTS
-      "-DLibArchive_DIR:PATH=${install_prefix}/libarchive-${tag}/lib/LibArchive/cmake";
+      "-DLibArchive_DIR:PATH=${install_prefix}/libarchive-${tag}/lib/LibArchive/cmake"
       )
     list(APPEND VES_SUPERBUILD_${tag}_DEPS libarchive-${tag})
   endif()
   if (VES_USE_PCL)
     list(APPEND VES_SUPERBUILD_${tag}_OPTS
-      "-DPCL_SUPERBUILD_DIR:PATH=${PCL_SUPERBUILD_DIR}";
+      "-DPCL_SUPERBUILD_DIR:PATH=${PCL_SUPERBUILD_DIR}"
       "-DPCL_BUILD_TARGET:STRING=${tag}"
       )
   endif()
@@ -311,26 +311,26 @@ endmacro()
 
 macro(crosscompile_ves proj tag toolchain_file)
   list(APPEND VES_SUPERBUILD_${tag}_OPTS
-    "-DVES_USE_CURL:BOOL=${VES_USE_CURL}";
+    "-DVES_USE_CURL:BOOL=${VES_USE_CURL}"
     "-DVES_USE_LIBARCHIVE:BOOL=${VES_USE_LIBARCHIVE}"
     "-DVES_USE_PCL:BOOL=${VES_USE_PCL}"
     )
   if (VES_USE_CURL)
     list(APPEND VES_SUPERBUILD_${tag}_OPTS
-      "-DCURL_INCLUDE_DIR:PATH=${install_prefix}/curl-${tag}/include";
+      "-DCURL_INCLUDE_DIR:PATH=${install_prefix}/curl-${tag}/include"
       "-DCURL_LIBRARY:PATH=${install_prefix}/curl-${tag}/lib/libcurl.a"
       )
     list(APPEND VES_SUPERBUILD_${tag}_DEPS curl-${tag})
   endif()
   if (VES_USE_LIBARCHIVE)
     list(APPEND VES_SUPERBUILD_${tag}_OPTS
-      "-DLibArchive_DIR:PATH=${install_prefix}/libarchive-${tag}/lib/LibArchive/cmake";
+      "-DLibArchive_DIR:PATH=${install_prefix}/libarchive-${tag}/lib/LibArchive/cmake"
       )
     list(APPEND VES_SUPERBUILD_${tag}_DEPS libarchive-${tag})
   endif()
   if (VES_USE_PCL)
     list(APPEND VES_SUPERBUILD_${tag}_OPTS
-      "-DPCL_SUPERBUILD_DIR:PATH=${PCL_SUPERBUILD_DIR}";
+      "-DPCL_SUPERBUILD_DIR:PATH=${PCL_SUPERBUILD_DIR}"
       "-DPCL_BUILD_TARGET:STRING=${tag}"
       )
   endif()
