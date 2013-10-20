@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8)
-project(KiwiViewer CXX Java)
+project(KiwiViewer C CXX)
 
 if (CMAKE_BINARY_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
   message(FATAL_ERROR "Kiwi does not support in-source builds :) .")
@@ -13,9 +13,16 @@ include(assets.cmake)
 find_program(ANT_EXECUTABLE
   NAMES ant
   DOC   "The ant build tool")
+if(NOT ANT_EXECUTABLE)
+  message(FATAL_ERROR "Can not find ant build tool: ant")
+endif()
+
 find_program(ANDROID_EXECUTABLE
   NAMES android
   DOC   "The android command-line tool")
+if(NOT ANDROID_EXECUTABLE)
+  message(FATAL_ERROR "Can not find android command line tool: android")
+endif()
 
 set(ANDROID_TARGET "android-16"
   CACHE STRING "The Android API to target")
@@ -81,7 +88,7 @@ if("${CMAKE_EXTRA_GENERATOR}" STREQUAL "Eclipse CDT4")
 endif()
 
 add_custom_target(kiwi-apk-release ALL
-  COMMAND ant
+  COMMAND ${ANT_EXECUTABLE}
           -file "${CMAKE_CURRENT_BINARY_DIR}/build.xml"
           release)
 add_dependencies(kiwi-apk-release
@@ -90,7 +97,7 @@ add_dependencies(kiwi-apk-release
   kiwi-apk-resource)
 
 add_custom_target(kiwi-apk-debug ALL
-  COMMAND ant
+  COMMAND ${ANT_EXECUTABLE}
           -file "${CMAKE_CURRENT_BINARY_DIR}/build.xml"
           debug)
 add_dependencies(kiwi-apk-debug
