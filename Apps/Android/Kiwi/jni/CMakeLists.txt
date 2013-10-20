@@ -8,7 +8,7 @@ find_package(VES REQUIRED)
 include_directories(${VES_INCLUDE_DIRS})
 
 # TODO: Verify if this is not required on Windows
-if (NOI WIN32)
+if (NOT WIN32)
   find_package(ZLIB REQUIRED)
 endif()
 
