@@ -135,7 +135,7 @@ public:
       std::string("/Apps/iOS/Kiwi/Kiwi/Data/plane.vtp");
 
     mTestApp->loadData(filename);
-    mTestApp->resetView();
+    mTestApp->resetView(false);
   }
 
   void initApp()

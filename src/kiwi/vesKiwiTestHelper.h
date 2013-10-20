@@ -85,9 +85,9 @@ public:
     this->app()->resizeView(width, height);
   }
 
-  virtual void resetView()
+  virtual void resetView(bool withTransition = true)
   {
-    this->app()->resetView();
+    this->app()->resetView(withTransition);
   }
 
   void handleLeftClickDown(int x, int y)
@@ -163,7 +163,7 @@ public:
 
     // reset view
     helper.resize(windowWidth, windowHeight);
-    helper.resetView();
+    helper.resetView(/* withTransition: */ false);
 
     // begin the event loop if not in testing mode
     bool testPassed = true;

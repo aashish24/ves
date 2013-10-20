@@ -1,0 +1,246 @@
+The VES/Kiwi development team has added a new feature to the
+kiwi library for use in iOS and Android applications:
+animated transitions.
+
+_Transitions_ are animations of a change in the scene graph over time.
+They are useful because they provide users with information about
+how items in the two scene graphs (the initial and final ones) are
+related to each other.
+[Heer and Robertson](http://vis.berkeley.edu/papers/animated_transitions/)
+have a thorough discussion of transitions and present a taxonomy of
+transition types in scientific visualization.
+
+In the kiwi library, transitions are transient in nature;
+once you construct a transition and
+queue it for the application to process, you need never inspect it again;
+the object representing the transition is reference-counted and disowned
+by the application once the animation is complete.
+
+Transition objects hold the initial and final state of one or more
+scene graph node properties (e.g. a color) and compute intermediate
+values based on the amount of time elapsed since the transition was
+queued.
+Any transition can be run in series or in parallel with other transitions.
+When run in parallel -- as long as they don't set the same attribute on
+the same scene-graph node -- the changes will appear simultaneously.
+When run in series, one transition starts as its predecessor completes,
+making complex sequences of actions possible.
+
+The new transitions also provide _easings_, which are ways to
+alter the rate at which a transition occurs relative to the actual
+elapsed time.
+These are frequently used in traditional (hand) animation to
+achieve realistic motion and/or add "character" to motion.
+Instead of linearly interpolating a property between its initial and final values
+according to &Delta;t (the time since the transition began),
+the time is composed with a nonlinear easing function.
+Many easing functions are illustrated on [easings.net](http://easings.net/)
+and most of them are available in the kiwi library.
+
+What follows is a tutorial on the specific way transitions are implemented in kiwi.
+
+# Animated transitions by example
+
+## Basics
+
+The kiwi library provides animated transitions for you to use.
+They are not dissimilar to [D3](https://github.com/mbostock/d3/wiki/Transitions)'s transitions.
+The one you are most probably interested in is the one that moves the camera: `vesKiwiCameraTransition`.
+Transitions should be created using their static `create` method, which returns a shared pointer
+to a new transition instance.
+
+    vesKiwiCameraTransition::Ptr transition =
+      vesKiwiCameraTransition::create(camera);
+
+The reason you should prefer this method is because the "set" methods on transitions can be chained
+together starting with a pointer to the transition:
+
+    vesKiwiCameraTransition::Ptr transition =
+      vesKiwiCameraTransition::create(camera)
+        // Camera transition properties
+        ->setInitialFocus(vesVector3f(0., 0., 0.))
+        ->setFinalFocus(vesVector3f(0., 0., 10.))
+        // Base transition properties
+        ->setDuration(2.0);
+
+Note that you must always call subclass-specific set methods before calling a
+parent class's set methods. That's because the parent class set methods return
+a shared pointer to the parent class -- which you can't call subclass methods on.
+For example the `setDuration()` call above returns a `vesKiwiTransition::Ptr` which
+does not know about `setInitialFocus()` or `setFinalFocus()`. So, always set
+the duration last.
+
+Once you have all the properties set on a transition,
+you add it to an application by calling the `addTransition` method.
+Once a transition completes, it removes itself from the application.
+This means you don't even need to create a temporary variable to hold the transition:
+
+    kiwiApp->addTransition(
+      vesKiwiCameraTransition::create(camera)
+        // Camera transition properties
+        ->setInitialFocus(vesVector3f(0., 0., 0.))
+        ->setFinalFocus(vesVector3f(0., 0., 10.))
+        // Base transition properties
+        ->setDuration(2.0));
+
+The transition will be deleted automatically when the application no longer holds a
+reference to it.
+Note that transitions generally own references to the objects they will modify;
+removing an object from the scene graph may keep it from being rendered but it
+will still exist and be modified by the transition until completion.
+
+Transitions can be told to queue other transitions as they become active or when they complete
+using one transition's `alsoStart` or `followedBy`, respectively:
+
+    kiwiApp->addTransition(
+      vesKiwiCameraTransition::create(camera)
+        ->setInitialFocus(vesVector3f(0., 0., 0.))
+        ->setFinalFocus(vesVector3f(0., 0., 10.))
+        ->setDuration(2.0)
+        ->alsoStart(
+          vesKiwiTransformTransition::create(transform)
+            ->setTranslation(vesVector3f(10., 0., 0.))
+            ->setDuration(2.0))
+        ->followedBy(
+          vesKiwiTransformTransition::create(transform)
+            ->setRotation(vesVector3f(1., 0., 0.), 90.0)
+            ->setDuration(2.0)));
+
+You can see how indentation can be used carefully to show which transitions are being referenced,
+but you must be careful to maintain the code properly because it can also be misleading in a way
+that makes debugging difficult.
+
+Sometimes you might like to reference one transition's properties while setting up another transition.
+But creating variables to hold the transition references so you can refer to property values can be awkward.
+So, the `create` methods usually take an optional final argument that is a shared pointer reference to the transition.
+The pointer is set as the instance is created.
+This example sets the duration of one transition to match another one:
+
+    // Ensure transitions started at the same time complete at the same time:
+    vesKiwiCameraTransition::Ptr tx1;
+    kiwiApp->addTransition(
+      vesKiwiCameraTransition::create(camera, tx1)
+        ->setInitialFocus(vesVector3f(0., 0., 0.))
+        ->setFinalFocus(vesVector3f(0., 0., 10.))
+        ->setDuration(2.0)
+        ->alsoStart(
+          vesKiwiTransformTransition::create(transform)
+            ->setTranslation(vesVector3f(10., 0., 0.))
+            ->setDuration(tx1->duration())));
+
+## Initial conditions
+
+Transitions do their best to obtain initial conditions from the **current state** of the objects they will be animating
+**at the time they are queued** by the application, **not** at their construction time.
+The queue time and construction time can be different, specifically when transitions are run in series
+using the `followedBy()` method.
+Most transitions also provide a means for you to manually set the initial state,
+however this can lead to discontinuities at the beginning of a transition, so be careful.
+
+## Final conditions
+
+Sometimes you just don't want to spend the time precomputing a transform matrix by hand in order
+to get a good final state for a transition.
+In this situation, you can force initial/final state settings during construction:
+
+    vesKiwiCameraTransition::Ptr tx1;
+    kiwiApp->addTransition(
+      vesKiwiCameraTransition::create(camera, tx1)
+        ->setInitialFocus(vesVector3f(0., 0., 0.))
+        ->setFinalFocus(vesVector3f(0., 0., 10.))
+        ->setDuration(2.0));
+    // Force the transition to grab initial values now:
+    tx1->takeInitialOrientation();
+    // It is safe to modify the camera here because the transition will
+    // reset the state at the beginning of the next render.
+    camera->setViewPlaneNormal(vesVector3f(1., 0., 0.));
+    camera->reset();
+    // Tell the transition to use the camera's current state as the
+    // final endpoint:
+    tx1->takeFinalOrientation();
+
+Methods for forcing a transition to sample the current state of an object
+to obtain an initial or final value generally have names beginning with `take`
+and do not accept arguments.
+
+## Transition time versus progress
+
+Most transitions have a clear beginning and ending state and a fixed duration.
+In this case, you can change the rate at which the transition occurs to make it visually smoother
+(or more overt).
+The way to do this is with easing functions á la [Penner](http://www.robertpenner.com/easing/)
+or [Sitnik](http://easings.net/).
+Kiwi provides several functions, all derived from `vesKiwiEasing`.
+Each one takes a progress indicator number between 0 and 1 and returns a modified number between 0 and 1.
+The modified number is passed to the transition, which uses it as a "fraction completed".
+
+## Non-transitions
+
+Sometimes you need a transition for which no completion time is known a priori.
+One example would be showing FTP download progress when the file size is unavailable;
+there's no way to know how much of the download is done, so you can't estimate where
+to position an absolute-valued progress indicator.
+This isn't something `vesKiwiTransition` supports directly yet, but
+you can write subclasses that provide this kind of behavior.
+In such cases, your transition should ignore the "fraction completed" passed through the easing and
+to the transition's `prepareState()` method.
+Instead `prepareState()` can query the transition for the current time and its start time,
+using the difference to define some state.
+In the future, a method may be available to obtain the time since the last rendering.
+
+## Specific transitions
+
+### Camera Transition
+
+Camera transitions allow you to *independently* change the following
+
++ the initial and final focal points (where the camera is aimed),
++ the initial and final orientations of the camera
+  (the direction of the "lens" from the focal point) as a quaternion,
++ the focal distance of the camera lens from the focal point,
++ the parallel scaling factor used when parallel projection is enabled.
+
+Camera transitions also allow you to set the entire initial or final
+"frame" at once by specifying an eye, aim, and up vector.
+
+See `src/kiwi/Testing/TestAnimation.cpp` for an example of how to
+use this class.
+
+### Actor Transitions
+
+There are three classes you can use to transform actors:
+
++ `vesActorTranslationTransition` provides a way to transition the `translation` property of a `vesActor` instance.
++ `vesActorCenterTransition` provides a way to transition the `center` property of a `vesActor` instance controlling its center of rotation.
++ `vesActorRotationTransition` provides a way to transition the `rotation` property of a `vesActor` instance.
+
+These are all simply template-specializations of the `vesKiwiIVarTransition` class,
+which uses get- and set-methods to obtain initial values and prepare intermediate states.
+
+See `src/kiwi/Testing/TestGradientBackground.cpp` for an example.
+
+## Representation Color Transitions
+
+The `vesKiwiPolyDataRepresentation` class provides methods to set the color
+and opacity of VTK polydata. As with actor transitions, we provide typedefs
+to template specializations of the `vesKiwiIVarTransition` class to control
+color and opacity:
+
++ `vesKiwiPolyDataColorTransition`
++ `vesKiwiPolyDataOpacityTransition`
+
+Note that currently the kiwi library ignores opacity, so transitioning it
+is not likely to be useful.
+
+## Scalar value
+
+Finally, you can transition any variable that uses a primitive storage type
+given just its address.
+The `vesKiwiScalarTransition` is a template class that takes a pointer
+to a primitive storage type (e.g., `double` or `int`) and transitions
+the value stored.
+Note that you must guarantee that the address is valid for the duration of
+the transition.
+
+See `src/kiwi/Testing/TestTransitions.cpp` for an example of how to
+use this class.

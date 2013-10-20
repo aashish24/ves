@@ -480,11 +480,14 @@ void vesKiwiViewerApp::addBuiltinDataset(const std::string& name, const std::str
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiViewerApp::applyBuiltinDatasetCameraParameters(int index)
+void vesKiwiViewerApp::applyBuiltinDatasetCameraParameters(
+  int index, bool withTransition)
 {
   this->Internal->CameraSpinner->disable();
-  this->Superclass::resetView(this->Internal->BuiltinDatasetCameraParameters[index].ViewDirection,
-                  this->Internal->BuiltinDatasetCameraParameters[index].ViewUp);
+  this->Superclass::resetView(
+    this->Internal->BuiltinDatasetCameraParameters[index].ViewDirection,
+    this->Internal->BuiltinDatasetCameraParameters[index].ViewUp,
+    withTransition);
 }
 
 //----------------------------------------------------------------------------
@@ -615,7 +618,7 @@ bool vesKiwiViewerApp::widgetInteractionIsActive() const
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiViewerApp::resetView()
+void vesKiwiViewerApp::resetView(bool withTransition)
 {
   this->Internal->CameraSpinner->disable();
 
@@ -627,7 +630,7 @@ void vesKiwiViewerApp::resetView()
   //this->camera()->setViewUp(vesVector3f(0,1,0));
 
   this->Superclass::resetView(this->Internal->DefaultCameraParameters.ViewDirection,
-                              this->Internal->DefaultCameraParameters.ViewUp);
+                              this->Internal->DefaultCameraParameters.ViewUp, withTransition);
 }
 
 //----------------------------------------------------------------------------

@@ -66,11 +66,18 @@ public:
   const vesSharedPtr<vesGeometryData> geometryData() const;
 
   /// Set single geometry color. Default is (1.0, 1.0, 1.0, 1.0).
-  void setColor(float r, float g, float b, float a);
+  void setColor(float r, float g, float b, float a)
+    {
+    vesVector4f rgba(r, g, b, a);
+    this->setColor(rgba);
+    }
+  void setColor(const vesVector4f& rgba);
 
   /// Get single geometry color. Default is (1.0, 1.0, 1.0, 1.0).
   float* color();
   const float* color() const;
+  vesVector4f& colorVector();
+  const vesVector4f& colorVector() const;
 
   int pointSize() const;
   void setPointSize(int size);

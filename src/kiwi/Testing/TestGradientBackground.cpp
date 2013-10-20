@@ -21,6 +21,7 @@
 #include <vesBackground.h>
 #include <vesKiwiBaseApp.h>
 #include <vesKiwiDataLoader.h>
+#include <vesKiwiSceneTransitions.h>
 #include <vesKiwiPolyDataRepresentation.h>
 #include <vesKiwiTestHelper.h>
 #include <vesRenderer.h>
@@ -40,8 +41,6 @@ public:
 
   vesGradientBackgroundApp()
   {
-    this->DataRep = 0;
-
     this->renderer()->background()->setGradientColor(
       vesVector3f(0.0f/255.0f, 0.0f/255.0f, 2.0f/255.0f),
       vesVector3f(55.0f/255.0f, 55.0f/255.0f, 113.0f/255.0f));
@@ -74,12 +73,12 @@ public:
   {
     if (this->DataRep) {
       this->DataRep->removeSelfFromRenderer(this->renderer());
-      delete this->DataRep;
-      this->DataRep = 0;
+      vesKiwiPolyDataRepresentation::Ptr null;
+      this->DataRep = null;
     }
   }
 
-  void loadData(const std::string& filename)
+  vesKiwiPolyDataRepresentation::Ptr loadData(const std::string& filename)
   {
     this->unloadData();
 
@@ -87,16 +86,19 @@ public:
     vtkSmartPointer<vtkPolyData> polyData = vtkPolyData::SafeDownCast(loader.loadDataset(filename));
     assert(polyData.GetPointer());
 
-    vesKiwiPolyDataRepresentation* rep = new vesKiwiPolyDataRepresentation();
+    vesKiwiPolyDataRepresentation::Ptr rep =
+      vesKiwiPolyDataRepresentation::Ptr(
+        new vesKiwiPolyDataRepresentation());
     rep->initializeWithShader(this->ClipShader);
     rep->setPolyData(polyData);
     rep->addSelfToRenderer(this->renderer());
     this->DataRep = rep;
+    return rep;
   }
 
   vesSharedPtr<vesUniform> ClipUniform;
   vesSharedPtr<vesShaderProgram> ClipShader;
-  vesKiwiPolyDataRepresentation* DataRep;
+  vesSharedPtr<vesKiwiPolyDataRepresentation> DataRep;
 };
 
 
@@ -114,8 +116,75 @@ public:
     std::string filename = this->sourceDirectory() +
       std::string("/Apps/iOS/Kiwi/Kiwi/Data/bunny.vtp");
 
+    this->mRep =
     mTestApp->loadData(filename);
-    mTestApp->resetView();
+    mTestApp->resetView(false);
+    if (!isTesting())
+      {
+      this->hop();
+      }
+  }
+
+  void hop()
+    {
+      mTestApp->addTransition(
+        vesActorTranslationTransition::create(mRep->actor())
+          ->setInitialValue(vesVector3f(0., 0.2, 0.))
+          ->setFinalValue(vesVector3f(0., 0.0, 0.))
+          ->setEasing(vesKiwiBounceOutEasing::create())
+          ->setDuration(0.75)
+          ->followedBy(
+            vesKiwiPolyDataColorTransition::create(mRep)
+            ->setFinalValue(vesVector4f(1., 1., 0.5, 1.))
+            ->setEasing(vesKiwiQuadraticInOutEasing::create())
+            ->setDuration(0.75)
+            ->followedBy(
+              vesKiwiPolyDataColorTransition::create(mRep)
+              ->setFinalValue(vesVector4f(1., 0.8, 1., 1.))
+              ->setEasing(vesKiwiQuadraticInOutEasing::create())
+              ->setDuration(0.75)
+              ->followedBy(
+                vesKiwiPolyDataColorTransition::create(mRep)
+                ->setFinalValue(vesVector4f(1., 1., 1., 1.))
+                ->setEasing(vesKiwiQuadraticInOutEasing::create())
+                ->setDuration(0.75)
+              )
+            )
+            ->alsoStart(
+              vesActorTranslationTransition::create(mRep->actor())
+              ->setFinalValue(vesVector3f(0., 0.2, 0.))
+              ->setEasing(vesKiwiQuadraticOutEasing::create())
+              ->setDuration(0.5)
+              ->followedBy(
+                vesActorTranslationTransition::create(mRep->actor())
+                ->setFinalValue(vesVector3f(0., 0.0, 0.))
+                ->setEasing(vesKiwiBounceOutEasing::create())
+                ->setDuration(0.75)
+                ->followedBy(
+                  vesActorTranslationTransition::create(mRep->actor())
+                  ->setFinalValue(vesVector3f(0., 0.2, 0.))
+                  ->setEasing(vesKiwiQuadraticOutEasing::create())
+                  ->setDuration(0.5)
+                  ->followedBy(
+                    vesActorTranslationTransition::create(mRep->actor())
+                    ->setFinalValue(vesVector3f(0., 0.0, 0.))
+                    ->setEasing(vesKiwiBounceOutEasing::create())
+                    ->setDuration(0.75)
+                  )
+                )
+              )
+            )
+          )
+        );
+    }
+
+  void handleKeyboard(unsigned char key, int x, int y)
+  {
+    if (key == 'h') {
+      this->hop();
+    } else {
+      vesKiwiTestHelper::handleKeyboard(key, x, y);
+    }
   }
 
   void initApp()
@@ -138,6 +207,7 @@ public:
   }
 
   vesGradientBackgroundApp::Ptr mTestApp;
+  vesKiwiPolyDataRepresentation::Ptr mRep;
 };
 
 

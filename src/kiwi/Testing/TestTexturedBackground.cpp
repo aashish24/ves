@@ -127,7 +127,7 @@ public:
       std::string("/Apps/iOS/Kiwi/Kiwi/Data/kiwi_opaque.png");
 
     mTestApp->loadData(filename, imageFilename);
-    mTestApp->resetView();
+    mTestApp->resetView(false);
   }
 
   void initApp()

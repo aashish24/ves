@@ -431,10 +431,10 @@ public class KiwiGLSurfaceView extends GLSurfaceView implements MultiTouchObject
         }});
     }
 
-    public void resetCamera() {
+    public void resetCamera(final boolean withTransition) {
       queueEvent(new Runnable() {
                    public void run() {
-                      KiwiNative.resetCamera();
+                      KiwiNative.resetCamera(withTransition);
                       requestRender();
                    }});
     }
