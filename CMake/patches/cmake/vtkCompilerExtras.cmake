@@ -27,16 +27,20 @@ if(CMAKE_COMPILER_IS_GNUCXX)
     _gcc_version_info)
   string (REGEX MATCH "[345]\\.[0-9]\\.[0-9]*"
     _gcc_version "${_gcc_version_info}")
+  message("[${_gcc_version}] = _gcc_version")
   if(NOT _gcc_version)
-    string (REGEX REPLACE ".*\\(GCC\\).* ([34]\\.[0-9]) .*" "\\1.0"
+    string (REGEX REPLACE ".*\\(GCC\\).*([34]\\.[0-9]).*" "\\1.0"
       _gcc_version "${_gcc_version_info}")
   endif()
+  message("[${_gcc_version_info}] = _gcc_version_info")
+  message("[${_gcc_version}] = _gcc_version")
 
   # GCC visibility support, on by default and in testing.
   check_cxx_compiler_flag(-fvisibility=hidden HAVE_GCC_VISIBILITY)
   option(VTK_USE_GCC_VISIBILITY "Use GCC visibility support if available." OFF)
   mark_as_advanced(VTK_USE_GCC_VISIBILITY)
 
+  message("CMAKE_C_COMPILER_VERSION= ${CMAKE_C_COMPILER_VERSION}")
   if(${_gcc_version} VERSION_GREATER 4.2.0 AND BUILD_SHARED_LIBS
     AND HAVE_GCC_VISIBILITY AND VTK_USE_GCC_VISIBILITY
     AND NOT MINGW AND NOT CYGWIN)
