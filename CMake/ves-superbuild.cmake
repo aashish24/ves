@@ -19,6 +19,13 @@ option(VES_IOS_SUPERBUILD "Build VES and dependent subprojects for iOS" OFF)
 set(VES_DOWNLOAD_PREFIX "${CMAKE_BINARY_DIR}/downloads" CACHE PATH
   "Directory to store and extract tarballs of external dependencies")
 
+# TODO: For now, on Android, turn-off CURL and LIBARCHIVE as the code breaks
+# at build time
+if (VES_ANDROID_SUPERBUILD)
+  set_property(CACHE VES_USE_CURL PROPERTY VALUE OFF)
+  set_property(CACHE VES_USE_LIBARCHIVE PROPERTY VALUE OFF)
+endif()
+
 set(base "${CMAKE_BINARY_DIR}/CMakeExternals")
 set_property(DIRECTORY PROPERTY EP_BASE ${base})
 
