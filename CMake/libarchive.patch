@@ -89,3 +89,17 @@ index 0000000..9e8e59d
 +check_required_components(LibArchive)
 --
 1.7.11.4
+
+diff --git a/libarchive/archive_read_disk_posix.c b/libarchive/archive_read_disk_posix.c
+index 698600e..e5e3387 100644
+--- a/libarchive/archive_read_disk_posix.c
++++ b/libarchive/archive_read_disk_posix.c
+@@ -1630,7 +1630,7 @@ setup_current_filesystem(struct archive_read_disk *a)
+ }
+
+ #elif defined(HAVE_SYS_STATFS_H) && defined(HAVE_LINUX_MAGIC_H) &&\
+-	defined(HAVE_STATFS) && defined(HAVE_FSTATFS)
++	defined(HAVE_STATFS) && defined(HAVE_FSTATFS) && 0
+ /*
+  * Note: statfs is deprecated since LSB 3.2
+  */
