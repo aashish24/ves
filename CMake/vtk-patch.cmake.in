@@ -49,7 +49,7 @@ endforeach()
 file(GLOB pattern_files RELATIVE @ves_patch_dir@/Geometry "@ves_patch_dir@/Geometry/*.*" )
 foreach(pattern_file ${pattern_files})
   execute_process(
-    COMMAND @CMAKE_COMMAND@ -E copy_if_different @ves_patch_dir@/Geometry/${pattern_file}
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different @ves_patch_dir@/Geometry/${pattern_file}
       @vtk_src_dir@/IO/Geometry/${pattern_file}
   )
   if(NOT ${res} EQUAL 0)
