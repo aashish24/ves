@@ -1,10 +1,10 @@
-set(CTEST_SITE "trisol.kitware")
+set(CTEST_SITE "4815162342.kitware")
 set(CTEST_CMAKE_GENERATOR "Unix Makefiles")
 set(CTEST_BUILD_FLAGS "-j4")
 set(CTEST_TEST_ARGS PARALLEL_LEVEL 4)
-set(CTEST_TEST_TIMEOUT 500)
+set(CTEST_TEST_TIMEOUT 100)
 set(CTEST_DASHBOARD_ROOT "${CTEST_SCRIPT_DIRECTORY}/../../..")
-set(ENV{ANDROID_NDK} "/source/android/android-ndk-r8b")
+set(ENV{ANDROID_NDK} "/Users/felix/Softwares/Android-NDK/")
 
 set(dashboard_cache "
 VES_IOS_SUPERBUILD:BOOL=TRUE
