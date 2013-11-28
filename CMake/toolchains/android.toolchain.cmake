@@ -343,6 +343,12 @@ set( ANDROID_DEFAULT_NDK_API_LEVEL 8 )
 set( ANDROID_DEFAULT_NDK_API_LEVEL_x86 9 )
 set( ANDROID_DEFAULT_NDK_API_LEVEL_mips 9 )
 
+# This is a workaround, this is fixed in CMake version 2.8.12.1
+if (DEFINED ENV{PROCESSOR_ARCHITEW6432})
+  set (CMAKE_HOST_SYSTEM_PROCESSOR "$ENV{PROCESSOR_ARCHITEW6432}")
+else()
+  set (CMAKE_HOST_SYSTEM_PROCESSOR "$ENV{PROCESSOR_ARCHITECTURE}")
+endif()
 
 macro( __LIST_FILTER listvar regex )
  if( ${listvar} )
@@ -464,7 +470,6 @@ if( ANDROID_FORBID_SYGWIN )
   unset(__new_path)
  endif()
 endif()
-
 
 # detect current host platform
 if( NOT DEFINED ANDROID_NDK_HOST_X64 AND CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "amd64|x86_64|AMD64")
