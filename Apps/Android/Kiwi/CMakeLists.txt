@@ -31,7 +31,7 @@ if(NOT ANDROID_EXECUTABLE)
   message(FATAL_ERROR "Can not find android command line tool: android")
 endif()
 
-set(ANDROID_TARGET "android-16"
+set(ANDROID_TARGET "android-18"
   CACHE STRING "The Android API to target")
 
 configure_file(
