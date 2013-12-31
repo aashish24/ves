@@ -550,7 +550,7 @@ void vesPVWebClient::setSessionId(const std::string& sessionId)
   this->m_sessionId = sessionId;
 }
 
-const std::vector<std::tr1::shared_ptr<vesPVWebDataSet> >& vesPVWebClient::datasets() const
+const std::vector<vesSharedPtr<vesPVWebDataSet> >& vesPVWebClient::datasets() const
 {
   return this->m_datasets;
 }

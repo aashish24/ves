@@ -29,7 +29,7 @@ class vesPVWebDataSet
 {
 public:
 
-  typedef std::tr1::shared_ptr<vesPVWebDataSet> Ptr;
+  typedef vesSharedPtr<vesPVWebDataSet> Ptr;
 
   vesPVWebDataSet();
   ~vesPVWebDataSet();

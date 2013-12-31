@@ -31,14 +31,14 @@
 typedef void CURL;
 struct cJSON;
 
-typedef std::tr1::shared_ptr<cJSON> jsonSharedPtr;
+typedef vesSharedPtr<cJSON> jsonSharedPtr;
 
 class vesMidasClient
 {
 public:
 
 
-  typedef std::tr1::shared_ptr<vesMidasClient> Ptr;
+  typedef vesSharedPtr<vesMidasClient> Ptr;
   typedef std::map<std::string, std::string> RequestArgs;
 
   vesMidasClient();

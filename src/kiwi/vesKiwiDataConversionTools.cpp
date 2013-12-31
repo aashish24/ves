@@ -433,7 +433,7 @@ void vesKiwiDataConversionTools::GenericConvertTriangles(vtkPolyData* input,
   vtkIdType* vertices;
 
   vesSharedPtr< vesIndices<T> > indicesObj =
-    std::tr1::static_pointer_cast< vesIndices<T> >
+    vesStaticPtrCast< vesIndices<T> >
     (output->triangles()->getVesIndices());
 
   typename vesIndices<T>::Indices* triangleIndices
@@ -831,12 +831,12 @@ void vesKiwiDataConversionTools::RemoveSharedTriangleVertices(vesGeometryData::P
   }
 
   // get verts
-  vesSourceDataP3N3f::Ptr verts = std::tr1::static_pointer_cast<vesSourceDataP3N3f>(geometryData->sourceData(vesVertexAttributeKeys::Position));
+  vesSourceDataP3N3f::Ptr verts = vesStaticPtrCast<vesSourceDataP3N3f>(geometryData->sourceData(vesVertexAttributeKeys::Position));
   size_t numberOfVerts = verts->arrayReference().size();
 
 
   // get triangles
-  std::vector<unsigned int>& triangleIndices = *(std::tr1::static_pointer_cast<vesIndices<unsigned int> >(geometryData->triangles()->getVesIndices())->indices());
+  std::vector<unsigned int>& triangleIndices = *(vesStaticPtrCast<vesIndices<unsigned int> >(geometryData->triangles()->getVesIndices())->indices());
   size_t numberOfIndices = triangleIndices.size();
 
 
@@ -892,12 +892,12 @@ void vesKiwiDataConversionTools::ComputeWireframeVertexArrays(vesGeometryData::P
   }
 
   // get verts
-  vesSourceDataP3N3f::Ptr verts = std::tr1::static_pointer_cast<vesSourceDataP3N3f>(geometryData->sourceData(vesVertexAttributeKeys::Position));
+  vesSourceDataP3N3f::Ptr verts = vesStaticPtrCast<vesSourceDataP3N3f>(geometryData->sourceData(vesVertexAttributeKeys::Position));
   size_t numberOfVerts = verts->arrayReference().size();
 
 
   // get triangles
-  std::vector<unsigned int>& triangleIndices = *(std::tr1::static_pointer_cast<vesIndices<unsigned int> >(geometryData->triangles()->getVesIndices())->indices());
+  std::vector<unsigned int>& triangleIndices = *(vesStaticPtrCast<vesIndices<unsigned int> >(geometryData->triangles()->getVesIndices())->indices());
   size_t numberOfTriangles = triangleIndices.size()/3;
 
 

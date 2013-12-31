@@ -604,7 +604,7 @@ bool vesKiwiImageWidgetRepresentation::handleSingleTouchDown(int displayX, int d
   displayY = ren->height() - displayY;
   this->Internal->LastTouchPosition = vesVector2f(displayX, displayY);
 
-  std::tr1::shared_ptr<vesCamera> camera = ren->camera();
+  vesSharedPtr<vesCamera> camera = ren->camera();
   vesVector3f cameraFocalPoint = camera->focalPoint();
   vesVector3f cameraPosition = camera->position();
   vesVector3f displayFocus = ren->computeWorldToDisplay(cameraFocalPoint);

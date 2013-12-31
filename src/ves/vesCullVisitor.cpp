@@ -114,7 +114,7 @@ void vesCullVisitor::visit(vesCamera &camera)
     vesSharedPtr<vesRenderStage> renderStage =
       camera.getOrCreateRenderStage();
     renderStage->clearAll();
-    renderStage->setViewport( (camera.viewport() != 0)
+    renderStage->setViewport( camera.viewport()
       ? camera.viewport() : previousRenderStage->viewport() );
     renderStage->setClearColor(camera.clearColor());
     renderStage->setClearMask(camera.clearMask());

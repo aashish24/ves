@@ -122,7 +122,7 @@ bool vesMaterial::addAttribute(vesSharedPtr<vesMaterialAttribute> attribute)
 
     // Shader is a special attribute.
     if (attribute->type() == vesMaterialAttribute::Shader) {
-      return this->setShaderProgram(std::tr1::static_pointer_cast<vesShaderProgram>(attribute));
+      return this->setShaderProgram(vesStaticPtrCast<vesShaderProgram>(attribute));
     }
 
     // Everything else.
@@ -130,7 +130,7 @@ bool vesMaterial::addAttribute(vesSharedPtr<vesMaterialAttribute> attribute)
       this->m_internal->m_attributes, attribute);
   }
   else  if(attribute->type() == vesMaterialAttribute::Texture) {
-    vesSharedPtr<vesTexture> texture = std::tr1::static_pointer_cast<vesTexture>(attribute);
+    vesSharedPtr<vesTexture> texture = vesStaticPtrCast<vesTexture>(attribute);
 
     // Cache last texture so that we can release graphics resources on it.
     this->m_internal->m_textureAttributes[texture->textureUnit()] = texture;

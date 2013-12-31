@@ -22,7 +22,7 @@
 
 #include "vesKiwiWidgetRepresentation.h"
 
-using std::tr1::dynamic_pointer_cast;
+using vesDynamicPtrCast;
 
 
 //----------------------------------------------------------------------------

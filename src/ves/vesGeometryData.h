@@ -319,7 +319,7 @@ void vesGeometryData::computeNormals()
 
   unsigned int numberOfIndices = triangles->numberOfIndices();
   vesSharedPtr< vesIndices< T > > triangleIndices
-      = std::tr1::static_pointer_cast< vesIndices< T > >
+      = vesStaticPtrCast< vesIndices< T > >
         (triangles->getVesIndices());
 
   assert(triangles->indexCount() == 3);

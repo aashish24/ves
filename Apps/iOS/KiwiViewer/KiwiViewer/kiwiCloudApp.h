@@ -415,7 +415,7 @@ public:
 
     const std::vector<vesKiwiDataRepresentation::Ptr>& reps = this->dataRepresentations();
     for (size_t i = 0; i < reps.size(); ++i) {
-      vesKiwiWidgetRepresentation::Ptr widget = std::tr1::dynamic_pointer_cast<vesKiwiWidgetRepresentation>(reps[i]);
+      vesKiwiWidgetRepresentation::Ptr widget = vesDynamicPtrCast<vesKiwiWidgetRepresentation>(reps[i]);
       if (widget) {
         std::vector<std::string> widgetActions = widget->actions();
         actionList.insert(actionList.end(), widgetActions.begin(), widgetActions.end());
@@ -447,7 +447,7 @@ public:
 
     const std::vector<vesKiwiDataRepresentation::Ptr>& reps = this->dataRepresentations();
     for (size_t i = 0; i < reps.size(); ++i) {
-      vesKiwiWidgetRepresentation::Ptr widget = std::tr1::dynamic_pointer_cast<vesKiwiWidgetRepresentation>(reps[i]);
+      vesKiwiWidgetRepresentation::Ptr widget = vesDynamicPtrCast<vesKiwiWidgetRepresentation>(reps[i]);
       if (widget && widget->handleAction(action)) {
         return true;
       }
@@ -569,7 +569,7 @@ public:
     if (this->dataRepresentations().size() != 1) {
       return vesKiwiImageWidgetRepresentation::Ptr();
     }
-    return std::tr1::dynamic_pointer_cast<vesKiwiImageWidgetRepresentation>(this->dataRepresentations()[0]);
+    return vesDynamicPtrCast<vesKiwiImageWidgetRepresentation>(this->dataRepresentations()[0]);
   }
 
   virtual void setDefaultBackgroundColor()

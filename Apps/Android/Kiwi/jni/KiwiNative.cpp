@@ -95,7 +95,7 @@ public:
   void checkForAnimation()
   {
     for (size_t i = 0; i < this->dataRepresentations().size(); ++i) {
-      if (std::tr1::dynamic_pointer_cast<vesKiwiAnimationRepresentation>(this->dataRepresentations()[i])) {
+      if (vesDynamicPtrCast<vesKiwiAnimationRepresentation>(this->dataRepresentations()[i])) {
         this->setAnimating(true);
         break;
       }

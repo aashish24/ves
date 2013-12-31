@@ -32,14 +32,14 @@ class vesPVWebDataSet;
 typedef void CURL;
 struct cJSON;
 
-typedef std::tr1::shared_ptr<cJSON> jsonSharedPtr;
+typedef vesSharedPtr<cJSON> jsonSharedPtr;
 
 class vesPVWebClient
 {
 public:
 
 
-  typedef std::tr1::shared_ptr<vesPVWebClient> Ptr;
+  typedef vesSharedPtr<vesPVWebClient> Ptr;
 
   vesPVWebClient();
 
@@ -85,7 +85,7 @@ public:
 
   void setSessionId(const std::string& sessionId);
 
-  const std::vector<std::tr1::shared_ptr<vesPVWebDataSet> >& datasets() const;
+  const std::vector<vesSharedPtr<vesPVWebDataSet> >& datasets() const;
 
   const std::vector<double>& lookAt() const;
   const std::vector<double>& backgroundColor() const;
@@ -98,7 +98,7 @@ private:
   std::string m_host;
   CURL* m_curl;
 
-  std::vector<std::tr1::shared_ptr<vesPVWebDataSet> > m_datasets;
+  std::vector<vesSharedPtr<vesPVWebDataSet> > m_datasets;
   std::vector<double> m_lookAt;
   std::vector<double> m_backgroundColor;
 
