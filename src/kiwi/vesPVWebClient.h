@@ -22,11 +22,11 @@
 #ifndef __vesPVWebClient_h
 #define __vesPVWebClient_h
 
+#include <vesSharedPtr.h>
+
 #include <vector>
 #include <string>
 #include <sstream>
-#include <tr1/memory>
-
 
 class vesPVWebDataSet;
 typedef void CURL;

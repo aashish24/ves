@@ -460,7 +460,7 @@ bool vesPVWebClient::configure(int enableRendering, int imageDelivery, int enabl
 
   cJSON_AddItemToArray(params, cJSON_CreateString(configureParams.str().c_str()));
   jsonSharedPtr result = this->rpc("VisualizationsManager.forwardWithoutReply", params);
-  return (result != NULL);
+  return result;
 }
 
 void vesPVWebClient::configureOn()

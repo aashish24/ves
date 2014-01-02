@@ -22,8 +22,9 @@
 #ifndef __vesPVWebDataSet_h
 #define __vesPVWebDataSet_h
 
+#include <vesSharedPtr.h>
+
 #include <string>
-#include <tr1/memory>
 
 class vesPVWebDataSet
 {

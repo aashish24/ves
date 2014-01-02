@@ -22,10 +22,11 @@
 #ifndef __vesMidasClient_h
 #define __vesMidasClient_h
 
+#include <vesSharedPtr.h>
+
 #include <vector>
 #include <map>
 #include <string>
-#include <tr1/memory>
 
 
 typedef void CURL;
