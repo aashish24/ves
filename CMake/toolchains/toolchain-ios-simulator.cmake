@@ -17,8 +17,8 @@ find_program(CMAKE_CXX_COMPILER NAME g++
   NO_DEFAULT_PATH)
 
 set(CMAKE_OSX_ARCHITECTURES i386)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mios-simulator-version-min=5.0 -fvisibility=hidden -fvisibility-inlines-hidden")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mios-simulator-version-min=5.0 -fvisibility=hidden -fvisibility-inlines-hidden")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden")
 
 # Set the CMAKE_OSX_SYSROOT to the latest SDK found
 set(CMAKE_OSX_SYSROOT)
@@ -39,6 +39,16 @@ if (NOT CMAKE_OSX_SYSROOT)
 endif()
 message(STATUS "-- Using iOS SDK: ${CMAKE_OSX_SYSROOT}")
 
+# If the we are on 7.0 or higher SDK we should add simulator version min to get
+# things to compile.  This is probably more properly handled with a compiler version
+# check but this works for now.
+if(CMAKE_OSX_SYSROOT MATCHES iPhoneSimulator7.0.sdk)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mios-simulator-version-min=5.0")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mios-simulator-version-min=5.0")
+else()
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__IPHONE_OS_VERSION_MIN_REQUIRED=50000")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D__PHONE_OS_VERSION_MIN_REQIORED=50000")  
+endif()
 
 set(CMAKE_OSX_ARCHITECTURES "${CMAKE_OSX_ARCHITECTURES}" CACHE STRING "osx architectures")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}" CACHE STRING "c++ flags")
