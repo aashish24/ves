@@ -7,7 +7,10 @@ include(${VTK_USE_FILE})
 find_package(VES REQUIRED)
 include_directories(${VES_INCLUDE_DIRS})
 
-find_package(ZLIB REQUIRED)
+# TODO: Verify if this is not required on Windows
+if (NOT WIN32)
+  find_package(ZLIB REQUIRED)
+endif()
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 

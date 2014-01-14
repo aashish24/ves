@@ -170,7 +170,7 @@ macro(_test_compiler_hidden_visibility)
     # gcc on mac just reports: "gcc (GCC) 3.3 20030304 ..." without the
     # patch level, handle this here:
     if(NOT _gcc_version)
-      string(REGEX REPLACE ".*\\(GCC\\).* ([34]\\.[0-9]) .*" "\\1.0"
+      string(REGEX REPLACE ".*\\(GCC\\).*([34]\\.[0-9]).*" "\\1.0"
         _gcc_version "${_gcc_version_info}")
     endif()
 
