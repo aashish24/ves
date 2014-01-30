@@ -69,7 +69,7 @@
 
 #include <cJSON.h>
 
-typedef std::tr1::shared_ptr<cJSON> jsonSharedPtr;
+typedef vesSharedPtr<cJSON> jsonSharedPtr;
 
 namespace {
 
@@ -401,7 +401,7 @@ public:
 
       std::string filename = this->BaseDir + "/" + filenames[i];
       vesKiwiPolyDataRepresentation::Ptr rep =
-        std::tr1::dynamic_pointer_cast<vesKiwiPolyDataRepresentation>(this->loadDataset(filename, objectJson));
+        vesDynamicPtrCast<vesKiwiPolyDataRepresentation>(this->loadDataset(filename, objectJson));
 
       if (!rep) {
         return false;

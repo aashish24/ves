@@ -22,11 +22,34 @@
 #define VESSHAREDPTR_H
 
 // C/C++ includes
-#ifdef _WIN32
-#include <memory>
+/* Where is the shared_ptr declaration? (What header and what namespace?)
+ * We must include <ciso646> (or some other C++ header) in order to make
+ * it clear to some compilers (clang on OS X 10.9) that C++ definitions
+ * (and _LIBCPP_VERSION in particular) should be turned on.
+ */
+#include <ciso646>
+#ifdef _MSC_VER
+
+#  define VES_MEMORY_HDR <memory>
+#  define VES_SPTR_NS std
+
+#elif defined(_LIBCPP_VERSION)
+/* libc++ does not implement the tr1 namespace as it provides
+ * only C++11 support; instead of tr1, the equivalent functionality
+ * is placed in namespace std, so use when it targeting such
+ * systems (OS X 10.7 onwards, various Linux distributions) */
+
+#  define VES_MEMORY_HDR <memory>
+#  define VES_SPTR_NS std
+
 #else
-#include <tr1/memory>
+
+#  define VES_MEMORY_HDR <tr1/memory>
+#  define VES_SPTR_NS std::tr1
+
 #endif
+
+#include VES_MEMORY_HDR
 
 /**\brief An abbreviation for a shared pointer to a class.
   *
@@ -35,17 +58,23 @@
   *   vesSharedPtr<X> = vesSharedPtr<X>(new X);</pre>
   *
   * It is possible on some platforms this might get defined
-  * to something other than std::tr1::shared_ptr (such as
+  * to something other than std::shared_ptr (such as
   * boost_ptr). But mainly this macro exists because it
   * is easier to type.
   */
-#define vesSharedPtr std::tr1::shared_ptr
+#define vesSharedPtr VES_SPTR_NS::shared_ptr
+
+/// An abbreviation for dynamically-casting a shared_ptr.
+#define vesDynamicPtrCast VES_SPTR_NS::dynamic_pointer_cast
+
+/// An abbreviation for statically-casting a shared_ptr.
+#define vesStaticPtrCast VES_SPTR_NS::static_pointer_cast
 
 /**\brief An abbreviation for a weak pointer to a class.
   *
   * \sa vesSharedPtr
   */
-#define vesWeakPtr std::tr1::weak_ptr
+#define vesWeakPtr VES_SPTR_NS::weak_ptr
 
 /**\brief Add static create() methods to a class.
   *
@@ -72,7 +101,7 @@
   static vesSharedPtr<SelfType> create() \
     { \
     vesSharedPtr< __VA_ARGS__ > shared(new SelfType); \
-    return std::tr1::static_pointer_cast<SelfType>(shared); \
+    return VES_SPTR_NS::static_pointer_cast<SelfType>(shared); \
     } \
   /* variant for declarative programming: */ \
   static vesSharedPtr<SelfType> create(vesSharedPtr<SelfType>& ref) \
@@ -107,7 +136,7 @@
   * call vesCreateMacro() as a safe way to expose public construction.
   */
 #define vesEnableSharedPtr(...) \
-  public std::tr1::enable_shared_from_this< __VA_ARGS__ >
+  public VES_SPTR_NS::enable_shared_from_this< __VA_ARGS__ >
 
 /**\brief A macro to help with derived classes whose bases enable shared_from_this().
   *
@@ -144,7 +173,7 @@
   typedef __VA_ARGS__ SharedPtrBaseType; \
   vesSharedPtr<SelfType> shared_from_this() \
     { \
-    return std::tr1::static_pointer_cast<SelfType>( \
+    return VES_SPTR_NS::static_pointer_cast<SelfType>( \
       SharedPtrBaseType::shared_from_this()); \
     }
 
@@ -180,7 +209,7 @@
   * since that will likely result in an exception being thrown.
   */
 #define vesSharedPtrHelper(...) \
-  std::tr1::static_pointer_cast<SelfType>( \
+  VES_SPTR_NS::static_pointer_cast<SelfType>( \
     SharedPtrBaseType::Ptr( \
     __VA_ARGS__ \
     ) \

@@ -47,7 +47,7 @@ public:
   {
     const std::vector<vesKiwiDataRepresentation::Ptr>& reps = this->mKiwiApp->dataRepresentations();
     for (size_t i = 0; i < reps.size(); ++i) {
-      vesKiwiPolyDataRepresentation::Ptr rep = std::tr1::dynamic_pointer_cast<vesKiwiPolyDataRepresentation>(reps[i]);
+      vesKiwiPolyDataRepresentation::Ptr rep = vesDynamicPtrCast<vesKiwiPolyDataRepresentation>(reps[i]);
       if (rep) {
         return rep;
       }

@@ -63,7 +63,7 @@ public:
     if (!mKiwiApp->dataRepresentations().size()) {
       return vesKiwiImageWidgetRepresentation::Ptr();
     }
-    return std::tr1::dynamic_pointer_cast<vesKiwiImageWidgetRepresentation>(mKiwiApp->dataRepresentations()[0]);
+    return vesDynamicPtrCast<vesKiwiImageWidgetRepresentation>(mKiwiApp->dataRepresentations()[0]);
   }
 
   void start3DImageView()

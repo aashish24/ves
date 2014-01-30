@@ -79,7 +79,7 @@
 #include <string>
 #include <vector>
 
-using std::tr1::dynamic_pointer_cast;
+using vesDynamicPtrCast;
 
 //----------------------------------------------------------------------------
 class vesKiwiViewerApp::vesInternal

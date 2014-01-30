@@ -478,7 +478,7 @@
   }
 
   // Switch out of 2D image viewer mode, if needed
-  vesSharedPtr<kiwiCloudApp> defaultApp = std::tr1::dynamic_pointer_cast<kiwiCloudApp>(self->mKiwiApp);
+  vesSharedPtr<kiwiCloudApp> defaultApp = vesDynamicPtrCast<kiwiCloudApp>(self->mKiwiApp);
   if (defaultApp && defaultApp->is2DImageMode()) {
     defaultApp->onCamera3D();
   }

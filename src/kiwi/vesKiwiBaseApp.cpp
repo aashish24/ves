@@ -103,7 +103,7 @@ vesOpenGLSupport::Ptr vesKiwiBaseApp::glSupport()
 }
 
 //----------------------------------------------------------------------------
-std::tr1::shared_ptr<vesCamera> vesKiwiBaseApp::camera() const
+vesSharedPtr<vesCamera> vesKiwiBaseApp::camera() const
 {
   assert(this->Internal->Renderer);
   return this->Internal->Renderer->camera();

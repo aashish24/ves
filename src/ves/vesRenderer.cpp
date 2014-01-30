@@ -166,7 +166,7 @@ void vesRenderer::resetCamera()
   double distance;
   vesVector3f vn, vup;
 
-  if ( this->m_camera != NULL ) {
+  if ( this->m_camera ) {
     vn = this->m_camera->viewPlaneNormal();
   }
   else
@@ -372,12 +372,12 @@ void sceneActorsHelper(std::vector<vesSharedPtr<vesActor> >& actors, vesSharedPt
   const std::list<vesSharedPtr<vesNode> >& children = parent->children();
 
   for (std::list<vesSharedPtr<vesNode> >::const_iterator itr = children.begin(); itr != children.end(); ++itr) {
-    vesSharedPtr<vesActor> actor = std::tr1::dynamic_pointer_cast<vesActor>(*itr);
+    vesSharedPtr<vesActor> actor = vesDynamicPtrCast<vesActor>(*itr);
     if (actor) {
       actors.push_back(actor);
     }
     else {
-      sceneActorsHelper(actors, std::tr1::dynamic_pointer_cast<vesGroupNode>(*itr));
+      sceneActorsHelper(actors, vesDynamicPtrCast<vesGroupNode>(*itr));
     }
   }
 }

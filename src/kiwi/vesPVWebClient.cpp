@@ -460,7 +460,7 @@ bool vesPVWebClient::configure(int enableRendering, int imageDelivery, int enabl
 
   cJSON_AddItemToArray(params, cJSON_CreateString(configureParams.str().c_str()));
   jsonSharedPtr result = this->rpc("VisualizationsManager.forwardWithoutReply", params);
-  return (result != NULL);
+  return result;
 }
 
 void vesPVWebClient::configureOn()
@@ -550,7 +550,7 @@ void vesPVWebClient::setSessionId(const std::string& sessionId)
   this->m_sessionId = sessionId;
 }
 
-const std::vector<std::tr1::shared_ptr<vesPVWebDataSet> >& vesPVWebClient::datasets() const
+const std::vector<vesSharedPtr<vesPVWebDataSet> >& vesPVWebClient::datasets() const
 {
   return this->m_datasets;
 }

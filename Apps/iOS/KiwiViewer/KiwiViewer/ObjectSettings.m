@@ -211,7 +211,7 @@
   self->geometryModeSection = -1;
   self->colorBySection = -1;
 
-  if (std::tr1::dynamic_pointer_cast<vesKiwiPolyDataRepresentation>(self->dataRepresentation)) {
+  if (vesDynamicPtrCast<vesKiwiPolyDataRepresentation>(self->dataRepresentation)) {
     self->opacitySection = self->numberOfSections++;
     self->geometryModeSection = self->numberOfSections++;
     self->colorBySection = self->numberOfSections++;
@@ -254,7 +254,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-  vesKiwiPolyDataRepresentation::Ptr rep = std::tr1::dynamic_pointer_cast<vesKiwiPolyDataRepresentation>(self->dataRepresentation);
+  vesKiwiPolyDataRepresentation::Ptr rep = vesDynamicPtrCast<vesKiwiPolyDataRepresentation>(self->dataRepresentation);
   
   if (section == self->objectsSection) {
     return self->app->dataRepresentations().size();
@@ -331,7 +331,7 @@
     }
     
     WidgetCell *cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier forIndexPath:indexPath];
-    cell.rep = std::tr1::dynamic_pointer_cast<vesKiwiPolyDataRepresentation>(self->dataRepresentation);
+    cell.rep = vesDynamicPtrCast<vesKiwiPolyDataRepresentation>(self->dataRepresentation);
     [cell initWidget];
 
     return cell;
@@ -358,7 +358,7 @@
   }
   else if (indexPath.section == self->colorBySection) {
 
-    vesKiwiPolyDataRepresentation::Ptr rep = std::tr1::dynamic_pointer_cast<vesKiwiPolyDataRepresentation>(self->dataRepresentation);
+    vesKiwiPolyDataRepresentation::Ptr rep = vesDynamicPtrCast<vesKiwiPolyDataRepresentation>(self->dataRepresentation);
     std::string colorMode = rep->colorModes()[indexPath.row];
 
 
@@ -366,7 +366,7 @@
 
     if (colorMode == "Solid Color") {
       ColorCell *colorCell = [tableView dequeueReusableCellWithIdentifier:@"ColorCell" forIndexPath:indexPath];
-      colorCell.rep = std::tr1::dynamic_pointer_cast<vesKiwiPolyDataRepresentation>(self->dataRepresentation);
+      colorCell.rep = vesDynamicPtrCast<vesKiwiPolyDataRepresentation>(self->dataRepresentation);
       [colorCell initWidget];
       [colorCell.colorButton addTarget:self action:@selector(onColorButtonTouched) forControlEvents:UIControlEventTouchUpInside];
       cell = colorCell;
@@ -388,7 +388,7 @@
 
 -(int)currentGeometryMode
 {
-  vesKiwiPolyDataRepresentation::Ptr rep = std::tr1::dynamic_pointer_cast<vesKiwiPolyDataRepresentation>(self->dataRepresentation);
+  vesKiwiPolyDataRepresentation::Ptr rep = vesDynamicPtrCast<vesKiwiPolyDataRepresentation>(self->dataRepresentation);
   if (!rep) {
     return -1;
   }
@@ -398,7 +398,7 @@
 
 -(int)currentColorByMode
 {
-  vesKiwiPolyDataRepresentation::Ptr rep = std::tr1::dynamic_pointer_cast<vesKiwiPolyDataRepresentation>(self->dataRepresentation);
+  vesKiwiPolyDataRepresentation::Ptr rep = vesDynamicPtrCast<vesKiwiPolyDataRepresentation>(self->dataRepresentation);
   if (!rep) {
     return -1;
   }
@@ -447,7 +447,7 @@
 
 -(void)handleGeometryModeSelected:(int)geometryMode
 {
-  vesKiwiPolyDataRepresentation::Ptr rep = std::tr1::dynamic_pointer_cast<vesKiwiPolyDataRepresentation>(self->dataRepresentation);
+  vesKiwiPolyDataRepresentation::Ptr rep = vesDynamicPtrCast<vesKiwiPolyDataRepresentation>(self->dataRepresentation);
   if (!rep) {
     return;
   }
@@ -491,7 +491,7 @@
   }
   else if (indexPath.section == self->colorBySection) {
 
-    vesKiwiPolyDataRepresentation::Ptr rep = std::tr1::dynamic_pointer_cast<vesKiwiPolyDataRepresentation>(self->dataRepresentation);
+    vesKiwiPolyDataRepresentation::Ptr rep = vesDynamicPtrCast<vesKiwiPolyDataRepresentation>(self->dataRepresentation);
     std::string colorMode = rep->colorModes()[indexPath.row];
     rep->setColorMode(colorMode);
     [self updateGeometryModeCells];
