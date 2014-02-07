@@ -16,6 +16,8 @@ find_program(CMAKE_CXX_COMPILER NAME g++
   /Developer/Platforms/iPhoneSimulator.platform/Developer/usr/bin/
   NO_DEFAULT_PATH)
 
+message(STATUS "the path for simulator CXX is ${CMAKE_CXX_COMPILER}")
+
 set(CMAKE_OSX_ARCHITECTURES i386)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fvisibility=hidden -fvisibility-inlines-hidden")
@@ -42,13 +44,30 @@ message(STATUS "-- Using iOS SDK: ${CMAKE_OSX_SYSROOT}")
 # If the we are on 7.0 or higher SDK we should add simulator version min to get
 # things to compile.  This is probably more properly handled with a compiler version
 # check but this works for now.
+set(ves_ios_cmake_cxx_flags)
+set(ves_ios_cmake_c_flags)
+
 if(CMAKE_OSX_SYSROOT MATCHES iPhoneSimulator7.0.sdk)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mios-simulator-version-min=5.0")
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mios-simulator-version-min=5.0")
+  execute_process(COMMAND ${CMAKE_CXX_COMPILER} --version
+    OUTPUT_VARIABLE out
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+  )
+  string(REGEX REPLACE ".*clang-(.).*" "\\1" CLANG_VERSION "${out}")
+  if("${CLANG_VERSION}" GREATER 4)
+     message(STATUS "CLANG using version 7")
+    set(ves_ios_cmake_cxx_flags "-mios-simulator-version-min=7.0")
+    set(ves_ios_cmake_c_flags "-mios-simulator-version-min=7.0")
+  else()
+    set(ves_ios_cmake_cxx_flags "-mios-simulator-version-min=5.0")
+    set(ves_ios_cmake_c_flags "-mios-simulator-version-min=5.0")
+  endif()
 else()
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D__IPHONE_OS_VERSION_MIN_REQUIRED=50000")
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D__PHONE_OS_VERSION_MIN_REQIORED=50000")  
+  set(ves_ios_cmake_cxx_flags "-D__IPHONE_OS_VERSION_MIN_REQUIRED=50000")
+  set(ves_ios_cmake_c_flags "-D__PHONE_OS_VERSION_MIN_REQIORED=50000")
 endif()
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ves_ios_cmake_cxx_flags}")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${ves_ios_cmake_c_flags}")
 
 set(CMAKE_OSX_ARCHITECTURES "${CMAKE_OSX_ARCHITECTURES}" CACHE STRING "osx architectures")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}" CACHE STRING "c++ flags")
