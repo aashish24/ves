@@ -74,7 +74,7 @@ public:
     }
   }
 
-  void loadData(const std::string& filename)
+  void loadData()
   {
      // Setup points
     vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
@@ -130,22 +130,20 @@ public:
 
   MyTestHelper()
   {
-    mClipApp = vesCellDataApp::Ptr(new vesCellDataApp);
-    this->setApp(mClipApp);
+    mCellDataApp = vesCellDataApp::Ptr(new vesCellDataApp);
+    this->setApp(mCellDataApp);
   }
 
   void loadData()
   {
-    std::string filename = this->sourceDirectory() +
-      std::string("/Apps/iOS/Kiwi/Kiwi/Data/bunny.vtp");
-
-    mClipApp->loadData(filename);
-    mClipApp->resetView(false);
+    mCellDataApp->loadData();
+    mCellDataApp->resetView(false);
   }
 
   void initApp()
   {
-    mClipApp->initDefaultShader(vesBuiltinShaders::vesShader_vert(), vesBuiltinShaders::vesShader_frag());
+    mCellDataApp->initDefaultShader(vesBuiltinShaders::vesShader_vert(),
+                                    vesBuiltinShaders::vesShader_frag());
   }
 
   bool initTesting()
@@ -157,10 +155,10 @@ public:
 
   bool doTesting()
   {
-    return this->performBaselineImageTest("Clipped Standford Bunny");
+    return this->performBaselineImageTest("Cell Data");
   }
 
-  vesCellDataApp::Ptr mClipApp;
+  vesCellDataApp::Ptr mCellDataApp;
 };
 
 
