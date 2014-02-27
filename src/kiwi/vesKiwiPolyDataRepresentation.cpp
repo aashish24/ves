@@ -38,6 +38,7 @@
 #include "vesPrimitive.h"
 #include "vesUniform.h"
 
+#include <vtkCellDataToPointData.h>
 #include <vtkNew.h>
 #include <vtkTriangleFilter.h>
 #include <vtkLookupTable.h>
@@ -100,14 +101,25 @@ vesKiwiPolyDataRepresentation::~vesKiwiPolyDataRepresentation()
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiPolyDataRepresentation::setPolyData(vtkPolyData* input)
+void vesKiwiPolyDataRepresentation::setPolyData(vtkPolyData* input,
+                                                bool convertCellToPointData)
 {
   assert(input);
   assert(this->Internal->Mapper);
 
   vesGeometryData::Ptr geometryData;
-  vtkSmartPointer<vtkPolyData> polyData = input;
+  vtkSmartPointer<vtkPolyData> polyData;
 
+  // Convert cell data to point data first
+  if (convertCellToPointData) {
+    vtkNew<vtkCellDataToPointData> cellToPointData;
+    cellToPointData->SetInputData(input);
+    cellToPointData->Update();
+    polyData = vtkPolyData::SafeDownCast(cellToPointData->GetOutput());
+    }
+  else {
+    polyData = input;
+    }
 
   if (!polyData->GetNumberOfStrips() && !polyData->GetNumberOfPolys() && !polyData->GetNumberOfLines()) {
 

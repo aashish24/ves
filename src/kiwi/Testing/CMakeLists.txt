@@ -1,6 +1,7 @@
 set(tests
   TestAnimation
   TestCap
+  TestCellData
   TestClipPlane
   TestEasings
   TestGradientBackground
