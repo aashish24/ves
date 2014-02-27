@@ -122,12 +122,9 @@ void vesKiwiPolyDataRepresentation::setPolyData(vtkPolyData* input,
     }
 
   if (!polyData->GetNumberOfStrips() && !polyData->GetNumberOfPolys() && !polyData->GetNumberOfLines()) {
-
     geometryData = vesKiwiDataConversionTools::ConvertPoints(polyData);
-
   }
   else {
-
     bool addNormals = true;
     bool duplicateVerts = false;
     polyData = vesKiwiDataConversionTools::TriangulatePolyData(polyData, addNormals, duplicateVerts);
