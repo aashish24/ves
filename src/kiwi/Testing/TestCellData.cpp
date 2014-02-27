@@ -33,6 +33,7 @@
 #include <vtkCellData.h>
 #include <vtkDoubleArray.h>
 #include <vtkPointData.h>
+
 #include "vesKiwiDataConversionTools.h"
 
 class vesCellDataApp : public vesKiwiBaseApp {
@@ -112,12 +113,9 @@ public:
     rep->initializeWithShader(this->DefaultShader);
     rep->setPolyData(polydata, true);
     rep->colorByScalars("ScalarsArray");
-
-    //rep->setColorMode("Vertex RGB");
     rep->addSelfToRenderer(this->renderer());
     this->DataRep = rep;
   }
-
 
   vesSharedPtr<vesUniform> ClipUniform;
   vesSharedPtr<vesShaderProgram> DefaultShader;
