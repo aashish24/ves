@@ -38,8 +38,11 @@
 #include "vesPrimitive.h"
 #include "vesUniform.h"
 
+#include <vtkCellData.h>
 #include <vtkCellDataToPointData.h>
+#include <vtkDataSetSurfaceFilter.h>
 #include <vtkNew.h>
+#include <vtkShrinkFilter.h>
 #include <vtkTriangleFilter.h>
 #include <vtkLookupTable.h>
 #include <vtkDiscretizableColorTransferFunction.h>
@@ -111,15 +114,24 @@ void vesKiwiPolyDataRepresentation::setPolyData(vtkPolyData* input,
   vtkSmartPointer<vtkPolyData> polyData;
 
   // Convert cell data to point data first
-  if (convertCellToPointData) {
+  if (convertCellToPointData && input->GetCellData()->GetNumberOfArrays()) {
+    vtkNew<vtkShrinkFilter> shrinkFilter;
+    shrinkFilter->SetShrinkFactor(1.0);
+    shrinkFilter->SetInputData(input);
+
+    vtkNew<vtkDataSetSurfaceFilter> surfaceFilter;
+    surfaceFilter->SetInputConnection(shrinkFilter->GetOutputPort());
+
     vtkNew<vtkCellDataToPointData> cellToPointData;
-    cellToPointData->SetInputData(input);
+    cellToPointData->SetInputConnection(surfaceFilter->GetOutputPort());
     cellToPointData->Update();
     polyData = vtkPolyData::SafeDownCast(cellToPointData->GetOutput());
     }
   else {
     polyData = input;
     }
+
+  assert(polyData);
 
   if (!polyData->GetNumberOfStrips() && !polyData->GetNumberOfPolys() && !polyData->GetNumberOfLines()) {
     geometryData = vesKiwiDataConversionTools::ConvertPoints(polyData);

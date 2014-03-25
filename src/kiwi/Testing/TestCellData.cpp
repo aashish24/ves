@@ -88,8 +88,8 @@ public:
     vtkSmartPointer<vtkDoubleArray> scalars = vtkSmartPointer<vtkDoubleArray>::New();
     scalars->SetNumberOfComponents(1);
     scalars->SetName("ScalarsArray");
-    scalars->InsertNextTuple1(256.0);
-    scalars->InsertNextTuple1(512.0);
+    scalars->InsertNextTuple1(0.0);
+    scalars->InsertNextTuple1(1.0);
 
     vtkSmartPointer<vtkCellArray> triangles =vtkSmartPointer<vtkCellArray>::New();
     vtkSmartPointer<vtkTriangle> triangle1 = vtkSmartPointer<vtkTriangle>::New();
