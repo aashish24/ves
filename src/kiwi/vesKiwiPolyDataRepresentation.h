@@ -51,7 +51,7 @@ public:
 
   void initializeWithShader(vesSharedPtr<vesShaderProgram> shaderProgram);
 
-  void setPolyData(vtkPolyData* polyData);
+  void setPolyData(vtkPolyData* polyData, bool convertCellToPointData = false);
 
   void addTextureCoordinates(vtkDataArray* textureCoordinates);
 

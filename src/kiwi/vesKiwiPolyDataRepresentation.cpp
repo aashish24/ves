@@ -38,7 +38,11 @@
 #include "vesPrimitive.h"
 #include "vesUniform.h"
 
+#include <vtkCellData.h>
+#include <vtkCellDataToPointData.h>
+#include <vtkDataSetSurfaceFilter.h>
 #include <vtkNew.h>
+#include <vtkShrinkFilter.h>
 #include <vtkTriangleFilter.h>
 #include <vtkLookupTable.h>
 #include <vtkDiscretizableColorTransferFunction.h>
@@ -100,22 +104,39 @@ vesKiwiPolyDataRepresentation::~vesKiwiPolyDataRepresentation()
 }
 
 //----------------------------------------------------------------------------
-void vesKiwiPolyDataRepresentation::setPolyData(vtkPolyData* input)
+void vesKiwiPolyDataRepresentation::setPolyData(vtkPolyData* input,
+                                                bool convertCellToPointData)
 {
   assert(input);
   assert(this->Internal->Mapper);
 
   vesGeometryData::Ptr geometryData;
-  vtkSmartPointer<vtkPolyData> polyData = input;
+  vtkSmartPointer<vtkPolyData> polyData;
 
+  // Convert cell data to point data first
+  if (convertCellToPointData && input->GetCellData()->GetNumberOfArrays()) {
+    vtkNew<vtkShrinkFilter> shrinkFilter;
+    shrinkFilter->SetShrinkFactor(1.0);
+    shrinkFilter->SetInputData(input);
+
+    vtkNew<vtkDataSetSurfaceFilter> surfaceFilter;
+    surfaceFilter->SetInputConnection(shrinkFilter->GetOutputPort());
+
+    vtkNew<vtkCellDataToPointData> cellToPointData;
+    cellToPointData->SetInputConnection(surfaceFilter->GetOutputPort());
+    cellToPointData->Update();
+    polyData = vtkPolyData::SafeDownCast(cellToPointData->GetOutput());
+    }
+  else {
+    polyData = input;
+    }
+
+  assert(polyData);
 
   if (!polyData->GetNumberOfStrips() && !polyData->GetNumberOfPolys() && !polyData->GetNumberOfLines()) {
-
     geometryData = vesKiwiDataConversionTools::ConvertPoints(polyData);
-
   }
   else {
-
     bool addNormals = true;
     bool duplicateVerts = false;
     polyData = vesKiwiDataConversionTools::TriangulatePolyData(polyData, addNormals, duplicateVerts);
