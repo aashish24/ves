@@ -472,6 +472,47 @@ if( ANDROID_FORBID_SYGWIN )
 endif()
 
 # detect current host platform
+# TODO This is hack as if the toolchain is used then the CMAKE_HOST_SYSTEM_PROCESSOR
+# is not set until later. This is the case on Linux using cmake 2.8.12.2
+if(CMAKE_HOST_UNIX)
+  find_program(CMAKE_UNAME uname /bin /usr/bin /usr/local/bin )
+  if(CMAKE_UNAME)
+    exec_program(uname ARGS -s OUTPUT_VARIABLE CMAKE_HOST_SYSTEM_NAME)
+    exec_program(uname ARGS -r OUTPUT_VARIABLE CMAKE_HOST_SYSTEM_VERSION)
+    if(CMAKE_HOST_SYSTEM_NAME MATCHES "Linux|CYGWIN.*")
+      exec_program(uname ARGS -m OUTPUT_VARIABLE CMAKE_HOST_SYSTEM_PROCESSOR
+        RETURN_VALUE val)
+    elseif(CMAKE_HOST_SYSTEM_NAME MATCHES "OpenBSD")
+      exec_program(arch ARGS -s OUTPUT_VARIABLE CMAKE_HOST_SYSTEM_PROCESSOR
+        RETURN_VALUE val)
+    else()
+      exec_program(uname ARGS -p OUTPUT_VARIABLE CMAKE_HOST_SYSTEM_PROCESSOR
+        RETURN_VALUE val)
+      if("${val}" GREATER 0)
+        exec_program(uname ARGS -m OUTPUT_VARIABLE CMAKE_HOST_SYSTEM_PROCESSOR
+          RETURN_VALUE val)
+      endif()
+    endif()
+    # check the return of the last uname -m or -p
+    if("${val}" GREATER 0)
+        set(CMAKE_HOST_SYSTEM_PROCESSOR "unknown")
+    endif()
+    set(CMAKE_UNAME ${CMAKE_UNAME} CACHE INTERNAL "uname command")
+    # processor may have double quote in the name, and that needs to be removed
+    string(REGEX REPLACE "\"" "" CMAKE_HOST_SYSTEM_PROCESSOR "${CMAKE_HOST_SYSTEM_PROCESSOR}")
+    string(REGEX REPLACE "/" "_" CMAKE_HOST_SYSTEM_PROCESSOR "${CMAKE_HOST_SYSTEM_PROCESSOR}")
+  endif()
+else()
+  if(CMAKE_HOST_WIN32)
+    set (CMAKE_HOST_SYSTEM_NAME "Windows")
+    if (DEFINED ENV{PROCESSOR_ARCHITEW6432})
+      set (CMAKE_HOST_SYSTEM_PROCESSOR "$ENV{PROCESSOR_ARCHITEW6432}")
+    else()
+      set (CMAKE_HOST_SYSTEM_PROCESSOR "$ENV{PROCESSOR_ARCHITECTURE}")
+    endif()
+  endif()
+endif()
+
 if( NOT DEFINED ANDROID_NDK_HOST_X64 AND CMAKE_HOST_SYSTEM_PROCESSOR MATCHES "amd64|x86_64|AMD64")
  set( ANDROID_NDK_HOST_X64 1 CACHE BOOL "Try to use 64-bit compiler toolchain" )
  mark_as_advanced( ANDROID_NDK_HOST_X64 )

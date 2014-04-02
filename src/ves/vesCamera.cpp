@@ -19,6 +19,13 @@
   limitations under the License.
  ========================================================================*/
 
+#include <android/log.h>
+
+#define  LOG_TAG    "KiwiViewer"
+#define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
+#define  LOGW(...)  __android_log_print(ANDROID_LOG_WARN,LOG_TAG,__VA_ARGS__)
+#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
+
 #include "vesCamera.h"
 
 // VES includes
@@ -103,6 +110,7 @@ vesMatrix4x4f vesCamera::computeProjectionTransform(float aspect,
                                                     float nearz,
                                                     float farz)
 {
+  LOGI("aspect in camera is %f", aspect);
   vesMatrix4x4f matrix;
   matrix.setIdentity();
 
@@ -150,12 +158,19 @@ vesMatrix4x4f vesCamera::computeProjectionTransform(float aspect,
     double ymax = ( this->m_windowCenter[1] + 1.0 ) * height;
 
     vesMatrix4x4f frustum = vesFrustum( xmin, xmax, ymin, ymax,
-                                        this->m_clippingRange[0],
-                                        this->m_clippingRange[1] );
+                                     this->m_clippingRange[0],
+                                    this->m_clippingRange[1]);
+    LOGI("width in camera is %f", width);
+    LOGI("height in camera is %f", height);
+    LOGI("m_clippingRange in camera is %f", this->m_clippingRange[0]);
+    LOGI("m_clippingRange in camera is %f", this->m_clippingRange[1]);
+    LOGI("m_windowCenter in camera is %f", this->m_windowCenter[0]);
+    LOGI("m_windowCenter in camera is %f", this->m_windowCenter[1]);
+
+
     return matrix * frustum;
   }
 }
-
 
 // Rotate the camera about the view up vector centered at the focal point.
 void vesCamera::azimuth(double angle)

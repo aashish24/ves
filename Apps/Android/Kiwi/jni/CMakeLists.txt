@@ -29,6 +29,7 @@ set(deps
   log
   ${VES_LIBRARIES}
   ${ZLIB_LIBRARIES}
+  log
 )
 
 set(kiwi_lib KiwiNative)
