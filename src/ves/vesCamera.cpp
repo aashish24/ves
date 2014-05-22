@@ -160,12 +160,12 @@ vesMatrix4x4f vesCamera::computeProjectionTransform(float aspect,
     vesMatrix4x4f frustum = vesFrustum( xmin, xmax, ymin, ymax,
                                      this->m_clippingRange[0],
                                     this->m_clippingRange[1]);
-    LOGI("width in camera is %f", width);
-    LOGI("height in camera is %f", height);
+    LOGI("width in camera is %f", xmin);
+    LOGI("height in camera is %f", xmax);
     LOGI("m_clippingRange in camera is %f", this->m_clippingRange[0]);
     LOGI("m_clippingRange in camera is %f", this->m_clippingRange[1]);
-    LOGI("m_windowCenter in camera is %f", this->m_windowCenter[0]);
-    LOGI("m_windowCenter in camera is %f", this->m_windowCenter[1]);
+    LOGI("m_windowCenter in camera is %f", ymin);
+    LOGI("m_windowCenter in camera is %f", ymax);
 
 
     return matrix * frustum;

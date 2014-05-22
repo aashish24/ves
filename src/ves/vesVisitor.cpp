@@ -37,8 +37,8 @@ class vesVisitor::vesInternal
 public:
 
   std::deque < vesSharedPtr<vesActor> > m_actorStack;
-  std::vector<const vesMatrix4x4f*> m_modelViewMatrixStack;
-  std::vector<const vesMatrix4x4f*> m_projectionMatrixStack;
+  std::vector<vesMatrix4x4f> m_modelViewMatrixStack;
+  std::vector<vesMatrix4x4f> m_projectionMatrixStack;
 };
 
 
@@ -76,7 +76,7 @@ vesSharedPtr<vesActor> vesVisitor::actor() const
 
 void vesVisitor::pushModelViewMatrix(const vesMatrix4x4f &matrix)
 {
-  this->m_internal->m_modelViewMatrixStack.push_back(&matrix);
+  this->m_internal->m_modelViewMatrixStack.push_back(matrix);
 }
 
 
@@ -88,7 +88,7 @@ void vesVisitor::popModelViewMatrix()
 
 void vesVisitor::pushProjectionMatrix(const vesMatrix4x4f &matrix)
 {
-  this->m_internal->m_projectionMatrixStack.push_back(&matrix);
+  this->m_internal->m_projectionMatrixStack.push_back(matrix);
 }
 
 
@@ -104,7 +104,7 @@ vesMatrix4x4f vesVisitor::modelViewMatrix()
   matrix.setIdentity();
 
   if (!this->m_internal->m_modelViewMatrixStack.empty()) {
-    matrix = *this->m_internal->m_modelViewMatrixStack.back();
+    matrix = this->m_internal->m_modelViewMatrixStack.back();
   }
 
   return matrix;
@@ -116,7 +116,7 @@ vesMatrix4x4f vesVisitor::projectionMatrix()
   vesMatrix4x4f matrix;
   matrix.setIdentity();
   if (!this->m_internal->m_projectionMatrixStack.empty()) {
-    matrix = *this->m_internal->m_projectionMatrixStack.back();
+    matrix = this->m_internal->m_projectionMatrixStack.back();
   }
 
   return matrix;

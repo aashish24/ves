@@ -18,6 +18,13 @@
   limitations under the License.
  ========================================================================*/
 
+#include <android/log.h>
+
+#define  LOG_TAG    "KiwiViewer"
+#define  LOGI(...)  __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
+#define  LOGW(...)  __android_log_print(ANDROID_LOG_WARN,LOG_TAG,__VA_ARGS__)
+#define  LOGE(...)  __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
+
 #include "vesCullVisitor.h"
 
 // VES includes
@@ -37,6 +44,11 @@ void vesCullVisitor::addGeometryAndStates(
 {
   this->renderStage()->addRenderLeaf(
     vesRenderLeaf(depth, modelViewMatrix, projectionMatrix, material, mapper));
+
+  LOGI("projectionMatrix %f", projectionMatrix(0, 0));
+  LOGI("projectionMatrix %f", projectionMatrix(1, 0));
+  LOGI("projectionMatrix %f", projectionMatrix(2, 0));
+  LOGI("projectionMatrix %f", projectionMatrix(3, 0));
 }
 
 
@@ -98,7 +110,7 @@ void vesCullVisitor::visit(vesCamera &camera)
   this->pushModelViewMatrix(matrix);
 
   if (camera.referenceFrame() == vesTransformNode::Relative) {
-    this->pushProjectionMatrix(this->projectionMatrix() * camera.projectionMatrix());
+    this->pushProjectionMatrix(camera.projectionMatrix());
   } else {
     this->pushProjectionMatrix(camera.projectionMatrix());
   }
